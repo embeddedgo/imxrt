@@ -10,8 +10,10 @@ GOTARGET=imxrt1060
 # OCRAM: 512 KiB at 0x20200000
 
 GOTEXT=0x60002000
-GOMEM=0x20200000:1M
+GOMEM=0x20000000:512K
 
 ISRNAMES=no
 
-. ../../../../../scripts/build.sh $@
+name=$(basename $(pwd))
+
+. ../../../../../scripts/build.sh $@ && objcopy -O binary $name.elf $name.tmp && cat ../ivt.bin $name.tmp >$name.bin && rm $name.tmp
