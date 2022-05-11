@@ -6,7 +6,7 @@
 # UART using /dev/ttyACM0
 interface='-p /dev/ttyACM0'
 
-sdphost $interface -- write-file 0x20000000 ../ivt_flashloader.bin
+sdphost $interface -- write-file 0x20000000 ../ivt_flashloader.img
 sleep 1
 sdphost $interface -- jump-address 0x20000400
 sleep 1

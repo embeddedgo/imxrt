@@ -11,9 +11,10 @@ GOTARGET=imxrt1060
 
 GOTEXT=0x60002000
 GOMEM=0x20000000:512K
+GOMEM=0x20200000:512K
 
 ISRNAMES=no
 
 name=$(basename $(pwd))
 
-. ../../../../../scripts/build.sh $@ && objcopy -O binary $name.elf $name.tmp && cat ../ivt.bin $name.tmp >$name.bin && rm $name.tmp
+. ../../../../../scripts/build.sh $@ && objcopy -O binary $name.elf $name.bin && cat ../mbr.img $name.bin >$name+mbr.bin
