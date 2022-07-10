@@ -16,4 +16,4 @@ ISRNAMES=no
 
 name=$(basename $(pwd))
 
-. ../../../../../scripts/build.sh $@ && objcopy -O binary $name.elf $name.bin && cat ../mbr.img $name.bin >$name+mbr.bin
+. $(emgo env GOROOT)/../scripts/build.sh $@ && objcopy -O binary $name.elf $name.bin && cat ../mbr.img $name.bin >$name+mbr.bin

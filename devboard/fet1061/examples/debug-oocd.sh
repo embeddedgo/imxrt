@@ -2,4 +2,4 @@
 
 TARGET=imxrt
 
-. ../../../../../scripts/debug-oocd.sh
+. $(emgo env GOROOT)/../scripts/debug-oocd.sh
