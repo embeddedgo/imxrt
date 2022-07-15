@@ -1,3 +1,5 @@
+// Work in progress..
+
 package main
 
 import (
@@ -40,9 +42,8 @@ var (
 )
 
 func main() {
-
 	runtime.LockOSThread()
-	rtos.SetPrivLevel(0)
+	privLevel, _ := rtos.SetPrivLevel(0)
 
 	//CCM_ANALOG_PFD_480 := mmio32(CCM_ANALOG_ADDR + 0x0F0)
 	//CCM_ANALOG_PFD_480_SET := mmio32(CCM_ANALOG_ADDR + 0x0F0 + 4)
@@ -71,17 +72,25 @@ func main() {
 	CCM_CSCMR1.StoreBits(0x7F, 1<<6) // set PERCLK_CLK = OSC_CLK (24 MHz)
 	CCM_CSCDR1.StoreBits(0x7F, 1<<6) // set UART_CLK   = OSC_CLK (24 MHz)
 
-	// Configure GPIO AD_B0_09 (PAD F14) for output
-	IOMUXC_SW_MUX_CTL_PAD_GPIO_AD_B0_09.Store(5)
-	IOMUXC_SW_PAD_CTL_PAD_GPIO_AD_B0_09.Store(7 << 3)
+	// GPIO_MUX1 ALT5 selects GPIO6 (fast) instead of GPIO1 (slow) for all bits.
 	IOMUXC_GPR_GPR26.Store(0xFFFFFFFF)
-	GPIO6.GDIR.SetBit(9)
 
+	// Connect pad AD_B0_09 to GPIO 1 or 6 (ALT5 iomux mode)
+	IOMUXC_SW_MUX_CTL_PAD_GPIO_AD_B0_09.Store(5)
+
+	// Configure pad AD_B0_09: hysteresis:off, 100KΩ pull-down, pull/keeper:off,
+	// open-drain:off, speed:low (50 MHz), drive-strength:(150/7)Ω, sr:slow
+	IOMUXC_SW_PAD_CTL_PAD_GPIO_AD_B0_09.Store(7 << 3)
+
+	rtos.SetPrivLevel(privLevel)
+
+	// Set GPIO6 bit 9-th to the output mode.
+	GPIO6.GDIR.SetBit(9)
 	for {
-		for i := 0; i < 1e5; i++ {
+		for i := 0; i < 2e5; i++ {
 			GPIO6.DR_CLEAR.Store(1 << 9)
 		}
-		for i := 0; i < 5e5; i++ {
+		for i := 0; i < 4e6; i++ {
 			GPIO6.DR_SET.Store(1 << 9)
 		}
 	}

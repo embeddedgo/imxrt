@@ -1,4 +1,4 @@
-## Support for I.MX RT development boards
+## Support for I.MX RT development boards *WORK IN PROGRESS*
 
 ### Directory structure
 
