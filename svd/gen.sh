@@ -1,0 +1,27 @@
+#!/bin/sh
+
+set -e
+
+cd ../../../embeddedgo/imxrt/hal
+hal=$(pwd)
+cd ../p
+rm -rf *
+
+svdxgen github.com/embeddedgo/imxrt/p ../svd/*.svd
+
+for p in gpio; do
+	cd $p
+	xgen *.go
+	GOOS=noos GOARCH=thumb $(emgo env GOROOT)/bin/go build -tags imxrt1060
+	cd ..
+done
+
+perlscript='
+s/package irq/$&\n\nimport "embedded\/rtos"/;
+s/ = \d/ rtos.IRQ$&/g;
+'
+
+cd $hal/irq
+rm -f *
+cp ../../p/irq/* .
+perl -pi -e "$perlscript" *.go
