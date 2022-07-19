@@ -29,8 +29,6 @@ const (
 	ADCH_25 HC0 = 0x19 << 0 //  VREFSH = internal channel, for ADC self-test, hard connected to VRH internally
 	ADCH_31 HC0 = 0x1F << 0 //  Conversion Disabled. Hardware Triggers will not initiate any conversion.
 	AIEN    HC0 = 0x01 << 7 //+ Conversion Complete Interrupt Enable/Disable Control
-	AIEN_0  HC0 = 0x00 << 7 //  Conversion complete interrupt disabled
-	AIEN_1  HC0 = 0x01 << 7 //  Conversion complete interrupt enabled
 )
 
 const (
@@ -44,8 +42,6 @@ const (
 	ADCH_25 HC = 0x19 << 0 //  VREFSH = internal channel, for ADC self-test, hard connected to VRH internally
 	ADCH_31 HC = 0x1F << 0 //  Conversion Disabled. Hardware Triggers will not initiate any conversion.
 	AIEN    HC = 0x01 << 7 //+ Conversion Complete Interrupt Enable/Disable Control
-	AIEN_0  HC = 0x00 << 7 //  Conversion complete interrupt disabled
-	AIEN_1  HC = 0x01 << 7 //  Conversion complete interrupt enabled
 )
 
 const (
@@ -87,37 +83,27 @@ const (
 	MODE_1   CFG = 0x01 << 2  //  10-bit conversion
 	MODE_2   CFG = 0x02 << 2  //  12-bit conversion
 	ADLSMP   CFG = 0x01 << 4  //+ Long Sample Time Configuration
-	ADLSMP_0 CFG = 0x00 << 4  //  Short sample mode.
-	ADLSMP_1 CFG = 0x01 << 4  //  Long sample mode.
 	ADIV     CFG = 0x03 << 5  //+ Clock Divide Select
 	ADIV_0   CFG = 0x00 << 5  //  Input clock
 	ADIV_1   CFG = 0x01 << 5  //  Input clock / 2
 	ADIV_2   CFG = 0x02 << 5  //  Input clock / 4
 	ADIV_3   CFG = 0x03 << 5  //  Input clock / 8
 	ADLPC    CFG = 0x01 << 7  //+ Low-Power Configuration
-	ADLPC_0  CFG = 0x00 << 7  //  ADC hard block not in low power mode.
-	ADLPC_1  CFG = 0x01 << 7  //  ADC hard block in low power mode.
 	ADSTS    CFG = 0x03 << 8  //+ Defines the sample time duration
 	ADSTS_0  CFG = 0x00 << 8  //  Sample period (ADC clocks) = 2 if ADLSMP=0b Sample period (ADC clocks) = 12 if ADLSMP=1b
 	ADSTS_1  CFG = 0x01 << 8  //  Sample period (ADC clocks) = 4 if ADLSMP=0b Sample period (ADC clocks) = 16 if ADLSMP=1b
 	ADSTS_2  CFG = 0x02 << 8  //  Sample period (ADC clocks) = 6 if ADLSMP=0b Sample period (ADC clocks) = 20 if ADLSMP=1b
 	ADSTS_3  CFG = 0x03 << 8  //  Sample period (ADC clocks) = 8 if ADLSMP=0b Sample period (ADC clocks) = 24 if ADLSMP=1b
 	ADHSC    CFG = 0x01 << 10 //+ High Speed Configuration
-	ADHSC_0  CFG = 0x00 << 10 //  Normal conversion selected.
-	ADHSC_1  CFG = 0x01 << 10 //  High speed conversion selected.
 	REFSEL   CFG = 0x03 << 11 //+ Voltage Reference Selection
 	REFSEL_0 CFG = 0x00 << 11 //  Selects VREFH/VREFL as reference voltage.
 	ADTRG    CFG = 0x01 << 13 //+ Conversion Trigger Select
-	ADTRG_0  CFG = 0x00 << 13 //  Software trigger selected
-	ADTRG_1  CFG = 0x01 << 13 //  Hardware trigger selected
 	AVGS     CFG = 0x03 << 14 //+ Hardware Average select
 	AVGS_0   CFG = 0x00 << 14 //  4 samples averaged
 	AVGS_1   CFG = 0x01 << 14 //  8 samples averaged
 	AVGS_2   CFG = 0x02 << 14 //  16 samples averaged
 	AVGS_3   CFG = 0x03 << 14 //  32 samples averaged
 	OVWREN   CFG = 0x01 << 16 //+ Data Overwrite Enable
-	OVWREN_0 CFG = 0x00 << 16 //  Disable the overwriting. Existing Data in Data result register will not be overwritten by subsequent converted data.
-	OVWREN_1 CFG = 0x01 << 16 //  Enable the overwriting.
 )
 
 const (
@@ -135,28 +121,14 @@ const (
 )
 
 const (
-	ADACKEN   GC = 0x01 << 0 //+ Asynchronous clock output enable
-	ADACKEN_0 GC = 0x00 << 0 //  Asynchronous clock output disabled; Asynchronous clock only enabled if selected by ADICLK and a conversion is active.
-	ADACKEN_1 GC = 0x01 << 0 //  Asynchronous clock and clock output enabled regardless of the state of the ADC
-	DMAEN     GC = 0x01 << 1 //+ DMA Enable
-	DMAEN_0   GC = 0x00 << 1 //  DMA disabled (default)
-	DMAEN_1   GC = 0x01 << 1 //  DMA enabled
-	ACREN     GC = 0x01 << 2 //+ Compare Function Range Enable
-	ACREN_0   GC = 0x00 << 2 //  Range function disabled. Only the compare value 1 of ADC_CV register (CV1) is compared.
-	ACREN_1   GC = 0x01 << 2 //  Range function enabled. Both compare values of ADC_CV registers (CV1 and CV2) are compared.
-	ACFGT     GC = 0x01 << 3 //+ Compare Function Greater Than Enable
-	ACFGT_0   GC = 0x00 << 3 //  Configures "Less Than Threshold, Outside Range Not Inclusive and Inside Range Not Inclusive" functionality based on the values placed in the ADC_CV register.
-	ACFGT_1   GC = 0x01 << 3 //  Configures "Greater Than Or Equal To Threshold, Outside Range Inclusive and Inside Range Inclusive" functionality based on the values placed in the ADC_CV registers.
-	ACFE      GC = 0x01 << 4 //+ Compare Function Enable
-	ACFE_0    GC = 0x00 << 4 //  Compare function disabled
-	ACFE_1    GC = 0x01 << 4 //  Compare function enabled
-	AVGE      GC = 0x01 << 5 //+ Hardware average enable
-	AVGE_0    GC = 0x00 << 5 //  Hardware average function disabled
-	AVGE_1    GC = 0x01 << 5 //  Hardware average function enabled
-	ADCO      GC = 0x01 << 6 //+ Continuous Conversion Enable
-	ADCO_0    GC = 0x00 << 6 //  One conversion or one set of conversions if the hardware average function is enabled (AVGE=1) after initiating a conversion.
-	ADCO_1    GC = 0x01 << 6 //  Continuous conversions or sets of conversions if the hardware average function is enabled (AVGE=1) after initiating a conversion.
-	CAL       GC = 0x01 << 7 //+ Calibration
+	ADACKEN GC = 0x01 << 0 //+ Asynchronous clock output enable
+	DMAEN   GC = 0x01 << 1 //+ DMA Enable
+	ACREN   GC = 0x01 << 2 //+ Compare Function Range Enable
+	ACFGT   GC = 0x01 << 3 //+ Compare Function Greater Than Enable
+	ACFE    GC = 0x01 << 4 //+ Compare Function Enable
+	AVGE    GC = 0x01 << 5 //+ Hardware average enable
+	ADCO    GC = 0x01 << 6 //+ Continuous Conversion Enable
+	CAL     GC = 0x01 << 7 //+ Calibration
 )
 
 const (
@@ -171,15 +143,9 @@ const (
 )
 
 const (
-	ADACT   GS = 0x01 << 0 //+ Conversion Active
-	ADACT_0 GS = 0x00 << 0 //  Conversion not in progress.
-	ADACT_1 GS = 0x01 << 0 //  Conversion in progress.
-	CALF    GS = 0x01 << 1 //+ Calibration Failed Flag
-	CALF_0  GS = 0x00 << 1 //  Calibration completed normally.
-	CALF_1  GS = 0x01 << 1 //  Calibration failed. ADC accuracy specifications are not guaranteed.
-	AWKST   GS = 0x01 << 2 //+ Asynchronous wakeup interrupt status
-	AWKST_0 GS = 0x00 << 2 //  No asynchronous interrupt.
-	AWKST_1 GS = 0x01 << 2 //  Asynchronous wake up interrupt occurred in stop mode.
+	ADACT GS = 0x01 << 0 //+ Conversion Active
+	CALF  GS = 0x01 << 1 //+ Calibration Failed Flag
+	AWKST GS = 0x01 << 2 //+ Asynchronous wakeup interrupt status
 )
 
 const (
@@ -199,10 +165,8 @@ const (
 )
 
 const (
-	OFS    OFS = 0xFFF << 0 //+ Offset value
-	SIGN   OFS = 0x01 << 12 //+ Sign bit
-	SIGN_0 OFS = 0x00 << 12 //  The offset value is added with the raw result
-	SIGN_1 OFS = 0x01 << 12 //  The offset value is subtracted from the raw converted value
+	OFS  OFS = 0xFFF << 0 //+ Offset value
+	SIGN OFS = 0x01 << 12 //+ Sign bit
 )
 
 const (

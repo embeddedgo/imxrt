@@ -59,60 +59,24 @@ const (
 )
 
 const (
-	FRDE    TCSR = 0x01 << 0  //+ FIFO Request DMA Enable
-	FRDE_0  TCSR = 0x00 << 0  //  Disables the DMA request.
-	FRDE_1  TCSR = 0x01 << 0  //  Enables the DMA request.
-	FWDE    TCSR = 0x01 << 1  //+ FIFO Warning DMA Enable
-	FWDE_0  TCSR = 0x00 << 1  //  Disables the DMA request.
-	FWDE_1  TCSR = 0x01 << 1  //  Enables the DMA request.
-	FRIE    TCSR = 0x01 << 8  //+ FIFO Request Interrupt Enable
-	FRIE_0  TCSR = 0x00 << 8  //  Disables the interrupt.
-	FRIE_1  TCSR = 0x01 << 8  //  Enables the interrupt.
-	FWIE    TCSR = 0x01 << 9  //+ FIFO Warning Interrupt Enable
-	FWIE_0  TCSR = 0x00 << 9  //  Disables the interrupt.
-	FWIE_1  TCSR = 0x01 << 9  //  Enables the interrupt.
-	FEIE    TCSR = 0x01 << 10 //+ FIFO Error Interrupt Enable
-	FEIE_0  TCSR = 0x00 << 10 //  Disables the interrupt.
-	FEIE_1  TCSR = 0x01 << 10 //  Enables the interrupt.
-	SEIE    TCSR = 0x01 << 11 //+ Sync Error Interrupt Enable
-	SEIE_0  TCSR = 0x00 << 11 //  Disables interrupt.
-	SEIE_1  TCSR = 0x01 << 11 //  Enables interrupt.
-	WSIE    TCSR = 0x01 << 12 //+ Word Start Interrupt Enable
-	WSIE_0  TCSR = 0x00 << 12 //  Disables interrupt.
-	WSIE_1  TCSR = 0x01 << 12 //  Enables interrupt.
-	FRF     TCSR = 0x01 << 16 //+ FIFO Request Flag
-	FRF_0   TCSR = 0x00 << 16 //  Transmit FIFO watermark has not been reached.
-	FRF_1   TCSR = 0x01 << 16 //  Transmit FIFO watermark has been reached.
-	FWF     TCSR = 0x01 << 17 //+ FIFO Warning Flag
-	FWF_0   TCSR = 0x00 << 17 //  No enabled transmit FIFO is empty.
-	FWF_1   TCSR = 0x01 << 17 //  Enabled transmit FIFO is empty.
-	FEF     TCSR = 0x01 << 18 //+ FIFO Error Flag
-	FEF_0   TCSR = 0x00 << 18 //  Transmit underrun not detected.
-	FEF_1   TCSR = 0x01 << 18 //  Transmit underrun detected.
-	SEF     TCSR = 0x01 << 19 //+ Sync Error Flag
-	SEF_0   TCSR = 0x00 << 19 //  Sync error not detected.
-	SEF_1   TCSR = 0x01 << 19 //  Frame sync error detected.
-	WSF     TCSR = 0x01 << 20 //+ Word Start Flag
-	WSF_0   TCSR = 0x00 << 20 //  Start of word not detected.
-	WSF_1   TCSR = 0x01 << 20 //  Start of word detected.
-	SR      TCSR = 0x01 << 24 //+ Software Reset
-	SR_0    TCSR = 0x00 << 24 //  No effect.
-	SR_1    TCSR = 0x01 << 24 //  Software reset.
-	FR      TCSR = 0x01 << 25 //+ FIFO Reset
-	FR_0    TCSR = 0x00 << 25 //  No effect.
-	FR_1    TCSR = 0x01 << 25 //  FIFO reset.
-	BCE     TCSR = 0x01 << 28 //+ Bit Clock Enable
-	BCE_0   TCSR = 0x00 << 28 //  Transmit bit clock is disabled.
-	BCE_1   TCSR = 0x01 << 28 //  Transmit bit clock is enabled.
-	DBGE    TCSR = 0x01 << 29 //+ Debug Enable
-	DBGE_0  TCSR = 0x00 << 29 //  Transmitter is disabled in Debug mode, after completing the current frame.
-	DBGE_1  TCSR = 0x01 << 29 //  Transmitter is enabled in Debug mode.
-	STOPE   TCSR = 0x01 << 30 //+ Stop Enable
-	STOPE_0 TCSR = 0x00 << 30 //  Transmitter disabled in Stop mode.
-	STOPE_1 TCSR = 0x01 << 30 //  Transmitter enabled in Stop mode.
-	TE      TCSR = 0x01 << 31 //+ Transmitter Enable
-	TE_0    TCSR = 0x00 << 31 //  Transmitter is disabled.
-	TE_1    TCSR = 0x01 << 31 //  Transmitter is enabled, or transmitter has been disabled and has not yet reached end of frame.
+	FRDE  TCSR = 0x01 << 0  //+ FIFO Request DMA Enable
+	FWDE  TCSR = 0x01 << 1  //+ FIFO Warning DMA Enable
+	FRIE  TCSR = 0x01 << 8  //+ FIFO Request Interrupt Enable
+	FWIE  TCSR = 0x01 << 9  //+ FIFO Warning Interrupt Enable
+	FEIE  TCSR = 0x01 << 10 //+ FIFO Error Interrupt Enable
+	SEIE  TCSR = 0x01 << 11 //+ Sync Error Interrupt Enable
+	WSIE  TCSR = 0x01 << 12 //+ Word Start Interrupt Enable
+	FRF   TCSR = 0x01 << 16 //+ FIFO Request Flag
+	FWF   TCSR = 0x01 << 17 //+ FIFO Warning Flag
+	FEF   TCSR = 0x01 << 18 //+ FIFO Error Flag
+	SEF   TCSR = 0x01 << 19 //+ Sync Error Flag
+	WSF   TCSR = 0x01 << 20 //+ Word Start Flag
+	SR    TCSR = 0x01 << 24 //+ Software Reset
+	FR    TCSR = 0x01 << 25 //+ FIFO Reset
+	BCE   TCSR = 0x01 << 28 //+ Bit Clock Enable
+	DBGE  TCSR = 0x01 << 29 //+ Debug Enable
+	STOPE TCSR = 0x01 << 30 //+ Stop Enable
+	TE    TCSR = 0x01 << 31 //+ Transmitter Enable
 )
 
 const (
@@ -147,22 +111,14 @@ const (
 const (
 	DIV    TCR2 = 0xFF << 0  //+ Bit Clock Divide
 	BCD    TCR2 = 0x01 << 24 //+ Bit Clock Direction
-	BCD_0  TCR2 = 0x00 << 24 //  Bit clock is generated externally in Slave mode.
-	BCD_1  TCR2 = 0x01 << 24 //  Bit clock is generated internally in Master mode.
 	BCP    TCR2 = 0x01 << 25 //+ Bit Clock Polarity
-	BCP_0  TCR2 = 0x00 << 25 //  Bit clock is active high with drive outputs on rising edge and sample inputs on falling edge.
-	BCP_1  TCR2 = 0x01 << 25 //  Bit clock is active low with drive outputs on falling edge and sample inputs on rising edge.
 	MSEL   TCR2 = 0x03 << 26 //+ MCLK Select
 	MSEL_0 TCR2 = 0x00 << 26 //  Bus Clock selected.
 	MSEL_1 TCR2 = 0x01 << 26 //  Master Clock (MCLK) 1 option selected.
 	MSEL_2 TCR2 = 0x02 << 26 //  Master Clock (MCLK) 2 option selected.
 	MSEL_3 TCR2 = 0x03 << 26 //  Master Clock (MCLK) 3 option selected.
 	BCI    TCR2 = 0x01 << 28 //+ Bit Clock Input
-	BCI_0  TCR2 = 0x00 << 28 //  No effect.
-	BCI_1  TCR2 = 0x01 << 28 //  Internal logic is clocked as if bit clock was externally generated.
 	BCS    TCR2 = 0x01 << 29 //+ Bit Clock Swap
-	BCS_0  TCR2 = 0x00 << 29 //  Use the normal bit clock source.
-	BCS_1  TCR2 = 0x01 << 29 //  Swap the bit clock source.
 	SYNC   TCR2 = 0x03 << 30 //+ Synchronous Mode
 	SYNC_0 TCR2 = 0x00 << 30 //  Asynchronous mode.
 	SYNC_1 TCR2 = 0x01 << 30 //  Synchronous with receiver.
@@ -192,23 +148,11 @@ const (
 
 const (
 	FSD     TCR4 = 0x01 << 0  //+ Frame Sync Direction
-	FSD_0   TCR4 = 0x00 << 0  //  Frame sync is generated externally in Slave mode.
-	FSD_1   TCR4 = 0x01 << 0  //  Frame sync is generated internally in Master mode.
 	FSP     TCR4 = 0x01 << 1  //+ Frame Sync Polarity
-	FSP_0   TCR4 = 0x00 << 1  //  Frame sync is active high.
-	FSP_1   TCR4 = 0x01 << 1  //  Frame sync is active low.
 	ONDEM   TCR4 = 0x01 << 2  //+ On Demand Mode
-	ONDEM_0 TCR4 = 0x00 << 2  //  Internal frame sync is generated continuously.
-	ONDEM_1 TCR4 = 0x01 << 2  //  Internal frame sync is generated when the FIFO warning flag is clear.
 	FSE     TCR4 = 0x01 << 3  //+ Frame Sync Early
-	FSE_0   TCR4 = 0x00 << 3  //  Frame sync asserts with the first bit of the frame.
-	FSE_1   TCR4 = 0x01 << 3  //  Frame sync asserts one bit before the first bit of the frame.
 	MF      TCR4 = 0x01 << 4  //+ MSB First
-	MF_0    TCR4 = 0x00 << 4  //  LSB is transmitted first.
-	MF_1    TCR4 = 0x01 << 4  //  MSB is transmitted first.
 	CHMOD   TCR4 = 0x01 << 5  //+ Channel Mode
-	CHMOD_0 TCR4 = 0x00 << 5  //  TDM mode, transmit data pins are tri-stated when slots are masked or channels are disabled.
-	CHMOD_1 TCR4 = 0x01 << 5  //  Output mode, transmit data pins are never tri-stated and will output zero when slots are masked or channels are disabled.
 	SYWD    TCR4 = 0x1F << 8  //+ Sync Width
 	FRSZ    TCR4 = 0x1F << 16 //+ Frame size
 	FPACK   TCR4 = 0x03 << 24 //+ FIFO Packing Mode
@@ -221,8 +165,6 @@ const (
 	FCOMB_2 TCR4 = 0x02 << 26 //  FIFO combine mode enabled on FIFO writes (by software).
 	FCOMB_3 TCR4 = 0x03 << 26 //  FIFO combine mode enabled on FIFO reads (from transmit shift registers) and writes (by software).
 	FCONT   TCR4 = 0x01 << 28 //+ FIFO Continue on Error
-	FCONT_0 TCR4 = 0x00 << 28 //  On FIFO error, the SAI will continue from the start of the next frame after the FIFO error flag has been cleared.
-	FCONT_1 TCR4 = 0x01 << 28 //  On FIFO error, the SAI will continue from the same word that caused the FIFO error to set after the FIFO warning flag has been cleared.
 )
 
 const (
@@ -260,11 +202,9 @@ const (
 )
 
 const (
-	RFP   TFR = 0x3F << 0  //+ Read FIFO Pointer
-	WFP   TFR = 0x3F << 16 //+ Write FIFO Pointer
-	WCP   TFR = 0x01 << 31 //+ Write Channel Pointer
-	WCP_0 TFR = 0x00 << 31 //  No effect.
-	WCP_1 TFR = 0x01 << 31 //  FIFO combine is enabled for FIFO writes and this FIFO will be written on the next FIFO write.
+	RFP TFR = 0x3F << 0  //+ Read FIFO Pointer
+	WFP TFR = 0x3F << 16 //+ Write FIFO Pointer
+	WCP TFR = 0x01 << 31 //+ Write Channel Pointer
 )
 
 const (
@@ -284,60 +224,24 @@ const (
 )
 
 const (
-	FRDE    RCSR = 0x01 << 0  //+ FIFO Request DMA Enable
-	FRDE_0  RCSR = 0x00 << 0  //  Disables the DMA request.
-	FRDE_1  RCSR = 0x01 << 0  //  Enables the DMA request.
-	FWDE    RCSR = 0x01 << 1  //+ FIFO Warning DMA Enable
-	FWDE_0  RCSR = 0x00 << 1  //  Disables the DMA request.
-	FWDE_1  RCSR = 0x01 << 1  //  Enables the DMA request.
-	FRIE    RCSR = 0x01 << 8  //+ FIFO Request Interrupt Enable
-	FRIE_0  RCSR = 0x00 << 8  //  Disables the interrupt.
-	FRIE_1  RCSR = 0x01 << 8  //  Enables the interrupt.
-	FWIE    RCSR = 0x01 << 9  //+ FIFO Warning Interrupt Enable
-	FWIE_0  RCSR = 0x00 << 9  //  Disables the interrupt.
-	FWIE_1  RCSR = 0x01 << 9  //  Enables the interrupt.
-	FEIE    RCSR = 0x01 << 10 //+ FIFO Error Interrupt Enable
-	FEIE_0  RCSR = 0x00 << 10 //  Disables the interrupt.
-	FEIE_1  RCSR = 0x01 << 10 //  Enables the interrupt.
-	SEIE    RCSR = 0x01 << 11 //+ Sync Error Interrupt Enable
-	SEIE_0  RCSR = 0x00 << 11 //  Disables interrupt.
-	SEIE_1  RCSR = 0x01 << 11 //  Enables interrupt.
-	WSIE    RCSR = 0x01 << 12 //+ Word Start Interrupt Enable
-	WSIE_0  RCSR = 0x00 << 12 //  Disables interrupt.
-	WSIE_1  RCSR = 0x01 << 12 //  Enables interrupt.
-	FRF     RCSR = 0x01 << 16 //+ FIFO Request Flag
-	FRF_0   RCSR = 0x00 << 16 //  Receive FIFO watermark not reached.
-	FRF_1   RCSR = 0x01 << 16 //  Receive FIFO watermark has been reached.
-	FWF     RCSR = 0x01 << 17 //+ FIFO Warning Flag
-	FWF_0   RCSR = 0x00 << 17 //  No enabled receive FIFO is full.
-	FWF_1   RCSR = 0x01 << 17 //  Enabled receive FIFO is full.
-	FEF     RCSR = 0x01 << 18 //+ FIFO Error Flag
-	FEF_0   RCSR = 0x00 << 18 //  Receive overflow not detected.
-	FEF_1   RCSR = 0x01 << 18 //  Receive overflow detected.
-	SEF     RCSR = 0x01 << 19 //+ Sync Error Flag
-	SEF_0   RCSR = 0x00 << 19 //  Sync error not detected.
-	SEF_1   RCSR = 0x01 << 19 //  Frame sync error detected.
-	WSF     RCSR = 0x01 << 20 //+ Word Start Flag
-	WSF_0   RCSR = 0x00 << 20 //  Start of word not detected.
-	WSF_1   RCSR = 0x01 << 20 //  Start of word detected.
-	SR      RCSR = 0x01 << 24 //+ Software Reset
-	SR_0    RCSR = 0x00 << 24 //  No effect.
-	SR_1    RCSR = 0x01 << 24 //  Software reset.
-	FR      RCSR = 0x01 << 25 //+ FIFO Reset
-	FR_0    RCSR = 0x00 << 25 //  No effect.
-	FR_1    RCSR = 0x01 << 25 //  FIFO reset.
-	BCE     RCSR = 0x01 << 28 //+ Bit Clock Enable
-	BCE_0   RCSR = 0x00 << 28 //  Receive bit clock is disabled.
-	BCE_1   RCSR = 0x01 << 28 //  Receive bit clock is enabled.
-	DBGE    RCSR = 0x01 << 29 //+ Debug Enable
-	DBGE_0  RCSR = 0x00 << 29 //  Receiver is disabled in Debug mode, after completing the current frame.
-	DBGE_1  RCSR = 0x01 << 29 //  Receiver is enabled in Debug mode.
-	STOPE   RCSR = 0x01 << 30 //+ Stop Enable
-	STOPE_0 RCSR = 0x00 << 30 //  Receiver disabled in Stop mode.
-	STOPE_1 RCSR = 0x01 << 30 //  Receiver enabled in Stop mode.
-	RE      RCSR = 0x01 << 31 //+ Receiver Enable
-	RE_0    RCSR = 0x00 << 31 //  Receiver is disabled.
-	RE_1    RCSR = 0x01 << 31 //  Receiver is enabled, or receiver has been disabled and has not yet reached end of frame.
+	FRDE  RCSR = 0x01 << 0  //+ FIFO Request DMA Enable
+	FWDE  RCSR = 0x01 << 1  //+ FIFO Warning DMA Enable
+	FRIE  RCSR = 0x01 << 8  //+ FIFO Request Interrupt Enable
+	FWIE  RCSR = 0x01 << 9  //+ FIFO Warning Interrupt Enable
+	FEIE  RCSR = 0x01 << 10 //+ FIFO Error Interrupt Enable
+	SEIE  RCSR = 0x01 << 11 //+ Sync Error Interrupt Enable
+	WSIE  RCSR = 0x01 << 12 //+ Word Start Interrupt Enable
+	FRF   RCSR = 0x01 << 16 //+ FIFO Request Flag
+	FWF   RCSR = 0x01 << 17 //+ FIFO Warning Flag
+	FEF   RCSR = 0x01 << 18 //+ FIFO Error Flag
+	SEF   RCSR = 0x01 << 19 //+ Sync Error Flag
+	WSF   RCSR = 0x01 << 20 //+ Word Start Flag
+	SR    RCSR = 0x01 << 24 //+ Software Reset
+	FR    RCSR = 0x01 << 25 //+ FIFO Reset
+	BCE   RCSR = 0x01 << 28 //+ Bit Clock Enable
+	DBGE  RCSR = 0x01 << 29 //+ Debug Enable
+	STOPE RCSR = 0x01 << 30 //+ Stop Enable
+	RE    RCSR = 0x01 << 31 //+ Receiver Enable
 )
 
 const (
@@ -372,22 +276,14 @@ const (
 const (
 	DIV    RCR2 = 0xFF << 0  //+ Bit Clock Divide
 	BCD    RCR2 = 0x01 << 24 //+ Bit Clock Direction
-	BCD_0  RCR2 = 0x00 << 24 //  Bit clock is generated externally in Slave mode.
-	BCD_1  RCR2 = 0x01 << 24 //  Bit clock is generated internally in Master mode.
 	BCP    RCR2 = 0x01 << 25 //+ Bit Clock Polarity
-	BCP_0  RCR2 = 0x00 << 25 //  Bit Clock is active high with drive outputs on rising edge and sample inputs on falling edge.
-	BCP_1  RCR2 = 0x01 << 25 //  Bit Clock is active low with drive outputs on falling edge and sample inputs on rising edge.
 	MSEL   RCR2 = 0x03 << 26 //+ MCLK Select
 	MSEL_0 RCR2 = 0x00 << 26 //  Bus Clock selected.
 	MSEL_1 RCR2 = 0x01 << 26 //  Master Clock (MCLK) 1 option selected.
 	MSEL_2 RCR2 = 0x02 << 26 //  Master Clock (MCLK) 2 option selected.
 	MSEL_3 RCR2 = 0x03 << 26 //  Master Clock (MCLK) 3 option selected.
 	BCI    RCR2 = 0x01 << 28 //+ Bit Clock Input
-	BCI_0  RCR2 = 0x00 << 28 //  No effect.
-	BCI_1  RCR2 = 0x01 << 28 //  Internal logic is clocked as if bit clock was externally generated.
 	BCS    RCR2 = 0x01 << 29 //+ Bit Clock Swap
-	BCS_0  RCR2 = 0x00 << 29 //  Use the normal bit clock source.
-	BCS_1  RCR2 = 0x01 << 29 //  Swap the bit clock source.
 	SYNC   RCR2 = 0x03 << 30 //+ Synchronous Mode
 	SYNC_0 RCR2 = 0x00 << 30 //  Asynchronous mode.
 	SYNC_1 RCR2 = 0x01 << 30 //  Synchronous with transmitter.
@@ -417,20 +313,10 @@ const (
 
 const (
 	FSD     RCR4 = 0x01 << 0  //+ Frame Sync Direction
-	FSD_0   RCR4 = 0x00 << 0  //  Frame Sync is generated externally in Slave mode.
-	FSD_1   RCR4 = 0x01 << 0  //  Frame Sync is generated internally in Master mode.
 	FSP     RCR4 = 0x01 << 1  //+ Frame Sync Polarity
-	FSP_0   RCR4 = 0x00 << 1  //  Frame sync is active high.
-	FSP_1   RCR4 = 0x01 << 1  //  Frame sync is active low.
 	ONDEM   RCR4 = 0x01 << 2  //+ On Demand Mode
-	ONDEM_0 RCR4 = 0x00 << 2  //  Internal frame sync is generated continuously.
-	ONDEM_1 RCR4 = 0x01 << 2  //  Internal frame sync is generated when the FIFO warning flag is clear.
 	FSE     RCR4 = 0x01 << 3  //+ Frame Sync Early
-	FSE_0   RCR4 = 0x00 << 3  //  Frame sync asserts with the first bit of the frame.
-	FSE_1   RCR4 = 0x01 << 3  //  Frame sync asserts one bit before the first bit of the frame.
 	MF      RCR4 = 0x01 << 4  //+ MSB First
-	MF_0    RCR4 = 0x00 << 4  //  LSB is received first.
-	MF_1    RCR4 = 0x01 << 4  //  MSB is received first.
 	SYWD    RCR4 = 0x1F << 8  //+ Sync Width
 	FRSZ    RCR4 = 0x1F << 16 //+ Frame Size
 	FPACK   RCR4 = 0x03 << 24 //+ FIFO Packing Mode
@@ -443,8 +329,6 @@ const (
 	FCOMB_2 RCR4 = 0x02 << 26 //  FIFO combine mode enabled on FIFO reads (by software).
 	FCOMB_3 RCR4 = 0x03 << 26 //  FIFO combine mode enabled on FIFO writes (from receive shift registers) and reads (by software).
 	FCONT   RCR4 = 0x01 << 28 //+ FIFO Continue on Error
-	FCONT_0 RCR4 = 0x00 << 28 //  On FIFO error, the SAI will continue from the start of the next frame after the FIFO error flag has been cleared.
-	FCONT_1 RCR4 = 0x01 << 28 //  On FIFO error, the SAI will continue from the same word that caused the FIFO error to set after the FIFO warning flag has been cleared.
 )
 
 const (
@@ -481,11 +365,9 @@ const (
 )
 
 const (
-	RFP   RFR = 0x3F << 0  //+ Read FIFO Pointer
-	RCP   RFR = 0x01 << 15 //+ Receive Channel Pointer
-	RCP_0 RFR = 0x00 << 15 //  No effect.
-	RCP_1 RFR = 0x01 << 15 //  FIFO combine is enabled for FIFO reads and this FIFO will be read on the next FIFO read.
-	WFP   RFR = 0x3F << 16 //+ Write FIFO Pointer
+	RFP RFR = 0x3F << 0  //+ Read FIFO Pointer
+	RCP RFR = 0x01 << 15 //+ Receive Channel Pointer
+	WFP RFR = 0x3F << 16 //+ Write FIFO Pointer
 )
 
 const (

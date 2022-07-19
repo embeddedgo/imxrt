@@ -30,14 +30,8 @@ const (
 	mask_wdog_rst_5   SCR = 0x05 << 7  //  wdog_rst_b is masked
 	mask_wdog_rst_10  SCR = 0x0A << 7  //  wdog_rst_b is not masked (default)
 	core0_rst         SCR = 0x01 << 13 //+ Software reset for core0 only
-	core0_rst_0       SCR = 0x00 << 13 //  do not assert core0 reset
-	core0_rst_1       SCR = 0x01 << 13 //  assert core0 reset
 	core0_dbg_rst     SCR = 0x01 << 17 //+ Software reset for core0 debug only
-	core0_dbg_rst_0   SCR = 0x00 << 17 //  do not assert core0 debug reset
-	core0_dbg_rst_1   SCR = 0x01 << 17 //  assert core0 debug reset
 	dbg_rst_msk_pg    SCR = 0x01 << 25 //+ Do not assert debug resets after power gating event of core
-	dbg_rst_msk_pg_0  SCR = 0x00 << 25 //  do not mask core debug resets (debug resets will be asserted after power gating event)
-	dbg_rst_msk_pg_1  SCR = 0x01 << 25 //  mask core debug resets (debug resets won't be asserted after power gating event)
 	mask_wdog3_rst    SCR = 0x0F << 28 //+ Mask wdog3_rst_b source
 	mask_wdog3_rst_5  SCR = 0x05 << 28 //  wdog3_rst_b is masked
 	mask_wdog3_rst_10 SCR = 0x0A << 28 //  wdog3_rst_b is not masked
@@ -66,33 +60,15 @@ const (
 )
 
 const (
-	ipp_reset_b          SRSR = 0x01 << 0 //+ Indicates whether reset was the result of ipp_reset_b pin (Power-up sequence)
-	ipp_reset_b_0        SRSR = 0x00 << 0 //  Reset is not a result of ipp_reset_b pin.
-	ipp_reset_b_1        SRSR = 0x01 << 0 //  Reset is a result of ipp_reset_b pin.
-	lockup_sysresetreq   SRSR = 0x01 << 1 //+ Indicates a reset has been caused by CPU lockup or software setting of SYSRESETREQ bit in Application Interrupt and Reset Control Register of the ARM core
-	lockup_sysresetreq_0 SRSR = 0x00 << 1 //  Reset is not a result of the mentioned case.
-	lockup_sysresetreq_1 SRSR = 0x01 << 1 //  Reset is a result of the mentioned case.
-	csu_reset_b          SRSR = 0x01 << 2 //+ Indicates whether the reset was the result of the csu_reset_b input.
-	csu_reset_b_0        SRSR = 0x00 << 2 //  Reset is not a result of the csu_reset_b event.
-	csu_reset_b_1        SRSR = 0x01 << 2 //  Reset is a result of the csu_reset_b event.
-	ipp_user_reset_b     SRSR = 0x01 << 3 //+ Indicates whether the reset was the result of the ipp_user_reset_b qualified reset.
-	ipp_user_reset_b_0   SRSR = 0x00 << 3 //  Reset is not a result of the ipp_user_reset_b qualified as COLD reset event.
-	ipp_user_reset_b_1   SRSR = 0x01 << 3 //  Reset is a result of the ipp_user_reset_b qualified as COLD reset event.
-	wdog_rst_b           SRSR = 0x01 << 4 //+ IC Watchdog Time-out reset
-	wdog_rst_b_0         SRSR = 0x00 << 4 //  Reset is not a result of the watchdog time-out event.
-	wdog_rst_b_1         SRSR = 0x01 << 4 //  Reset is a result of the watchdog time-out event.
-	jtag_rst_b           SRSR = 0x01 << 5 //+ HIGH - Z JTAG reset. Indicates whether the reset was the result of HIGH-Z reset from JTAG.
-	jtag_rst_b_0         SRSR = 0x00 << 5 //  Reset is not a result of HIGH-Z reset from JTAG.
-	jtag_rst_b_1         SRSR = 0x01 << 5 //  Reset is a result of HIGH-Z reset from JTAG.
-	jtag_sw_rst          SRSR = 0x01 << 6 //+ JTAG software reset. Indicates whether the reset was the result of software reset from JTAG.
-	jtag_sw_rst_0        SRSR = 0x00 << 6 //  Reset is not a result of software reset from JTAG.
-	jtag_sw_rst_1        SRSR = 0x01 << 6 //  Reset is a result of software reset from JTAG.
-	wdog3_rst_b          SRSR = 0x01 << 7 //+ IC Watchdog3 Time-out reset
-	wdog3_rst_b_0        SRSR = 0x00 << 7 //  Reset is not a result of the watchdog3 time-out event.
-	wdog3_rst_b_1        SRSR = 0x01 << 7 //  Reset is a result of the watchdog3 time-out event.
-	tempsense_rst_b      SRSR = 0x01 << 8 //+ Temper Sensor software reset
-	tempsense_rst_b_0    SRSR = 0x00 << 8 //  Reset is not a result of software reset from Temperature Sensor.
-	tempsense_rst_b_1    SRSR = 0x01 << 8 //  Reset is a result of software reset from Temperature Sensor.
+	ipp_reset_b        SRSR = 0x01 << 0 //+ Indicates whether reset was the result of ipp_reset_b pin (Power-up sequence)
+	lockup_sysresetreq SRSR = 0x01 << 1 //+ Indicates a reset has been caused by CPU lockup or software setting of SYSRESETREQ bit in Application Interrupt and Reset Control Register of the ARM core
+	csu_reset_b        SRSR = 0x01 << 2 //+ Indicates whether the reset was the result of the csu_reset_b input.
+	ipp_user_reset_b   SRSR = 0x01 << 3 //+ Indicates whether the reset was the result of the ipp_user_reset_b qualified reset.
+	wdog_rst_b         SRSR = 0x01 << 4 //+ IC Watchdog Time-out reset
+	jtag_rst_b         SRSR = 0x01 << 5 //+ HIGH - Z JTAG reset. Indicates whether the reset was the result of HIGH-Z reset from JTAG.
+	jtag_sw_rst        SRSR = 0x01 << 6 //+ JTAG software reset. Indicates whether the reset was the result of software reset from JTAG.
+	wdog3_rst_b        SRSR = 0x01 << 7 //+ IC Watchdog3 Time-out reset
+	tempsense_rst_b    SRSR = 0x01 << 8 //+ Temper Sensor software reset
 )
 
 const (

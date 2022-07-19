@@ -1299,72 +1299,32 @@
 package can3
 
 const (
-	MAXMB     MCR = 0x7F << 0  //+ Number Of The Last Message Buffer
-	IDAM      MCR = 0x03 << 8  //+ ID Acceptance Mode
-	IDAM_0    MCR = 0x00 << 8  //  Format A: One full ID (standard and extended) per ID Filter Table element.
-	IDAM_1    MCR = 0x01 << 8  //  Format B: Two full standard IDs or two partial 14-bit (standard and extended) IDs per ID Filter Table element.
-	IDAM_2    MCR = 0x02 << 8  //  Format C: Four partial 8-bit Standard IDs per ID Filter Table element.
-	IDAM_3    MCR = 0x03 << 8  //  Format D: All frames rejected.
-	FDEN      MCR = 0x01 << 11 //+ CAN FD operation enable
-	FDEN_0    MCR = 0x00 << 11 //  CAN FD is disabled. FlexCAN is able to receive and transmit messages in CAN 2.0 format.
-	FDEN_1    MCR = 0x01 << 11 //  CAN FD is enabled. FlexCAN is able to receive and transmit messages in both CAN FD and CAN 2.0 formats.
-	AEN       MCR = 0x01 << 12 //+ Abort Enable
-	AEN_0     MCR = 0x00 << 12 //  Abort disabled.
-	AEN_1     MCR = 0x01 << 12 //  Abort enabled.
-	LPRIOEN   MCR = 0x01 << 13 //+ Local Priority Enable
-	LPRIOEN_0 MCR = 0x00 << 13 //  Local Priority disabled.
-	LPRIOEN_1 MCR = 0x01 << 13 //  Local Priority enabled.
-	DMA       MCR = 0x01 << 15 //+ DMA Enable
-	DMA_0     MCR = 0x00 << 15 //  DMA feature for Legacy RX FIFO or Enhanced Rx FIFO are disabled.
-	DMA_1     MCR = 0x01 << 15 //  DMA feature for Legacy RX FIFO or Enhanced Rx FIFO are enabled.
-	IRMQ      MCR = 0x01 << 16 //+ Individual Rx Masking And Queue Enable
-	IRMQ_0    MCR = 0x00 << 16 //  Individual Rx masking and queue feature are disabled. For backward compatibility with legacy applications, the reading of C/S word locks the MB even if it is EMPTY.
-	IRMQ_1    MCR = 0x01 << 16 //  Individual Rx masking and queue feature are enabled.
-	SRXDIS    MCR = 0x01 << 17 //+ Self Reception Disable
-	SRXDIS_0  MCR = 0x00 << 17 //  Self reception enabled.
-	SRXDIS_1  MCR = 0x01 << 17 //  Self reception disabled.
-	DOZE      MCR = 0x01 << 18 //+ Doze Mode Enable
-	DOZE_0    MCR = 0x00 << 18 //  FlexCAN is not enabled to enter low-power mode when Doze mode is requested.
-	DOZE_1    MCR = 0x01 << 18 //  FlexCAN is enabled to enter low-power mode when Doze mode is requested.
-	WAKSRC    MCR = 0x01 << 19 //+ Wake Up Source
-	WAKSRC_0  MCR = 0x00 << 19 //  FlexCAN uses the unfiltered Rx input to detect recessive to dominant edges on the CAN bus.
-	WAKSRC_1  MCR = 0x01 << 19 //  FlexCAN uses the filtered Rx input to detect recessive to dominant edges on the CAN bus.
-	LPMACK    MCR = 0x01 << 20 //+ Low-Power Mode Acknowledge
-	LPMACK_0  MCR = 0x00 << 20 //  FlexCAN is not in a low-power mode.
-	LPMACK_1  MCR = 0x01 << 20 //  FlexCAN is in a low-power mode.
-	WRNEN     MCR = 0x01 << 21 //+ Warning Interrupt Enable
-	WRNEN_0   MCR = 0x00 << 21 //  TWRNINT and RWRNINT bits are zero, independent of the values in the error counters.
-	WRNEN_1   MCR = 0x01 << 21 //  TWRNINT and RWRNINT bits are set when the respective error counter transitions from less than 96 to greater than or equal to 96.
-	SLFWAK    MCR = 0x01 << 22 //+ Self Wake Up
-	SLFWAK_0  MCR = 0x00 << 22 //  FlexCAN Self Wake Up feature is disabled.
-	SLFWAK_1  MCR = 0x01 << 22 //  FlexCAN Self Wake Up feature is enabled.
-	SUPV      MCR = 0x01 << 23 //+ Supervisor Mode
-	SUPV_0    MCR = 0x00 << 23 //  FlexCAN is in User mode. Affected registers allow both Supervisor and Unrestricted accesses.
-	SUPV_1    MCR = 0x01 << 23 //  FlexCAN is in Supervisor mode. Affected registers allow only Supervisor access. Unrestricted access behaves as though the access was done to an unimplemented register location.
-	FRZACK    MCR = 0x01 << 24 //+ Freeze Mode Acknowledge
-	FRZACK_0  MCR = 0x00 << 24 //  FlexCAN not in Freeze mode, prescaler running.
-	FRZACK_1  MCR = 0x01 << 24 //  FlexCAN in Freeze mode, prescaler stopped.
-	SOFTRST   MCR = 0x01 << 25 //+ Soft Reset
-	SOFTRST_0 MCR = 0x00 << 25 //  No reset request.
-	SOFTRST_1 MCR = 0x01 << 25 //  Resets the registers affected by soft reset.
-	WAKMSK    MCR = 0x01 << 26 //+ Wake Up Interrupt Mask
-	WAKMSK_0  MCR = 0x00 << 26 //  Wake Up Interrupt is disabled.
-	WAKMSK_1  MCR = 0x01 << 26 //  Wake Up Interrupt is enabled.
-	NOTRDY    MCR = 0x01 << 27 //+ FlexCAN Not Ready
-	NOTRDY_0  MCR = 0x00 << 27 //  FlexCAN module is either in Normal mode, Listen-Only mode or Loop-Back mode.
-	NOTRDY_1  MCR = 0x01 << 27 //  FlexCAN module is either in Disable mode, Doze mode , Stop mode or Freeze mode.
-	HALT      MCR = 0x01 << 28 //+ Halt FlexCAN
-	HALT_0    MCR = 0x00 << 28 //  No Freeze mode request.
-	HALT_1    MCR = 0x01 << 28 //  Enters Freeze mode if the FRZ bit is asserted.
-	RFEN      MCR = 0x01 << 29 //+ Legacy Rx FIFO Enable
-	RFEN_0    MCR = 0x00 << 29 //  Legacy Rx FIFO not enabled.
-	RFEN_1    MCR = 0x01 << 29 //  Legacy Rx FIFO enabled.
-	FRZ       MCR = 0x01 << 30 //+ Freeze Enable
-	FRZ_0     MCR = 0x00 << 30 //  Not enabled to enter Freeze mode.
-	FRZ_1     MCR = 0x01 << 30 //  Enabled to enter Freeze mode.
-	MDIS      MCR = 0x01 << 31 //+ Module Disable
-	MDIS_0    MCR = 0x00 << 31 //  Enable the FlexCAN module.
-	MDIS_1    MCR = 0x01 << 31 //  Disable the FlexCAN module.
+	MAXMB   MCR = 0x7F << 0  //+ Number Of The Last Message Buffer
+	IDAM    MCR = 0x03 << 8  //+ ID Acceptance Mode
+	IDAM_0  MCR = 0x00 << 8  //  Format A: One full ID (standard and extended) per ID Filter Table element.
+	IDAM_1  MCR = 0x01 << 8  //  Format B: Two full standard IDs or two partial 14-bit (standard and extended) IDs per ID Filter Table element.
+	IDAM_2  MCR = 0x02 << 8  //  Format C: Four partial 8-bit Standard IDs per ID Filter Table element.
+	IDAM_3  MCR = 0x03 << 8  //  Format D: All frames rejected.
+	FDEN    MCR = 0x01 << 11 //+ CAN FD operation enable
+	AEN     MCR = 0x01 << 12 //+ Abort Enable
+	LPRIOEN MCR = 0x01 << 13 //+ Local Priority Enable
+	DMA     MCR = 0x01 << 15 //+ DMA Enable
+	IRMQ    MCR = 0x01 << 16 //+ Individual Rx Masking And Queue Enable
+	SRXDIS  MCR = 0x01 << 17 //+ Self Reception Disable
+	DOZE    MCR = 0x01 << 18 //+ Doze Mode Enable
+	WAKSRC  MCR = 0x01 << 19 //+ Wake Up Source
+	LPMACK  MCR = 0x01 << 20 //+ Low-Power Mode Acknowledge
+	WRNEN   MCR = 0x01 << 21 //+ Warning Interrupt Enable
+	SLFWAK  MCR = 0x01 << 22 //+ Self Wake Up
+	SUPV    MCR = 0x01 << 23 //+ Supervisor Mode
+	FRZACK  MCR = 0x01 << 24 //+ Freeze Mode Acknowledge
+	SOFTRST MCR = 0x01 << 25 //+ Soft Reset
+	WAKMSK  MCR = 0x01 << 26 //+ Wake Up Interrupt Mask
+	NOTRDY  MCR = 0x01 << 27 //+ FlexCAN Not Ready
+	HALT    MCR = 0x01 << 28 //+ Halt FlexCAN
+	RFEN    MCR = 0x01 << 29 //+ Legacy Rx FIFO Enable
+	FRZ     MCR = 0x01 << 30 //+ Freeze Enable
+	MDIS    MCR = 0x01 << 31 //+ Module Disable
 )
 
 const (
@@ -1393,44 +1353,22 @@ const (
 )
 
 const (
-	PROPSEG   CTRL1 = 0x07 << 0  //+ Propagation Segment
-	LOM       CTRL1 = 0x01 << 3  //+ Listen-Only Mode
-	LOM_0     CTRL1 = 0x00 << 3  //  Listen-Only mode is deactivated.
-	LOM_1     CTRL1 = 0x01 << 3  //  FlexCAN module operates in Listen-Only mode.
-	LBUF      CTRL1 = 0x01 << 4  //+ Lowest Buffer Transmitted First
-	LBUF_0    CTRL1 = 0x00 << 4  //  Buffer with highest priority is transmitted first.
-	LBUF_1    CTRL1 = 0x01 << 4  //  Lowest number buffer is transmitted first.
-	TSYN      CTRL1 = 0x01 << 5  //+ Timer Sync
-	TSYN_0    CTRL1 = 0x00 << 5  //  Timer Sync feature disabled
-	TSYN_1    CTRL1 = 0x01 << 5  //  Timer Sync feature enabled
-	BOFFREC   CTRL1 = 0x01 << 6  //+ Bus Off Recovery
-	BOFFREC_0 CTRL1 = 0x00 << 6  //  Automatic recovering from Bus Off state enabled.
-	BOFFREC_1 CTRL1 = 0x01 << 6  //  Automatic recovering from Bus Off state disabled.
-	SMP       CTRL1 = 0x01 << 7  //+ CAN Bit Sampling
-	SMP_0     CTRL1 = 0x00 << 7  //  Just one sample is used to determine the bit value.
-	SMP_1     CTRL1 = 0x01 << 7  //  Three samples are used to determine the value of the received bit: the regular one (sample point) and 2 preceding samples; a majority rule is used.
-	RWRNMSK   CTRL1 = 0x01 << 10 //+ Rx Warning Interrupt Mask
-	RWRNMSK_0 CTRL1 = 0x00 << 10 //  Rx Warning Interrupt disabled.
-	RWRNMSK_1 CTRL1 = 0x01 << 10 //  Rx Warning Interrupt enabled.
-	TWRNMSK   CTRL1 = 0x01 << 11 //+ Tx Warning Interrupt Mask
-	TWRNMSK_0 CTRL1 = 0x00 << 11 //  Tx Warning Interrupt disabled.
-	TWRNMSK_1 CTRL1 = 0x01 << 11 //  Tx Warning Interrupt enabled.
-	LPB       CTRL1 = 0x01 << 12 //+ Loop Back Mode
-	LPB_0     CTRL1 = 0x00 << 12 //  Loop Back disabled.
-	LPB_1     CTRL1 = 0x01 << 12 //  Loop Back enabled.
-	CLKSRC    CTRL1 = 0x01 << 13 //+ CAN Engine Clock Source
-	CLKSRC_0  CTRL1 = 0x00 << 13 //  The CAN engine clock source is the oscillator clock. Under this condition, the oscillator clock frequency must be lower than the bus clock.
-	CLKSRC_1  CTRL1 = 0x01 << 13 //  The CAN engine clock source is the peripheral clock.
-	ERRMSK    CTRL1 = 0x01 << 14 //+ Error Interrupt Mask
-	ERRMSK_0  CTRL1 = 0x00 << 14 //  Error interrupt disabled.
-	ERRMSK_1  CTRL1 = 0x01 << 14 //  Error interrupt enabled.
-	BOFFMSK   CTRL1 = 0x01 << 15 //+ Bus Off Interrupt Mask
-	BOFFMSK_0 CTRL1 = 0x00 << 15 //  Bus Off interrupt disabled.
-	BOFFMSK_1 CTRL1 = 0x01 << 15 //  Bus Off interrupt enabled.
-	PSEG2     CTRL1 = 0x07 << 16 //+ Phase Segment 2
-	PSEG1     CTRL1 = 0x07 << 19 //+ Phase Segment 1
-	RJW       CTRL1 = 0x03 << 22 //+ Resync Jump Width
-	PRESDIV   CTRL1 = 0xFF << 24 //+ Prescaler Division Factor
+	PROPSEG CTRL1 = 0x07 << 0  //+ Propagation Segment
+	LOM     CTRL1 = 0x01 << 3  //+ Listen-Only Mode
+	LBUF    CTRL1 = 0x01 << 4  //+ Lowest Buffer Transmitted First
+	TSYN    CTRL1 = 0x01 << 5  //+ Timer Sync
+	BOFFREC CTRL1 = 0x01 << 6  //+ Bus Off Recovery
+	SMP     CTRL1 = 0x01 << 7  //+ CAN Bit Sampling
+	RWRNMSK CTRL1 = 0x01 << 10 //+ Rx Warning Interrupt Mask
+	TWRNMSK CTRL1 = 0x01 << 11 //+ Tx Warning Interrupt Mask
+	LPB     CTRL1 = 0x01 << 12 //+ Loop Back Mode
+	CLKSRC  CTRL1 = 0x01 << 13 //+ CAN Engine Clock Source
+	ERRMSK  CTRL1 = 0x01 << 14 //+ Error Interrupt Mask
+	BOFFMSK CTRL1 = 0x01 << 15 //+ Bus Off Interrupt Mask
+	PSEG2   CTRL1 = 0x07 << 16 //+ Phase Segment 2
+	PSEG1   CTRL1 = 0x07 << 19 //+ Phase Segment 1
+	RJW     CTRL1 = 0x03 << 22 //+ Resync Jump Width
+	PRESDIV CTRL1 = 0xFF << 24 //+ Prescaler Division Factor
 )
 
 const (
@@ -1499,85 +1437,35 @@ const (
 )
 
 const (
-	WAKINT         ESR1 = 0x01 << 0  //+ Wake-Up Interrupt
-	WAKINT_0       ESR1 = 0x00 << 0  //  No such occurrence.
-	WAKINT_1       ESR1 = 0x01 << 0  //  Indicates a recessive to dominant transition was received on the CAN bus.
-	ERRINT         ESR1 = 0x01 << 1  //+ Error Interrupt
-	ERRINT_0       ESR1 = 0x00 << 1  //  No such occurrence.
-	ERRINT_1       ESR1 = 0x01 << 1  //  Indicates setting of any Error Bit in the Error and Status Register.
-	BOFFINT        ESR1 = 0x01 << 2  //+ Bus Off Interrupt
-	BOFFINT_0      ESR1 = 0x00 << 2  //  No such occurrence.
-	BOFFINT_1      ESR1 = 0x01 << 2  //  FlexCAN module entered Bus Off state.
-	RX             ESR1 = 0x01 << 3  //+ FlexCAN In Reception
-	RX_0           ESR1 = 0x00 << 3  //  FlexCAN is not receiving a message.
-	RX_1           ESR1 = 0x01 << 3  //  FlexCAN is receiving a message.
-	FLTCONF        ESR1 = 0x03 << 4  //+ Fault Confinement State
-	FLTCONF_0      ESR1 = 0x00 << 4  //  Error Active
-	FLTCONF_1      ESR1 = 0x01 << 4  //  Error Passive
-	FLTCONF_2      ESR1 = 0x02 << 4  //  Bus Off
-	TX             ESR1 = 0x01 << 6  //+ FlexCAN In Transmission
-	TX_0           ESR1 = 0x00 << 6  //  FlexCAN is not transmitting a message.
-	TX_1           ESR1 = 0x01 << 6  //  FlexCAN is transmitting a message.
-	IDLE           ESR1 = 0x01 << 7  //+ IDLE
-	IDLE_0         ESR1 = 0x00 << 7  //  No such occurrence.
-	IDLE_1         ESR1 = 0x01 << 7  //  CAN bus is now IDLE.
-	RXWRN          ESR1 = 0x01 << 8  //+ Rx Error Warning
-	RXWRN_0        ESR1 = 0x00 << 8  //  No such occurrence.
-	RXWRN_1        ESR1 = 0x01 << 8  //  RXERRCNT is greater than or equal to 96.
-	TXWRN          ESR1 = 0x01 << 9  //+ TX Error Warning
-	TXWRN_0        ESR1 = 0x00 << 9  //  No such occurrence.
-	TXWRN_1        ESR1 = 0x01 << 9  //  TXERRCNT is greater than or equal to 96.
-	STFERR         ESR1 = 0x01 << 10 //+ Stuffing Error
-	STFERR_0       ESR1 = 0x00 << 10 //  No such occurrence.
-	STFERR_1       ESR1 = 0x01 << 10 //  A Stuffing Error occurred since last read of this register.
-	FRMERR         ESR1 = 0x01 << 11 //+ Form Error
-	FRMERR_0       ESR1 = 0x00 << 11 //  No such occurrence.
-	FRMERR_1       ESR1 = 0x01 << 11 //  A Form Error occurred since last read of this register.
-	CRCERR         ESR1 = 0x01 << 12 //+ Cyclic Redundancy Check Error
-	CRCERR_0       ESR1 = 0x00 << 12 //  No such occurrence.
-	CRCERR_1       ESR1 = 0x01 << 12 //  A CRC error occurred since last read of this register.
-	ACKERR         ESR1 = 0x01 << 13 //+ Acknowledge Error
-	ACKERR_0       ESR1 = 0x00 << 13 //  No such occurrence.
-	ACKERR_1       ESR1 = 0x01 << 13 //  An ACK error occurred since last read of this register.
-	BIT0ERR        ESR1 = 0x01 << 14 //+ Bit0 Error
-	BIT0ERR_0      ESR1 = 0x00 << 14 //  No such occurrence.
-	BIT0ERR_1      ESR1 = 0x01 << 14 //  At least one bit sent as dominant is received as recessive.
-	BIT1ERR        ESR1 = 0x01 << 15 //+ Bit1 Error
-	BIT1ERR_0      ESR1 = 0x00 << 15 //  No such occurrence.
-	BIT1ERR_1      ESR1 = 0x01 << 15 //  At least one bit sent as recessive is received as dominant.
-	RWRNINT        ESR1 = 0x01 << 16 //+ Rx Warning Interrupt Flag
-	RWRNINT_0      ESR1 = 0x00 << 16 //  No such occurrence.
-	RWRNINT_1      ESR1 = 0x01 << 16 //  The Rx error counter transitioned from less than 96 to greater than or equal to 96.
-	TWRNINT        ESR1 = 0x01 << 17 //+ Tx Warning Interrupt Flag
-	TWRNINT_0      ESR1 = 0x00 << 17 //  No such occurrence.
-	TWRNINT_1      ESR1 = 0x01 << 17 //  The Tx error counter transitioned from less than 96 to greater than or equal to 96.
-	SYNCH          ESR1 = 0x01 << 18 //+ CAN Synchronization Status
-	SYNCH_0        ESR1 = 0x00 << 18 //  FlexCAN is not synchronized to the CAN bus.
-	SYNCH_1        ESR1 = 0x01 << 18 //  FlexCAN is synchronized to the CAN bus.
-	BOFFDONEINT    ESR1 = 0x01 << 19 //+ Bus Off Done Interrupt
-	BOFFDONEINT_0  ESR1 = 0x00 << 19 //  No such occurrence.
-	BOFFDONEINT_1  ESR1 = 0x01 << 19 //  FlexCAN module has completed Bus Off process.
-	ERRINT_FAST    ESR1 = 0x01 << 20 //+ Error Interrupt for errors detected in the Data Phase of CAN FD frames with the BRS bit set
-	ERRINT_FAST_0  ESR1 = 0x00 << 20 //  No such occurrence.
-	ERRINT_FAST_1  ESR1 = 0x01 << 20 //  Indicates setting of any Error Bit detected in the Data Phase of CAN FD frames with the BRS bit set.
-	ERROVR         ESR1 = 0x01 << 21 //+ Error Overrun bit
-	ERROVR_0       ESR1 = 0x00 << 21 //  Overrun has not occurred.
-	ERROVR_1       ESR1 = 0x01 << 21 //  Overrun has occurred.
-	STFERR_FAST    ESR1 = 0x01 << 26 //+ Stuffing Error in the Data Phase of CAN FD frames with the BRS bit set
-	STFERR_FAST_0  ESR1 = 0x00 << 26 //  No such occurrence.
-	STFERR_FAST_1  ESR1 = 0x01 << 26 //  A Stuffing Error occurred since last read of this register.
-	FRMERR_FAST    ESR1 = 0x01 << 27 //+ Form Error in the Data Phase of CAN FD frames with the BRS bit set
-	FRMERR_FAST_0  ESR1 = 0x00 << 27 //  No such occurrence.
-	FRMERR_FAST_1  ESR1 = 0x01 << 27 //  A Form Error occurred since last read of this register.
-	CRCERR_FAST    ESR1 = 0x01 << 28 //+ Cyclic Redundancy Check Error in the CRC field of CAN FD frames with the BRS bit set
-	CRCERR_FAST_0  ESR1 = 0x00 << 28 //  No such occurrence.
-	CRCERR_FAST_1  ESR1 = 0x01 << 28 //  A CRC error occurred since last read of this register.
-	BIT0ERR_FAST   ESR1 = 0x01 << 30 //+ Bit0 Error in the Data Phase of CAN FD frames with the BRS bit set
-	BIT0ERR_FAST_0 ESR1 = 0x00 << 30 //  No such occurrence.
-	BIT0ERR_FAST_1 ESR1 = 0x01 << 30 //  At least one bit sent as dominant is received as recessive.
-	BIT1ERR_FAST   ESR1 = 0x01 << 31 //+ Bit1 Error in the Data Phase of CAN FD frames with the BRS bit set
-	BIT1ERR_FAST_0 ESR1 = 0x00 << 31 //  No such occurrence.
-	BIT1ERR_FAST_1 ESR1 = 0x01 << 31 //  At least one bit sent as recessive is received as dominant.
+	WAKINT       ESR1 = 0x01 << 0  //+ Wake-Up Interrupt
+	ERRINT       ESR1 = 0x01 << 1  //+ Error Interrupt
+	BOFFINT      ESR1 = 0x01 << 2  //+ Bus Off Interrupt
+	RX           ESR1 = 0x01 << 3  //+ FlexCAN In Reception
+	FLTCONF      ESR1 = 0x03 << 4  //+ Fault Confinement State
+	FLTCONF_0    ESR1 = 0x00 << 4  //  Error Active
+	FLTCONF_1    ESR1 = 0x01 << 4  //  Error Passive
+	FLTCONF_2    ESR1 = 0x02 << 4  //  Bus Off
+	TX           ESR1 = 0x01 << 6  //+ FlexCAN In Transmission
+	IDLE         ESR1 = 0x01 << 7  //+ IDLE
+	RXWRN        ESR1 = 0x01 << 8  //+ Rx Error Warning
+	TXWRN        ESR1 = 0x01 << 9  //+ TX Error Warning
+	STFERR       ESR1 = 0x01 << 10 //+ Stuffing Error
+	FRMERR       ESR1 = 0x01 << 11 //+ Form Error
+	CRCERR       ESR1 = 0x01 << 12 //+ Cyclic Redundancy Check Error
+	ACKERR       ESR1 = 0x01 << 13 //+ Acknowledge Error
+	BIT0ERR      ESR1 = 0x01 << 14 //+ Bit0 Error
+	BIT1ERR      ESR1 = 0x01 << 15 //+ Bit1 Error
+	RWRNINT      ESR1 = 0x01 << 16 //+ Rx Warning Interrupt Flag
+	TWRNINT      ESR1 = 0x01 << 17 //+ Tx Warning Interrupt Flag
+	SYNCH        ESR1 = 0x01 << 18 //+ CAN Synchronization Status
+	BOFFDONEINT  ESR1 = 0x01 << 19 //+ Bus Off Done Interrupt
+	ERRINT_FAST  ESR1 = 0x01 << 20 //+ Error Interrupt for errors detected in the Data Phase of CAN FD frames with the BRS bit set
+	ERROVR       ESR1 = 0x01 << 21 //+ Error Overrun bit
+	STFERR_FAST  ESR1 = 0x01 << 26 //+ Stuffing Error in the Data Phase of CAN FD frames with the BRS bit set
+	FRMERR_FAST  ESR1 = 0x01 << 27 //+ Form Error in the Data Phase of CAN FD frames with the BRS bit set
+	CRCERR_FAST  ESR1 = 0x01 << 28 //+ Cyclic Redundancy Check Error in the CRC field of CAN FD frames with the BRS bit set
+	BIT0ERR_FAST ESR1 = 0x01 << 30 //+ Bit0 Error in the Data Phase of CAN FD frames with the BRS bit set
+	BIT1ERR_FAST ESR1 = 0x01 << 31 //+ Bit1 Error in the Data Phase of CAN FD frames with the BRS bit set
 )
 
 const (
@@ -1635,18 +1523,10 @@ const (
 
 const (
 	BUF0I     IFLAG1 = 0x01 << 0     //+ Buffer MB0 Interrupt Or Clear Legacy FIFO bit
-	BUF0I_0   IFLAG1 = 0x00 << 0     //  The corresponding buffer has no occurrence of successfully completed transmission or reception when CAN_MCR[RFEN]=0.
-	BUF0I_1   IFLAG1 = 0x01 << 0     //  The corresponding buffer has successfully completed transmission or reception when CAN_MCR[RFEN]=0.
 	BUF4TO1I  IFLAG1 = 0x0F << 1     //+ Buffer MB i Interrupt Or "reserved"
 	BUF5I     IFLAG1 = 0x01 << 5     //+ Buffer MB5 Interrupt Or "Frames available in Legacy Rx FIFO"
-	BUF5I_0   IFLAG1 = 0x00 << 5     //  No occurrence of MB5 completing transmission/reception when CAN_MCR[RFEN]=0, or of frame(s) available in the Legacy FIFO, when CAN_MCR[RFEN]=1
-	BUF5I_1   IFLAG1 = 0x01 << 5     //  MB5 completed transmission/reception when CAN_MCR[RFEN]=0, or frame(s) available in the Legacy Rx FIFO when CAN_MCR[RFEN]=1. It generates a DMA request in case of CAN_MCR[RFEN] and CAN_MCR[DMA] are enabled.
 	BUF6I     IFLAG1 = 0x01 << 6     //+ Buffer MB6 Interrupt Or "Legacy Rx FIFO Warning"
-	BUF6I_0   IFLAG1 = 0x00 << 6     //  No occurrence of MB6 completing transmission/reception when CAN_MCR[RFEN]=0, or of Legacy Rx FIFO almost full when CAN_MCR[RFEN]=1
-	BUF6I_1   IFLAG1 = 0x01 << 6     //  MB6 completed transmission/reception when CAN_MCR[RFEN]=0, or Legacy Rx FIFO almost full when CAN_MCR[RFEN]=1
 	BUF7I     IFLAG1 = 0x01 << 7     //+ Buffer MB7 Interrupt Or "Legacy Rx FIFO Overflow"
-	BUF7I_0   IFLAG1 = 0x00 << 7     //  No occurrence of MB7 completing transmission/reception when CAN_MCR[RFEN]=0, or of Legacy Rx FIFO overflow when CAN_MCR[RFEN]=1
-	BUF7I_1   IFLAG1 = 0x01 << 7     //  MB7 completed transmission/reception when CAN_MCR[RFEN]=0, or Legacy Rx FIFO overflow when CAN_MCR[RFEN]=1
 	BUF31TO8I IFLAG1 = 0xFFFFFF << 8 //+ Buffer MBi Interrupt
 )
 
@@ -1660,47 +1540,27 @@ const (
 )
 
 const (
-	TSTAMPCAP     CTRL2 = 0x03 << 6  //+ Time Stamp Capture Point
-	TSTAMPCAP_0   CTRL2 = 0x00 << 6  //  The high resolution time stamp capture is disabled
-	TSTAMPCAP_1   CTRL2 = 0x01 << 6  //  The high resolution time stamp is captured in the end of the CAN frame
-	TSTAMPCAP_2   CTRL2 = 0x02 << 6  //  The high resolution time stamp is captured in the start of the CAN frame
-	TSTAMPCAP_3   CTRL2 = 0x03 << 6  //  The high resolution time stamp is captured in the start of frame for classical CAN frames and in res bit for CAN FD frames
-	MBTSBASE      CTRL2 = 0x03 << 8  //+ Message Buffer Time Stamp Base
-	MBTSBASE_0    CTRL2 = 0x00 << 8  //  Message Buffer Time Stamp base is CAN_TIMER
-	MBTSBASE_1    CTRL2 = 0x01 << 8  //  Message Buffer Time Stamp base is lower 16-bits of high resolution timer
-	MBTSBASE_2    CTRL2 = 0x02 << 8  //  Message Buffer Time Stamp base is upper 16-bits of high resolution timerT
-	EDFLTDIS      CTRL2 = 0x01 << 11 //+ Edge Filter Disable
-	EDFLTDIS_0    CTRL2 = 0x00 << 11 //  Edge Filter is enabled
-	EDFLTDIS_1    CTRL2 = 0x01 << 11 //  Edge Filter is disabled
-	ISOCANFDEN    CTRL2 = 0x01 << 12 //+ ISO CAN FD Enable
-	ISOCANFDEN_0  CTRL2 = 0x00 << 12 //  FlexCAN operates using the non-ISO CAN FD protocol.
-	ISOCANFDEN_1  CTRL2 = 0x01 << 12 //  FlexCAN operates using the ISO CAN FD protocol (ISO 11898-1).
-	BTE           CTRL2 = 0x01 << 13 //+ Bit Timing Expansion enable
-	BTE_0         CTRL2 = 0x00 << 13 //  CAN Bit timing expansion is disabled.
-	BTE_1         CTRL2 = 0x01 << 13 //  CAN bit timing expansion is enabled.
-	PREXCEN       CTRL2 = 0x01 << 14 //+ Protocol Exception Enable
-	PREXCEN_0     CTRL2 = 0x00 << 14 //  Protocol Exception is disabled.
-	PREXCEN_1     CTRL2 = 0x01 << 14 //  Protocol Exception is enabled.
-	TIMER_SRC     CTRL2 = 0x01 << 15 //+ Timer Source
-	TIMER_SRC_0   CTRL2 = 0x00 << 15 //  The Free Running Timer is clocked by the CAN bit clock, which defines the baud rate on the CAN bus.
-	TIMER_SRC_1   CTRL2 = 0x01 << 15 //  The Free Running Timer is clocked by an external time tick. The period can be either adjusted to be equal to the baud rate on the CAN bus, or a different value as required. See the device specific section for details about the external time tick.
-	EACEN         CTRL2 = 0x01 << 16 //+ Entire Frame Arbitration Field Comparison Enable For Rx Mailboxes
-	EACEN_0       CTRL2 = 0x00 << 16 //  Rx Mailbox filter's IDE bit is always compared and RTR is never compared despite mask bits.
-	EACEN_1       CTRL2 = 0x01 << 16 //  Enables the comparison of both Rx Mailbox filter's IDE and RTR bit with their corresponding bits within the incoming frame. Mask bits do apply.
-	RRS           CTRL2 = 0x01 << 17 //+ Remote Request Storing
-	RRS_0         CTRL2 = 0x00 << 17 //  Remote Response Frame is generated.
-	RRS_1         CTRL2 = 0x01 << 17 //  Remote Request Frame is stored.
-	MRP           CTRL2 = 0x01 << 18 //+ Mailboxes Reception Priority
-	MRP_0         CTRL2 = 0x00 << 18 //  Matching starts from Legacy Rx FIFO or Enhanced Rx FIFO and continues on Mailboxes.
-	MRP_1         CTRL2 = 0x01 << 18 //  Matching starts from Mailboxes and continues on Legacy Rx FIFO or Enhanced Rx FIFO .
-	TASD          CTRL2 = 0x1F << 19 //+ Tx Arbitration Start Delay
-	RFFN          CTRL2 = 0x0F << 24 //+ Number Of Legacy Rx FIFO Filters
-	BOFFDONEMSK   CTRL2 = 0x01 << 30 //+ Bus Off Done Interrupt Mask
-	BOFFDONEMSK_0 CTRL2 = 0x00 << 30 //  Bus Off Done interrupt disabled.
-	BOFFDONEMSK_1 CTRL2 = 0x01 << 30 //  Bus Off Done interrupt enabled.
-	ERRMSK_FAST   CTRL2 = 0x01 << 31 //+ Error Interrupt Mask for errors detected in the Data Phase of fast CAN FD frames
-	ERRMSK_FAST_0 CTRL2 = 0x00 << 31 //  ERRINT_FAST Error interrupt disabled.
-	ERRMSK_FAST_1 CTRL2 = 0x01 << 31 //  ERRINT_FAST Error interrupt enabled.
+	TSTAMPCAP   CTRL2 = 0x03 << 6  //+ Time Stamp Capture Point
+	TSTAMPCAP_0 CTRL2 = 0x00 << 6  //  The high resolution time stamp capture is disabled
+	TSTAMPCAP_1 CTRL2 = 0x01 << 6  //  The high resolution time stamp is captured in the end of the CAN frame
+	TSTAMPCAP_2 CTRL2 = 0x02 << 6  //  The high resolution time stamp is captured in the start of the CAN frame
+	TSTAMPCAP_3 CTRL2 = 0x03 << 6  //  The high resolution time stamp is captured in the start of frame for classical CAN frames and in res bit for CAN FD frames
+	MBTSBASE    CTRL2 = 0x03 << 8  //+ Message Buffer Time Stamp Base
+	MBTSBASE_0  CTRL2 = 0x00 << 8  //  Message Buffer Time Stamp base is CAN_TIMER
+	MBTSBASE_1  CTRL2 = 0x01 << 8  //  Message Buffer Time Stamp base is lower 16-bits of high resolution timer
+	MBTSBASE_2  CTRL2 = 0x02 << 8  //  Message Buffer Time Stamp base is upper 16-bits of high resolution timerT
+	EDFLTDIS    CTRL2 = 0x01 << 11 //+ Edge Filter Disable
+	ISOCANFDEN  CTRL2 = 0x01 << 12 //+ ISO CAN FD Enable
+	BTE         CTRL2 = 0x01 << 13 //+ Bit Timing Expansion enable
+	PREXCEN     CTRL2 = 0x01 << 14 //+ Protocol Exception Enable
+	TIMER_SRC   CTRL2 = 0x01 << 15 //+ Timer Source
+	EACEN       CTRL2 = 0x01 << 16 //+ Entire Frame Arbitration Field Comparison Enable For Rx Mailboxes
+	RRS         CTRL2 = 0x01 << 17 //+ Remote Request Storing
+	MRP         CTRL2 = 0x01 << 18 //+ Mailboxes Reception Priority
+	TASD        CTRL2 = 0x1F << 19 //+ Tx Arbitration Start Delay
+	RFFN        CTRL2 = 0x0F << 24 //+ Number Of Legacy Rx FIFO Filters
+	BOFFDONEMSK CTRL2 = 0x01 << 30 //+ Bus Off Done Interrupt Mask
+	ERRMSK_FAST CTRL2 = 0x01 << 31 //+ Error Interrupt Mask for errors detected in the Data Phase of fast CAN FD frames
 )
 
 const (
@@ -1721,13 +1581,9 @@ const (
 )
 
 const (
-	IMB   ESR2 = 0x01 << 13 //+ Inactive Mailbox
-	IMB_0 ESR2 = 0x00 << 13 //  If CAN_ESR2[VPS] is asserted, the CAN_ESR2[LPTM] is not an inactive Mailbox.
-	IMB_1 ESR2 = 0x01 << 13 //  If CAN_ESR2[VPS] is asserted, there is at least one inactive Mailbox. LPTM content is the number of the first one.
-	VPS   ESR2 = 0x01 << 14 //+ Valid Priority Status
-	VPS_0 ESR2 = 0x00 << 14 //  Contents of IMB and LPTM are invalid.
-	VPS_1 ESR2 = 0x01 << 14 //  Contents of IMB and LPTM are valid.
-	LPTM  ESR2 = 0x7F << 16 //+ Lowest Priority Tx Mailbox
+	IMB  ESR2 = 0x01 << 13 //+ Inactive Mailbox
+	VPS  ESR2 = 0x01 << 14 //+ Valid Priority Status
+	LPTM ESR2 = 0x7F << 16 //+ Lowest Priority Tx Mailbox
 )
 
 const (
@@ -1769,8 +1625,6 @@ const (
 	ERJW     CBT = 0x1F << 16  //+ Extended Resync Jump Width
 	EPRESDIV CBT = 0x3FF << 21 //+ Extended Prescaler Division Factor
 	BTF      CBT = 0x01 << 31  //+ Bit Timing Format Enable
-	BTF_0    CBT = 0x00 << 31  //  Extended bit time definitions disabled.
-	BTF_1    CBT = 0x01 << 31  //  Extended bit time definitions enabled.
 )
 
 const (
@@ -21073,11 +20927,9 @@ const (
 )
 
 const (
-	ETDCVAL  ETDC = 0xFF << 0  //+ Enhanced Transceiver Delay Compensation Value
-	ETDCOFF  ETDC = 0x7F << 16 //+ Enhanced Transceiver Delay Compensation Offset
-	TDMDIS   ETDC = 0x01 << 31 //+ Transceiver Delay Measurement Disable
-	TDMDIS_0 ETDC = 0x00 << 31 //  TDC measurement is enabled
-	TDMDIS_1 ETDC = 0x01 << 31 //  TDC measurement is disabled
+	ETDCVAL ETDC = 0xFF << 0  //+ Enhanced Transceiver Delay Compensation Value
+	ETDCOFF ETDC = 0x7F << 16 //+ Enhanced Transceiver Delay Compensation Offset
+	TDMDIS  ETDC = 0x01 << 31 //+ Transceiver Delay Measurement Disable
 )
 
 const (
@@ -21087,27 +20939,21 @@ const (
 )
 
 const (
-	TDCVAL    FDCTRL = 0x3F << 0  //+ Transceiver Delay Compensation Value
-	TDCOFF    FDCTRL = 0x1F << 8  //+ Transceiver Delay Compensation Offset
-	TDCFAIL   FDCTRL = 0x01 << 14 //+ Transceiver Delay Compensation Fail
-	TDCFAIL_0 FDCTRL = 0x00 << 14 //  Measured loop delay is in range.
-	TDCFAIL_1 FDCTRL = 0x01 << 14 //  Measured loop delay is out of range.
-	TDCEN     FDCTRL = 0x01 << 15 //+ Transceiver Delay Compensation Enable
-	TDCEN_0   FDCTRL = 0x00 << 15 //  TDC is disabled
-	TDCEN_1   FDCTRL = 0x01 << 15 //  TDC is enabled
-	MBDSR0    FDCTRL = 0x03 << 16 //+ Message Buffer Data Size for Region 0
-	MBDSR0_0  FDCTRL = 0x00 << 16 //  Selects 8 bytes per Message Buffer.
-	MBDSR0_1  FDCTRL = 0x01 << 16 //  Selects 16 bytes per Message Buffer.
-	MBDSR0_2  FDCTRL = 0x02 << 16 //  Selects 32 bytes per Message Buffer.
-	MBDSR0_3  FDCTRL = 0x03 << 16 //  Selects 64 bytes per Message Buffer.
-	MBDSR1    FDCTRL = 0x03 << 19 //+ Message Buffer Data Size for Region 1
-	MBDSR1_0  FDCTRL = 0x00 << 19 //  Selects 8 bytes per Message Buffer.
-	MBDSR1_1  FDCTRL = 0x01 << 19 //  Selects 16 bytes per Message Buffer.
-	MBDSR1_2  FDCTRL = 0x02 << 19 //  Selects 32 bytes per Message Buffer.
-	MBDSR1_3  FDCTRL = 0x03 << 19 //  Selects 64 bytes per Message Buffer.
-	FDRATE    FDCTRL = 0x01 << 31 //+ Bit Rate Switch Enable
-	FDRATE_0  FDCTRL = 0x00 << 31 //  Transmit a frame in nominal rate. The BRS bit in the Tx MB has no effect.
-	FDRATE_1  FDCTRL = 0x01 << 31 //  Transmit a frame with bit rate switching if the BRS bit in the Tx MB is recessive.
+	TDCVAL   FDCTRL = 0x3F << 0  //+ Transceiver Delay Compensation Value
+	TDCOFF   FDCTRL = 0x1F << 8  //+ Transceiver Delay Compensation Offset
+	TDCFAIL  FDCTRL = 0x01 << 14 //+ Transceiver Delay Compensation Fail
+	TDCEN    FDCTRL = 0x01 << 15 //+ Transceiver Delay Compensation Enable
+	MBDSR0   FDCTRL = 0x03 << 16 //+ Message Buffer Data Size for Region 0
+	MBDSR0_0 FDCTRL = 0x00 << 16 //  Selects 8 bytes per Message Buffer.
+	MBDSR0_1 FDCTRL = 0x01 << 16 //  Selects 16 bytes per Message Buffer.
+	MBDSR0_2 FDCTRL = 0x02 << 16 //  Selects 32 bytes per Message Buffer.
+	MBDSR0_3 FDCTRL = 0x03 << 16 //  Selects 64 bytes per Message Buffer.
+	MBDSR1   FDCTRL = 0x03 << 19 //+ Message Buffer Data Size for Region 1
+	MBDSR1_0 FDCTRL = 0x00 << 19 //  Selects 8 bytes per Message Buffer.
+	MBDSR1_1 FDCTRL = 0x01 << 19 //  Selects 16 bytes per Message Buffer.
+	MBDSR1_2 FDCTRL = 0x02 << 19 //  Selects 32 bytes per Message Buffer.
+	MBDSR1_3 FDCTRL = 0x03 << 19 //  Selects 64 bytes per Message Buffer.
+	FDRATE   FDCTRL = 0x01 << 31 //+ Bit Rate Switch Enable
 )
 
 const (
@@ -21147,13 +20993,11 @@ const (
 )
 
 const (
-	ERFWM   ERFCR = 0x1F << 0  //+ Enhanced Rx FIFO Watermark
-	NFE     ERFCR = 0x3F << 8  //+ Number of Enhanced Rx FIFO Filter Elements
-	NEXIF   ERFCR = 0x7F << 16 //+ Number of Extended ID Filter Elements
-	DMALW   ERFCR = 0x1F << 26 //+ DMA Last Word
-	ERFEN   ERFCR = 0x01 << 31 //+ Enhanced Rx FIFO enable
-	ERFEN_0 ERFCR = 0x00 << 31 //  Enhanced Rx FIFO is disabled
-	ERFEN_1 ERFCR = 0x01 << 31 //  Enhanced Rx FIFO is enabled
+	ERFWM ERFCR = 0x1F << 0  //+ Enhanced Rx FIFO Watermark
+	NFE   ERFCR = 0x3F << 8  //+ Number of Enhanced Rx FIFO Filter Elements
+	NEXIF ERFCR = 0x7F << 16 //+ Number of Extended ID Filter Elements
+	DMALW ERFCR = 0x1F << 26 //+ DMA Last Word
+	ERFEN ERFCR = 0x01 << 31 //+ Enhanced Rx FIFO enable
 )
 
 const (
@@ -21165,18 +21009,10 @@ const (
 )
 
 const (
-	ERFDAIE    ERFIER = 0x01 << 28 //+ Enhanced Rx FIFO Data Available Interrupt Enable
-	ERFDAIE_0  ERFIER = 0x00 << 28 //  Enhanced Rx FIFO Data Available Interrupt is disabled
-	ERFDAIE_1  ERFIER = 0x01 << 28 //  Enhanced Rx FIFO Data Available Interrupt is enabled
-	ERFWMIIE   ERFIER = 0x01 << 29 //+ Enhanced Rx FIFO Watermark Indication Interrupt Enable
-	ERFWMIIE_0 ERFIER = 0x00 << 29 //  Enhanced Rx FIFO Watermark Interrupt is disabled
-	ERFWMIIE_1 ERFIER = 0x01 << 29 //  Enhanced Rx FIFO Watermark Interrupt is enabled
-	ERFOVFIE   ERFIER = 0x01 << 30 //+ Enhanced Rx FIFO Overflow Interrupt Enable
-	ERFOVFIE_0 ERFIER = 0x00 << 30 //  Enhanced Rx FIFO Overflow is disabled
-	ERFOVFIE_1 ERFIER = 0x01 << 30 //  Enhanced Rx FIFO Overflow is enabled
-	ERFUFWIE   ERFIER = 0x01 << 31 //+ Enhanced Rx FIFO Underflow Interrupt Enable
-	ERFUFWIE_0 ERFIER = 0x00 << 31 //  Enhanced Rx FIFO Underflow interrupt is disabled
-	ERFUFWIE_1 ERFIER = 0x01 << 31 //  Enhanced Rx FIFO Underflow interrupt is enabled
+	ERFDAIE  ERFIER = 0x01 << 28 //+ Enhanced Rx FIFO Data Available Interrupt Enable
+	ERFWMIIE ERFIER = 0x01 << 29 //+ Enhanced Rx FIFO Watermark Indication Interrupt Enable
+	ERFOVFIE ERFIER = 0x01 << 30 //+ Enhanced Rx FIFO Overflow Interrupt Enable
+	ERFUFWIE ERFIER = 0x01 << 31 //+ Enhanced Rx FIFO Underflow Interrupt Enable
 )
 
 const (
@@ -21187,28 +21023,14 @@ const (
 )
 
 const (
-	ERFEL    ERFSR = 0x3F << 0  //+ Enhanced Rx FIFO Elements
-	ERFF     ERFSR = 0x01 << 16 //+ Enhanced Rx FIFO full
-	ERFF_0   ERFSR = 0x00 << 16 //  Enhanced Rx FIFO is not full
-	ERFF_1   ERFSR = 0x01 << 16 //  Enhanced Rx FIFO is full
-	ERFE     ERFSR = 0x01 << 17 //+ Enhanced Rx FIFO empty
-	ERFE_0   ERFSR = 0x00 << 17 //  Enhanced Rx FIFO is not empty
-	ERFE_1   ERFSR = 0x01 << 17 //  Enhanced Rx FIFO is empty
-	ERFCLR   ERFSR = 0x01 << 27 //+ Enhanced Rx FIFO Clear
-	ERFCLR_0 ERFSR = 0x00 << 27 //  No effect
-	ERFCLR_1 ERFSR = 0x01 << 27 //  Clear Enhanced Rx FIFO content
-	ERFDA    ERFSR = 0x01 << 28 //+ Enhanced Rx FIFO Data Available
-	ERFDA_0  ERFSR = 0x00 << 28 //  No such occurrence
-	ERFDA_1  ERFSR = 0x01 << 28 //  There is at least one message stored in Enhanced Rx FIFO
-	ERFWMI   ERFSR = 0x01 << 29 //+ Enhanced Rx FIFO Watermark Indication
-	ERFWMI_0 ERFSR = 0x00 << 29 //  No such occurrence
-	ERFWMI_1 ERFSR = 0x01 << 29 //  The number of messages in FIFO is greater than the watermark
-	ERFOVF   ERFSR = 0x01 << 30 //+ Enhanced Rx FIFO Overflow
-	ERFOVF_0 ERFSR = 0x00 << 30 //  No such occurrence
-	ERFOVF_1 ERFSR = 0x01 << 30 //  Enhanced Rx FIFO overflow
-	ERFUFW   ERFSR = 0x01 << 31 //+ Enhanced Rx FIFO Underflow
-	ERFUFW_0 ERFSR = 0x00 << 31 //  No such occurrence
-	ERFUFW_1 ERFSR = 0x01 << 31 //  Enhanced Rx FIFO underflow
+	ERFEL  ERFSR = 0x3F << 0  //+ Enhanced Rx FIFO Elements
+	ERFF   ERFSR = 0x01 << 16 //+ Enhanced Rx FIFO full
+	ERFE   ERFSR = 0x01 << 17 //+ Enhanced Rx FIFO empty
+	ERFCLR ERFSR = 0x01 << 27 //+ Enhanced Rx FIFO Clear
+	ERFDA  ERFSR = 0x01 << 28 //+ Enhanced Rx FIFO Data Available
+	ERFWMI ERFSR = 0x01 << 29 //+ Enhanced Rx FIFO Watermark Indication
+	ERFOVF ERFSR = 0x01 << 30 //+ Enhanced Rx FIFO Overflow
+	ERFUFW ERFSR = 0x01 << 31 //+ Enhanced Rx FIFO Underflow
 )
 
 const (

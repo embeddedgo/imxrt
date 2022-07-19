@@ -16,12 +16,8 @@
 package pit
 
 const (
-	FRZ    MCR = 0x01 << 0 //+ Freeze
-	FRZ_0  MCR = 0x00 << 0 //  Timers continue to run in Debug mode.
-	FRZ_1  MCR = 0x01 << 0 //  Timers are stopped in Debug mode.
-	MDIS   MCR = 0x01 << 1 //+ Module Disable - (PIT section)
-	MDIS_0 MCR = 0x00 << 1 //  Clock for standard PIT timers is enabled.
-	MDIS_1 MCR = 0x01 << 1 //  Clock for standard PIT timers is disabled.
+	FRZ  MCR = 0x01 << 0 //+ Freeze
+	MDIS MCR = 0x01 << 1 //+ Module Disable - (PIT section)
 )
 
 const (

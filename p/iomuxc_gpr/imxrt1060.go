@@ -47,71 +47,47 @@
 package iomuxc_gpr
 
 const (
-	SAI1_MCLK1_SEL      GPR1 = 0x07 << 0  //+ SAI1 MCLK1 source select
-	SAI1_MCLK1_SEL_0    GPR1 = 0x00 << 0  //  ccm.ssi1_clk_root
-	SAI1_MCLK1_SEL_1    GPR1 = 0x01 << 0  //  ccm.ssi2_clk_root
-	SAI1_MCLK1_SEL_2    GPR1 = 0x02 << 0  //  ccm.ssi3_clk_root
-	SAI1_MCLK1_SEL_3    GPR1 = 0x03 << 0  //  iomux.sai1_ipg_clk_sai_mclk
-	SAI1_MCLK1_SEL_4    GPR1 = 0x04 << 0  //  iomux.sai2_ipg_clk_sai_mclk
-	SAI1_MCLK1_SEL_5    GPR1 = 0x05 << 0  //  iomux.sai3_ipg_clk_sai_mclk
-	SAI1_MCLK2_SEL      GPR1 = 0x07 << 3  //+ SAI1 MCLK2 source select
-	SAI1_MCLK2_SEL_0    GPR1 = 0x00 << 3  //  ccm.ssi1_clk_root
-	SAI1_MCLK2_SEL_1    GPR1 = 0x01 << 3  //  ccm.ssi2_clk_root
-	SAI1_MCLK2_SEL_2    GPR1 = 0x02 << 3  //  ccm.ssi3_clk_root
-	SAI1_MCLK2_SEL_3    GPR1 = 0x03 << 3  //  iomux.sai1_ipg_clk_sai_mclk
-	SAI1_MCLK2_SEL_4    GPR1 = 0x04 << 3  //  iomux.sai2_ipg_clk_sai_mclk
-	SAI1_MCLK2_SEL_5    GPR1 = 0x05 << 3  //  iomux.sai3_ipg_clk_sai_mclk
-	SAI1_MCLK3_SEL      GPR1 = 0x03 << 6  //+ SAI1 MCLK3 source select
-	SAI1_MCLK3_SEL_0    GPR1 = 0x00 << 6  //  ccm.spdif0_clk_root
-	SAI1_MCLK3_SEL_1    GPR1 = 0x01 << 6  //  iomux.spdif_tx_clk2
-	SAI1_MCLK3_SEL_2    GPR1 = 0x02 << 6  //  spdif.spdif_srclk
-	SAI1_MCLK3_SEL_3    GPR1 = 0x03 << 6  //  spdif.spdif_outclock
-	SAI2_MCLK3_SEL      GPR1 = 0x03 << 8  //+ SAI2 MCLK3 source select
-	SAI2_MCLK3_SEL_0    GPR1 = 0x00 << 8  //  ccm.spdif0_clk_root
-	SAI2_MCLK3_SEL_1    GPR1 = 0x01 << 8  //  iomux.spdif_tx_clk2
-	SAI2_MCLK3_SEL_2    GPR1 = 0x02 << 8  //  spdif.spdif_srclk
-	SAI2_MCLK3_SEL_3    GPR1 = 0x03 << 8  //  spdif.spdif_outclock
-	SAI3_MCLK3_SEL      GPR1 = 0x03 << 10 //+ SAI3 MCLK3 source select
-	SAI3_MCLK3_SEL_0    GPR1 = 0x00 << 10 //  ccm.spdif0_clk_root
-	SAI3_MCLK3_SEL_1    GPR1 = 0x01 << 10 //  iomux.spdif_tx_clk2
-	SAI3_MCLK3_SEL_2    GPR1 = 0x02 << 10 //  spdif.spdif_srclk
-	SAI3_MCLK3_SEL_3    GPR1 = 0x03 << 10 //  spdif.spdif_outclock
-	GINT                GPR1 = 0x01 << 12 //+ Global interrupt "0" bit (connected to ARM M7 IRQ#0 and GPC)
-	GINT_0              GPR1 = 0x00 << 12 //  Global interrupt request is not asserted.
-	GINT_1              GPR1 = 0x01 << 12 //  Global interrupt request is asserted.
-	ENET1_CLK_SEL       GPR1 = 0x01 << 13 //+ ENET1 reference clock mode select.
-	ENET1_CLK_SEL_0     GPR1 = 0x00 << 13 //  ENET1 TX reference clock driven by ref_enetpll. This clock is also output to pins via the IOMUX. ENET_REF_CLK1 function.
-	ENET1_CLK_SEL_1     GPR1 = 0x01 << 13 //  Gets ENET1 TX reference clock from the ENET1_TX_CLK pin. In this use case, an external OSC provides the clock for both the external PHY and the internal controller.
-	ENET2_CLK_SEL       GPR1 = 0x01 << 14 //+ ENET2 reference clock mode select.
-	ENET2_CLK_SEL_0     GPR1 = 0x00 << 14 //  ENET2 TX reference clock driven by ref_enetpll. This clock is also output to pins via the IOMUX. ENET2_REF_CLK function.
-	ENET2_CLK_SEL_1     GPR1 = 0x01 << 14 //  Gets ENET2 TX reference clock from the ENET2_TX_CLK pin. In this use case, an external OSC provides the clock for both the external PHY and the internal controller.
-	USB_EXP_MODE        GPR1 = 0x01 << 15 //+ USB Exposure mode
-	USB_EXP_MODE_0      GPR1 = 0x00 << 15 //  Exposure mode is disabled.
-	USB_EXP_MODE_1      GPR1 = 0x01 << 15 //  Exposure mode is enabled.
-	ENET1_TX_CLK_DIR    GPR1 = 0x01 << 17 //+ ENET1_TX_CLK data direction control
-	ENET1_TX_CLK_DIR_0  GPR1 = 0x00 << 17 //  ENET1_TX_CLK output driver is disabled
-	ENET1_TX_CLK_DIR_1  GPR1 = 0x01 << 17 //  ENET1_TX_CLK output driver is enabled
-	ENET2_TX_CLK_DIR    GPR1 = 0x01 << 18 //+ ENET2_TX_CLK data direction control
-	ENET2_TX_CLK_DIR_0  GPR1 = 0x00 << 18 //  ENET2_TX_CLK output driver is disabled
-	ENET2_TX_CLK_DIR_1  GPR1 = 0x01 << 18 //  ENET2_TX_CLK output driver is enabled
-	SAI1_MCLK_DIR       GPR1 = 0x01 << 19 //+ sai1.MCLK signal direction control
-	SAI1_MCLK_DIR_0     GPR1 = 0x00 << 19 //  sai1.MCLK is input signal
-	SAI1_MCLK_DIR_1     GPR1 = 0x01 << 19 //  sai1.MCLK is output signal
-	SAI2_MCLK_DIR       GPR1 = 0x01 << 20 //+ sai2.MCLK signal direction control
-	SAI2_MCLK_DIR_0     GPR1 = 0x00 << 20 //  sai2.MCLK is input signal
-	SAI2_MCLK_DIR_1     GPR1 = 0x01 << 20 //  sai2.MCLK is output signal
-	SAI3_MCLK_DIR       GPR1 = 0x01 << 21 //+ sai3.MCLK signal direction control
-	SAI3_MCLK_DIR_0     GPR1 = 0x00 << 21 //  sai3.MCLK is input signal
-	SAI3_MCLK_DIR_1     GPR1 = 0x01 << 21 //  sai3.MCLK is output signal
-	EXC_MON             GPR1 = 0x01 << 22 //+ Exclusive monitor response select of illegal command
-	EXC_MON_0           GPR1 = 0x00 << 22 //  OKAY response
-	EXC_MON_1           GPR1 = 0x01 << 22 //  SLVError response (default)
-	ENET_IPG_CLK_S_EN   GPR1 = 0x01 << 23 //+ ENET and ENET2 ipg_clk_s clock gating enable
-	ENET_IPG_CLK_S_EN_0 GPR1 = 0x00 << 23 //  ipg_clk_s is gated when there is no IPS access
-	ENET_IPG_CLK_S_EN_1 GPR1 = 0x01 << 23 //  ipg_clk_s is always on
-	CM7_FORCE_HCLK_EN   GPR1 = 0x01 << 31 //+ ARM CM7 platform AHB clock enable
-	CM7_FORCE_HCLK_EN_0 GPR1 = 0x00 << 31 //  AHB clock is not running (gated)
-	CM7_FORCE_HCLK_EN_1 GPR1 = 0x01 << 31 //  AHB clock is running (enabled)
+	SAI1_MCLK1_SEL    GPR1 = 0x07 << 0  //+ SAI1 MCLK1 source select
+	SAI1_MCLK1_SEL_0  GPR1 = 0x00 << 0  //  ccm.ssi1_clk_root
+	SAI1_MCLK1_SEL_1  GPR1 = 0x01 << 0  //  ccm.ssi2_clk_root
+	SAI1_MCLK1_SEL_2  GPR1 = 0x02 << 0  //  ccm.ssi3_clk_root
+	SAI1_MCLK1_SEL_3  GPR1 = 0x03 << 0  //  iomux.sai1_ipg_clk_sai_mclk
+	SAI1_MCLK1_SEL_4  GPR1 = 0x04 << 0  //  iomux.sai2_ipg_clk_sai_mclk
+	SAI1_MCLK1_SEL_5  GPR1 = 0x05 << 0  //  iomux.sai3_ipg_clk_sai_mclk
+	SAI1_MCLK2_SEL    GPR1 = 0x07 << 3  //+ SAI1 MCLK2 source select
+	SAI1_MCLK2_SEL_0  GPR1 = 0x00 << 3  //  ccm.ssi1_clk_root
+	SAI1_MCLK2_SEL_1  GPR1 = 0x01 << 3  //  ccm.ssi2_clk_root
+	SAI1_MCLK2_SEL_2  GPR1 = 0x02 << 3  //  ccm.ssi3_clk_root
+	SAI1_MCLK2_SEL_3  GPR1 = 0x03 << 3  //  iomux.sai1_ipg_clk_sai_mclk
+	SAI1_MCLK2_SEL_4  GPR1 = 0x04 << 3  //  iomux.sai2_ipg_clk_sai_mclk
+	SAI1_MCLK2_SEL_5  GPR1 = 0x05 << 3  //  iomux.sai3_ipg_clk_sai_mclk
+	SAI1_MCLK3_SEL    GPR1 = 0x03 << 6  //+ SAI1 MCLK3 source select
+	SAI1_MCLK3_SEL_0  GPR1 = 0x00 << 6  //  ccm.spdif0_clk_root
+	SAI1_MCLK3_SEL_1  GPR1 = 0x01 << 6  //  iomux.spdif_tx_clk2
+	SAI1_MCLK3_SEL_2  GPR1 = 0x02 << 6  //  spdif.spdif_srclk
+	SAI1_MCLK3_SEL_3  GPR1 = 0x03 << 6  //  spdif.spdif_outclock
+	SAI2_MCLK3_SEL    GPR1 = 0x03 << 8  //+ SAI2 MCLK3 source select
+	SAI2_MCLK3_SEL_0  GPR1 = 0x00 << 8  //  ccm.spdif0_clk_root
+	SAI2_MCLK3_SEL_1  GPR1 = 0x01 << 8  //  iomux.spdif_tx_clk2
+	SAI2_MCLK3_SEL_2  GPR1 = 0x02 << 8  //  spdif.spdif_srclk
+	SAI2_MCLK3_SEL_3  GPR1 = 0x03 << 8  //  spdif.spdif_outclock
+	SAI3_MCLK3_SEL    GPR1 = 0x03 << 10 //+ SAI3 MCLK3 source select
+	SAI3_MCLK3_SEL_0  GPR1 = 0x00 << 10 //  ccm.spdif0_clk_root
+	SAI3_MCLK3_SEL_1  GPR1 = 0x01 << 10 //  iomux.spdif_tx_clk2
+	SAI3_MCLK3_SEL_2  GPR1 = 0x02 << 10 //  spdif.spdif_srclk
+	SAI3_MCLK3_SEL_3  GPR1 = 0x03 << 10 //  spdif.spdif_outclock
+	GINT              GPR1 = 0x01 << 12 //+ Global interrupt "0" bit (connected to ARM M7 IRQ#0 and GPC)
+	ENET1_CLK_SEL     GPR1 = 0x01 << 13 //+ ENET1 reference clock mode select.
+	ENET2_CLK_SEL     GPR1 = 0x01 << 14 //+ ENET2 reference clock mode select.
+	USB_EXP_MODE      GPR1 = 0x01 << 15 //+ USB Exposure mode
+	ENET1_TX_CLK_DIR  GPR1 = 0x01 << 17 //+ ENET1_TX_CLK data direction control
+	ENET2_TX_CLK_DIR  GPR1 = 0x01 << 18 //+ ENET2_TX_CLK data direction control
+	SAI1_MCLK_DIR     GPR1 = 0x01 << 19 //+ sai1.MCLK signal direction control
+	SAI2_MCLK_DIR     GPR1 = 0x01 << 20 //+ sai2.MCLK signal direction control
+	SAI3_MCLK_DIR     GPR1 = 0x01 << 21 //+ sai3.MCLK signal direction control
+	EXC_MON           GPR1 = 0x01 << 22 //+ Exclusive monitor response select of illegal command
+	ENET_IPG_CLK_S_EN GPR1 = 0x01 << 23 //+ ENET and ENET2 ipg_clk_s clock gating enable
+	CM7_FORCE_HCLK_EN GPR1 = 0x01 << 31 //+ ARM CM7 platform AHB clock enable
 )
 
 const (
@@ -135,314 +111,280 @@ const (
 )
 
 const (
-	AXBS_L_AHBXL_HIGH_PRIORITY   GPR2 = 0x01 << 0  //+ AXBS_L AHBXL master has higher priority.Do not set both DMA and AHBXL to high priority.
-	AXBS_L_AHBXL_HIGH_PRIORITY_0 GPR2 = 0x00 << 0  //  AXBS_L AHBXL master does not have high priority
-	AXBS_L_AHBXL_HIGH_PRIORITY_1 GPR2 = 0x01 << 0  //  AXBS_P AHBXL master has high priority
-	AXBS_L_DMA_HIGH_PRIORITY     GPR2 = 0x01 << 1  //+ AXBS_L DMA master has higher priority.Do not set both DMA and AHBXL to high priority.
-	AXBS_L_DMA_HIGH_PRIORITY_0   GPR2 = 0x00 << 1  //  AXBS_L DMA master does not have high priority
-	AXBS_L_DMA_HIGH_PRIORITY_1   GPR2 = 0x01 << 1  //  AXBS_L DMA master has high priority
-	AXBS_L_FORCE_ROUND_ROBIN     GPR2 = 0x01 << 2  //+ Force Round Robin in AXBS_L
-	AXBS_L_FORCE_ROUND_ROBIN_0   GPR2 = 0x00 << 2  //  AXBS_L masters are not arbitored in round robin, depending on DMA and AHBXL master priority settings.
-	AXBS_L_FORCE_ROUND_ROBIN_1   GPR2 = 0x01 << 2  //  AXBS_L masters are arbitored in round robin
-	AXBS_P_M0_HIGH_PRIORITY      GPR2 = 0x01 << 3  //+ AXBS_P M0 master has higher priority.Do not set both M1 and M0 to high priority.
-	AXBS_P_M0_HIGH_PRIORITY_0    GPR2 = 0x00 << 3  //  AXBS_P M0 master doesn't have high priority
-	AXBS_P_M0_HIGH_PRIORITY_1    GPR2 = 0x01 << 3  //  AXBS_P M0 master has high priority
-	AXBS_P_M1_HIGH_PRIORITY      GPR2 = 0x01 << 4  //+ AXBS_P M1 master has higher priority.Do not set both M1 and M0 to high priority.
-	AXBS_P_M1_HIGH_PRIORITY_0    GPR2 = 0x00 << 4  //  AXBS_P M1 master does not have high priority
-	AXBS_P_M1_HIGH_PRIORITY_1    GPR2 = 0x01 << 4  //  AXBS_P M1 master has high priority
-	AXBS_P_FORCE_ROUND_ROBIN     GPR2 = 0x01 << 5  //+ Force Round Robin in AXBS_P. This bit can override master M0 M1 high priority configuration.
-	AXBS_P_FORCE_ROUND_ROBIN_0   GPR2 = 0x00 << 5  //  AXBS_P masters are not arbitored in round robin, depending on M0/M1 master priority settings.
-	AXBS_P_FORCE_ROUND_ROBIN_1   GPR2 = 0x01 << 5  //  AXBS_P masters are arbitored in round robin
-	CANFD_FILTER_BYPASS          GPR2 = 0x01 << 6  //+ Disable CANFD filter
-	CANFD_FILTER_BYPASS_0        GPR2 = 0x00 << 6  //  enable CANFD filter
-	CANFD_FILTER_BYPASS_1        GPR2 = 0x01 << 6  //  disable CANFD filter
-	L2_MEM_EN_POWERSAVING        GPR2 = 0x01 << 12 //+ enable power saving features on L2 memory
-	L2_MEM_EN_POWERSAVING_0      GPR2 = 0x00 << 12 //  none memory power saving features enabled, SHUTDOWN/DEEPSLEEP/LIGHTSLEEP will have no effect
-	L2_MEM_EN_POWERSAVING_1      GPR2 = 0x01 << 12 //  memory power saving features enabled, set SHUTDOWN/DEEPSLEEP/LIGHTSLEEP (priority high to low) to enable power saving levels
-	RAM_AUTO_CLK_GATING_EN       GPR2 = 0x01 << 13 //+ Automatically gate off RAM clock when RAM is not accessed.
-	RAM_AUTO_CLK_GATING_EN_0     GPR2 = 0x00 << 13 //  disable automatically gate off RAM clock
-	RAM_AUTO_CLK_GATING_EN_1     GPR2 = 0x01 << 13 //  enable automatically gate off RAM clock
-	L2_MEM_DEEPSLEEP             GPR2 = 0x01 << 14 //+ control how memory enter Deep Sleep mode (shutdown periphery power, but maintain memory contents, outputs of memory are pulled low)
-	L2_MEM_DEEPSLEEP_0           GPR2 = 0x00 << 14 //  no force sleep control supported, memory deep sleep mode only entered when whole system in stop mode
-	L2_MEM_DEEPSLEEP_1           GPR2 = 0x01 << 14 //  force memory into deep sleep mode
-	MQS_CLK_DIV                  GPR2 = 0xFF << 16 //+ Divider ratio control for mclk from hmclk. mclk frequency = 1/(n+1) * hmclk frequency.
-	DIVIDE_1                     GPR2 = 0x00 << 16 //  mclk frequency = 1/1 * hmclk frequency
-	DIVIDE_2                     GPR2 = 0x01 << 16 //  mclk frequency = 1/2 * hmclk frequency
-	DIVIDE_3                     GPR2 = 0x02 << 16 //  mclk frequency = 1/3 * hmclk frequency
-	DIVIDE_4                     GPR2 = 0x03 << 16 //  mclk frequency = 1/4 * hmclk frequency
-	DIVIDE_5                     GPR2 = 0x04 << 16 //  mclk frequency = 1/5 * hmclk frequency
-	DIVIDE_6                     GPR2 = 0x05 << 16 //  mclk frequency = 1/6 * hmclk frequency
-	DIVIDE_7                     GPR2 = 0x06 << 16 //  mclk frequency = 1/7 * hmclk frequency
-	DIVIDE_8                     GPR2 = 0x07 << 16 //  mclk frequency = 1/8 * hmclk frequency
-	DIVIDE_9                     GPR2 = 0x08 << 16 //  mclk frequency = 1/9 * hmclk frequency
-	DIVIDE_10                    GPR2 = 0x09 << 16 //  mclk frequency = 1/10 * hmclk frequency
-	DIVIDE_11                    GPR2 = 0x0A << 16 //  mclk frequency = 1/11 * hmclk frequency
-	DIVIDE_12                    GPR2 = 0x0B << 16 //  mclk frequency = 1/12 * hmclk frequency
-	DIVIDE_13                    GPR2 = 0x0C << 16 //  mclk frequency = 1/13 * hmclk frequency
-	DIVIDE_14                    GPR2 = 0x0D << 16 //  mclk frequency = 1/14 * hmclk frequency
-	DIVIDE_15                    GPR2 = 0x0E << 16 //  mclk frequency = 1/15 * hmclk frequency
-	DIVIDE_16                    GPR2 = 0x0F << 16 //  mclk frequency = 1/16 * hmclk frequency
-	DIVIDE_17                    GPR2 = 0x10 << 16 //  mclk frequency = 1/17 * hmclk frequency
-	DIVIDE_18                    GPR2 = 0x11 << 16 //  mclk frequency = 1/18 * hmclk frequency
-	DIVIDE_19                    GPR2 = 0x12 << 16 //  mclk frequency = 1/19 * hmclk frequency
-	DIVIDE_20                    GPR2 = 0x13 << 16 //  mclk frequency = 1/20 * hmclk frequency
-	DIVIDE_21                    GPR2 = 0x14 << 16 //  mclk frequency = 1/21 * hmclk frequency
-	DIVIDE_22                    GPR2 = 0x15 << 16 //  mclk frequency = 1/22 * hmclk frequency
-	DIVIDE_23                    GPR2 = 0x16 << 16 //  mclk frequency = 1/23 * hmclk frequency
-	DIVIDE_24                    GPR2 = 0x17 << 16 //  mclk frequency = 1/24 * hmclk frequency
-	DIVIDE_25                    GPR2 = 0x18 << 16 //  mclk frequency = 1/25 * hmclk frequency
-	DIVIDE_26                    GPR2 = 0x19 << 16 //  mclk frequency = 1/26 * hmclk frequency
-	DIVIDE_27                    GPR2 = 0x1A << 16 //  mclk frequency = 1/27 * hmclk frequency
-	DIVIDE_28                    GPR2 = 0x1B << 16 //  mclk frequency = 1/28 * hmclk frequency
-	DIVIDE_29                    GPR2 = 0x1C << 16 //  mclk frequency = 1/29 * hmclk frequency
-	DIVIDE_30                    GPR2 = 0x1D << 16 //  mclk frequency = 1/30 * hmclk frequency
-	DIVIDE_31                    GPR2 = 0x1E << 16 //  mclk frequency = 1/31 * hmclk frequency
-	DIVIDE_32                    GPR2 = 0x1F << 16 //  mclk frequency = 1/32 * hmclk frequency
-	DIVIDE_33                    GPR2 = 0x20 << 16 //  mclk frequency = 1/33 * hmclk frequency
-	DIVIDE_34                    GPR2 = 0x21 << 16 //  mclk frequency = 1/34 * hmclk frequency
-	DIVIDE_35                    GPR2 = 0x22 << 16 //  mclk frequency = 1/35 * hmclk frequency
-	DIVIDE_36                    GPR2 = 0x23 << 16 //  mclk frequency = 1/36 * hmclk frequency
-	DIVIDE_37                    GPR2 = 0x24 << 16 //  mclk frequency = 1/37 * hmclk frequency
-	DIVIDE_38                    GPR2 = 0x25 << 16 //  mclk frequency = 1/38 * hmclk frequency
-	DIVIDE_39                    GPR2 = 0x26 << 16 //  mclk frequency = 1/39 * hmclk frequency
-	DIVIDE_40                    GPR2 = 0x27 << 16 //  mclk frequency = 1/40 * hmclk frequency
-	DIVIDE_41                    GPR2 = 0x28 << 16 //  mclk frequency = 1/41 * hmclk frequency
-	DIVIDE_42                    GPR2 = 0x29 << 16 //  mclk frequency = 1/42 * hmclk frequency
-	DIVIDE_43                    GPR2 = 0x2A << 16 //  mclk frequency = 1/43 * hmclk frequency
-	DIVIDE_44                    GPR2 = 0x2B << 16 //  mclk frequency = 1/44 * hmclk frequency
-	DIVIDE_45                    GPR2 = 0x2C << 16 //  mclk frequency = 1/45 * hmclk frequency
-	DIVIDE_46                    GPR2 = 0x2D << 16 //  mclk frequency = 1/46 * hmclk frequency
-	DIVIDE_47                    GPR2 = 0x2E << 16 //  mclk frequency = 1/47 * hmclk frequency
-	DIVIDE_48                    GPR2 = 0x2F << 16 //  mclk frequency = 1/48 * hmclk frequency
-	DIVIDE_49                    GPR2 = 0x30 << 16 //  mclk frequency = 1/49 * hmclk frequency
-	DIVIDE_50                    GPR2 = 0x31 << 16 //  mclk frequency = 1/50 * hmclk frequency
-	DIVIDE_51                    GPR2 = 0x32 << 16 //  mclk frequency = 1/51 * hmclk frequency
-	DIVIDE_52                    GPR2 = 0x33 << 16 //  mclk frequency = 1/52 * hmclk frequency
-	DIVIDE_53                    GPR2 = 0x34 << 16 //  mclk frequency = 1/53 * hmclk frequency
-	DIVIDE_54                    GPR2 = 0x35 << 16 //  mclk frequency = 1/54 * hmclk frequency
-	DIVIDE_55                    GPR2 = 0x36 << 16 //  mclk frequency = 1/55 * hmclk frequency
-	DIVIDE_56                    GPR2 = 0x37 << 16 //  mclk frequency = 1/56 * hmclk frequency
-	DIVIDE_57                    GPR2 = 0x38 << 16 //  mclk frequency = 1/57 * hmclk frequency
-	DIVIDE_58                    GPR2 = 0x39 << 16 //  mclk frequency = 1/58 * hmclk frequency
-	DIVIDE_59                    GPR2 = 0x3A << 16 //  mclk frequency = 1/59 * hmclk frequency
-	DIVIDE_60                    GPR2 = 0x3B << 16 //  mclk frequency = 1/60 * hmclk frequency
-	DIVIDE_61                    GPR2 = 0x3C << 16 //  mclk frequency = 1/61 * hmclk frequency
-	DIVIDE_62                    GPR2 = 0x3D << 16 //  mclk frequency = 1/62 * hmclk frequency
-	DIVIDE_63                    GPR2 = 0x3E << 16 //  mclk frequency = 1/63 * hmclk frequency
-	DIVIDE_64                    GPR2 = 0x3F << 16 //  mclk frequency = 1/64 * hmclk frequency
-	DIVIDE_65                    GPR2 = 0x40 << 16 //  mclk frequency = 1/65 * hmclk frequency
-	DIVIDE_66                    GPR2 = 0x41 << 16 //  mclk frequency = 1/66 * hmclk frequency
-	DIVIDE_67                    GPR2 = 0x42 << 16 //  mclk frequency = 1/67 * hmclk frequency
-	DIVIDE_68                    GPR2 = 0x43 << 16 //  mclk frequency = 1/68 * hmclk frequency
-	DIVIDE_69                    GPR2 = 0x44 << 16 //  mclk frequency = 1/69 * hmclk frequency
-	DIVIDE_70                    GPR2 = 0x45 << 16 //  mclk frequency = 1/70 * hmclk frequency
-	DIVIDE_71                    GPR2 = 0x46 << 16 //  mclk frequency = 1/71 * hmclk frequency
-	DIVIDE_72                    GPR2 = 0x47 << 16 //  mclk frequency = 1/72 * hmclk frequency
-	DIVIDE_73                    GPR2 = 0x48 << 16 //  mclk frequency = 1/73 * hmclk frequency
-	DIVIDE_74                    GPR2 = 0x49 << 16 //  mclk frequency = 1/74 * hmclk frequency
-	DIVIDE_75                    GPR2 = 0x4A << 16 //  mclk frequency = 1/75 * hmclk frequency
-	DIVIDE_76                    GPR2 = 0x4B << 16 //  mclk frequency = 1/76 * hmclk frequency
-	DIVIDE_77                    GPR2 = 0x4C << 16 //  mclk frequency = 1/77 * hmclk frequency
-	DIVIDE_78                    GPR2 = 0x4D << 16 //  mclk frequency = 1/78 * hmclk frequency
-	DIVIDE_79                    GPR2 = 0x4E << 16 //  mclk frequency = 1/79 * hmclk frequency
-	DIVIDE_80                    GPR2 = 0x4F << 16 //  mclk frequency = 1/80 * hmclk frequency
-	DIVIDE_81                    GPR2 = 0x50 << 16 //  mclk frequency = 1/81 * hmclk frequency
-	DIVIDE_82                    GPR2 = 0x51 << 16 //  mclk frequency = 1/82 * hmclk frequency
-	DIVIDE_83                    GPR2 = 0x52 << 16 //  mclk frequency = 1/83 * hmclk frequency
-	DIVIDE_84                    GPR2 = 0x53 << 16 //  mclk frequency = 1/84 * hmclk frequency
-	DIVIDE_85                    GPR2 = 0x54 << 16 //  mclk frequency = 1/85 * hmclk frequency
-	DIVIDE_86                    GPR2 = 0x55 << 16 //  mclk frequency = 1/86 * hmclk frequency
-	DIVIDE_87                    GPR2 = 0x56 << 16 //  mclk frequency = 1/87 * hmclk frequency
-	DIVIDE_88                    GPR2 = 0x57 << 16 //  mclk frequency = 1/88 * hmclk frequency
-	DIVIDE_89                    GPR2 = 0x58 << 16 //  mclk frequency = 1/89 * hmclk frequency
-	DIVIDE_90                    GPR2 = 0x59 << 16 //  mclk frequency = 1/90 * hmclk frequency
-	DIVIDE_91                    GPR2 = 0x5A << 16 //  mclk frequency = 1/91 * hmclk frequency
-	DIVIDE_92                    GPR2 = 0x5B << 16 //  mclk frequency = 1/92 * hmclk frequency
-	DIVIDE_93                    GPR2 = 0x5C << 16 //  mclk frequency = 1/93 * hmclk frequency
-	DIVIDE_94                    GPR2 = 0x5D << 16 //  mclk frequency = 1/94 * hmclk frequency
-	DIVIDE_95                    GPR2 = 0x5E << 16 //  mclk frequency = 1/95 * hmclk frequency
-	DIVIDE_96                    GPR2 = 0x5F << 16 //  mclk frequency = 1/96 * hmclk frequency
-	DIVIDE_97                    GPR2 = 0x60 << 16 //  mclk frequency = 1/97 * hmclk frequency
-	DIVIDE_98                    GPR2 = 0x61 << 16 //  mclk frequency = 1/98 * hmclk frequency
-	DIVIDE_99                    GPR2 = 0x62 << 16 //  mclk frequency = 1/99 * hmclk frequency
-	DIVIDE_100                   GPR2 = 0x63 << 16 //  mclk frequency = 1/100 * hmclk frequency
-	DIVIDE_101                   GPR2 = 0x64 << 16 //  mclk frequency = 1/101 * hmclk frequency
-	DIVIDE_102                   GPR2 = 0x65 << 16 //  mclk frequency = 1/102 * hmclk frequency
-	DIVIDE_103                   GPR2 = 0x66 << 16 //  mclk frequency = 1/103 * hmclk frequency
-	DIVIDE_104                   GPR2 = 0x67 << 16 //  mclk frequency = 1/104 * hmclk frequency
-	DIVIDE_105                   GPR2 = 0x68 << 16 //  mclk frequency = 1/105 * hmclk frequency
-	DIVIDE_106                   GPR2 = 0x69 << 16 //  mclk frequency = 1/106 * hmclk frequency
-	DIVIDE_107                   GPR2 = 0x6A << 16 //  mclk frequency = 1/107 * hmclk frequency
-	DIVIDE_108                   GPR2 = 0x6B << 16 //  mclk frequency = 1/108 * hmclk frequency
-	DIVIDE_109                   GPR2 = 0x6C << 16 //  mclk frequency = 1/109 * hmclk frequency
-	DIVIDE_110                   GPR2 = 0x6D << 16 //  mclk frequency = 1/110 * hmclk frequency
-	DIVIDE_111                   GPR2 = 0x6E << 16 //  mclk frequency = 1/111 * hmclk frequency
-	DIVIDE_112                   GPR2 = 0x6F << 16 //  mclk frequency = 1/112 * hmclk frequency
-	DIVIDE_113                   GPR2 = 0x70 << 16 //  mclk frequency = 1/113 * hmclk frequency
-	DIVIDE_114                   GPR2 = 0x71 << 16 //  mclk frequency = 1/114 * hmclk frequency
-	DIVIDE_115                   GPR2 = 0x72 << 16 //  mclk frequency = 1/115 * hmclk frequency
-	DIVIDE_116                   GPR2 = 0x73 << 16 //  mclk frequency = 1/116 * hmclk frequency
-	DIVIDE_117                   GPR2 = 0x74 << 16 //  mclk frequency = 1/117 * hmclk frequency
-	DIVIDE_118                   GPR2 = 0x75 << 16 //  mclk frequency = 1/118 * hmclk frequency
-	DIVIDE_119                   GPR2 = 0x76 << 16 //  mclk frequency = 1/119 * hmclk frequency
-	DIVIDE_120                   GPR2 = 0x77 << 16 //  mclk frequency = 1/120 * hmclk frequency
-	DIVIDE_121                   GPR2 = 0x78 << 16 //  mclk frequency = 1/121 * hmclk frequency
-	DIVIDE_122                   GPR2 = 0x79 << 16 //  mclk frequency = 1/122 * hmclk frequency
-	DIVIDE_123                   GPR2 = 0x7A << 16 //  mclk frequency = 1/123 * hmclk frequency
-	DIVIDE_124                   GPR2 = 0x7B << 16 //  mclk frequency = 1/124 * hmclk frequency
-	DIVIDE_125                   GPR2 = 0x7C << 16 //  mclk frequency = 1/125 * hmclk frequency
-	DIVIDE_126                   GPR2 = 0x7D << 16 //  mclk frequency = 1/126 * hmclk frequency
-	DIVIDE_127                   GPR2 = 0x7E << 16 //  mclk frequency = 1/127 * hmclk frequency
-	DIVIDE_128                   GPR2 = 0x7F << 16 //  mclk frequency = 1/128 * hmclk frequency
-	DIVIDE_129                   GPR2 = 0x80 << 16 //  mclk frequency = 1/129 * hmclk frequency
-	DIVIDE_130                   GPR2 = 0x81 << 16 //  mclk frequency = 1/130 * hmclk frequency
-	DIVIDE_131                   GPR2 = 0x82 << 16 //  mclk frequency = 1/131 * hmclk frequency
-	DIVIDE_132                   GPR2 = 0x83 << 16 //  mclk frequency = 1/132 * hmclk frequency
-	DIVIDE_133                   GPR2 = 0x84 << 16 //  mclk frequency = 1/133 * hmclk frequency
-	DIVIDE_134                   GPR2 = 0x85 << 16 //  mclk frequency = 1/134 * hmclk frequency
-	DIVIDE_135                   GPR2 = 0x86 << 16 //  mclk frequency = 1/135 * hmclk frequency
-	DIVIDE_136                   GPR2 = 0x87 << 16 //  mclk frequency = 1/136 * hmclk frequency
-	DIVIDE_137                   GPR2 = 0x88 << 16 //  mclk frequency = 1/137 * hmclk frequency
-	DIVIDE_138                   GPR2 = 0x89 << 16 //  mclk frequency = 1/138 * hmclk frequency
-	DIVIDE_139                   GPR2 = 0x8A << 16 //  mclk frequency = 1/139 * hmclk frequency
-	DIVIDE_140                   GPR2 = 0x8B << 16 //  mclk frequency = 1/140 * hmclk frequency
-	DIVIDE_141                   GPR2 = 0x8C << 16 //  mclk frequency = 1/141 * hmclk frequency
-	DIVIDE_142                   GPR2 = 0x8D << 16 //  mclk frequency = 1/142 * hmclk frequency
-	DIVIDE_143                   GPR2 = 0x8E << 16 //  mclk frequency = 1/143 * hmclk frequency
-	DIVIDE_144                   GPR2 = 0x8F << 16 //  mclk frequency = 1/144 * hmclk frequency
-	DIVIDE_145                   GPR2 = 0x90 << 16 //  mclk frequency = 1/145 * hmclk frequency
-	DIVIDE_146                   GPR2 = 0x91 << 16 //  mclk frequency = 1/146 * hmclk frequency
-	DIVIDE_147                   GPR2 = 0x92 << 16 //  mclk frequency = 1/147 * hmclk frequency
-	DIVIDE_148                   GPR2 = 0x93 << 16 //  mclk frequency = 1/148 * hmclk frequency
-	DIVIDE_149                   GPR2 = 0x94 << 16 //  mclk frequency = 1/149 * hmclk frequency
-	DIVIDE_150                   GPR2 = 0x95 << 16 //  mclk frequency = 1/150 * hmclk frequency
-	DIVIDE_151                   GPR2 = 0x96 << 16 //  mclk frequency = 1/151 * hmclk frequency
-	DIVIDE_152                   GPR2 = 0x97 << 16 //  mclk frequency = 1/152 * hmclk frequency
-	DIVIDE_153                   GPR2 = 0x98 << 16 //  mclk frequency = 1/153 * hmclk frequency
-	DIVIDE_154                   GPR2 = 0x99 << 16 //  mclk frequency = 1/154 * hmclk frequency
-	DIVIDE_155                   GPR2 = 0x9A << 16 //  mclk frequency = 1/155 * hmclk frequency
-	DIVIDE_156                   GPR2 = 0x9B << 16 //  mclk frequency = 1/156 * hmclk frequency
-	DIVIDE_157                   GPR2 = 0x9C << 16 //  mclk frequency = 1/157 * hmclk frequency
-	DIVIDE_158                   GPR2 = 0x9D << 16 //  mclk frequency = 1/158 * hmclk frequency
-	DIVIDE_159                   GPR2 = 0x9E << 16 //  mclk frequency = 1/159 * hmclk frequency
-	DIVIDE_160                   GPR2 = 0x9F << 16 //  mclk frequency = 1/160 * hmclk frequency
-	DIVIDE_161                   GPR2 = 0xA0 << 16 //  mclk frequency = 1/161 * hmclk frequency
-	DIVIDE_162                   GPR2 = 0xA1 << 16 //  mclk frequency = 1/162 * hmclk frequency
-	DIVIDE_163                   GPR2 = 0xA2 << 16 //  mclk frequency = 1/163 * hmclk frequency
-	DIVIDE_164                   GPR2 = 0xA3 << 16 //  mclk frequency = 1/164 * hmclk frequency
-	DIVIDE_165                   GPR2 = 0xA4 << 16 //  mclk frequency = 1/165 * hmclk frequency
-	DIVIDE_166                   GPR2 = 0xA5 << 16 //  mclk frequency = 1/166 * hmclk frequency
-	DIVIDE_167                   GPR2 = 0xA6 << 16 //  mclk frequency = 1/167 * hmclk frequency
-	DIVIDE_168                   GPR2 = 0xA7 << 16 //  mclk frequency = 1/168 * hmclk frequency
-	DIVIDE_169                   GPR2 = 0xA8 << 16 //  mclk frequency = 1/169 * hmclk frequency
-	DIVIDE_170                   GPR2 = 0xA9 << 16 //  mclk frequency = 1/170 * hmclk frequency
-	DIVIDE_171                   GPR2 = 0xAA << 16 //  mclk frequency = 1/171 * hmclk frequency
-	DIVIDE_172                   GPR2 = 0xAB << 16 //  mclk frequency = 1/172 * hmclk frequency
-	DIVIDE_173                   GPR2 = 0xAC << 16 //  mclk frequency = 1/173 * hmclk frequency
-	DIVIDE_174                   GPR2 = 0xAD << 16 //  mclk frequency = 1/174 * hmclk frequency
-	DIVIDE_175                   GPR2 = 0xAE << 16 //  mclk frequency = 1/175 * hmclk frequency
-	DIVIDE_176                   GPR2 = 0xAF << 16 //  mclk frequency = 1/176 * hmclk frequency
-	DIVIDE_177                   GPR2 = 0xB0 << 16 //  mclk frequency = 1/177 * hmclk frequency
-	DIVIDE_178                   GPR2 = 0xB1 << 16 //  mclk frequency = 1/178 * hmclk frequency
-	DIVIDE_179                   GPR2 = 0xB2 << 16 //  mclk frequency = 1/179 * hmclk frequency
-	DIVIDE_180                   GPR2 = 0xB3 << 16 //  mclk frequency = 1/180 * hmclk frequency
-	DIVIDE_181                   GPR2 = 0xB4 << 16 //  mclk frequency = 1/181 * hmclk frequency
-	DIVIDE_182                   GPR2 = 0xB5 << 16 //  mclk frequency = 1/182 * hmclk frequency
-	DIVIDE_183                   GPR2 = 0xB6 << 16 //  mclk frequency = 1/183 * hmclk frequency
-	DIVIDE_184                   GPR2 = 0xB7 << 16 //  mclk frequency = 1/184 * hmclk frequency
-	DIVIDE_185                   GPR2 = 0xB8 << 16 //  mclk frequency = 1/185 * hmclk frequency
-	DIVIDE_186                   GPR2 = 0xB9 << 16 //  mclk frequency = 1/186 * hmclk frequency
-	DIVIDE_187                   GPR2 = 0xBA << 16 //  mclk frequency = 1/187 * hmclk frequency
-	DIVIDE_188                   GPR2 = 0xBB << 16 //  mclk frequency = 1/188 * hmclk frequency
-	DIVIDE_189                   GPR2 = 0xBC << 16 //  mclk frequency = 1/189 * hmclk frequency
-	DIVIDE_190                   GPR2 = 0xBD << 16 //  mclk frequency = 1/190 * hmclk frequency
-	DIVIDE_191                   GPR2 = 0xBE << 16 //  mclk frequency = 1/191 * hmclk frequency
-	DIVIDE_192                   GPR2 = 0xBF << 16 //  mclk frequency = 1/192 * hmclk frequency
-	DIVIDE_193                   GPR2 = 0xC0 << 16 //  mclk frequency = 1/193 * hmclk frequency
-	DIVIDE_194                   GPR2 = 0xC1 << 16 //  mclk frequency = 1/194 * hmclk frequency
-	DIVIDE_195                   GPR2 = 0xC2 << 16 //  mclk frequency = 1/195 * hmclk frequency
-	DIVIDE_196                   GPR2 = 0xC3 << 16 //  mclk frequency = 1/196 * hmclk frequency
-	DIVIDE_197                   GPR2 = 0xC4 << 16 //  mclk frequency = 1/197 * hmclk frequency
-	DIVIDE_198                   GPR2 = 0xC5 << 16 //  mclk frequency = 1/198 * hmclk frequency
-	DIVIDE_199                   GPR2 = 0xC6 << 16 //  mclk frequency = 1/199 * hmclk frequency
-	DIVIDE_200                   GPR2 = 0xC7 << 16 //  mclk frequency = 1/200 * hmclk frequency
-	DIVIDE_201                   GPR2 = 0xC8 << 16 //  mclk frequency = 1/201 * hmclk frequency
-	DIVIDE_202                   GPR2 = 0xC9 << 16 //  mclk frequency = 1/202 * hmclk frequency
-	DIVIDE_203                   GPR2 = 0xCA << 16 //  mclk frequency = 1/203 * hmclk frequency
-	DIVIDE_204                   GPR2 = 0xCB << 16 //  mclk frequency = 1/204 * hmclk frequency
-	DIVIDE_205                   GPR2 = 0xCC << 16 //  mclk frequency = 1/205 * hmclk frequency
-	DIVIDE_206                   GPR2 = 0xCD << 16 //  mclk frequency = 1/206 * hmclk frequency
-	DIVIDE_207                   GPR2 = 0xCE << 16 //  mclk frequency = 1/207 * hmclk frequency
-	DIVIDE_208                   GPR2 = 0xCF << 16 //  mclk frequency = 1/208 * hmclk frequency
-	DIVIDE_209                   GPR2 = 0xD0 << 16 //  mclk frequency = 1/209 * hmclk frequency
-	DIVIDE_210                   GPR2 = 0xD1 << 16 //  mclk frequency = 1/210 * hmclk frequency
-	DIVIDE_211                   GPR2 = 0xD2 << 16 //  mclk frequency = 1/211 * hmclk frequency
-	DIVIDE_212                   GPR2 = 0xD3 << 16 //  mclk frequency = 1/212 * hmclk frequency
-	DIVIDE_213                   GPR2 = 0xD4 << 16 //  mclk frequency = 1/213 * hmclk frequency
-	DIVIDE_214                   GPR2 = 0xD5 << 16 //  mclk frequency = 1/214 * hmclk frequency
-	DIVIDE_215                   GPR2 = 0xD6 << 16 //  mclk frequency = 1/215 * hmclk frequency
-	DIVIDE_216                   GPR2 = 0xD7 << 16 //  mclk frequency = 1/216 * hmclk frequency
-	DIVIDE_217                   GPR2 = 0xD8 << 16 //  mclk frequency = 1/217 * hmclk frequency
-	DIVIDE_218                   GPR2 = 0xD9 << 16 //  mclk frequency = 1/218 * hmclk frequency
-	DIVIDE_219                   GPR2 = 0xDA << 16 //  mclk frequency = 1/219 * hmclk frequency
-	DIVIDE_220                   GPR2 = 0xDB << 16 //  mclk frequency = 1/220 * hmclk frequency
-	DIVIDE_221                   GPR2 = 0xDC << 16 //  mclk frequency = 1/221 * hmclk frequency
-	DIVIDE_222                   GPR2 = 0xDD << 16 //  mclk frequency = 1/222 * hmclk frequency
-	DIVIDE_223                   GPR2 = 0xDE << 16 //  mclk frequency = 1/223 * hmclk frequency
-	DIVIDE_224                   GPR2 = 0xDF << 16 //  mclk frequency = 1/224 * hmclk frequency
-	DIVIDE_225                   GPR2 = 0xE0 << 16 //  mclk frequency = 1/225 * hmclk frequency
-	DIVIDE_226                   GPR2 = 0xE1 << 16 //  mclk frequency = 1/226 * hmclk frequency
-	DIVIDE_227                   GPR2 = 0xE2 << 16 //  mclk frequency = 1/227 * hmclk frequency
-	DIVIDE_228                   GPR2 = 0xE3 << 16 //  mclk frequency = 1/228 * hmclk frequency
-	DIVIDE_229                   GPR2 = 0xE4 << 16 //  mclk frequency = 1/229 * hmclk frequency
-	DIVIDE_230                   GPR2 = 0xE5 << 16 //  mclk frequency = 1/230 * hmclk frequency
-	DIVIDE_231                   GPR2 = 0xE6 << 16 //  mclk frequency = 1/231 * hmclk frequency
-	DIVIDE_232                   GPR2 = 0xE7 << 16 //  mclk frequency = 1/232 * hmclk frequency
-	DIVIDE_233                   GPR2 = 0xE8 << 16 //  mclk frequency = 1/233 * hmclk frequency
-	DIVIDE_234                   GPR2 = 0xE9 << 16 //  mclk frequency = 1/234 * hmclk frequency
-	DIVIDE_235                   GPR2 = 0xEA << 16 //  mclk frequency = 1/235 * hmclk frequency
-	DIVIDE_236                   GPR2 = 0xEB << 16 //  mclk frequency = 1/236 * hmclk frequency
-	DIVIDE_237                   GPR2 = 0xEC << 16 //  mclk frequency = 1/237 * hmclk frequency
-	DIVIDE_238                   GPR2 = 0xED << 16 //  mclk frequency = 1/238 * hmclk frequency
-	DIVIDE_239                   GPR2 = 0xEE << 16 //  mclk frequency = 1/239 * hmclk frequency
-	DIVIDE_240                   GPR2 = 0xEF << 16 //  mclk frequency = 1/240 * hmclk frequency
-	DIVIDE_241                   GPR2 = 0xF0 << 16 //  mclk frequency = 1/241 * hmclk frequency
-	DIVIDE_242                   GPR2 = 0xF1 << 16 //  mclk frequency = 1/242 * hmclk frequency
-	DIVIDE_243                   GPR2 = 0xF2 << 16 //  mclk frequency = 1/243 * hmclk frequency
-	DIVIDE_244                   GPR2 = 0xF3 << 16 //  mclk frequency = 1/244 * hmclk frequency
-	DIVIDE_245                   GPR2 = 0xF4 << 16 //  mclk frequency = 1/245 * hmclk frequency
-	DIVIDE_246                   GPR2 = 0xF5 << 16 //  mclk frequency = 1/246 * hmclk frequency
-	DIVIDE_247                   GPR2 = 0xF6 << 16 //  mclk frequency = 1/247 * hmclk frequency
-	DIVIDE_248                   GPR2 = 0xF7 << 16 //  mclk frequency = 1/248 * hmclk frequency
-	DIVIDE_249                   GPR2 = 0xF8 << 16 //  mclk frequency = 1/249 * hmclk frequency
-	DIVIDE_250                   GPR2 = 0xF9 << 16 //  mclk frequency = 1/250 * hmclk frequency
-	DIVIDE_251                   GPR2 = 0xFA << 16 //  mclk frequency = 1/251 * hmclk frequency
-	DIVIDE_252                   GPR2 = 0xFB << 16 //  mclk frequency = 1/252 * hmclk frequency
-	DIVIDE_253                   GPR2 = 0xFC << 16 //  mclk frequency = 1/253 * hmclk frequency
-	DIVIDE_254                   GPR2 = 0xFD << 16 //  mclk frequency = 1/254 * hmclk frequency
-	DIVIDE_255                   GPR2 = 0xFE << 16 //  mclk frequency = 1/255 * hmclk frequency
-	DIVIDE_256                   GPR2 = 0xFF << 16 //  mclk frequency = 1/256 * hmclk frequency
-	MQS_SW_RST                   GPR2 = 0x01 << 24 //+ MQS software reset
-	MQS_SW_RST_0                 GPR2 = 0x00 << 24 //  Exit software reset for MQS
-	MQS_SW_RST_1                 GPR2 = 0x01 << 24 //  Enable software reset for MQS
-	MQS_EN                       GPR2 = 0x01 << 25 //+ MQS enable.
-	MQS_EN_0                     GPR2 = 0x00 << 25 //  Disable MQS
-	MQS_EN_1                     GPR2 = 0x01 << 25 //  Enable MQS
-	MQS_OVERSAMPLE               GPR2 = 0x01 << 26 //+ Used to control the PWM oversampling rate compared with mclk.
-	MQS_OVERSAMPLE_0             GPR2 = 0x00 << 26 //  32
-	MQS_OVERSAMPLE_1             GPR2 = 0x01 << 26 //  64
-	QTIMER1_TMR_CNTS_FREEZE      GPR2 = 0x01 << 28 //+ QTIMER1 timer counter freeze
-	QTIMER1_TMR_CNTS_FREEZE_0    GPR2 = 0x00 << 28 //  timer counter work normally
-	QTIMER1_TMR_CNTS_FREEZE_1    GPR2 = 0x01 << 28 //  reset counter and ouput flags
-	QTIMER2_TMR_CNTS_FREEZE      GPR2 = 0x01 << 29 //+ QTIMER2 timer counter freeze
-	QTIMER2_TMR_CNTS_FREEZE_0    GPR2 = 0x00 << 29 //  timer counter work normally
-	QTIMER2_TMR_CNTS_FREEZE_1    GPR2 = 0x01 << 29 //  reset counter and ouput flags
-	QTIMER3_TMR_CNTS_FREEZE      GPR2 = 0x01 << 30 //+ QTIMER3 timer counter freeze
-	QTIMER3_TMR_CNTS_FREEZE_0    GPR2 = 0x00 << 30 //  timer counter work normally
-	QTIMER3_TMR_CNTS_FREEZE_1    GPR2 = 0x01 << 30 //  reset counter and ouput flags
-	QTIMER4_TMR_CNTS_FREEZE      GPR2 = 0x01 << 31 //+ QTIMER4 timer counter freeze
-	QTIMER4_TMR_CNTS_FREEZE_0    GPR2 = 0x00 << 31 //  timer counter work normally
-	QTIMER4_TMR_CNTS_FREEZE_1    GPR2 = 0x01 << 31 //  reset counter and ouput flags
+	AXBS_L_AHBXL_HIGH_PRIORITY GPR2 = 0x01 << 0  //+ AXBS_L AHBXL master has higher priority.Do not set both DMA and AHBXL to high priority.
+	AXBS_L_DMA_HIGH_PRIORITY   GPR2 = 0x01 << 1  //+ AXBS_L DMA master has higher priority.Do not set both DMA and AHBXL to high priority.
+	AXBS_L_FORCE_ROUND_ROBIN   GPR2 = 0x01 << 2  //+ Force Round Robin in AXBS_L
+	AXBS_P_M0_HIGH_PRIORITY    GPR2 = 0x01 << 3  //+ AXBS_P M0 master has higher priority.Do not set both M1 and M0 to high priority.
+	AXBS_P_M1_HIGH_PRIORITY    GPR2 = 0x01 << 4  //+ AXBS_P M1 master has higher priority.Do not set both M1 and M0 to high priority.
+	AXBS_P_FORCE_ROUND_ROBIN   GPR2 = 0x01 << 5  //+ Force Round Robin in AXBS_P. This bit can override master M0 M1 high priority configuration.
+	CANFD_FILTER_BYPASS        GPR2 = 0x01 << 6  //+ Disable CANFD filter
+	L2_MEM_EN_POWERSAVING      GPR2 = 0x01 << 12 //+ enable power saving features on L2 memory
+	RAM_AUTO_CLK_GATING_EN     GPR2 = 0x01 << 13 //+ Automatically gate off RAM clock when RAM is not accessed.
+	L2_MEM_DEEPSLEEP           GPR2 = 0x01 << 14 //+ control how memory enter Deep Sleep mode (shutdown periphery power, but maintain memory contents, outputs of memory are pulled low)
+	MQS_CLK_DIV                GPR2 = 0xFF << 16 //+ Divider ratio control for mclk from hmclk. mclk frequency = 1/(n+1) * hmclk frequency.
+	DIVIDE_1                   GPR2 = 0x00 << 16 //  mclk frequency = 1/1 * hmclk frequency
+	DIVIDE_2                   GPR2 = 0x01 << 16 //  mclk frequency = 1/2 * hmclk frequency
+	DIVIDE_3                   GPR2 = 0x02 << 16 //  mclk frequency = 1/3 * hmclk frequency
+	DIVIDE_4                   GPR2 = 0x03 << 16 //  mclk frequency = 1/4 * hmclk frequency
+	DIVIDE_5                   GPR2 = 0x04 << 16 //  mclk frequency = 1/5 * hmclk frequency
+	DIVIDE_6                   GPR2 = 0x05 << 16 //  mclk frequency = 1/6 * hmclk frequency
+	DIVIDE_7                   GPR2 = 0x06 << 16 //  mclk frequency = 1/7 * hmclk frequency
+	DIVIDE_8                   GPR2 = 0x07 << 16 //  mclk frequency = 1/8 * hmclk frequency
+	DIVIDE_9                   GPR2 = 0x08 << 16 //  mclk frequency = 1/9 * hmclk frequency
+	DIVIDE_10                  GPR2 = 0x09 << 16 //  mclk frequency = 1/10 * hmclk frequency
+	DIVIDE_11                  GPR2 = 0x0A << 16 //  mclk frequency = 1/11 * hmclk frequency
+	DIVIDE_12                  GPR2 = 0x0B << 16 //  mclk frequency = 1/12 * hmclk frequency
+	DIVIDE_13                  GPR2 = 0x0C << 16 //  mclk frequency = 1/13 * hmclk frequency
+	DIVIDE_14                  GPR2 = 0x0D << 16 //  mclk frequency = 1/14 * hmclk frequency
+	DIVIDE_15                  GPR2 = 0x0E << 16 //  mclk frequency = 1/15 * hmclk frequency
+	DIVIDE_16                  GPR2 = 0x0F << 16 //  mclk frequency = 1/16 * hmclk frequency
+	DIVIDE_17                  GPR2 = 0x10 << 16 //  mclk frequency = 1/17 * hmclk frequency
+	DIVIDE_18                  GPR2 = 0x11 << 16 //  mclk frequency = 1/18 * hmclk frequency
+	DIVIDE_19                  GPR2 = 0x12 << 16 //  mclk frequency = 1/19 * hmclk frequency
+	DIVIDE_20                  GPR2 = 0x13 << 16 //  mclk frequency = 1/20 * hmclk frequency
+	DIVIDE_21                  GPR2 = 0x14 << 16 //  mclk frequency = 1/21 * hmclk frequency
+	DIVIDE_22                  GPR2 = 0x15 << 16 //  mclk frequency = 1/22 * hmclk frequency
+	DIVIDE_23                  GPR2 = 0x16 << 16 //  mclk frequency = 1/23 * hmclk frequency
+	DIVIDE_24                  GPR2 = 0x17 << 16 //  mclk frequency = 1/24 * hmclk frequency
+	DIVIDE_25                  GPR2 = 0x18 << 16 //  mclk frequency = 1/25 * hmclk frequency
+	DIVIDE_26                  GPR2 = 0x19 << 16 //  mclk frequency = 1/26 * hmclk frequency
+	DIVIDE_27                  GPR2 = 0x1A << 16 //  mclk frequency = 1/27 * hmclk frequency
+	DIVIDE_28                  GPR2 = 0x1B << 16 //  mclk frequency = 1/28 * hmclk frequency
+	DIVIDE_29                  GPR2 = 0x1C << 16 //  mclk frequency = 1/29 * hmclk frequency
+	DIVIDE_30                  GPR2 = 0x1D << 16 //  mclk frequency = 1/30 * hmclk frequency
+	DIVIDE_31                  GPR2 = 0x1E << 16 //  mclk frequency = 1/31 * hmclk frequency
+	DIVIDE_32                  GPR2 = 0x1F << 16 //  mclk frequency = 1/32 * hmclk frequency
+	DIVIDE_33                  GPR2 = 0x20 << 16 //  mclk frequency = 1/33 * hmclk frequency
+	DIVIDE_34                  GPR2 = 0x21 << 16 //  mclk frequency = 1/34 * hmclk frequency
+	DIVIDE_35                  GPR2 = 0x22 << 16 //  mclk frequency = 1/35 * hmclk frequency
+	DIVIDE_36                  GPR2 = 0x23 << 16 //  mclk frequency = 1/36 * hmclk frequency
+	DIVIDE_37                  GPR2 = 0x24 << 16 //  mclk frequency = 1/37 * hmclk frequency
+	DIVIDE_38                  GPR2 = 0x25 << 16 //  mclk frequency = 1/38 * hmclk frequency
+	DIVIDE_39                  GPR2 = 0x26 << 16 //  mclk frequency = 1/39 * hmclk frequency
+	DIVIDE_40                  GPR2 = 0x27 << 16 //  mclk frequency = 1/40 * hmclk frequency
+	DIVIDE_41                  GPR2 = 0x28 << 16 //  mclk frequency = 1/41 * hmclk frequency
+	DIVIDE_42                  GPR2 = 0x29 << 16 //  mclk frequency = 1/42 * hmclk frequency
+	DIVIDE_43                  GPR2 = 0x2A << 16 //  mclk frequency = 1/43 * hmclk frequency
+	DIVIDE_44                  GPR2 = 0x2B << 16 //  mclk frequency = 1/44 * hmclk frequency
+	DIVIDE_45                  GPR2 = 0x2C << 16 //  mclk frequency = 1/45 * hmclk frequency
+	DIVIDE_46                  GPR2 = 0x2D << 16 //  mclk frequency = 1/46 * hmclk frequency
+	DIVIDE_47                  GPR2 = 0x2E << 16 //  mclk frequency = 1/47 * hmclk frequency
+	DIVIDE_48                  GPR2 = 0x2F << 16 //  mclk frequency = 1/48 * hmclk frequency
+	DIVIDE_49                  GPR2 = 0x30 << 16 //  mclk frequency = 1/49 * hmclk frequency
+	DIVIDE_50                  GPR2 = 0x31 << 16 //  mclk frequency = 1/50 * hmclk frequency
+	DIVIDE_51                  GPR2 = 0x32 << 16 //  mclk frequency = 1/51 * hmclk frequency
+	DIVIDE_52                  GPR2 = 0x33 << 16 //  mclk frequency = 1/52 * hmclk frequency
+	DIVIDE_53                  GPR2 = 0x34 << 16 //  mclk frequency = 1/53 * hmclk frequency
+	DIVIDE_54                  GPR2 = 0x35 << 16 //  mclk frequency = 1/54 * hmclk frequency
+	DIVIDE_55                  GPR2 = 0x36 << 16 //  mclk frequency = 1/55 * hmclk frequency
+	DIVIDE_56                  GPR2 = 0x37 << 16 //  mclk frequency = 1/56 * hmclk frequency
+	DIVIDE_57                  GPR2 = 0x38 << 16 //  mclk frequency = 1/57 * hmclk frequency
+	DIVIDE_58                  GPR2 = 0x39 << 16 //  mclk frequency = 1/58 * hmclk frequency
+	DIVIDE_59                  GPR2 = 0x3A << 16 //  mclk frequency = 1/59 * hmclk frequency
+	DIVIDE_60                  GPR2 = 0x3B << 16 //  mclk frequency = 1/60 * hmclk frequency
+	DIVIDE_61                  GPR2 = 0x3C << 16 //  mclk frequency = 1/61 * hmclk frequency
+	DIVIDE_62                  GPR2 = 0x3D << 16 //  mclk frequency = 1/62 * hmclk frequency
+	DIVIDE_63                  GPR2 = 0x3E << 16 //  mclk frequency = 1/63 * hmclk frequency
+	DIVIDE_64                  GPR2 = 0x3F << 16 //  mclk frequency = 1/64 * hmclk frequency
+	DIVIDE_65                  GPR2 = 0x40 << 16 //  mclk frequency = 1/65 * hmclk frequency
+	DIVIDE_66                  GPR2 = 0x41 << 16 //  mclk frequency = 1/66 * hmclk frequency
+	DIVIDE_67                  GPR2 = 0x42 << 16 //  mclk frequency = 1/67 * hmclk frequency
+	DIVIDE_68                  GPR2 = 0x43 << 16 //  mclk frequency = 1/68 * hmclk frequency
+	DIVIDE_69                  GPR2 = 0x44 << 16 //  mclk frequency = 1/69 * hmclk frequency
+	DIVIDE_70                  GPR2 = 0x45 << 16 //  mclk frequency = 1/70 * hmclk frequency
+	DIVIDE_71                  GPR2 = 0x46 << 16 //  mclk frequency = 1/71 * hmclk frequency
+	DIVIDE_72                  GPR2 = 0x47 << 16 //  mclk frequency = 1/72 * hmclk frequency
+	DIVIDE_73                  GPR2 = 0x48 << 16 //  mclk frequency = 1/73 * hmclk frequency
+	DIVIDE_74                  GPR2 = 0x49 << 16 //  mclk frequency = 1/74 * hmclk frequency
+	DIVIDE_75                  GPR2 = 0x4A << 16 //  mclk frequency = 1/75 * hmclk frequency
+	DIVIDE_76                  GPR2 = 0x4B << 16 //  mclk frequency = 1/76 * hmclk frequency
+	DIVIDE_77                  GPR2 = 0x4C << 16 //  mclk frequency = 1/77 * hmclk frequency
+	DIVIDE_78                  GPR2 = 0x4D << 16 //  mclk frequency = 1/78 * hmclk frequency
+	DIVIDE_79                  GPR2 = 0x4E << 16 //  mclk frequency = 1/79 * hmclk frequency
+	DIVIDE_80                  GPR2 = 0x4F << 16 //  mclk frequency = 1/80 * hmclk frequency
+	DIVIDE_81                  GPR2 = 0x50 << 16 //  mclk frequency = 1/81 * hmclk frequency
+	DIVIDE_82                  GPR2 = 0x51 << 16 //  mclk frequency = 1/82 * hmclk frequency
+	DIVIDE_83                  GPR2 = 0x52 << 16 //  mclk frequency = 1/83 * hmclk frequency
+	DIVIDE_84                  GPR2 = 0x53 << 16 //  mclk frequency = 1/84 * hmclk frequency
+	DIVIDE_85                  GPR2 = 0x54 << 16 //  mclk frequency = 1/85 * hmclk frequency
+	DIVIDE_86                  GPR2 = 0x55 << 16 //  mclk frequency = 1/86 * hmclk frequency
+	DIVIDE_87                  GPR2 = 0x56 << 16 //  mclk frequency = 1/87 * hmclk frequency
+	DIVIDE_88                  GPR2 = 0x57 << 16 //  mclk frequency = 1/88 * hmclk frequency
+	DIVIDE_89                  GPR2 = 0x58 << 16 //  mclk frequency = 1/89 * hmclk frequency
+	DIVIDE_90                  GPR2 = 0x59 << 16 //  mclk frequency = 1/90 * hmclk frequency
+	DIVIDE_91                  GPR2 = 0x5A << 16 //  mclk frequency = 1/91 * hmclk frequency
+	DIVIDE_92                  GPR2 = 0x5B << 16 //  mclk frequency = 1/92 * hmclk frequency
+	DIVIDE_93                  GPR2 = 0x5C << 16 //  mclk frequency = 1/93 * hmclk frequency
+	DIVIDE_94                  GPR2 = 0x5D << 16 //  mclk frequency = 1/94 * hmclk frequency
+	DIVIDE_95                  GPR2 = 0x5E << 16 //  mclk frequency = 1/95 * hmclk frequency
+	DIVIDE_96                  GPR2 = 0x5F << 16 //  mclk frequency = 1/96 * hmclk frequency
+	DIVIDE_97                  GPR2 = 0x60 << 16 //  mclk frequency = 1/97 * hmclk frequency
+	DIVIDE_98                  GPR2 = 0x61 << 16 //  mclk frequency = 1/98 * hmclk frequency
+	DIVIDE_99                  GPR2 = 0x62 << 16 //  mclk frequency = 1/99 * hmclk frequency
+	DIVIDE_100                 GPR2 = 0x63 << 16 //  mclk frequency = 1/100 * hmclk frequency
+	DIVIDE_101                 GPR2 = 0x64 << 16 //  mclk frequency = 1/101 * hmclk frequency
+	DIVIDE_102                 GPR2 = 0x65 << 16 //  mclk frequency = 1/102 * hmclk frequency
+	DIVIDE_103                 GPR2 = 0x66 << 16 //  mclk frequency = 1/103 * hmclk frequency
+	DIVIDE_104                 GPR2 = 0x67 << 16 //  mclk frequency = 1/104 * hmclk frequency
+	DIVIDE_105                 GPR2 = 0x68 << 16 //  mclk frequency = 1/105 * hmclk frequency
+	DIVIDE_106                 GPR2 = 0x69 << 16 //  mclk frequency = 1/106 * hmclk frequency
+	DIVIDE_107                 GPR2 = 0x6A << 16 //  mclk frequency = 1/107 * hmclk frequency
+	DIVIDE_108                 GPR2 = 0x6B << 16 //  mclk frequency = 1/108 * hmclk frequency
+	DIVIDE_109                 GPR2 = 0x6C << 16 //  mclk frequency = 1/109 * hmclk frequency
+	DIVIDE_110                 GPR2 = 0x6D << 16 //  mclk frequency = 1/110 * hmclk frequency
+	DIVIDE_111                 GPR2 = 0x6E << 16 //  mclk frequency = 1/111 * hmclk frequency
+	DIVIDE_112                 GPR2 = 0x6F << 16 //  mclk frequency = 1/112 * hmclk frequency
+	DIVIDE_113                 GPR2 = 0x70 << 16 //  mclk frequency = 1/113 * hmclk frequency
+	DIVIDE_114                 GPR2 = 0x71 << 16 //  mclk frequency = 1/114 * hmclk frequency
+	DIVIDE_115                 GPR2 = 0x72 << 16 //  mclk frequency = 1/115 * hmclk frequency
+	DIVIDE_116                 GPR2 = 0x73 << 16 //  mclk frequency = 1/116 * hmclk frequency
+	DIVIDE_117                 GPR2 = 0x74 << 16 //  mclk frequency = 1/117 * hmclk frequency
+	DIVIDE_118                 GPR2 = 0x75 << 16 //  mclk frequency = 1/118 * hmclk frequency
+	DIVIDE_119                 GPR2 = 0x76 << 16 //  mclk frequency = 1/119 * hmclk frequency
+	DIVIDE_120                 GPR2 = 0x77 << 16 //  mclk frequency = 1/120 * hmclk frequency
+	DIVIDE_121                 GPR2 = 0x78 << 16 //  mclk frequency = 1/121 * hmclk frequency
+	DIVIDE_122                 GPR2 = 0x79 << 16 //  mclk frequency = 1/122 * hmclk frequency
+	DIVIDE_123                 GPR2 = 0x7A << 16 //  mclk frequency = 1/123 * hmclk frequency
+	DIVIDE_124                 GPR2 = 0x7B << 16 //  mclk frequency = 1/124 * hmclk frequency
+	DIVIDE_125                 GPR2 = 0x7C << 16 //  mclk frequency = 1/125 * hmclk frequency
+	DIVIDE_126                 GPR2 = 0x7D << 16 //  mclk frequency = 1/126 * hmclk frequency
+	DIVIDE_127                 GPR2 = 0x7E << 16 //  mclk frequency = 1/127 * hmclk frequency
+	DIVIDE_128                 GPR2 = 0x7F << 16 //  mclk frequency = 1/128 * hmclk frequency
+	DIVIDE_129                 GPR2 = 0x80 << 16 //  mclk frequency = 1/129 * hmclk frequency
+	DIVIDE_130                 GPR2 = 0x81 << 16 //  mclk frequency = 1/130 * hmclk frequency
+	DIVIDE_131                 GPR2 = 0x82 << 16 //  mclk frequency = 1/131 * hmclk frequency
+	DIVIDE_132                 GPR2 = 0x83 << 16 //  mclk frequency = 1/132 * hmclk frequency
+	DIVIDE_133                 GPR2 = 0x84 << 16 //  mclk frequency = 1/133 * hmclk frequency
+	DIVIDE_134                 GPR2 = 0x85 << 16 //  mclk frequency = 1/134 * hmclk frequency
+	DIVIDE_135                 GPR2 = 0x86 << 16 //  mclk frequency = 1/135 * hmclk frequency
+	DIVIDE_136                 GPR2 = 0x87 << 16 //  mclk frequency = 1/136 * hmclk frequency
+	DIVIDE_137                 GPR2 = 0x88 << 16 //  mclk frequency = 1/137 * hmclk frequency
+	DIVIDE_138                 GPR2 = 0x89 << 16 //  mclk frequency = 1/138 * hmclk frequency
+	DIVIDE_139                 GPR2 = 0x8A << 16 //  mclk frequency = 1/139 * hmclk frequency
+	DIVIDE_140                 GPR2 = 0x8B << 16 //  mclk frequency = 1/140 * hmclk frequency
+	DIVIDE_141                 GPR2 = 0x8C << 16 //  mclk frequency = 1/141 * hmclk frequency
+	DIVIDE_142                 GPR2 = 0x8D << 16 //  mclk frequency = 1/142 * hmclk frequency
+	DIVIDE_143                 GPR2 = 0x8E << 16 //  mclk frequency = 1/143 * hmclk frequency
+	DIVIDE_144                 GPR2 = 0x8F << 16 //  mclk frequency = 1/144 * hmclk frequency
+	DIVIDE_145                 GPR2 = 0x90 << 16 //  mclk frequency = 1/145 * hmclk frequency
+	DIVIDE_146                 GPR2 = 0x91 << 16 //  mclk frequency = 1/146 * hmclk frequency
+	DIVIDE_147                 GPR2 = 0x92 << 16 //  mclk frequency = 1/147 * hmclk frequency
+	DIVIDE_148                 GPR2 = 0x93 << 16 //  mclk frequency = 1/148 * hmclk frequency
+	DIVIDE_149                 GPR2 = 0x94 << 16 //  mclk frequency = 1/149 * hmclk frequency
+	DIVIDE_150                 GPR2 = 0x95 << 16 //  mclk frequency = 1/150 * hmclk frequency
+	DIVIDE_151                 GPR2 = 0x96 << 16 //  mclk frequency = 1/151 * hmclk frequency
+	DIVIDE_152                 GPR2 = 0x97 << 16 //  mclk frequency = 1/152 * hmclk frequency
+	DIVIDE_153                 GPR2 = 0x98 << 16 //  mclk frequency = 1/153 * hmclk frequency
+	DIVIDE_154                 GPR2 = 0x99 << 16 //  mclk frequency = 1/154 * hmclk frequency
+	DIVIDE_155                 GPR2 = 0x9A << 16 //  mclk frequency = 1/155 * hmclk frequency
+	DIVIDE_156                 GPR2 = 0x9B << 16 //  mclk frequency = 1/156 * hmclk frequency
+	DIVIDE_157                 GPR2 = 0x9C << 16 //  mclk frequency = 1/157 * hmclk frequency
+	DIVIDE_158                 GPR2 = 0x9D << 16 //  mclk frequency = 1/158 * hmclk frequency
+	DIVIDE_159                 GPR2 = 0x9E << 16 //  mclk frequency = 1/159 * hmclk frequency
+	DIVIDE_160                 GPR2 = 0x9F << 16 //  mclk frequency = 1/160 * hmclk frequency
+	DIVIDE_161                 GPR2 = 0xA0 << 16 //  mclk frequency = 1/161 * hmclk frequency
+	DIVIDE_162                 GPR2 = 0xA1 << 16 //  mclk frequency = 1/162 * hmclk frequency
+	DIVIDE_163                 GPR2 = 0xA2 << 16 //  mclk frequency = 1/163 * hmclk frequency
+	DIVIDE_164                 GPR2 = 0xA3 << 16 //  mclk frequency = 1/164 * hmclk frequency
+	DIVIDE_165                 GPR2 = 0xA4 << 16 //  mclk frequency = 1/165 * hmclk frequency
+	DIVIDE_166                 GPR2 = 0xA5 << 16 //  mclk frequency = 1/166 * hmclk frequency
+	DIVIDE_167                 GPR2 = 0xA6 << 16 //  mclk frequency = 1/167 * hmclk frequency
+	DIVIDE_168                 GPR2 = 0xA7 << 16 //  mclk frequency = 1/168 * hmclk frequency
+	DIVIDE_169                 GPR2 = 0xA8 << 16 //  mclk frequency = 1/169 * hmclk frequency
+	DIVIDE_170                 GPR2 = 0xA9 << 16 //  mclk frequency = 1/170 * hmclk frequency
+	DIVIDE_171                 GPR2 = 0xAA << 16 //  mclk frequency = 1/171 * hmclk frequency
+	DIVIDE_172                 GPR2 = 0xAB << 16 //  mclk frequency = 1/172 * hmclk frequency
+	DIVIDE_173                 GPR2 = 0xAC << 16 //  mclk frequency = 1/173 * hmclk frequency
+	DIVIDE_174                 GPR2 = 0xAD << 16 //  mclk frequency = 1/174 * hmclk frequency
+	DIVIDE_175                 GPR2 = 0xAE << 16 //  mclk frequency = 1/175 * hmclk frequency
+	DIVIDE_176                 GPR2 = 0xAF << 16 //  mclk frequency = 1/176 * hmclk frequency
+	DIVIDE_177                 GPR2 = 0xB0 << 16 //  mclk frequency = 1/177 * hmclk frequency
+	DIVIDE_178                 GPR2 = 0xB1 << 16 //  mclk frequency = 1/178 * hmclk frequency
+	DIVIDE_179                 GPR2 = 0xB2 << 16 //  mclk frequency = 1/179 * hmclk frequency
+	DIVIDE_180                 GPR2 = 0xB3 << 16 //  mclk frequency = 1/180 * hmclk frequency
+	DIVIDE_181                 GPR2 = 0xB4 << 16 //  mclk frequency = 1/181 * hmclk frequency
+	DIVIDE_182                 GPR2 = 0xB5 << 16 //  mclk frequency = 1/182 * hmclk frequency
+	DIVIDE_183                 GPR2 = 0xB6 << 16 //  mclk frequency = 1/183 * hmclk frequency
+	DIVIDE_184                 GPR2 = 0xB7 << 16 //  mclk frequency = 1/184 * hmclk frequency
+	DIVIDE_185                 GPR2 = 0xB8 << 16 //  mclk frequency = 1/185 * hmclk frequency
+	DIVIDE_186                 GPR2 = 0xB9 << 16 //  mclk frequency = 1/186 * hmclk frequency
+	DIVIDE_187                 GPR2 = 0xBA << 16 //  mclk frequency = 1/187 * hmclk frequency
+	DIVIDE_188                 GPR2 = 0xBB << 16 //  mclk frequency = 1/188 * hmclk frequency
+	DIVIDE_189                 GPR2 = 0xBC << 16 //  mclk frequency = 1/189 * hmclk frequency
+	DIVIDE_190                 GPR2 = 0xBD << 16 //  mclk frequency = 1/190 * hmclk frequency
+	DIVIDE_191                 GPR2 = 0xBE << 16 //  mclk frequency = 1/191 * hmclk frequency
+	DIVIDE_192                 GPR2 = 0xBF << 16 //  mclk frequency = 1/192 * hmclk frequency
+	DIVIDE_193                 GPR2 = 0xC0 << 16 //  mclk frequency = 1/193 * hmclk frequency
+	DIVIDE_194                 GPR2 = 0xC1 << 16 //  mclk frequency = 1/194 * hmclk frequency
+	DIVIDE_195                 GPR2 = 0xC2 << 16 //  mclk frequency = 1/195 * hmclk frequency
+	DIVIDE_196                 GPR2 = 0xC3 << 16 //  mclk frequency = 1/196 * hmclk frequency
+	DIVIDE_197                 GPR2 = 0xC4 << 16 //  mclk frequency = 1/197 * hmclk frequency
+	DIVIDE_198                 GPR2 = 0xC5 << 16 //  mclk frequency = 1/198 * hmclk frequency
+	DIVIDE_199                 GPR2 = 0xC6 << 16 //  mclk frequency = 1/199 * hmclk frequency
+	DIVIDE_200                 GPR2 = 0xC7 << 16 //  mclk frequency = 1/200 * hmclk frequency
+	DIVIDE_201                 GPR2 = 0xC8 << 16 //  mclk frequency = 1/201 * hmclk frequency
+	DIVIDE_202                 GPR2 = 0xC9 << 16 //  mclk frequency = 1/202 * hmclk frequency
+	DIVIDE_203                 GPR2 = 0xCA << 16 //  mclk frequency = 1/203 * hmclk frequency
+	DIVIDE_204                 GPR2 = 0xCB << 16 //  mclk frequency = 1/204 * hmclk frequency
+	DIVIDE_205                 GPR2 = 0xCC << 16 //  mclk frequency = 1/205 * hmclk frequency
+	DIVIDE_206                 GPR2 = 0xCD << 16 //  mclk frequency = 1/206 * hmclk frequency
+	DIVIDE_207                 GPR2 = 0xCE << 16 //  mclk frequency = 1/207 * hmclk frequency
+	DIVIDE_208                 GPR2 = 0xCF << 16 //  mclk frequency = 1/208 * hmclk frequency
+	DIVIDE_209                 GPR2 = 0xD0 << 16 //  mclk frequency = 1/209 * hmclk frequency
+	DIVIDE_210                 GPR2 = 0xD1 << 16 //  mclk frequency = 1/210 * hmclk frequency
+	DIVIDE_211                 GPR2 = 0xD2 << 16 //  mclk frequency = 1/211 * hmclk frequency
+	DIVIDE_212                 GPR2 = 0xD3 << 16 //  mclk frequency = 1/212 * hmclk frequency
+	DIVIDE_213                 GPR2 = 0xD4 << 16 //  mclk frequency = 1/213 * hmclk frequency
+	DIVIDE_214                 GPR2 = 0xD5 << 16 //  mclk frequency = 1/214 * hmclk frequency
+	DIVIDE_215                 GPR2 = 0xD6 << 16 //  mclk frequency = 1/215 * hmclk frequency
+	DIVIDE_216                 GPR2 = 0xD7 << 16 //  mclk frequency = 1/216 * hmclk frequency
+	DIVIDE_217                 GPR2 = 0xD8 << 16 //  mclk frequency = 1/217 * hmclk frequency
+	DIVIDE_218                 GPR2 = 0xD9 << 16 //  mclk frequency = 1/218 * hmclk frequency
+	DIVIDE_219                 GPR2 = 0xDA << 16 //  mclk frequency = 1/219 * hmclk frequency
+	DIVIDE_220                 GPR2 = 0xDB << 16 //  mclk frequency = 1/220 * hmclk frequency
+	DIVIDE_221                 GPR2 = 0xDC << 16 //  mclk frequency = 1/221 * hmclk frequency
+	DIVIDE_222                 GPR2 = 0xDD << 16 //  mclk frequency = 1/222 * hmclk frequency
+	DIVIDE_223                 GPR2 = 0xDE << 16 //  mclk frequency = 1/223 * hmclk frequency
+	DIVIDE_224                 GPR2 = 0xDF << 16 //  mclk frequency = 1/224 * hmclk frequency
+	DIVIDE_225                 GPR2 = 0xE0 << 16 //  mclk frequency = 1/225 * hmclk frequency
+	DIVIDE_226                 GPR2 = 0xE1 << 16 //  mclk frequency = 1/226 * hmclk frequency
+	DIVIDE_227                 GPR2 = 0xE2 << 16 //  mclk frequency = 1/227 * hmclk frequency
+	DIVIDE_228                 GPR2 = 0xE3 << 16 //  mclk frequency = 1/228 * hmclk frequency
+	DIVIDE_229                 GPR2 = 0xE4 << 16 //  mclk frequency = 1/229 * hmclk frequency
+	DIVIDE_230                 GPR2 = 0xE5 << 16 //  mclk frequency = 1/230 * hmclk frequency
+	DIVIDE_231                 GPR2 = 0xE6 << 16 //  mclk frequency = 1/231 * hmclk frequency
+	DIVIDE_232                 GPR2 = 0xE7 << 16 //  mclk frequency = 1/232 * hmclk frequency
+	DIVIDE_233                 GPR2 = 0xE8 << 16 //  mclk frequency = 1/233 * hmclk frequency
+	DIVIDE_234                 GPR2 = 0xE9 << 16 //  mclk frequency = 1/234 * hmclk frequency
+	DIVIDE_235                 GPR2 = 0xEA << 16 //  mclk frequency = 1/235 * hmclk frequency
+	DIVIDE_236                 GPR2 = 0xEB << 16 //  mclk frequency = 1/236 * hmclk frequency
+	DIVIDE_237                 GPR2 = 0xEC << 16 //  mclk frequency = 1/237 * hmclk frequency
+	DIVIDE_238                 GPR2 = 0xED << 16 //  mclk frequency = 1/238 * hmclk frequency
+	DIVIDE_239                 GPR2 = 0xEE << 16 //  mclk frequency = 1/239 * hmclk frequency
+	DIVIDE_240                 GPR2 = 0xEF << 16 //  mclk frequency = 1/240 * hmclk frequency
+	DIVIDE_241                 GPR2 = 0xF0 << 16 //  mclk frequency = 1/241 * hmclk frequency
+	DIVIDE_242                 GPR2 = 0xF1 << 16 //  mclk frequency = 1/242 * hmclk frequency
+	DIVIDE_243                 GPR2 = 0xF2 << 16 //  mclk frequency = 1/243 * hmclk frequency
+	DIVIDE_244                 GPR2 = 0xF3 << 16 //  mclk frequency = 1/244 * hmclk frequency
+	DIVIDE_245                 GPR2 = 0xF4 << 16 //  mclk frequency = 1/245 * hmclk frequency
+	DIVIDE_246                 GPR2 = 0xF5 << 16 //  mclk frequency = 1/246 * hmclk frequency
+	DIVIDE_247                 GPR2 = 0xF6 << 16 //  mclk frequency = 1/247 * hmclk frequency
+	DIVIDE_248                 GPR2 = 0xF7 << 16 //  mclk frequency = 1/248 * hmclk frequency
+	DIVIDE_249                 GPR2 = 0xF8 << 16 //  mclk frequency = 1/249 * hmclk frequency
+	DIVIDE_250                 GPR2 = 0xF9 << 16 //  mclk frequency = 1/250 * hmclk frequency
+	DIVIDE_251                 GPR2 = 0xFA << 16 //  mclk frequency = 1/251 * hmclk frequency
+	DIVIDE_252                 GPR2 = 0xFB << 16 //  mclk frequency = 1/252 * hmclk frequency
+	DIVIDE_253                 GPR2 = 0xFC << 16 //  mclk frequency = 1/253 * hmclk frequency
+	DIVIDE_254                 GPR2 = 0xFD << 16 //  mclk frequency = 1/254 * hmclk frequency
+	DIVIDE_255                 GPR2 = 0xFE << 16 //  mclk frequency = 1/255 * hmclk frequency
+	DIVIDE_256                 GPR2 = 0xFF << 16 //  mclk frequency = 1/256 * hmclk frequency
+	MQS_SW_RST                 GPR2 = 0x01 << 24 //+ MQS software reset
+	MQS_EN                     GPR2 = 0x01 << 25 //+ MQS enable.
+	MQS_OVERSAMPLE             GPR2 = 0x01 << 26 //+ Used to control the PWM oversampling rate compared with mclk.
+	QTIMER1_TMR_CNTS_FREEZE    GPR2 = 0x01 << 28 //+ QTIMER1 timer counter freeze
+	QTIMER2_TMR_CNTS_FREEZE    GPR2 = 0x01 << 29 //+ QTIMER2 timer counter freeze
+	QTIMER3_TMR_CNTS_FREEZE    GPR2 = 0x01 << 30 //+ QTIMER3 timer counter freeze
+	QTIMER4_TMR_CNTS_FREEZE    GPR2 = 0x01 << 31 //+ QTIMER4 timer counter freeze
 )
 
 const (
@@ -467,19 +409,13 @@ const (
 )
 
 const (
-	OCRAM_CTL         GPR3 = 0x0F << 0  //+ OCRAM_CTL[3] - write address pipeline control bit
-	DCP_KEY_SEL       GPR3 = 0x01 << 4  //+ Select 128-bit dcp key from 256-bit key from snvs/ocotp
-	DCP_KEY_SEL_0     GPR3 = 0x00 << 4  //  Select [127:0] from snvs/ocotp key as dcp key
-	DCP_KEY_SEL_1     GPR3 = 0x01 << 4  //  Select [255:128] from snvs/ocotp key as dcp key
-	OCRAM2_CTL        GPR3 = 0x0F << 8  //+ OCRAM2_CTL[3] - write address pipeline control bit
-	AXBS_L_HALT_REQ   GPR3 = 0x01 << 15 //+ Request to halt axbs_l
-	AXBS_L_HALT_REQ_0 GPR3 = 0x00 << 15 //  axbs_l normal run
-	AXBS_L_HALT_REQ_1 GPR3 = 0x01 << 15 //  request to halt axbs_l
-	OCRAM_STATUS      GPR3 = 0x0F << 16 //+ This field shows the OCRAM pipeline settings status, controlled by OCRAM_CTL bits respectively
-	OCRAM2_STATUS     GPR3 = 0x0F << 24 //+ This field shows the OCRAM2 pipeline settings status, controlled by OCRAM2_CTL bits respectively
-	AXBS_L_HALTED     GPR3 = 0x01 << 31 //+ This bit shows the status of axbs_l
-	AXBS_L_HALTED_0   GPR3 = 0x00 << 31 //  axbs_l is not halted
-	AXBS_L_HALTED_1   GPR3 = 0x01 << 31 //  axbs_l is in halted status
+	OCRAM_CTL       GPR3 = 0x0F << 0  //+ OCRAM_CTL[3] - write address pipeline control bit
+	DCP_KEY_SEL     GPR3 = 0x01 << 4  //+ Select 128-bit dcp key from 256-bit key from snvs/ocotp
+	OCRAM2_CTL      GPR3 = 0x0F << 8  //+ OCRAM2_CTL[3] - write address pipeline control bit
+	AXBS_L_HALT_REQ GPR3 = 0x01 << 15 //+ Request to halt axbs_l
+	OCRAM_STATUS    GPR3 = 0x0F << 16 //+ This field shows the OCRAM pipeline settings status, controlled by OCRAM_CTL bits respectively
+	OCRAM2_STATUS   GPR3 = 0x0F << 24 //+ This field shows the OCRAM2 pipeline settings status, controlled by OCRAM2_CTL bits respectively
+	AXBS_L_HALTED   GPR3 = 0x01 << 31 //+ This bit shows the status of axbs_l
 )
 
 const (
@@ -493,102 +429,38 @@ const (
 )
 
 const (
-	EDMA_STOP_REQ       GPR4 = 0x01 << 0  //+ EDMA stop request.
-	EDMA_STOP_REQ_0     GPR4 = 0x00 << 0  //  stop request off
-	EDMA_STOP_REQ_1     GPR4 = 0x01 << 0  //  stop request on
-	CAN1_STOP_REQ       GPR4 = 0x01 << 1  //+ CAN1 stop request.
-	CAN1_STOP_REQ_0     GPR4 = 0x00 << 1  //  stop request off
-	CAN1_STOP_REQ_1     GPR4 = 0x01 << 1  //  stop request on
-	CAN2_STOP_REQ       GPR4 = 0x01 << 2  //+ CAN2 stop request.
-	CAN2_STOP_REQ_0     GPR4 = 0x00 << 2  //  stop request off
-	CAN2_STOP_REQ_1     GPR4 = 0x01 << 2  //  stop request on
-	TRNG_STOP_REQ       GPR4 = 0x01 << 3  //+ TRNG stop request.
-	TRNG_STOP_REQ_0     GPR4 = 0x00 << 3  //  stop request off
-	TRNG_STOP_REQ_1     GPR4 = 0x01 << 3  //  stop request on
-	ENET_STOP_REQ       GPR4 = 0x01 << 4  //+ ENET stop request.
-	ENET_STOP_REQ_0     GPR4 = 0x00 << 4  //  stop request off
-	ENET_STOP_REQ_1     GPR4 = 0x01 << 4  //  stop request on
-	SAI1_STOP_REQ       GPR4 = 0x01 << 5  //+ SAI1 stop request.
-	SAI1_STOP_REQ_0     GPR4 = 0x00 << 5  //  stop request off
-	SAI1_STOP_REQ_1     GPR4 = 0x01 << 5  //  stop request on
-	SAI2_STOP_REQ       GPR4 = 0x01 << 6  //+ SAI2 stop request.
-	SAI2_STOP_REQ_0     GPR4 = 0x00 << 6  //  stop request off
-	SAI2_STOP_REQ_1     GPR4 = 0x01 << 6  //  stop request on
-	SAI3_STOP_REQ       GPR4 = 0x01 << 7  //+ SAI3 stop request.
-	SAI3_STOP_REQ_0     GPR4 = 0x00 << 7  //  stop request off
-	SAI3_STOP_REQ_1     GPR4 = 0x01 << 7  //  stop request on
-	ENET2_STOP_REQ      GPR4 = 0x01 << 8  //+ ENET2 stop request.
-	ENET2_STOP_REQ_0    GPR4 = 0x00 << 8  //  stop request off
-	ENET2_STOP_REQ_1    GPR4 = 0x01 << 8  //  stop request on
-	SEMC_STOP_REQ       GPR4 = 0x01 << 9  //+ SEMC stop request.
-	SEMC_STOP_REQ_0     GPR4 = 0x00 << 9  //  stop request off
-	SEMC_STOP_REQ_1     GPR4 = 0x01 << 9  //  stop request on
-	PIT_STOP_REQ        GPR4 = 0x01 << 10 //+ PIT stop request.
-	PIT_STOP_REQ_0      GPR4 = 0x00 << 10 //  stop request off
-	PIT_STOP_REQ_1      GPR4 = 0x01 << 10 //  stop request on
-	FLEXSPI_STOP_REQ    GPR4 = 0x01 << 11 //+ FlexSPI stop request.
-	FLEXSPI_STOP_REQ_0  GPR4 = 0x00 << 11 //  stop request off
-	FLEXSPI_STOP_REQ_1  GPR4 = 0x01 << 11 //  stop request on
-	FLEXIO1_STOP_REQ    GPR4 = 0x01 << 12 //+ FlexIO1 stop request.
-	FLEXIO1_STOP_REQ_0  GPR4 = 0x00 << 12 //  stop request off
-	FLEXIO1_STOP_REQ_1  GPR4 = 0x01 << 12 //  stop request on
-	FLEXIO2_STOP_REQ    GPR4 = 0x01 << 13 //+ FlexIO2 stop request.
-	FLEXIO2_STOP_REQ_0  GPR4 = 0x00 << 13 //  stop request off
-	FLEXIO2_STOP_REQ_1  GPR4 = 0x01 << 13 //  stop request on
-	FLEXIO3_STOP_REQ    GPR4 = 0x01 << 14 //+ On-platform flexio3 stop request.
-	FLEXIO3_STOP_REQ_0  GPR4 = 0x00 << 14 //  stop request off
-	FLEXIO3_STOP_REQ_1  GPR4 = 0x01 << 14 //  stop request on
-	FLEXSPI2_STOP_REQ   GPR4 = 0x01 << 15 //+ FlexSPI2 stop request.
-	FLEXSPI2_STOP_REQ_0 GPR4 = 0x00 << 15 //  stop request off
-	FLEXSPI2_STOP_REQ_1 GPR4 = 0x01 << 15 //  stop request on
-	EDMA_STOP_ACK       GPR4 = 0x01 << 16 //+ EDMA stop acknowledge. This is a status (read-only) bit
-	EDMA_STOP_ACK_0     GPR4 = 0x00 << 16 //  EDMA stop acknowledge is not asserted
-	EDMA_STOP_ACK_1     GPR4 = 0x01 << 16 //  EDMA stop acknowledge is asserted (EDMA is in STOP mode).
-	CAN1_STOP_ACK       GPR4 = 0x01 << 17 //+ CAN1 stop acknowledge.
-	CAN1_STOP_ACK_0     GPR4 = 0x00 << 17 //  CAN1 stop acknowledge is not asserted
-	CAN1_STOP_ACK_1     GPR4 = 0x01 << 17 //  CAN1 stop acknowledge is asserted
-	CAN2_STOP_ACK       GPR4 = 0x01 << 18 //+ CAN2 stop acknowledge.
-	CAN2_STOP_ACK_0     GPR4 = 0x00 << 18 //  CAN2 stop acknowledge is not asserted
-	CAN2_STOP_ACK_1     GPR4 = 0x01 << 18 //  CAN2 stop acknowledge is asserted
-	TRNG_STOP_ACK       GPR4 = 0x01 << 19 //+ TRNG stop acknowledge
-	TRNG_STOP_ACK_0     GPR4 = 0x00 << 19 //  TRNG stop acknowledge is not asserted
-	TRNG_STOP_ACK_1     GPR4 = 0x01 << 19 //  TRNG stop acknowledge is asserted
-	ENET_STOP_ACK       GPR4 = 0x01 << 20 //+ ENET stop acknowledge.
-	ENET_STOP_ACK_0     GPR4 = 0x00 << 20 //  ENET1 stop acknowledge is not asserted
-	ENET_STOP_ACK_1     GPR4 = 0x01 << 20 //  ENET1 stop acknowledge is asserted
-	SAI1_STOP_ACK       GPR4 = 0x01 << 21 //+ SAI1 stop acknowledge
-	SAI1_STOP_ACK_0     GPR4 = 0x00 << 21 //  SAI1 stop acknowledge is not asserted
-	SAI1_STOP_ACK_1     GPR4 = 0x01 << 21 //  SAI1 stop acknowledge is asserted
-	SAI2_STOP_ACK       GPR4 = 0x01 << 22 //+ SAI2 stop acknowledge
-	SAI2_STOP_ACK_0     GPR4 = 0x00 << 22 //  SAI2 stop acknowledge is not asserted
-	SAI2_STOP_ACK_1     GPR4 = 0x01 << 22 //  SAI2 stop acknowledge is asserted
-	SAI3_STOP_ACK       GPR4 = 0x01 << 23 //+ SAI3 stop acknowledge
-	SAI3_STOP_ACK_0     GPR4 = 0x00 << 23 //  SAI3 stop acknowledge is not asserted
-	SAI3_STOP_ACK_1     GPR4 = 0x01 << 23 //  SAI3 stop acknowledge is asserted
-	ENET2_STOP_ACK      GPR4 = 0x01 << 24 //+ ENET2 stop acknowledge.
-	ENET2_STOP_ACK_0    GPR4 = 0x00 << 24 //  ENET2 stop acknowledge is not asserted
-	ENET2_STOP_ACK_1    GPR4 = 0x01 << 24 //  ENET2 stop acknowledge is asserted
-	SEMC_STOP_ACK       GPR4 = 0x01 << 25 //+ SEMC stop acknowledge
-	SEMC_STOP_ACK_0     GPR4 = 0x00 << 25 //  SEMC stop acknowledge is not asserted
-	SEMC_STOP_ACK_1     GPR4 = 0x01 << 25 //  SEMC stop acknowledge is asserted
-	PIT_STOP_ACK        GPR4 = 0x01 << 26 //+ PIT stop acknowledge
-	PIT_STOP_ACK_0      GPR4 = 0x00 << 26 //  PIT stop acknowledge is not asserted
-	PIT_STOP_ACK_1      GPR4 = 0x01 << 26 //  PIT stop acknowledge is asserted
-	FLEXSPI_STOP_ACK    GPR4 = 0x01 << 27 //+ FLEXSPI stop acknowledge
-	FLEXSPI_STOP_ACK_0  GPR4 = 0x00 << 27 //  FLEXSPI stop acknowledge is not asserted
-	FLEXSPI_STOP_ACK_1  GPR4 = 0x01 << 27 //  FLEXSPI stop acknowledge is asserted
-	FLEXIO1_STOP_ACK    GPR4 = 0x01 << 28 //+ FLEXIO1 stop acknowledge
-	FLEXIO1_STOP_ACK_0  GPR4 = 0x00 << 28 //  FLEXIO1 stop acknowledge is not asserted
-	FLEXIO1_STOP_ACK_1  GPR4 = 0x01 << 28 //  FLEXIO1 stop acknowledge is asserted
-	FLEXIO2_STOP_ACK    GPR4 = 0x01 << 29 //+ FLEXIO2 stop acknowledge
-	FLEXIO2_STOP_ACK_0  GPR4 = 0x00 << 29 //  FLEXIO2 stop acknowledge is not asserted
-	FLEXIO2_STOP_ACK_1  GPR4 = 0x01 << 29 //  FLEXIO2 stop acknowledge is asserted (FLEXIO2 is in STOP mode)
-	FLEXIO3_STOP_ACK    GPR4 = 0x01 << 30 //+ On-platform FLEXIO3 stop acknowledge
-	FLEXIO3_STOP_ACK_0  GPR4 = 0x00 << 30 //  FLEXIO3 stop acknowledge is not asserted
-	FLEXIO3_STOP_ACK_1  GPR4 = 0x01 << 30 //  FLEXIO3 stop acknowledge is asserted
-	FLEXSPI2_STOP_ACK   GPR4 = 0x01 << 31 //+ FLEXSPI2 stop acknowledge
-	FLEXSPI2_STOP_ACK_0 GPR4 = 0x00 << 31 //  FLEXSPI2 stop acknowledge is not asserted
-	FLEXSPI2_STOP_ACK_1 GPR4 = 0x01 << 31 //  FLEXSPI2 stop acknowledge is asserted
+	EDMA_STOP_REQ     GPR4 = 0x01 << 0  //+ EDMA stop request.
+	CAN1_STOP_REQ     GPR4 = 0x01 << 1  //+ CAN1 stop request.
+	CAN2_STOP_REQ     GPR4 = 0x01 << 2  //+ CAN2 stop request.
+	TRNG_STOP_REQ     GPR4 = 0x01 << 3  //+ TRNG stop request.
+	ENET_STOP_REQ     GPR4 = 0x01 << 4  //+ ENET stop request.
+	SAI1_STOP_REQ     GPR4 = 0x01 << 5  //+ SAI1 stop request.
+	SAI2_STOP_REQ     GPR4 = 0x01 << 6  //+ SAI2 stop request.
+	SAI3_STOP_REQ     GPR4 = 0x01 << 7  //+ SAI3 stop request.
+	ENET2_STOP_REQ    GPR4 = 0x01 << 8  //+ ENET2 stop request.
+	SEMC_STOP_REQ     GPR4 = 0x01 << 9  //+ SEMC stop request.
+	PIT_STOP_REQ      GPR4 = 0x01 << 10 //+ PIT stop request.
+	FLEXSPI_STOP_REQ  GPR4 = 0x01 << 11 //+ FlexSPI stop request.
+	FLEXIO1_STOP_REQ  GPR4 = 0x01 << 12 //+ FlexIO1 stop request.
+	FLEXIO2_STOP_REQ  GPR4 = 0x01 << 13 //+ FlexIO2 stop request.
+	FLEXIO3_STOP_REQ  GPR4 = 0x01 << 14 //+ On-platform flexio3 stop request.
+	FLEXSPI2_STOP_REQ GPR4 = 0x01 << 15 //+ FlexSPI2 stop request.
+	EDMA_STOP_ACK     GPR4 = 0x01 << 16 //+ EDMA stop acknowledge. This is a status (read-only) bit
+	CAN1_STOP_ACK     GPR4 = 0x01 << 17 //+ CAN1 stop acknowledge.
+	CAN2_STOP_ACK     GPR4 = 0x01 << 18 //+ CAN2 stop acknowledge.
+	TRNG_STOP_ACK     GPR4 = 0x01 << 19 //+ TRNG stop acknowledge
+	ENET_STOP_ACK     GPR4 = 0x01 << 20 //+ ENET stop acknowledge.
+	SAI1_STOP_ACK     GPR4 = 0x01 << 21 //+ SAI1 stop acknowledge
+	SAI2_STOP_ACK     GPR4 = 0x01 << 22 //+ SAI2 stop acknowledge
+	SAI3_STOP_ACK     GPR4 = 0x01 << 23 //+ SAI3 stop acknowledge
+	ENET2_STOP_ACK    GPR4 = 0x01 << 24 //+ ENET2 stop acknowledge.
+	SEMC_STOP_ACK     GPR4 = 0x01 << 25 //+ SEMC stop acknowledge
+	PIT_STOP_ACK      GPR4 = 0x01 << 26 //+ PIT stop acknowledge
+	FLEXSPI_STOP_ACK  GPR4 = 0x01 << 27 //+ FLEXSPI stop acknowledge
+	FLEXIO1_STOP_ACK  GPR4 = 0x01 << 28 //+ FLEXIO1 stop acknowledge
+	FLEXIO2_STOP_ACK  GPR4 = 0x01 << 29 //+ FLEXIO2 stop acknowledge
+	FLEXIO3_STOP_ACK  GPR4 = 0x01 << 30 //+ On-platform FLEXIO3 stop acknowledge
+	FLEXSPI2_STOP_ACK GPR4 = 0x01 << 31 //+ FLEXSPI2 stop acknowledge
 )
 
 const (
@@ -627,30 +499,14 @@ const (
 )
 
 const (
-	WDOG1_MASK           GPR5 = 0x01 << 6  //+ WDOG1 Timeout Mask
-	WDOG1_MASK_0         GPR5 = 0x00 << 6  //  WDOG1 Timeout behaves normally
-	WDOG1_MASK_1         GPR5 = 0x01 << 6  //  WDOG1 Timeout is masked
-	WDOG2_MASK           GPR5 = 0x01 << 7  //+ WDOG2 Timeout Mask
-	WDOG2_MASK_0         GPR5 = 0x00 << 7  //  WDOG2 Timeout behaves normally
-	WDOG2_MASK_1         GPR5 = 0x01 << 7  //  WDOG2 Timeout is masked
-	GPT2_CAPIN1_SEL      GPR5 = 0x01 << 23 //+ GPT2 input capture channel 1 source select
-	GPT2_CAPIN1_SEL_0    GPR5 = 0x00 << 23 //  source from GPT2_CAPTURE1
-	GPT2_CAPIN1_SEL_1    GPR5 = 0x01 << 23 //  source from ENET_1588_EVENT3_OUT (chnnal 3 of IEEE 1588 timer)
-	GPT2_CAPIN2_SEL      GPR5 = 0x01 << 24 //+ GPT2 input capture channel 2 source select
-	GPT2_CAPIN2_SEL_0    GPR5 = 0x00 << 24 //  source from GPT2_CAPTURE2
-	GPT2_CAPIN2_SEL_1    GPR5 = 0x01 << 24 //  source from ENET2_1588_EVENT3_OUT (chnnal 3 of IEEE 1588 timer)
-	ENET_EVENT3IN_SEL    GPR5 = 0x01 << 25 //+ ENET input timer event3 source select
-	ENET_EVENT3IN_SEL_0  GPR5 = 0x00 << 25 //  event3 source input from ENET_1588_EVENT3_IN
-	ENET_EVENT3IN_SEL_1  GPR5 = 0x01 << 25 //  event3 source input from GPT2.GPT_COMPARE1
-	ENET2_EVENT3IN_SEL   GPR5 = 0x01 << 26 //+ ENET2 input timer event3 source select
-	ENET2_EVENT3IN_SEL_0 GPR5 = 0x00 << 26 //  event3 source input from ENET2_1588_EVENT3_IN
-	ENET2_EVENT3IN_SEL_1 GPR5 = 0x01 << 26 //  event3 source input from GPT2.GPT_COMPARE2
-	VREF_1M_CLK_GPT1     GPR5 = 0x01 << 28 //+ GPT1 1 MHz clock source select
-	VREF_1M_CLK_GPT1_0   GPR5 = 0x00 << 28 //  GPT1 ipg_clk_highfreq driven by IPG_PERCLK
-	VREF_1M_CLK_GPT1_1   GPR5 = 0x01 << 28 //  GPT1 ipg_clk_highfreq driven by anatop 1 MHz clock
-	VREF_1M_CLK_GPT2     GPR5 = 0x01 << 29 //+ GPT2 1 MHz clock source select
-	VREF_1M_CLK_GPT2_0   GPR5 = 0x00 << 29 //  GPT2 ipg_clk_highfreq driven by IPG_PERCLK
-	VREF_1M_CLK_GPT2_1   GPR5 = 0x01 << 29 //  GPT2 ipg_clk_highfreq driven by anatop 1 MHz clock
+	WDOG1_MASK         GPR5 = 0x01 << 6  //+ WDOG1 Timeout Mask
+	WDOG2_MASK         GPR5 = 0x01 << 7  //+ WDOG2 Timeout Mask
+	GPT2_CAPIN1_SEL    GPR5 = 0x01 << 23 //+ GPT2 input capture channel 1 source select
+	GPT2_CAPIN2_SEL    GPR5 = 0x01 << 24 //+ GPT2 input capture channel 2 source select
+	ENET_EVENT3IN_SEL  GPR5 = 0x01 << 25 //+ ENET input timer event3 source select
+	ENET2_EVENT3IN_SEL GPR5 = 0x01 << 26 //+ ENET2 input timer event3 source select
+	VREF_1M_CLK_GPT1   GPR5 = 0x01 << 28 //+ GPT1 1 MHz clock source select
+	VREF_1M_CLK_GPT2   GPR5 = 0x01 << 29 //+ GPT2 1 MHz clock source select
 )
 
 const (
@@ -665,102 +521,38 @@ const (
 )
 
 const (
-	QTIMER1_TRM0_INPUT_SEL   GPR6 = 0x01 << 0  //+ QTIMER1 TMR0 input select
-	QTIMER1_TRM0_INPUT_SEL_0 GPR6 = 0x00 << 0  //  input from IOMUX
-	QTIMER1_TRM0_INPUT_SEL_1 GPR6 = 0x01 << 0  //  input from XBAR
-	QTIMER1_TRM1_INPUT_SEL   GPR6 = 0x01 << 1  //+ QTIMER1 TMR1 input select
-	QTIMER1_TRM1_INPUT_SEL_0 GPR6 = 0x00 << 1  //  input from IOMUX
-	QTIMER1_TRM1_INPUT_SEL_1 GPR6 = 0x01 << 1  //  input from XBAR
-	QTIMER1_TRM2_INPUT_SEL   GPR6 = 0x01 << 2  //+ QTIMER1 TMR2 input select
-	QTIMER1_TRM2_INPUT_SEL_0 GPR6 = 0x00 << 2  //  input from IOMUX
-	QTIMER1_TRM2_INPUT_SEL_1 GPR6 = 0x01 << 2  //  input from XBAR
-	QTIMER1_TRM3_INPUT_SEL   GPR6 = 0x01 << 3  //+ QTIMER1 TMR3 input select
-	QTIMER1_TRM3_INPUT_SEL_0 GPR6 = 0x00 << 3  //  input from IOMUX
-	QTIMER1_TRM3_INPUT_SEL_1 GPR6 = 0x01 << 3  //  input from XBAR
-	QTIMER2_TRM0_INPUT_SEL   GPR6 = 0x01 << 4  //+ QTIMER2 TMR0 input select
-	QTIMER2_TRM0_INPUT_SEL_0 GPR6 = 0x00 << 4  //  input from IOMUX
-	QTIMER2_TRM0_INPUT_SEL_1 GPR6 = 0x01 << 4  //  input from XBAR
-	QTIMER2_TRM1_INPUT_SEL   GPR6 = 0x01 << 5  //+ QTIMER2 TMR1 input select
-	QTIMER2_TRM1_INPUT_SEL_0 GPR6 = 0x00 << 5  //  input from IOMUX
-	QTIMER2_TRM1_INPUT_SEL_1 GPR6 = 0x01 << 5  //  input from XBAR
-	QTIMER2_TRM2_INPUT_SEL   GPR6 = 0x01 << 6  //+ QTIMER2 TMR2 input select
-	QTIMER2_TRM2_INPUT_SEL_0 GPR6 = 0x00 << 6  //  input from IOMUX
-	QTIMER2_TRM2_INPUT_SEL_1 GPR6 = 0x01 << 6  //  input from XBAR
-	QTIMER2_TRM3_INPUT_SEL   GPR6 = 0x01 << 7  //+ QTIMER2 TMR3 input select
-	QTIMER2_TRM3_INPUT_SEL_0 GPR6 = 0x00 << 7  //  input from IOMUX
-	QTIMER2_TRM3_INPUT_SEL_1 GPR6 = 0x01 << 7  //  input from XBAR
-	QTIMER3_TRM0_INPUT_SEL   GPR6 = 0x01 << 8  //+ QTIMER3 TMR0 input select
-	QTIMER3_TRM0_INPUT_SEL_0 GPR6 = 0x00 << 8  //  input from IOMUX
-	QTIMER3_TRM0_INPUT_SEL_1 GPR6 = 0x01 << 8  //  input from XBAR
-	QTIMER3_TRM1_INPUT_SEL   GPR6 = 0x01 << 9  //+ QTIMER3 TMR1 input select
-	QTIMER3_TRM1_INPUT_SEL_0 GPR6 = 0x00 << 9  //  input from IOMUX
-	QTIMER3_TRM1_INPUT_SEL_1 GPR6 = 0x01 << 9  //  input from XBAR
-	QTIMER3_TRM2_INPUT_SEL   GPR6 = 0x01 << 10 //+ QTIMER3 TMR2 input select
-	QTIMER3_TRM2_INPUT_SEL_0 GPR6 = 0x00 << 10 //  input from IOMUX
-	QTIMER3_TRM2_INPUT_SEL_1 GPR6 = 0x01 << 10 //  input from XBAR
-	QTIMER3_TRM3_INPUT_SEL   GPR6 = 0x01 << 11 //+ QTIMER3 TMR3 input select
-	QTIMER3_TRM3_INPUT_SEL_0 GPR6 = 0x00 << 11 //  input from IOMUX
-	QTIMER3_TRM3_INPUT_SEL_1 GPR6 = 0x01 << 11 //  input from XBAR
-	QTIMER4_TRM0_INPUT_SEL   GPR6 = 0x01 << 12 //+ QTIMER4 TMR0 input select
-	QTIMER4_TRM0_INPUT_SEL_0 GPR6 = 0x00 << 12 //  input from IOMUX
-	QTIMER4_TRM0_INPUT_SEL_1 GPR6 = 0x01 << 12 //  input from XBAR
-	QTIMER4_TRM1_INPUT_SEL   GPR6 = 0x01 << 13 //+ QTIMER4 TMR1 input select
-	QTIMER4_TRM1_INPUT_SEL_0 GPR6 = 0x00 << 13 //  input from IOMUX
-	QTIMER4_TRM1_INPUT_SEL_1 GPR6 = 0x01 << 13 //  input from XBAR
-	QTIMER4_TRM2_INPUT_SEL   GPR6 = 0x01 << 14 //+ QTIMER4 TMR2 input select
-	QTIMER4_TRM2_INPUT_SEL_0 GPR6 = 0x00 << 14 //  input from IOMUX
-	QTIMER4_TRM2_INPUT_SEL_1 GPR6 = 0x01 << 14 //  input from XBAR
-	QTIMER4_TRM3_INPUT_SEL   GPR6 = 0x01 << 15 //+ QTIMER4 TMR3 input select
-	QTIMER4_TRM3_INPUT_SEL_0 GPR6 = 0x00 << 15 //  input from IOMUX
-	QTIMER4_TRM3_INPUT_SEL_1 GPR6 = 0x01 << 15 //  input from XBAR
-	IOMUXC_XBAR_DIR_SEL_4    GPR6 = 0x01 << 16 //+ IOMUXC XBAR_INOUT4 function direction select
-	IOMUXC_XBAR_DIR_SEL_4_0  GPR6 = 0x00 << 16 //  XBAR_INOUT as input
-	IOMUXC_XBAR_DIR_SEL_4_1  GPR6 = 0x01 << 16 //  XBAR_INOUT as output
-	IOMUXC_XBAR_DIR_SEL_5    GPR6 = 0x01 << 17 //+ IOMUXC XBAR_INOUT5 function direction select
-	IOMUXC_XBAR_DIR_SEL_5_0  GPR6 = 0x00 << 17 //  XBAR_INOUT as input
-	IOMUXC_XBAR_DIR_SEL_5_1  GPR6 = 0x01 << 17 //  XBAR_INOUT as output
-	IOMUXC_XBAR_DIR_SEL_6    GPR6 = 0x01 << 18 //+ IOMUXC XBAR_INOUT6 function direction select
-	IOMUXC_XBAR_DIR_SEL_6_0  GPR6 = 0x00 << 18 //  XBAR_INOUT as input
-	IOMUXC_XBAR_DIR_SEL_6_1  GPR6 = 0x01 << 18 //  XBAR_INOUT as output
-	IOMUXC_XBAR_DIR_SEL_7    GPR6 = 0x01 << 19 //+ IOMUXC XBAR_INOUT7 function direction select
-	IOMUXC_XBAR_DIR_SEL_7_0  GPR6 = 0x00 << 19 //  XBAR_INOUT as input
-	IOMUXC_XBAR_DIR_SEL_7_1  GPR6 = 0x01 << 19 //  XBAR_INOUT as output
-	IOMUXC_XBAR_DIR_SEL_8    GPR6 = 0x01 << 20 //+ IOMUXC XBAR_INOUT8 function direction select
-	IOMUXC_XBAR_DIR_SEL_8_0  GPR6 = 0x00 << 20 //  XBAR_INOUT as input
-	IOMUXC_XBAR_DIR_SEL_8_1  GPR6 = 0x01 << 20 //  XBAR_INOUT as output
-	IOMUXC_XBAR_DIR_SEL_9    GPR6 = 0x01 << 21 //+ IOMUXC XBAR_INOUT9 function direction select
-	IOMUXC_XBAR_DIR_SEL_9_0  GPR6 = 0x00 << 21 //  XBAR_INOUT as input
-	IOMUXC_XBAR_DIR_SEL_9_1  GPR6 = 0x01 << 21 //  XBAR_INOUT as output
-	IOMUXC_XBAR_DIR_SEL_10   GPR6 = 0x01 << 22 //+ IOMUXC XBAR_INOUT10 function direction select
-	IOMUXC_XBAR_DIR_SEL_10_0 GPR6 = 0x00 << 22 //  XBAR_INOUT as input
-	IOMUXC_XBAR_DIR_SEL_10_1 GPR6 = 0x01 << 22 //  XBAR_INOUT as output
-	IOMUXC_XBAR_DIR_SEL_11   GPR6 = 0x01 << 23 //+ IOMUXC XBAR_INOUT11 function direction select
-	IOMUXC_XBAR_DIR_SEL_11_0 GPR6 = 0x00 << 23 //  XBAR_INOUT as input
-	IOMUXC_XBAR_DIR_SEL_11_1 GPR6 = 0x01 << 23 //  XBAR_INOUT as output
-	IOMUXC_XBAR_DIR_SEL_12   GPR6 = 0x01 << 24 //+ IOMUXC XBAR_INOUT12 function direction select
-	IOMUXC_XBAR_DIR_SEL_12_0 GPR6 = 0x00 << 24 //  XBAR_INOUT as input
-	IOMUXC_XBAR_DIR_SEL_12_1 GPR6 = 0x01 << 24 //  XBAR_INOUT as output
-	IOMUXC_XBAR_DIR_SEL_13   GPR6 = 0x01 << 25 //+ IOMUXC XBAR_INOUT13 function direction select
-	IOMUXC_XBAR_DIR_SEL_13_0 GPR6 = 0x00 << 25 //  XBAR_INOUT as input
-	IOMUXC_XBAR_DIR_SEL_13_1 GPR6 = 0x01 << 25 //  XBAR_INOUT as output
-	IOMUXC_XBAR_DIR_SEL_14   GPR6 = 0x01 << 26 //+ IOMUXC XBAR_INOUT14 function direction select
-	IOMUXC_XBAR_DIR_SEL_14_0 GPR6 = 0x00 << 26 //  XBAR_INOUT as input
-	IOMUXC_XBAR_DIR_SEL_14_1 GPR6 = 0x01 << 26 //  XBAR_INOUT as output
-	IOMUXC_XBAR_DIR_SEL_15   GPR6 = 0x01 << 27 //+ IOMUXC XBAR_INOUT15 function direction select
-	IOMUXC_XBAR_DIR_SEL_15_0 GPR6 = 0x00 << 27 //  XBAR_INOUT as input
-	IOMUXC_XBAR_DIR_SEL_15_1 GPR6 = 0x01 << 27 //  XBAR_INOUT as output
-	IOMUXC_XBAR_DIR_SEL_16   GPR6 = 0x01 << 28 //+ IOMUXC XBAR_INOUT16 function direction select
-	IOMUXC_XBAR_DIR_SEL_16_0 GPR6 = 0x00 << 28 //  XBAR_INOUT as input
-	IOMUXC_XBAR_DIR_SEL_16_1 GPR6 = 0x01 << 28 //  XBAR_INOUT as output
-	IOMUXC_XBAR_DIR_SEL_17   GPR6 = 0x01 << 29 //+ IOMUXC XBAR_INOUT17 function direction select
-	IOMUXC_XBAR_DIR_SEL_17_0 GPR6 = 0x00 << 29 //  XBAR_INOUT as input
-	IOMUXC_XBAR_DIR_SEL_17_1 GPR6 = 0x01 << 29 //  XBAR_INOUT as output
-	IOMUXC_XBAR_DIR_SEL_18   GPR6 = 0x01 << 30 //+ IOMUXC XBAR_INOUT18 function direction select
-	IOMUXC_XBAR_DIR_SEL_18_0 GPR6 = 0x00 << 30 //  XBAR_INOUT as input
-	IOMUXC_XBAR_DIR_SEL_18_1 GPR6 = 0x01 << 30 //  XBAR_INOUT as output
-	IOMUXC_XBAR_DIR_SEL_19   GPR6 = 0x01 << 31 //+ IOMUXC XBAR_INOUT19 function direction select
-	IOMUXC_XBAR_DIR_SEL_19_0 GPR6 = 0x00 << 31 //  XBAR_INOUT as input
-	IOMUXC_XBAR_DIR_SEL_19_1 GPR6 = 0x01 << 31 //  XBAR_INOUT as output
+	QTIMER1_TRM0_INPUT_SEL GPR6 = 0x01 << 0  //+ QTIMER1 TMR0 input select
+	QTIMER1_TRM1_INPUT_SEL GPR6 = 0x01 << 1  //+ QTIMER1 TMR1 input select
+	QTIMER1_TRM2_INPUT_SEL GPR6 = 0x01 << 2  //+ QTIMER1 TMR2 input select
+	QTIMER1_TRM3_INPUT_SEL GPR6 = 0x01 << 3  //+ QTIMER1 TMR3 input select
+	QTIMER2_TRM0_INPUT_SEL GPR6 = 0x01 << 4  //+ QTIMER2 TMR0 input select
+	QTIMER2_TRM1_INPUT_SEL GPR6 = 0x01 << 5  //+ QTIMER2 TMR1 input select
+	QTIMER2_TRM2_INPUT_SEL GPR6 = 0x01 << 6  //+ QTIMER2 TMR2 input select
+	QTIMER2_TRM3_INPUT_SEL GPR6 = 0x01 << 7  //+ QTIMER2 TMR3 input select
+	QTIMER3_TRM0_INPUT_SEL GPR6 = 0x01 << 8  //+ QTIMER3 TMR0 input select
+	QTIMER3_TRM1_INPUT_SEL GPR6 = 0x01 << 9  //+ QTIMER3 TMR1 input select
+	QTIMER3_TRM2_INPUT_SEL GPR6 = 0x01 << 10 //+ QTIMER3 TMR2 input select
+	QTIMER3_TRM3_INPUT_SEL GPR6 = 0x01 << 11 //+ QTIMER3 TMR3 input select
+	QTIMER4_TRM0_INPUT_SEL GPR6 = 0x01 << 12 //+ QTIMER4 TMR0 input select
+	QTIMER4_TRM1_INPUT_SEL GPR6 = 0x01 << 13 //+ QTIMER4 TMR1 input select
+	QTIMER4_TRM2_INPUT_SEL GPR6 = 0x01 << 14 //+ QTIMER4 TMR2 input select
+	QTIMER4_TRM3_INPUT_SEL GPR6 = 0x01 << 15 //+ QTIMER4 TMR3 input select
+	IOMUXC_XBAR_DIR_SEL_4  GPR6 = 0x01 << 16 //+ IOMUXC XBAR_INOUT4 function direction select
+	IOMUXC_XBAR_DIR_SEL_5  GPR6 = 0x01 << 17 //+ IOMUXC XBAR_INOUT5 function direction select
+	IOMUXC_XBAR_DIR_SEL_6  GPR6 = 0x01 << 18 //+ IOMUXC XBAR_INOUT6 function direction select
+	IOMUXC_XBAR_DIR_SEL_7  GPR6 = 0x01 << 19 //+ IOMUXC XBAR_INOUT7 function direction select
+	IOMUXC_XBAR_DIR_SEL_8  GPR6 = 0x01 << 20 //+ IOMUXC XBAR_INOUT8 function direction select
+	IOMUXC_XBAR_DIR_SEL_9  GPR6 = 0x01 << 21 //+ IOMUXC XBAR_INOUT9 function direction select
+	IOMUXC_XBAR_DIR_SEL_10 GPR6 = 0x01 << 22 //+ IOMUXC XBAR_INOUT10 function direction select
+	IOMUXC_XBAR_DIR_SEL_11 GPR6 = 0x01 << 23 //+ IOMUXC XBAR_INOUT11 function direction select
+	IOMUXC_XBAR_DIR_SEL_12 GPR6 = 0x01 << 24 //+ IOMUXC XBAR_INOUT12 function direction select
+	IOMUXC_XBAR_DIR_SEL_13 GPR6 = 0x01 << 25 //+ IOMUXC XBAR_INOUT13 function direction select
+	IOMUXC_XBAR_DIR_SEL_14 GPR6 = 0x01 << 26 //+ IOMUXC XBAR_INOUT14 function direction select
+	IOMUXC_XBAR_DIR_SEL_15 GPR6 = 0x01 << 27 //+ IOMUXC XBAR_INOUT15 function direction select
+	IOMUXC_XBAR_DIR_SEL_16 GPR6 = 0x01 << 28 //+ IOMUXC XBAR_INOUT16 function direction select
+	IOMUXC_XBAR_DIR_SEL_17 GPR6 = 0x01 << 29 //+ IOMUXC XBAR_INOUT17 function direction select
+	IOMUXC_XBAR_DIR_SEL_18 GPR6 = 0x01 << 30 //+ IOMUXC XBAR_INOUT18 function direction select
+	IOMUXC_XBAR_DIR_SEL_19 GPR6 = 0x01 << 31 //+ IOMUXC XBAR_INOUT19 function direction select
 )
 
 const (
@@ -799,102 +591,38 @@ const (
 )
 
 const (
-	LPI2C1_STOP_REQ    GPR7 = 0x01 << 0  //+ LPI2C1 stop request
-	LPI2C1_STOP_REQ_0  GPR7 = 0x00 << 0  //  stop request off
-	LPI2C1_STOP_REQ_1  GPR7 = 0x01 << 0  //  stop request on
-	LPI2C2_STOP_REQ    GPR7 = 0x01 << 1  //+ LPI2C2 stop request
-	LPI2C2_STOP_REQ_0  GPR7 = 0x00 << 1  //  stop request off
-	LPI2C2_STOP_REQ_1  GPR7 = 0x01 << 1  //  stop request on
-	LPI2C3_STOP_REQ    GPR7 = 0x01 << 2  //+ LPI2C3 stop request
-	LPI2C3_STOP_REQ_0  GPR7 = 0x00 << 2  //  stop request off
-	LPI2C3_STOP_REQ_1  GPR7 = 0x01 << 2  //  stop request on
-	LPI2C4_STOP_REQ    GPR7 = 0x01 << 3  //+ LPI2C4 stop request
-	LPI2C4_STOP_REQ_0  GPR7 = 0x00 << 3  //  stop request off
-	LPI2C4_STOP_REQ_1  GPR7 = 0x01 << 3  //  stop request on
-	LPSPI1_STOP_REQ    GPR7 = 0x01 << 4  //+ LPSPI1 stop request
-	LPSPI1_STOP_REQ_0  GPR7 = 0x00 << 4  //  stop request off
-	LPSPI1_STOP_REQ_1  GPR7 = 0x01 << 4  //  stop request on
-	LPSPI2_STOP_REQ    GPR7 = 0x01 << 5  //+ LPSPI2 stop request
-	LPSPI2_STOP_REQ_0  GPR7 = 0x00 << 5  //  stop request off
-	LPSPI2_STOP_REQ_1  GPR7 = 0x01 << 5  //  stop request on
-	LPSPI3_STOP_REQ    GPR7 = 0x01 << 6  //+ LPSPI3 stop request
-	LPSPI3_STOP_REQ_0  GPR7 = 0x00 << 6  //  stop request off
-	LPSPI3_STOP_REQ_1  GPR7 = 0x01 << 6  //  stop request on
-	LPSPI4_STOP_REQ    GPR7 = 0x01 << 7  //+ LPSPI4 stop request
-	LPSPI4_STOP_REQ_0  GPR7 = 0x00 << 7  //  stop request off
-	LPSPI4_STOP_REQ_1  GPR7 = 0x01 << 7  //  stop request on
-	LPUART1_STOP_REQ   GPR7 = 0x01 << 8  //+ LPUART1 stop request
-	LPUART1_STOP_REQ_0 GPR7 = 0x00 << 8  //  stop request off
-	LPUART1_STOP_REQ_1 GPR7 = 0x01 << 8  //  stop request on
-	LPUART2_STOP_REQ   GPR7 = 0x01 << 9  //+ LPUART1 stop request
-	LPUART2_STOP_REQ_0 GPR7 = 0x00 << 9  //  stop request off
-	LPUART2_STOP_REQ_1 GPR7 = 0x01 << 9  //  stop request on
-	LPUART3_STOP_REQ   GPR7 = 0x01 << 10 //+ LPUART3 stop request
-	LPUART3_STOP_REQ_0 GPR7 = 0x00 << 10 //  stop request off
-	LPUART3_STOP_REQ_1 GPR7 = 0x01 << 10 //  stop request on
-	LPUART4_STOP_REQ   GPR7 = 0x01 << 11 //+ LPUART4 stop request
-	LPUART4_STOP_REQ_0 GPR7 = 0x00 << 11 //  stop request off
-	LPUART4_STOP_REQ_1 GPR7 = 0x01 << 11 //  stop request on
-	LPUART5_STOP_REQ   GPR7 = 0x01 << 12 //+ LPUART5 stop request
-	LPUART5_STOP_REQ_0 GPR7 = 0x00 << 12 //  stop request off
-	LPUART5_STOP_REQ_1 GPR7 = 0x01 << 12 //  stop request on
-	LPUART6_STOP_REQ   GPR7 = 0x01 << 13 //+ LPUART6 stop request
-	LPUART6_STOP_REQ_0 GPR7 = 0x00 << 13 //  stop request off
-	LPUART6_STOP_REQ_1 GPR7 = 0x01 << 13 //  stop request on
-	LPUART7_STOP_REQ   GPR7 = 0x01 << 14 //+ LPUART7 stop request
-	LPUART7_STOP_REQ_0 GPR7 = 0x00 << 14 //  stop request off
-	LPUART7_STOP_REQ_1 GPR7 = 0x01 << 14 //  stop request on
-	LPUART8_STOP_REQ   GPR7 = 0x01 << 15 //+ LPUART8 stop request
-	LPUART8_STOP_REQ_0 GPR7 = 0x00 << 15 //  stop request off
-	LPUART8_STOP_REQ_1 GPR7 = 0x01 << 15 //  stop request on
-	LPI2C1_STOP_ACK    GPR7 = 0x01 << 16 //+ LPI2C1 stop acknowledge
-	LPI2C1_STOP_ACK_0  GPR7 = 0x00 << 16 //  stop acknowledge is not asserted
-	LPI2C1_STOP_ACK_1  GPR7 = 0x01 << 16 //  stop acknowledge is asserted (the module is in Stop mode)
-	LPI2C2_STOP_ACK    GPR7 = 0x01 << 17 //+ LPI2C2 stop acknowledge
-	LPI2C2_STOP_ACK_0  GPR7 = 0x00 << 17 //  stop acknowledge is not asserted
-	LPI2C2_STOP_ACK_1  GPR7 = 0x01 << 17 //  stop acknowledge is asserted
-	LPI2C3_STOP_ACK    GPR7 = 0x01 << 18 //+ LPI2C3 stop acknowledge
-	LPI2C3_STOP_ACK_0  GPR7 = 0x00 << 18 //  stop acknowledge is not asserted
-	LPI2C3_STOP_ACK_1  GPR7 = 0x01 << 18 //  stop acknowledge is asserted
-	LPI2C4_STOP_ACK    GPR7 = 0x01 << 19 //+ LPI2C4 stop acknowledge
-	LPI2C4_STOP_ACK_0  GPR7 = 0x00 << 19 //  stop acknowledge is not asserted
-	LPI2C4_STOP_ACK_1  GPR7 = 0x01 << 19 //  stop acknowledge is asserted
-	LPSPI1_STOP_ACK    GPR7 = 0x01 << 20 //+ LPSPI1 stop acknowledge
-	LPSPI1_STOP_ACK_0  GPR7 = 0x00 << 20 //  stop acknowledge is not asserted
-	LPSPI1_STOP_ACK_1  GPR7 = 0x01 << 20 //  stop acknowledge is asserted
-	LPSPI2_STOP_ACK    GPR7 = 0x01 << 21 //+ LPSPI2 stop acknowledge
-	LPSPI2_STOP_ACK_0  GPR7 = 0x00 << 21 //  stop acknowledge is not asserted
-	LPSPI2_STOP_ACK_1  GPR7 = 0x01 << 21 //  stop acknowledge is asserted
-	LPSPI3_STOP_ACK    GPR7 = 0x01 << 22 //+ LPSPI3 stop acknowledge
-	LPSPI3_STOP_ACK_0  GPR7 = 0x00 << 22 //  stop acknowledge is not asserted
-	LPSPI3_STOP_ACK_1  GPR7 = 0x01 << 22 //  stop acknowledge is asserted
-	LPSPI4_STOP_ACK    GPR7 = 0x01 << 23 //+ LPSPI4 stop acknowledge
-	LPSPI4_STOP_ACK_0  GPR7 = 0x00 << 23 //  stop acknowledge is not asserted
-	LPSPI4_STOP_ACK_1  GPR7 = 0x01 << 23 //  stop acknowledge is asserted
-	LPUART1_STOP_ACK   GPR7 = 0x01 << 24 //+ LPUART1 stop acknowledge
-	LPUART1_STOP_ACK_0 GPR7 = 0x00 << 24 //  stop acknowledge is not asserted
-	LPUART1_STOP_ACK_1 GPR7 = 0x01 << 24 //  stop acknowledge is asserted
-	LPUART2_STOP_ACK   GPR7 = 0x01 << 25 //+ LPUART1 stop acknowledge
-	LPUART2_STOP_ACK_0 GPR7 = 0x00 << 25 //  stop acknowledge is not asserted
-	LPUART2_STOP_ACK_1 GPR7 = 0x01 << 25 //  stop acknowledge is asserted
-	LPUART3_STOP_ACK   GPR7 = 0x01 << 26 //+ LPUART3 stop acknowledge
-	LPUART3_STOP_ACK_0 GPR7 = 0x00 << 26 //  stop acknowledge is not asserted
-	LPUART3_STOP_ACK_1 GPR7 = 0x01 << 26 //  stop acknowledge is asserted
-	LPUART4_STOP_ACK   GPR7 = 0x01 << 27 //+ LPUART4 stop acknowledge
-	LPUART4_STOP_ACK_0 GPR7 = 0x00 << 27 //  stop acknowledge is not asserted
-	LPUART4_STOP_ACK_1 GPR7 = 0x01 << 27 //  stop acknowledge is asserted
-	LPUART5_STOP_ACK   GPR7 = 0x01 << 28 //+ LPUART5 stop acknowledge
-	LPUART5_STOP_ACK_0 GPR7 = 0x00 << 28 //  stop acknowledge is not asserted
-	LPUART5_STOP_ACK_1 GPR7 = 0x01 << 28 //  stop acknowledge is asserted
-	LPUART6_STOP_ACK   GPR7 = 0x01 << 29 //+ LPUART6 stop acknowledge
-	LPUART6_STOP_ACK_0 GPR7 = 0x00 << 29 //  stop acknowledge is not asserted
-	LPUART6_STOP_ACK_1 GPR7 = 0x01 << 29 //  stop acknowledge is asserted
-	LPUART7_STOP_ACK   GPR7 = 0x01 << 30 //+ LPUART7 stop acknowledge
-	LPUART7_STOP_ACK_0 GPR7 = 0x00 << 30 //  stop acknowledge is not asserted
-	LPUART7_STOP_ACK_1 GPR7 = 0x01 << 30 //  stop acknowledge is asserted
-	LPUART8_STOP_ACK   GPR7 = 0x01 << 31 //+ LPUART8 stop acknowledge
-	LPUART8_STOP_ACK_0 GPR7 = 0x00 << 31 //  stop acknowledge is not asserted
-	LPUART8_STOP_ACK_1 GPR7 = 0x01 << 31 //  stop acknowledge is asserted (the module is in Stop mode)
+	LPI2C1_STOP_REQ  GPR7 = 0x01 << 0  //+ LPI2C1 stop request
+	LPI2C2_STOP_REQ  GPR7 = 0x01 << 1  //+ LPI2C2 stop request
+	LPI2C3_STOP_REQ  GPR7 = 0x01 << 2  //+ LPI2C3 stop request
+	LPI2C4_STOP_REQ  GPR7 = 0x01 << 3  //+ LPI2C4 stop request
+	LPSPI1_STOP_REQ  GPR7 = 0x01 << 4  //+ LPSPI1 stop request
+	LPSPI2_STOP_REQ  GPR7 = 0x01 << 5  //+ LPSPI2 stop request
+	LPSPI3_STOP_REQ  GPR7 = 0x01 << 6  //+ LPSPI3 stop request
+	LPSPI4_STOP_REQ  GPR7 = 0x01 << 7  //+ LPSPI4 stop request
+	LPUART1_STOP_REQ GPR7 = 0x01 << 8  //+ LPUART1 stop request
+	LPUART2_STOP_REQ GPR7 = 0x01 << 9  //+ LPUART1 stop request
+	LPUART3_STOP_REQ GPR7 = 0x01 << 10 //+ LPUART3 stop request
+	LPUART4_STOP_REQ GPR7 = 0x01 << 11 //+ LPUART4 stop request
+	LPUART5_STOP_REQ GPR7 = 0x01 << 12 //+ LPUART5 stop request
+	LPUART6_STOP_REQ GPR7 = 0x01 << 13 //+ LPUART6 stop request
+	LPUART7_STOP_REQ GPR7 = 0x01 << 14 //+ LPUART7 stop request
+	LPUART8_STOP_REQ GPR7 = 0x01 << 15 //+ LPUART8 stop request
+	LPI2C1_STOP_ACK  GPR7 = 0x01 << 16 //+ LPI2C1 stop acknowledge
+	LPI2C2_STOP_ACK  GPR7 = 0x01 << 17 //+ LPI2C2 stop acknowledge
+	LPI2C3_STOP_ACK  GPR7 = 0x01 << 18 //+ LPI2C3 stop acknowledge
+	LPI2C4_STOP_ACK  GPR7 = 0x01 << 19 //+ LPI2C4 stop acknowledge
+	LPSPI1_STOP_ACK  GPR7 = 0x01 << 20 //+ LPSPI1 stop acknowledge
+	LPSPI2_STOP_ACK  GPR7 = 0x01 << 21 //+ LPSPI2 stop acknowledge
+	LPSPI3_STOP_ACK  GPR7 = 0x01 << 22 //+ LPSPI3 stop acknowledge
+	LPSPI4_STOP_ACK  GPR7 = 0x01 << 23 //+ LPSPI4 stop acknowledge
+	LPUART1_STOP_ACK GPR7 = 0x01 << 24 //+ LPUART1 stop acknowledge
+	LPUART2_STOP_ACK GPR7 = 0x01 << 25 //+ LPUART1 stop acknowledge
+	LPUART3_STOP_ACK GPR7 = 0x01 << 26 //+ LPUART3 stop acknowledge
+	LPUART4_STOP_ACK GPR7 = 0x01 << 27 //+ LPUART4 stop acknowledge
+	LPUART5_STOP_ACK GPR7 = 0x01 << 28 //+ LPUART5 stop acknowledge
+	LPUART6_STOP_ACK GPR7 = 0x01 << 29 //+ LPUART6 stop acknowledge
+	LPUART7_STOP_ACK GPR7 = 0x01 << 30 //+ LPUART7 stop acknowledge
+	LPUART8_STOP_ACK GPR7 = 0x01 << 31 //+ LPUART8 stop acknowledge
 )
 
 const (
@@ -933,102 +661,38 @@ const (
 )
 
 const (
-	LPI2C1_IPG_STOP_MODE    GPR8 = 0x01 << 0  //+ LPI2C1 stop mode selection, cannot change when ipg_stop is asserted.
-	LPI2C1_IPG_STOP_MODE_0  GPR8 = 0x00 << 0  //  the module is functional in Stop mode
-	LPI2C1_IPG_STOP_MODE_1  GPR8 = 0x01 << 0  //  the module is NOT functional in Stop mode, when this bit is equal to 1 and ipg_stop is asserted
-	LPI2C1_IPG_DOZE         GPR8 = 0x01 << 1  //+ LPI2C1 ipg_doze mode
-	LPI2C1_IPG_DOZE_0       GPR8 = 0x00 << 1  //  not in doze mode
-	LPI2C1_IPG_DOZE_1       GPR8 = 0x01 << 1  //  in doze mode
-	LPI2C2_IPG_STOP_MODE    GPR8 = 0x01 << 2  //+ LPI2C2 stop mode selection, cannot change when ipg_stop is asserted.
-	LPI2C2_IPG_STOP_MODE_0  GPR8 = 0x00 << 2  //  the module is functional in Stop mode
-	LPI2C2_IPG_STOP_MODE_1  GPR8 = 0x01 << 2  //  the module is NOT functional in Stop mode, when this bit is equal to 1 and ipg_stop is asserted
-	LPI2C2_IPG_DOZE         GPR8 = 0x01 << 3  //+ LPI2C2 ipg_doze mode
-	LPI2C2_IPG_DOZE_0       GPR8 = 0x00 << 3  //  not in doze mode
-	LPI2C2_IPG_DOZE_1       GPR8 = 0x01 << 3  //  in doze mode
-	LPI2C3_IPG_STOP_MODE    GPR8 = 0x01 << 4  //+ LPI2C3 stop mode selection, cannot change when ipg_stop is asserted.
-	LPI2C3_IPG_STOP_MODE_0  GPR8 = 0x00 << 4  //  the module is functional in Stop mode
-	LPI2C3_IPG_STOP_MODE_1  GPR8 = 0x01 << 4  //  the module is NOT functional in Stop mode, when this bit is equal to 1 and ipg_stop is asserted
-	LPI2C3_IPG_DOZE         GPR8 = 0x01 << 5  //+ LPI2C3 ipg_doze mode
-	LPI2C3_IPG_DOZE_0       GPR8 = 0x00 << 5  //  not in doze mode
-	LPI2C3_IPG_DOZE_1       GPR8 = 0x01 << 5  //  in doze mode
-	LPI2C4_IPG_STOP_MODE    GPR8 = 0x01 << 6  //+ LPI2C4 stop mode selection, cannot change when ipg_stop is asserted.
-	LPI2C4_IPG_STOP_MODE_0  GPR8 = 0x00 << 6  //  the module is functional in Stop mode
-	LPI2C4_IPG_STOP_MODE_1  GPR8 = 0x01 << 6  //  the module is NOT functional in Stop mode, when this bit is equal to 1 and ipg_stop is asserted
-	LPI2C4_IPG_DOZE         GPR8 = 0x01 << 7  //+ LPI2C4 ipg_doze mode
-	LPI2C4_IPG_DOZE_0       GPR8 = 0x00 << 7  //  not in doze mode
-	LPI2C4_IPG_DOZE_1       GPR8 = 0x01 << 7  //  in doze mode
-	LPSPI1_IPG_STOP_MODE    GPR8 = 0x01 << 8  //+ LPSPI1 stop mode selection, cannot change when ipg_stop is asserted.
-	LPSPI1_IPG_STOP_MODE_0  GPR8 = 0x00 << 8  //  the module is functional in Stop mode
-	LPSPI1_IPG_STOP_MODE_1  GPR8 = 0x01 << 8  //  the module is NOT functional in Stop mode, when this bit is equal to 1 and ipg_stop is asserted
-	LPSPI1_IPG_DOZE         GPR8 = 0x01 << 9  //+ LPSPI1 ipg_doze mode
-	LPSPI1_IPG_DOZE_0       GPR8 = 0x00 << 9  //  not in doze mode
-	LPSPI1_IPG_DOZE_1       GPR8 = 0x01 << 9  //  in doze mode
-	LPSPI2_IPG_STOP_MODE    GPR8 = 0x01 << 10 //+ LPSPI2 stop mode selection, cannot change when ipg_stop is asserted.
-	LPSPI2_IPG_STOP_MODE_0  GPR8 = 0x00 << 10 //  the module is functional in Stop mode
-	LPSPI2_IPG_STOP_MODE_1  GPR8 = 0x01 << 10 //  the module is NOT functional in Stop mode, when this bit is equal to 1 and ipg_stop is asserted
-	LPSPI2_IPG_DOZE         GPR8 = 0x01 << 11 //+ LPSPI2 ipg_doze mode
-	LPSPI2_IPG_DOZE_0       GPR8 = 0x00 << 11 //  not in doze mode
-	LPSPI2_IPG_DOZE_1       GPR8 = 0x01 << 11 //  in doze mode
-	LPSPI3_IPG_STOP_MODE    GPR8 = 0x01 << 12 //+ LPSPI3 stop mode selection, cannot change when ipg_stop is asserted.
-	LPSPI3_IPG_STOP_MODE_0  GPR8 = 0x00 << 12 //  the module is functional in Stop mode
-	LPSPI3_IPG_STOP_MODE_1  GPR8 = 0x01 << 12 //  the module is NOT functional in Stop mode, when this bit is equal to 1 and ipg_stop is asserted
-	LPSPI3_IPG_DOZE         GPR8 = 0x01 << 13 //+ LPSPI3 ipg_doze mode
-	LPSPI3_IPG_DOZE_0       GPR8 = 0x00 << 13 //  not in doze mode
-	LPSPI3_IPG_DOZE_1       GPR8 = 0x01 << 13 //  in doze mode
-	LPSPI4_IPG_STOP_MODE    GPR8 = 0x01 << 14 //+ LPSPI4 stop mode selection, cannot change when ipg_stop is asserted.
-	LPSPI4_IPG_STOP_MODE_0  GPR8 = 0x00 << 14 //  the module is functional in Stop mode
-	LPSPI4_IPG_STOP_MODE_1  GPR8 = 0x01 << 14 //  the module is NOT functional in Stop mode, when this bit is equal to 1 and ipg_stop is asserted
-	LPSPI4_IPG_DOZE         GPR8 = 0x01 << 15 //+ LPSPI4 ipg_doze mode
-	LPSPI4_IPG_DOZE_0       GPR8 = 0x00 << 15 //  not in doze mode
-	LPSPI4_IPG_DOZE_1       GPR8 = 0x01 << 15 //  in doze mode
-	LPUART1_IPG_STOP_MODE   GPR8 = 0x01 << 16 //+ LPUART1 stop mode selection, cannot change when ipg_stop is asserted.
-	LPUART1_IPG_STOP_MODE_0 GPR8 = 0x00 << 16 //  the module is functional in Stop mode
-	LPUART1_IPG_STOP_MODE_1 GPR8 = 0x01 << 16 //  the module is NOT functional in Stop mode, when this bit is equal to 1 and ipg_stop is asserted
-	LPUART1_IPG_DOZE        GPR8 = 0x01 << 17 //+ LPUART1 ipg_doze mode
-	LPUART1_IPG_DOZE_0      GPR8 = 0x00 << 17 //  not in doze mode
-	LPUART1_IPG_DOZE_1      GPR8 = 0x01 << 17 //  in doze mode
-	LPUART2_IPG_STOP_MODE   GPR8 = 0x01 << 18 //+ LPUART2 stop mode selection, cannot change when ipg_stop is asserted.
-	LPUART2_IPG_STOP_MODE_0 GPR8 = 0x00 << 18 //  the module is functional in Stop mode
-	LPUART2_IPG_STOP_MODE_1 GPR8 = 0x01 << 18 //  the module is NOT functional in Stop mode, when this bit is equal to 1 and ipg_stop is asserted
-	LPUART2_IPG_DOZE        GPR8 = 0x01 << 19 //+ LPUART2 ipg_doze mode
-	LPUART2_IPG_DOZE_0      GPR8 = 0x00 << 19 //  not in doze mode
-	LPUART2_IPG_DOZE_1      GPR8 = 0x01 << 19 //  in doze mode
-	LPUART3_IPG_STOP_MODE   GPR8 = 0x01 << 20 //+ LPUART3 stop mode selection, cannot change when ipg_stop is asserted.
-	LPUART3_IPG_STOP_MODE_0 GPR8 = 0x00 << 20 //  the module is functional in Stop mode
-	LPUART3_IPG_STOP_MODE_1 GPR8 = 0x01 << 20 //  the module is NOT functional in Stop mode, when this bit is equal to 1 and ipg_stop is asserted
-	LPUART3_IPG_DOZE        GPR8 = 0x01 << 21 //+ LPUART3 ipg_doze mode
-	LPUART3_IPG_DOZE_0      GPR8 = 0x00 << 21 //  not in doze mode
-	LPUART3_IPG_DOZE_1      GPR8 = 0x01 << 21 //  in doze mode
-	LPUART4_IPG_STOP_MODE   GPR8 = 0x01 << 22 //+ LPUART4 stop mode selection, cannot change when ipg_stop is asserted.
-	LPUART4_IPG_STOP_MODE_0 GPR8 = 0x00 << 22 //  the module is functional in Stop mode
-	LPUART4_IPG_STOP_MODE_1 GPR8 = 0x01 << 22 //  the module is NOT functional in Stop mode, when this bit is equal to 1 and ipg_stop is asserted
-	LPUART4_IPG_DOZE        GPR8 = 0x01 << 23 //+ LPUART4 ipg_doze mode
-	LPUART4_IPG_DOZE_0      GPR8 = 0x00 << 23 //  not in doze mode
-	LPUART4_IPG_DOZE_1      GPR8 = 0x01 << 23 //  in doze mode
-	LPUART5_IPG_STOP_MODE   GPR8 = 0x01 << 24 //+ LPUART5 stop mode selection, cannot change when ipg_stop is asserted.
-	LPUART5_IPG_STOP_MODE_0 GPR8 = 0x00 << 24 //  the module is functional in Stop mode
-	LPUART5_IPG_STOP_MODE_1 GPR8 = 0x01 << 24 //  the module is NOT functional in Stop mode, when this bit is equal to 1 and ipg_stop is asserted
-	LPUART5_IPG_DOZE        GPR8 = 0x01 << 25 //+ LPUART5 ipg_doze mode
-	LPUART5_IPG_DOZE_0      GPR8 = 0x00 << 25 //  not in doze mode
-	LPUART5_IPG_DOZE_1      GPR8 = 0x01 << 25 //  in doze mode
-	LPUART6_IPG_STOP_MODE   GPR8 = 0x01 << 26 //+ LPUART6 stop mode selection, cannot change when ipg_stop is asserted.
-	LPUART6_IPG_STOP_MODE_0 GPR8 = 0x00 << 26 //  the module is functional in Stop mode
-	LPUART6_IPG_STOP_MODE_1 GPR8 = 0x01 << 26 //  the module is NOT functional in Stop mode, when this bit is equal to 1 and ipg_stop is asserted
-	LPUART6_IPG_DOZE        GPR8 = 0x01 << 27 //+ LPUART6 ipg_doze mode
-	LPUART6_IPG_DOZE_0      GPR8 = 0x00 << 27 //  not in doze mode
-	LPUART6_IPG_DOZE_1      GPR8 = 0x01 << 27 //  in doze mode
-	LPUART7_IPG_STOP_MODE   GPR8 = 0x01 << 28 //+ LPUART7 stop mode selection, cannot change when ipg_stop is asserted.
-	LPUART7_IPG_STOP_MODE_0 GPR8 = 0x00 << 28 //  the module is functional in Stop mode
-	LPUART7_IPG_STOP_MODE_1 GPR8 = 0x01 << 28 //  the module is NOT functional in Stop mode, when this bit is equal to 1 and ipg_stop is asserted
-	LPUART7_IPG_DOZE        GPR8 = 0x01 << 29 //+ LPUART7 ipg_doze mode
-	LPUART7_IPG_DOZE_0      GPR8 = 0x00 << 29 //  not in doze mode
-	LPUART7_IPG_DOZE_1      GPR8 = 0x01 << 29 //  in doze mode
-	LPUART8_IPG_STOP_MODE   GPR8 = 0x01 << 30 //+ LPUART8 stop mode selection, cannot change when ipg_stop is asserted.
-	LPUART8_IPG_STOP_MODE_0 GPR8 = 0x00 << 30 //  the module is functional in Stop mode
-	LPUART8_IPG_STOP_MODE_1 GPR8 = 0x01 << 30 //  the module is NOT functional in Stop mode, when this bit is equal to 1 and ipg_stop is asserted
-	LPUART8_IPG_DOZE        GPR8 = 0x01 << 31 //+ LPUART8 ipg_doze mode
-	LPUART8_IPG_DOZE_0      GPR8 = 0x00 << 31 //  not in doze mode
-	LPUART8_IPG_DOZE_1      GPR8 = 0x01 << 31 //  in doze mode
+	LPI2C1_IPG_STOP_MODE  GPR8 = 0x01 << 0  //+ LPI2C1 stop mode selection, cannot change when ipg_stop is asserted.
+	LPI2C1_IPG_DOZE       GPR8 = 0x01 << 1  //+ LPI2C1 ipg_doze mode
+	LPI2C2_IPG_STOP_MODE  GPR8 = 0x01 << 2  //+ LPI2C2 stop mode selection, cannot change when ipg_stop is asserted.
+	LPI2C2_IPG_DOZE       GPR8 = 0x01 << 3  //+ LPI2C2 ipg_doze mode
+	LPI2C3_IPG_STOP_MODE  GPR8 = 0x01 << 4  //+ LPI2C3 stop mode selection, cannot change when ipg_stop is asserted.
+	LPI2C3_IPG_DOZE       GPR8 = 0x01 << 5  //+ LPI2C3 ipg_doze mode
+	LPI2C4_IPG_STOP_MODE  GPR8 = 0x01 << 6  //+ LPI2C4 stop mode selection, cannot change when ipg_stop is asserted.
+	LPI2C4_IPG_DOZE       GPR8 = 0x01 << 7  //+ LPI2C4 ipg_doze mode
+	LPSPI1_IPG_STOP_MODE  GPR8 = 0x01 << 8  //+ LPSPI1 stop mode selection, cannot change when ipg_stop is asserted.
+	LPSPI1_IPG_DOZE       GPR8 = 0x01 << 9  //+ LPSPI1 ipg_doze mode
+	LPSPI2_IPG_STOP_MODE  GPR8 = 0x01 << 10 //+ LPSPI2 stop mode selection, cannot change when ipg_stop is asserted.
+	LPSPI2_IPG_DOZE       GPR8 = 0x01 << 11 //+ LPSPI2 ipg_doze mode
+	LPSPI3_IPG_STOP_MODE  GPR8 = 0x01 << 12 //+ LPSPI3 stop mode selection, cannot change when ipg_stop is asserted.
+	LPSPI3_IPG_DOZE       GPR8 = 0x01 << 13 //+ LPSPI3 ipg_doze mode
+	LPSPI4_IPG_STOP_MODE  GPR8 = 0x01 << 14 //+ LPSPI4 stop mode selection, cannot change when ipg_stop is asserted.
+	LPSPI4_IPG_DOZE       GPR8 = 0x01 << 15 //+ LPSPI4 ipg_doze mode
+	LPUART1_IPG_STOP_MODE GPR8 = 0x01 << 16 //+ LPUART1 stop mode selection, cannot change when ipg_stop is asserted.
+	LPUART1_IPG_DOZE      GPR8 = 0x01 << 17 //+ LPUART1 ipg_doze mode
+	LPUART2_IPG_STOP_MODE GPR8 = 0x01 << 18 //+ LPUART2 stop mode selection, cannot change when ipg_stop is asserted.
+	LPUART2_IPG_DOZE      GPR8 = 0x01 << 19 //+ LPUART2 ipg_doze mode
+	LPUART3_IPG_STOP_MODE GPR8 = 0x01 << 20 //+ LPUART3 stop mode selection, cannot change when ipg_stop is asserted.
+	LPUART3_IPG_DOZE      GPR8 = 0x01 << 21 //+ LPUART3 ipg_doze mode
+	LPUART4_IPG_STOP_MODE GPR8 = 0x01 << 22 //+ LPUART4 stop mode selection, cannot change when ipg_stop is asserted.
+	LPUART4_IPG_DOZE      GPR8 = 0x01 << 23 //+ LPUART4 ipg_doze mode
+	LPUART5_IPG_STOP_MODE GPR8 = 0x01 << 24 //+ LPUART5 stop mode selection, cannot change when ipg_stop is asserted.
+	LPUART5_IPG_DOZE      GPR8 = 0x01 << 25 //+ LPUART5 ipg_doze mode
+	LPUART6_IPG_STOP_MODE GPR8 = 0x01 << 26 //+ LPUART6 stop mode selection, cannot change when ipg_stop is asserted.
+	LPUART6_IPG_DOZE      GPR8 = 0x01 << 27 //+ LPUART6 ipg_doze mode
+	LPUART7_IPG_STOP_MODE GPR8 = 0x01 << 28 //+ LPUART7 stop mode selection, cannot change when ipg_stop is asserted.
+	LPUART7_IPG_DOZE      GPR8 = 0x01 << 29 //+ LPUART7 ipg_doze mode
+	LPUART8_IPG_STOP_MODE GPR8 = 0x01 << 30 //+ LPUART8 stop mode selection, cannot change when ipg_stop is asserted.
+	LPUART8_IPG_DOZE      GPR8 = 0x01 << 31 //+ LPUART8 ipg_doze mode
 )
 
 const (
@@ -1067,40 +731,20 @@ const (
 )
 
 const (
-	NIDEN                         GPR10 = 0x01 << 0  //+ ARM non-secure (non-invasive) debug enable
-	NIDEN_0                       GPR10 = 0x00 << 0  //  Debug turned off.
-	NIDEN_1                       GPR10 = 0x01 << 0  //  Debug enabled (default).
-	DBG_EN                        GPR10 = 0x01 << 1  //+ ARM invasive debug enable
-	DBG_EN_0                      GPR10 = 0x00 << 1  //  Debug turned off.
-	DBG_EN_1                      GPR10 = 0x01 << 1  //  Debug enabled (default).
-	SEC_ERR_RESP                  GPR10 = 0x01 << 2  //+ Security error response enable for all security gaskets (on both AHB and AXI buses)
-	SEC_ERR_RESP_0                GPR10 = 0x00 << 2  //  OKEY response
-	SEC_ERR_RESP_1                GPR10 = 0x01 << 2  //  SLVError (default)
-	DCPKEY_OCOTP_OR_KEYMUX        GPR10 = 0x01 << 4  //+ DCP Key selection bit.
-	DCPKEY_OCOTP_OR_KEYMUX_0      GPR10 = 0x00 << 4  //  Select key from Key MUX (SNVS/OTPMK).
-	DCPKEY_OCOTP_OR_KEYMUX_1      GPR10 = 0x01 << 4  //  Select key from OCOTP (SW_GP2).
-	OCRAM_TZ_EN                   GPR10 = 0x01 << 8  //+ OCRAM TrustZone (TZ) enable.
-	OCRAM_TZ_EN_0                 GPR10 = 0x00 << 8  //  The TrustZone feature is disabled. Entire OCRAM space is available for all access types (secure/non-secure/user/supervisor).
-	OCRAM_TZ_EN_1                 GPR10 = 0x01 << 8  //  The TrustZone feature is enabled. Access to address in the range specified by [ENDADDR:STARTADDR] follows the execution mode access policy described in CSU chapter.
-	OCRAM_TZ_ADDR                 GPR10 = 0x7F << 9  //+ OCRAM TrustZone (TZ) start address
-	LOCK_NIDEN                    GPR10 = 0x01 << 16 //+ Lock NIDEN field for changes
-	LOCK_NIDEN_0                  GPR10 = 0x00 << 16 //  Field is not locked
-	LOCK_NIDEN_1                  GPR10 = 0x01 << 16 //  Field is locked (read access only)
-	LOCK_DBG_EN                   GPR10 = 0x01 << 17 //+ Lock DBG_EN field for changes
-	LOCK_DBG_EN_0                 GPR10 = 0x00 << 17 //  Field is not locked
-	LOCK_DBG_EN_1                 GPR10 = 0x01 << 17 //  Field is locked (read access only)
-	LOCK_SEC_ERR_RESP             GPR10 = 0x01 << 18 //+ Lock SEC_ERR_RESP field for changes
-	LOCK_SEC_ERR_RESP_0           GPR10 = 0x00 << 18 //  Field is not locked
-	LOCK_SEC_ERR_RESP_1           GPR10 = 0x01 << 18 //  Field is locked (read access only)
-	LOCK_DCPKEY_OCOTP_OR_KEYMUX   GPR10 = 0x01 << 20 //+ Lock DCP Key OCOTP/Key MUX selection bit
-	LOCK_DCPKEY_OCOTP_OR_KEYMUX_0 GPR10 = 0x00 << 20 //  Field is not locked
-	LOCK_DCPKEY_OCOTP_OR_KEYMUX_1 GPR10 = 0x01 << 20 //  Field is locked (read access only)
-	LOCK_OCRAM_TZ_EN              GPR10 = 0x01 << 24 //+ Lock OCRAM_TZ_EN field for changes
-	LOCK_OCRAM_TZ_EN_0            GPR10 = 0x00 << 24 //  Field is not locked
-	LOCK_OCRAM_TZ_EN_1            GPR10 = 0x01 << 24 //  Field is locked (read access only)
-	LOCK_OCRAM_TZ_ADDR            GPR10 = 0x7F << 25 //+ Lock OCRAM_TZ_ADDR field for changes
-	LOCK_OCRAM_TZ_ADDR_0          GPR10 = 0x00 << 25 //  Field is not locked
-	LOCK_OCRAM_TZ_ADDR_1          GPR10 = 0x01 << 25 //  Field is locked (read access only)
+	NIDEN                       GPR10 = 0x01 << 0  //+ ARM non-secure (non-invasive) debug enable
+	DBG_EN                      GPR10 = 0x01 << 1  //+ ARM invasive debug enable
+	SEC_ERR_RESP                GPR10 = 0x01 << 2  //+ Security error response enable for all security gaskets (on both AHB and AXI buses)
+	DCPKEY_OCOTP_OR_KEYMUX      GPR10 = 0x01 << 4  //+ DCP Key selection bit.
+	OCRAM_TZ_EN                 GPR10 = 0x01 << 8  //+ OCRAM TrustZone (TZ) enable.
+	OCRAM_TZ_ADDR               GPR10 = 0x7F << 9  //+ OCRAM TrustZone (TZ) start address
+	LOCK_NIDEN                  GPR10 = 0x01 << 16 //+ Lock NIDEN field for changes
+	LOCK_DBG_EN                 GPR10 = 0x01 << 17 //+ Lock DBG_EN field for changes
+	LOCK_SEC_ERR_RESP           GPR10 = 0x01 << 18 //+ Lock SEC_ERR_RESP field for changes
+	LOCK_DCPKEY_OCOTP_OR_KEYMUX GPR10 = 0x01 << 20 //+ Lock DCP Key OCOTP/Key MUX selection bit
+	LOCK_OCRAM_TZ_EN            GPR10 = 0x01 << 24 //+ Lock OCRAM_TZ_EN field for changes
+	LOCK_OCRAM_TZ_ADDR          GPR10 = 0x7F << 25 //+ Lock OCRAM_TZ_ADDR field for changes
+	LOCK_OCRAM_TZ_ADDR_0        GPR10 = 0x00 << 25 //  Field is not locked
+	LOCK_OCRAM_TZ_ADDR_1        GPR10 = 0x01 << 25 //  Field is locked (read access only)
 )
 
 const (
@@ -1151,27 +795,13 @@ const (
 )
 
 const (
-	FLEXIO1_IPG_STOP_MODE   GPR12 = 0x01 << 0 //+ FlexIO1 stop mode selection. Cannot change when ipg_stop is asserted.
-	FLEXIO1_IPG_STOP_MODE_0 GPR12 = 0x00 << 0 //  FlexIO1 is functional in Stop mode.
-	FLEXIO1_IPG_STOP_MODE_1 GPR12 = 0x01 << 0 //  When this bit is equal to 1'b1 and ipg_stop is asserted, FlexIO1 is not functional in Stop mode.
-	FLEXIO1_IPG_DOZE        GPR12 = 0x01 << 1 //+ FLEXIO1 ipg_doze mode
-	FLEXIO1_IPG_DOZE_0      GPR12 = 0x00 << 1 //  FLEXIO1 is not in doze mode
-	FLEXIO1_IPG_DOZE_1      GPR12 = 0x01 << 1 //  FLEXIO1 is in doze mode
-	FLEXIO2_IPG_STOP_MODE   GPR12 = 0x01 << 2 //+ FlexIO2 stop mode selection. Cannot change when ipg_stop is asserted.
-	FLEXIO2_IPG_STOP_MODE_0 GPR12 = 0x00 << 2 //  FlexIO2 is functional in Stop mode.
-	FLEXIO2_IPG_STOP_MODE_1 GPR12 = 0x01 << 2 //  When this bit is equal to 1'b1 and ipg_stop is asserted, FlexIO2 is not functional in Stop mode.
-	FLEXIO2_IPG_DOZE        GPR12 = 0x01 << 3 //+ FLEXIO2 ipg_doze mode
-	FLEXIO2_IPG_DOZE_0      GPR12 = 0x00 << 3 //  FLEXIO2 is not in doze mode
-	FLEXIO2_IPG_DOZE_1      GPR12 = 0x01 << 3 //  FLEXIO2 is in doze mode
-	ACMP_IPG_STOP_MODE      GPR12 = 0x01 << 4 //+ ACMP stop mode selection. Cannot change when ipg_stop is asserted.
-	ACMP_IPG_STOP_MODE_0    GPR12 = 0x00 << 4 //  ACMP is functional in Stop mode.
-	ACMP_IPG_STOP_MODE_1    GPR12 = 0x01 << 4 //  When this bit is equal to 1'b1 and ipg_stop is asserted, ACMP is not functional in Stop mode.
-	FLEXIO3_IPG_STOP_MODE   GPR12 = 0x01 << 5 //+ FlexIO3 stop mode selection. Cannot change when ipg_stop is asserted.
-	FLEXIO3_IPG_STOP_MODE_0 GPR12 = 0x00 << 5 //  FlexIO3 is functional in Stop mode.
-	FLEXIO3_IPG_STOP_MODE_1 GPR12 = 0x01 << 5 //  When this bit is equal to 1'b1 and ipg_stop is asserted, FlexIO3 is not functional in Stop mode.
-	FLEXIO3_IPG_DOZE        GPR12 = 0x01 << 6 //+ FLEXIO3 ipg_doze mode
-	FLEXIO3_IPG_DOZE_0      GPR12 = 0x00 << 6 //  FLEXIO3 is not in doze mode
-	FLEXIO3_IPG_DOZE_1      GPR12 = 0x01 << 6 //  FLEXIO3 is in doze mode
+	FLEXIO1_IPG_STOP_MODE GPR12 = 0x01 << 0 //+ FlexIO1 stop mode selection. Cannot change when ipg_stop is asserted.
+	FLEXIO1_IPG_DOZE      GPR12 = 0x01 << 1 //+ FLEXIO1 ipg_doze mode
+	FLEXIO2_IPG_STOP_MODE GPR12 = 0x01 << 2 //+ FlexIO2 stop mode selection. Cannot change when ipg_stop is asserted.
+	FLEXIO2_IPG_DOZE      GPR12 = 0x01 << 3 //+ FLEXIO2 ipg_doze mode
+	ACMP_IPG_STOP_MODE    GPR12 = 0x01 << 4 //+ ACMP stop mode selection. Cannot change when ipg_stop is asserted.
+	FLEXIO3_IPG_STOP_MODE GPR12 = 0x01 << 5 //+ FlexIO3 stop mode selection. Cannot change when ipg_stop is asserted.
+	FLEXIO3_IPG_DOZE      GPR12 = 0x01 << 6 //+ FLEXIO3 ipg_doze mode
 )
 
 const (
@@ -1185,24 +815,12 @@ const (
 )
 
 const (
-	ARCACHE_USDHC    GPR13 = 0x01 << 0  //+ uSDHC block cacheable attribute value of AXI read transactions
-	ARCACHE_USDHC_0  GPR13 = 0x00 << 0  //  Cacheable attribute is off for read transactions.
-	ARCACHE_USDHC_1  GPR13 = 0x01 << 0  //  Cacheable attribute is on for read transactions.
-	AWCACHE_USDHC    GPR13 = 0x01 << 1  //+ uSDHC block cacheable attribute value of AXI write transactions
-	AWCACHE_USDHC_0  GPR13 = 0x00 << 1  //  Cacheable attribute is off for write transactions.
-	AWCACHE_USDHC_1  GPR13 = 0x01 << 1  //  Cacheable attribute is on for write transactions.
-	CANFD_STOP_REQ   GPR13 = 0x01 << 4  //+ CANFD stop request.
-	CANFD_STOP_REQ_0 GPR13 = 0x00 << 4  //  stop request off
-	CANFD_STOP_REQ_1 GPR13 = 0x01 << 4  //  stop request on
-	CACHE_ENET       GPR13 = 0x01 << 7  //+ ENET block cacheable attribute value of AXI transactions
-	CACHE_ENET_0     GPR13 = 0x00 << 7  //  Cacheable attribute is off for read/write transactions.
-	CACHE_ENET_1     GPR13 = 0x01 << 7  //  Cacheable attribute is on for read/write transactions.
-	CACHE_USB        GPR13 = 0x01 << 13 //+ USB block cacheable attribute value of AXI transactions
-	CACHE_USB_0      GPR13 = 0x00 << 13 //  Cacheable attribute is off for read/write transactions.
-	CACHE_USB_1      GPR13 = 0x01 << 13 //  Cacheable attribute is on for read/write transactions.
-	CANFD_STOP_ACK   GPR13 = 0x01 << 20 //+ CANFD stop acknowledge.
-	CANFD_STOP_ACK_0 GPR13 = 0x00 << 20 //  CANFD stop acknowledge is not asserted
-	CANFD_STOP_ACK_1 GPR13 = 0x01 << 20 //  CANFD stop acknowledge is asserted
+	ARCACHE_USDHC  GPR13 = 0x01 << 0  //+ uSDHC block cacheable attribute value of AXI read transactions
+	AWCACHE_USDHC  GPR13 = 0x01 << 1  //+ uSDHC block cacheable attribute value of AXI write transactions
+	CANFD_STOP_REQ GPR13 = 0x01 << 4  //+ CANFD stop request.
+	CACHE_ENET     GPR13 = 0x01 << 7  //+ ENET block cacheable attribute value of AXI transactions
+	CACHE_USB      GPR13 = 0x01 << 13 //+ USB block cacheable attribute value of AXI transactions
+	CANFD_STOP_ACK GPR13 = 0x01 << 20 //+ CANFD stop acknowledge.
 )
 
 const (
@@ -1215,62 +833,38 @@ const (
 )
 
 const (
-	ACMP1_CMP_IGEN_TRIM_DN   GPR14 = 0x01 << 0  //+ reduces ACMP1 internal bias current by 30%
-	ACMP1_CMP_IGEN_TRIM_DN_0 GPR14 = 0x00 << 0  //  no reduce
-	ACMP1_CMP_IGEN_TRIM_DN_1 GPR14 = 0x01 << 0  //  reduces
-	ACMP2_CMP_IGEN_TRIM_DN   GPR14 = 0x01 << 1  //+ reduces ACMP2 internal bias current by 30%
-	ACMP2_CMP_IGEN_TRIM_DN_0 GPR14 = 0x00 << 1  //  no reduce
-	ACMP2_CMP_IGEN_TRIM_DN_1 GPR14 = 0x01 << 1  //  reduces
-	ACMP3_CMP_IGEN_TRIM_DN   GPR14 = 0x01 << 2  //+ reduces ACMP3 internal bias current by 30%
-	ACMP3_CMP_IGEN_TRIM_DN_0 GPR14 = 0x00 << 2  //  no reduce
-	ACMP3_CMP_IGEN_TRIM_DN_1 GPR14 = 0x01 << 2  //  reduces
-	ACMP4_CMP_IGEN_TRIM_DN   GPR14 = 0x01 << 3  //+ reduces ACMP4 internal bias current by 30%
-	ACMP4_CMP_IGEN_TRIM_DN_0 GPR14 = 0x00 << 3  //  no reduce
-	ACMP4_CMP_IGEN_TRIM_DN_1 GPR14 = 0x01 << 3  //  reduces
-	ACMP1_CMP_IGEN_TRIM_UP   GPR14 = 0x01 << 4  //+ increases ACMP1 internal bias current by 30%
-	ACMP1_CMP_IGEN_TRIM_UP_0 GPR14 = 0x00 << 4  //  no increase
-	ACMP1_CMP_IGEN_TRIM_UP_1 GPR14 = 0x01 << 4  //  increases
-	ACMP2_CMP_IGEN_TRIM_UP   GPR14 = 0x01 << 5  //+ increases ACMP2 internal bias current by 30%
-	ACMP2_CMP_IGEN_TRIM_UP_0 GPR14 = 0x00 << 5  //  no increase
-	ACMP2_CMP_IGEN_TRIM_UP_1 GPR14 = 0x01 << 5  //  increases
-	ACMP3_CMP_IGEN_TRIM_UP   GPR14 = 0x01 << 6  //+ increases ACMP3 internal bias current by 30%
-	ACMP3_CMP_IGEN_TRIM_UP_0 GPR14 = 0x00 << 6  //  no increase
-	ACMP3_CMP_IGEN_TRIM_UP_1 GPR14 = 0x01 << 6  //  increases
-	ACMP4_CMP_IGEN_TRIM_UP   GPR14 = 0x01 << 7  //+ increases ACMP4 internal bias current by 30%
-	ACMP4_CMP_IGEN_TRIM_UP_0 GPR14 = 0x00 << 7  //  no increase
-	ACMP4_CMP_IGEN_TRIM_UP_1 GPR14 = 0x01 << 7  //  increases
-	ACMP1_SAMPLE_SYNC_EN     GPR14 = 0x01 << 8  //+ ACMP1 sample_lv source select
-	ACMP1_SAMPLE_SYNC_EN_0   GPR14 = 0x00 << 8  //  select XBAR output
-	ACMP1_SAMPLE_SYNC_EN_1   GPR14 = 0x01 << 8  //  select synced sample_lv
-	ACMP2_SAMPLE_SYNC_EN     GPR14 = 0x01 << 9  //+ ACMP2 sample_lv source select
-	ACMP2_SAMPLE_SYNC_EN_0   GPR14 = 0x00 << 9  //  select XBAR output
-	ACMP2_SAMPLE_SYNC_EN_1   GPR14 = 0x01 << 9  //  select synced sample_lv
-	ACMP3_SAMPLE_SYNC_EN     GPR14 = 0x01 << 10 //+ ACMP3 sample_lv source select
-	ACMP3_SAMPLE_SYNC_EN_0   GPR14 = 0x00 << 10 //  select XBAR output
-	ACMP3_SAMPLE_SYNC_EN_1   GPR14 = 0x01 << 10 //  select synced sample_lv
-	ACMP4_SAMPLE_SYNC_EN     GPR14 = 0x01 << 11 //+ ACMP4 sample_lv source select
-	ACMP4_SAMPLE_SYNC_EN_0   GPR14 = 0x00 << 11 //  select XBAR output
-	ACMP4_SAMPLE_SYNC_EN_1   GPR14 = 0x01 << 11 //  select synced sample_lv
-	CM7_CFGITCMSZ            GPR14 = 0x0F << 16 //+ ITCM total size configuration
-	CM7_CFGITCMSZ_0          GPR14 = 0x00 << 16 //  0 KB (No ITCM)
-	CM7_CFGITCMSZ_3          GPR14 = 0x03 << 16 //  4 KB
-	CM7_CFGITCMSZ_4          GPR14 = 0x04 << 16 //  8 KB
-	CM7_CFGITCMSZ_5          GPR14 = 0x05 << 16 //  16 KB
-	CM7_CFGITCMSZ_6          GPR14 = 0x06 << 16 //  32 KB
-	CM7_CFGITCMSZ_7          GPR14 = 0x07 << 16 //  64 KB
-	CM7_CFGITCMSZ_8          GPR14 = 0x08 << 16 //  128 KB
-	CM7_CFGITCMSZ_9          GPR14 = 0x09 << 16 //  256 KB
-	CM7_CFGITCMSZ_10         GPR14 = 0x0A << 16 //  512 KB
-	CM7_CFGDTCMSZ            GPR14 = 0x0F << 20 //+ DTCM total size configuration
-	CM7_CFGDTCMSZ_0          GPR14 = 0x00 << 20 //  0 KB (No DTCM)
-	CM7_CFGDTCMSZ_3          GPR14 = 0x03 << 20 //  4 KB
-	CM7_CFGDTCMSZ_4          GPR14 = 0x04 << 20 //  8 KB
-	CM7_CFGDTCMSZ_5          GPR14 = 0x05 << 20 //  16 KB
-	CM7_CFGDTCMSZ_6          GPR14 = 0x06 << 20 //  32 KB
-	CM7_CFGDTCMSZ_7          GPR14 = 0x07 << 20 //  64 KB
-	CM7_CFGDTCMSZ_8          GPR14 = 0x08 << 20 //  128 KB
-	CM7_CFGDTCMSZ_9          GPR14 = 0x09 << 20 //  256 KB
-	CM7_CFGDTCMSZ_10         GPR14 = 0x0A << 20 //  512 KB
+	ACMP1_CMP_IGEN_TRIM_DN GPR14 = 0x01 << 0  //+ reduces ACMP1 internal bias current by 30%
+	ACMP2_CMP_IGEN_TRIM_DN GPR14 = 0x01 << 1  //+ reduces ACMP2 internal bias current by 30%
+	ACMP3_CMP_IGEN_TRIM_DN GPR14 = 0x01 << 2  //+ reduces ACMP3 internal bias current by 30%
+	ACMP4_CMP_IGEN_TRIM_DN GPR14 = 0x01 << 3  //+ reduces ACMP4 internal bias current by 30%
+	ACMP1_CMP_IGEN_TRIM_UP GPR14 = 0x01 << 4  //+ increases ACMP1 internal bias current by 30%
+	ACMP2_CMP_IGEN_TRIM_UP GPR14 = 0x01 << 5  //+ increases ACMP2 internal bias current by 30%
+	ACMP3_CMP_IGEN_TRIM_UP GPR14 = 0x01 << 6  //+ increases ACMP3 internal bias current by 30%
+	ACMP4_CMP_IGEN_TRIM_UP GPR14 = 0x01 << 7  //+ increases ACMP4 internal bias current by 30%
+	ACMP1_SAMPLE_SYNC_EN   GPR14 = 0x01 << 8  //+ ACMP1 sample_lv source select
+	ACMP2_SAMPLE_SYNC_EN   GPR14 = 0x01 << 9  //+ ACMP2 sample_lv source select
+	ACMP3_SAMPLE_SYNC_EN   GPR14 = 0x01 << 10 //+ ACMP3 sample_lv source select
+	ACMP4_SAMPLE_SYNC_EN   GPR14 = 0x01 << 11 //+ ACMP4 sample_lv source select
+	CM7_CFGITCMSZ          GPR14 = 0x0F << 16 //+ ITCM total size configuration
+	CM7_CFGITCMSZ_0        GPR14 = 0x00 << 16 //  0 KB (No ITCM)
+	CM7_CFGITCMSZ_3        GPR14 = 0x03 << 16 //  4 KB
+	CM7_CFGITCMSZ_4        GPR14 = 0x04 << 16 //  8 KB
+	CM7_CFGITCMSZ_5        GPR14 = 0x05 << 16 //  16 KB
+	CM7_CFGITCMSZ_6        GPR14 = 0x06 << 16 //  32 KB
+	CM7_CFGITCMSZ_7        GPR14 = 0x07 << 16 //  64 KB
+	CM7_CFGITCMSZ_8        GPR14 = 0x08 << 16 //  128 KB
+	CM7_CFGITCMSZ_9        GPR14 = 0x09 << 16 //  256 KB
+	CM7_CFGITCMSZ_10       GPR14 = 0x0A << 16 //  512 KB
+	CM7_CFGDTCMSZ          GPR14 = 0x0F << 20 //+ DTCM total size configuration
+	CM7_CFGDTCMSZ_0        GPR14 = 0x00 << 20 //  0 KB (No DTCM)
+	CM7_CFGDTCMSZ_3        GPR14 = 0x03 << 20 //  4 KB
+	CM7_CFGDTCMSZ_4        GPR14 = 0x04 << 20 //  8 KB
+	CM7_CFGDTCMSZ_5        GPR14 = 0x05 << 20 //  16 KB
+	CM7_CFGDTCMSZ_6        GPR14 = 0x06 << 20 //  32 KB
+	CM7_CFGDTCMSZ_7        GPR14 = 0x07 << 20 //  64 KB
+	CM7_CFGDTCMSZ_8        GPR14 = 0x08 << 20 //  128 KB
+	CM7_CFGDTCMSZ_9        GPR14 = 0x09 << 20 //  256 KB
+	CM7_CFGDTCMSZ_10       GPR14 = 0x0A << 20 //  512 KB
 )
 
 const (
@@ -1291,15 +885,9 @@ const (
 )
 
 const (
-	INIT_ITCM_EN           GPR16 = 0x01 << 0 //+ ITCM enable initialization out of reset
-	INIT_ITCM_EN_0         GPR16 = 0x00 << 0 //  ITCM is disabled
-	INIT_ITCM_EN_1         GPR16 = 0x01 << 0 //  ITCM is enabled
-	INIT_DTCM_EN           GPR16 = 0x01 << 1 //+ DTCM enable initialization out of reset
-	INIT_DTCM_EN_0         GPR16 = 0x00 << 1 //  DTCM is disabled
-	INIT_DTCM_EN_1         GPR16 = 0x01 << 1 //  DTCM is enabled
-	FLEXRAM_BANK_CFG_SEL   GPR16 = 0x01 << 2 //+ FlexRAM bank config source select
-	FLEXRAM_BANK_CFG_SEL_0 GPR16 = 0x00 << 2 //  use fuse value to config
-	FLEXRAM_BANK_CFG_SEL_1 GPR16 = 0x01 << 2 //  use FLEXRAM_BANK_CFG to config
+	INIT_ITCM_EN         GPR16 = 0x01 << 0 //+ ITCM enable initialization out of reset
+	INIT_DTCM_EN         GPR16 = 0x01 << 1 //+ DTCM enable initialization out of reset
+	FLEXRAM_BANK_CFG_SEL GPR16 = 0x01 << 2 //+ FlexRAM bank config source select
 )
 
 const (
@@ -1317,10 +905,8 @@ const (
 )
 
 const (
-	LOCK_M7_APC_AC_R0_BOT   GPR18 = 0x01 << 0       //+ lock M7_APC_AC_R0_BOT field for changes
-	LOCK_M7_APC_AC_R0_BOT_0 GPR18 = 0x00 << 0       //  Register field [31:1] is not locked
-	LOCK_M7_APC_AC_R0_BOT_1 GPR18 = 0x01 << 0       //  Register field [31:1] is locked (read access only)
-	M7_APC_AC_R0_BOT        GPR18 = 0x1FFFFFFF << 3 //+ APC end address of memory region-0
+	LOCK_M7_APC_AC_R0_BOT GPR18 = 0x01 << 0       //+ lock M7_APC_AC_R0_BOT field for changes
+	M7_APC_AC_R0_BOT      GPR18 = 0x1FFFFFFF << 3 //+ APC end address of memory region-0
 )
 
 const (
@@ -1329,10 +915,8 @@ const (
 )
 
 const (
-	LOCK_M7_APC_AC_R0_TOP   GPR19 = 0x01 << 0       //+ lock M7_APC_AC_R0_TOP field for changes
-	LOCK_M7_APC_AC_R0_TOP_0 GPR19 = 0x00 << 0       //  Register field [31:1] is not locked
-	LOCK_M7_APC_AC_R0_TOP_1 GPR19 = 0x01 << 0       //  Register field [31:1] is locked (read access only)
-	M7_APC_AC_R0_TOP        GPR19 = 0x1FFFFFFF << 3 //+ APC start address of memory region-0
+	LOCK_M7_APC_AC_R0_TOP GPR19 = 0x01 << 0       //+ lock M7_APC_AC_R0_TOP field for changes
+	M7_APC_AC_R0_TOP      GPR19 = 0x1FFFFFFF << 3 //+ APC start address of memory region-0
 )
 
 const (
@@ -1341,10 +925,8 @@ const (
 )
 
 const (
-	LOCK_M7_APC_AC_R1_BOT   GPR20 = 0x01 << 0       //+ lock M7_APC_AC_R1_BOT field for changes
-	LOCK_M7_APC_AC_R1_BOT_0 GPR20 = 0x00 << 0       //  Register field [31:1] is not locked
-	LOCK_M7_APC_AC_R1_BOT_1 GPR20 = 0x01 << 0       //  Register field [31:1] is locked (read access only)
-	M7_APC_AC_R1_BOT        GPR20 = 0x1FFFFFFF << 3 //+ APC end address of memory region-1
+	LOCK_M7_APC_AC_R1_BOT GPR20 = 0x01 << 0       //+ lock M7_APC_AC_R1_BOT field for changes
+	M7_APC_AC_R1_BOT      GPR20 = 0x1FFFFFFF << 3 //+ APC end address of memory region-1
 )
 
 const (
@@ -1353,10 +935,8 @@ const (
 )
 
 const (
-	LOCK_M7_APC_AC_R1_TOP   GPR21 = 0x01 << 0       //+ lock M7_APC_AC_R1_TOP field for changes
-	LOCK_M7_APC_AC_R1_TOP_0 GPR21 = 0x00 << 0       //  Register field [31:1] is not locked
-	LOCK_M7_APC_AC_R1_TOP_1 GPR21 = 0x01 << 0       //  Register field [31:1] is locked (read access only)
-	M7_APC_AC_R1_TOP        GPR21 = 0x1FFFFFFF << 3 //+ APC start address of memory region-1
+	LOCK_M7_APC_AC_R1_TOP GPR21 = 0x01 << 0       //+ lock M7_APC_AC_R1_TOP field for changes
+	M7_APC_AC_R1_TOP      GPR21 = 0x1FFFFFFF << 3 //+ APC start address of memory region-1
 )
 
 const (
@@ -1365,10 +945,8 @@ const (
 )
 
 const (
-	LOCK_M7_APC_AC_R2_BOT   GPR22 = 0x01 << 0       //+ lock M7_APC_AC_R2_BOT field for changes
-	LOCK_M7_APC_AC_R2_BOT_0 GPR22 = 0x00 << 0       //  Register field [31:1] is not locked
-	LOCK_M7_APC_AC_R2_BOT_1 GPR22 = 0x01 << 0       //  Register field [31:1] is locked (read access only)
-	M7_APC_AC_R2_BOT        GPR22 = 0x1FFFFFFF << 3 //+ APC end address of memory region-2
+	LOCK_M7_APC_AC_R2_BOT GPR22 = 0x01 << 0       //+ lock M7_APC_AC_R2_BOT field for changes
+	M7_APC_AC_R2_BOT      GPR22 = 0x1FFFFFFF << 3 //+ APC end address of memory region-2
 )
 
 const (
@@ -1377,10 +955,8 @@ const (
 )
 
 const (
-	LOCK_M7_APC_AC_R2_TOP   GPR23 = 0x01 << 0       //+ lock M7_APC_AC_R2_TOP field for changes
-	LOCK_M7_APC_AC_R2_TOP_0 GPR23 = 0x00 << 0       //  Register field [31:1] is not locked
-	LOCK_M7_APC_AC_R2_TOP_1 GPR23 = 0x01 << 0       //  Register field [31:1] is locked (read access only)
-	M7_APC_AC_R2_TOP        GPR23 = 0x1FFFFFFF << 3 //+ APC start address of memory region-2
+	LOCK_M7_APC_AC_R2_TOP GPR23 = 0x01 << 0       //+ lock M7_APC_AC_R2_TOP field for changes
+	M7_APC_AC_R2_TOP      GPR23 = 0x1FFFFFFF << 3 //+ APC start address of memory region-2
 )
 
 const (
@@ -1389,10 +965,8 @@ const (
 )
 
 const (
-	LOCK_M7_APC_AC_R3_BOT   GPR24 = 0x01 << 0       //+ lock M7_APC_AC_R3_BOT field for changes
-	LOCK_M7_APC_AC_R3_BOT_0 GPR24 = 0x00 << 0       //  Register field [31:1] is not locked
-	LOCK_M7_APC_AC_R3_BOT_1 GPR24 = 0x01 << 0       //  Register field [31:1] is locked (read access only)
-	M7_APC_AC_R3_BOT        GPR24 = 0x1FFFFFFF << 3 //+ APC end address of memory region-3
+	LOCK_M7_APC_AC_R3_BOT GPR24 = 0x01 << 0       //+ lock M7_APC_AC_R3_BOT field for changes
+	M7_APC_AC_R3_BOT      GPR24 = 0x1FFFFFFF << 3 //+ APC end address of memory region-3
 )
 
 const (
@@ -1401,10 +975,8 @@ const (
 )
 
 const (
-	LOCK_M7_APC_AC_R3_TOP   GPR25 = 0x01 << 0       //+ lock M7_APC_AC_R3_TOP field for changes
-	LOCK_M7_APC_AC_R3_TOP_0 GPR25 = 0x00 << 0       //  Register field [31:1] is not locked
-	LOCK_M7_APC_AC_R3_TOP_1 GPR25 = 0x01 << 0       //  Register field [31:1] is locked (read access only)
-	M7_APC_AC_R3_TOP        GPR25 = 0x1FFFFFFF << 3 //+ APC start address of memory region-3
+	LOCK_M7_APC_AC_R3_TOP GPR25 = 0x01 << 0       //+ lock M7_APC_AC_R3_TOP field for changes
+	M7_APC_AC_R3_TOP      GPR25 = 0x1FFFFFFF << 3 //+ APC start address of memory region-3
 )
 
 const (
@@ -1470,12 +1042,8 @@ const (
 
 const (
 	OCRAM2_TZ_EN          GPR33 = 0x01 << 0  //+ OCRAM2 TrustZone (TZ) enable.
-	OCRAM2_TZ_EN_0        GPR33 = 0x00 << 0  //  The TrustZone feature is disabled. Entire OCRAM2 space is available for all access types (secure/non-secure/user/supervisor).
-	OCRAM2_TZ_EN_1        GPR33 = 0x01 << 0  //  The TrustZone feature is enabled. Access to address in the range specified by [ENDADDR:STARTADDR] follows the execution mode access policy described in CSU chapter.
 	OCRAM2_TZ_ADDR        GPR33 = 0x7F << 1  //+ OCRAM2 TrustZone (TZ) start address
 	LOCK_OCRAM2_TZ_EN     GPR33 = 0x01 << 16 //+ Lock OCRAM2_TZ_EN field for changes
-	LOCK_OCRAM2_TZ_EN_0   GPR33 = 0x00 << 16 //  Field is not locked
-	LOCK_OCRAM2_TZ_EN_1   GPR33 = 0x01 << 16 //  Field is locked (read access only)
 	LOCK_OCRAM2_TZ_ADDR   GPR33 = 0x7F << 17 //+ Lock OCRAM2_TZ_ADDR field for changes
 	LOCK_OCRAM2_TZ_ADDR_0 GPR33 = 0x00 << 17 //  Field is not locked
 	LOCK_OCRAM2_TZ_ADDR_1 GPR33 = 0x01 << 17 //  Field is locked (read access only)
@@ -1489,10 +1057,8 @@ const (
 )
 
 const (
-	SIP_TEST_MUX_BOOT_PIN_SEL  GPR34 = 0xFF << 0 //+ Boot Pin select in SIP_TEST_MUX
-	SIP_TEST_MUX_QSPI_SIP_EN   GPR34 = 0x01 << 8 //+ Enable SIP_TEST_MUX
-	SIP_TEST_MUX_QSPI_SIP_EN_0 GPR34 = 0x00 << 8 //  SIP_TEST_MUX is disabled
-	SIP_TEST_MUX_QSPI_SIP_EN_1 GPR34 = 0x01 << 8 //  SIP_TEST_MUX is enabled
+	SIP_TEST_MUX_BOOT_PIN_SEL GPR34 = 0xFF << 0 //+ Boot Pin select in SIP_TEST_MUX
+	SIP_TEST_MUX_QSPI_SIP_EN  GPR34 = 0x01 << 8 //+ Enable SIP_TEST_MUX
 )
 
 const (

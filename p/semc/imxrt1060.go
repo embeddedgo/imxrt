@@ -68,38 +68,26 @@
 package semc
 
 const (
-	SWRST    MCR = 0x01 << 0  //+ Software Reset
-	MDIS     MCR = 0x01 << 1  //+ Module Disable
-	MDIS_0   MCR = 0x00 << 1  //  Module enabled
-	MDIS_1   MCR = 0x01 << 1  //  Module disabled.
-	DQSMD    MCR = 0x01 << 2  //+ DQS (read strobe) mode
-	DQSMD_0  MCR = 0x00 << 2  //  Dummy read strobe loopbacked internally
-	DQSMD_1  MCR = 0x01 << 2  //  Dummy read strobe loopbacked from DQS pad or DLL delay chain. Details information at descriptions of DQSSEL bit.
-	WPOL0    MCR = 0x01 << 6  //+ WAIT/RDY# polarity for NOR/PSRAM
-	WPOL0_0  MCR = 0x00 << 6  //  Low active
-	WPOL0_1  MCR = 0x01 << 6  //  High active
-	WPOL1    MCR = 0x01 << 7  //+ WAIT/RDY# polarity for NAND
-	WPOL1_0  MCR = 0x00 << 7  //  Low active
-	WPOL1_1  MCR = 0x01 << 7  //  High active
-	DQSSEL   MCR = 0x01 << 10 //+ Select DQS source when DQSMD and DLLSEL both set.
-	DQSSEL_0 MCR = 0x00 << 10 //  SDRAM/NOR/SRAM read clock source is from DQS pad in synchronous mode.
-	DQSSEL_1 MCR = 0x01 << 10 //  SDRAM/NOR/SRAM read clock source is from DLL delay chain in synchronous mode.
-	DLLSEL   MCR = 0x01 << 11 //+ Select DLL delay chain clock input.
-	DLLSEL_0 MCR = 0x00 << 11 //  DLL delay chain clock input is from NAND device's DQS pad. For NAND synchronous mode only.
-	DLLSEL_1 MCR = 0x01 << 11 //  DLL delay chain clock input is from internal clock. For SDRAM, NOR and SRAM synchronous mode only.
-	CTO      MCR = 0xFF << 16 //+ Command Execution timeout cycles
-	BTO      MCR = 0x1F << 24 //+ Bus timeout cycles
-	BTO_0    MCR = 0x00 << 24 //  255*1
-	BTO_1    MCR = 0x01 << 24 //  255*2 - 255*2^30
-	BTO_2    MCR = 0x02 << 24 //  255*2 - 255*2^30
-	BTO_3    MCR = 0x03 << 24 //  255*2 - 255*2^30
-	BTO_4    MCR = 0x04 << 24 //  255*2 - 255*2^30
-	BTO_5    MCR = 0x05 << 24 //  255*2 - 255*2^30
-	BTO_6    MCR = 0x06 << 24 //  255*2 - 255*2^30
-	BTO_7    MCR = 0x07 << 24 //  255*2 - 255*2^30
-	BTO_8    MCR = 0x08 << 24 //  255*2 - 255*2^30
-	BTO_9    MCR = 0x09 << 24 //  255*2 - 255*2^30
-	BTO_31   MCR = 0x1F << 24 //  255*2^31
+	SWRST  MCR = 0x01 << 0  //+ Software Reset
+	MDIS   MCR = 0x01 << 1  //+ Module Disable
+	DQSMD  MCR = 0x01 << 2  //+ DQS (read strobe) mode
+	WPOL0  MCR = 0x01 << 6  //+ WAIT/RDY# polarity for NOR/PSRAM
+	WPOL1  MCR = 0x01 << 7  //+ WAIT/RDY# polarity for NAND
+	DQSSEL MCR = 0x01 << 10 //+ Select DQS source when DQSMD and DLLSEL both set.
+	DLLSEL MCR = 0x01 << 11 //+ Select DLL delay chain clock input.
+	CTO    MCR = 0xFF << 16 //+ Command Execution timeout cycles
+	BTO    MCR = 0x1F << 24 //+ Bus timeout cycles
+	BTO_0  MCR = 0x00 << 24 //  255*1
+	BTO_1  MCR = 0x01 << 24 //  255*2 - 255*2^30
+	BTO_2  MCR = 0x02 << 24 //  255*2 - 255*2^30
+	BTO_3  MCR = 0x03 << 24 //  255*2 - 255*2^30
+	BTO_4  MCR = 0x04 << 24 //  255*2 - 255*2^30
+	BTO_5  MCR = 0x05 << 24 //  255*2 - 255*2^30
+	BTO_6  MCR = 0x06 << 24 //  255*2 - 255*2^30
+	BTO_7  MCR = 0x07 << 24 //  255*2 - 255*2^30
+	BTO_8  MCR = 0x08 << 24 //  255*2 - 255*2^30
+	BTO_9  MCR = 0x09 << 24 //  255*2 - 255*2^30
+	BTO_31 MCR = 0x1F << 24 //  255*2^31
 )
 
 const (
@@ -115,66 +103,62 @@ const (
 )
 
 const (
-	MUX_A8      IOCR = 0x07 << 0  //+ SEMC_A8 output selection
-	MUX_A8_0    IOCR = 0x00 << 0  //  SDRAM Address bit (A8)
-	MUX_A8_1    IOCR = 0x01 << 0  //  NAND CE#
-	MUX_A8_2    IOCR = 0x02 << 0  //  NOR CE#
-	MUX_A8_3    IOCR = 0x03 << 0  //  PSRAM CE#
-	MUX_A8_4    IOCR = 0x04 << 0  //  DBI CSX
-	MUX_A8_5    IOCR = 0x05 << 0  //  SDRAM Address bit (A8)
-	MUX_A8_6    IOCR = 0x06 << 0  //  SDRAM Address bit (A8)
-	MUX_A8_7    IOCR = 0x07 << 0  //  SDRAM Address bit (A8)
-	MUX_CSX0    IOCR = 0x07 << 3  //+ SEMC_CSX0 output selection
-	MUX_CSX0_0  IOCR = 0x00 << 3  //  NOR/PSRAM Address bit 24 (A24)
-	MUX_CSX0_1  IOCR = 0x01 << 3  //  SDRAM CS1
-	MUX_CSX0_2  IOCR = 0x02 << 3  //  SDRAM CS2
-	MUX_CSX0_3  IOCR = 0x03 << 3  //  SDRAM CS3
-	MUX_CSX0_4  IOCR = 0x04 << 3  //  NAND CE#
-	MUX_CSX0_5  IOCR = 0x05 << 3  //  NOR CE#
-	MUX_CSX0_6  IOCR = 0x06 << 3  //  PSRAM CE#
-	MUX_CSX0_7  IOCR = 0x07 << 3  //  DBI CSX
-	MUX_CSX1    IOCR = 0x07 << 6  //+ SEMC_CSX1 output selection
-	MUX_CSX1_0  IOCR = 0x00 << 6  //  NOR/PSRAM Address bit 25 (A25)
-	MUX_CSX1_1  IOCR = 0x01 << 6  //  SDRAM CS1
-	MUX_CSX1_2  IOCR = 0x02 << 6  //  SDRAM CS2
-	MUX_CSX1_3  IOCR = 0x03 << 6  //  SDRAM CS3
-	MUX_CSX1_4  IOCR = 0x04 << 6  //  NAND CE#
-	MUX_CSX1_5  IOCR = 0x05 << 6  //  NOR CE#
-	MUX_CSX1_6  IOCR = 0x06 << 6  //  PSRAM CE#
-	MUX_CSX1_7  IOCR = 0x07 << 6  //  DBI CSX
-	MUX_CSX2    IOCR = 0x07 << 9  //+ SEMC_CSX2 output selection
-	MUX_CSX2_0  IOCR = 0x00 << 9  //  NOR/PSRAM Address bit 26 (A26)
-	MUX_CSX2_1  IOCR = 0x01 << 9  //  SDRAM CS1
-	MUX_CSX2_2  IOCR = 0x02 << 9  //  SDRAM CS2
-	MUX_CSX2_3  IOCR = 0x03 << 9  //  SDRAM CS3
-	MUX_CSX2_4  IOCR = 0x04 << 9  //  NAND CE#
-	MUX_CSX2_5  IOCR = 0x05 << 9  //  NOR CE#
-	MUX_CSX2_6  IOCR = 0x06 << 9  //  PSRAM CE#
-	MUX_CSX2_7  IOCR = 0x07 << 9  //  DBI CSX
-	MUX_CSX3    IOCR = 0x07 << 12 //+ SEMC_CSX3 output selection
-	MUX_CSX3_0  IOCR = 0x00 << 12 //  NOR/PSRAM Address bit 27 (A27)
-	MUX_CSX3_1  IOCR = 0x01 << 12 //  SDRAM CS1
-	MUX_CSX3_2  IOCR = 0x02 << 12 //  SDRAM CS2
-	MUX_CSX3_3  IOCR = 0x03 << 12 //  SDRAM CS3
-	MUX_CSX3_4  IOCR = 0x04 << 12 //  NAND CE#
-	MUX_CSX3_5  IOCR = 0x05 << 12 //  NOR CE#
-	MUX_CSX3_6  IOCR = 0x06 << 12 //  PSRAM CE#
-	MUX_CSX3_7  IOCR = 0x07 << 12 //  DBI CSX
-	MUX_RDY     IOCR = 0x07 << 15 //+ SEMC_RDY function selection
-	MUX_RDY_0   IOCR = 0x00 << 15 //  NAND Ready/Wait# input
-	MUX_RDY_1   IOCR = 0x01 << 15 //  SDRAM CS1
-	MUX_RDY_2   IOCR = 0x02 << 15 //  SDRAM CS2
-	MUX_RDY_3   IOCR = 0x03 << 15 //  SDRAM CS3
-	MUX_RDY_4   IOCR = 0x04 << 15 //  NOR CE#
-	MUX_RDY_5   IOCR = 0x05 << 15 //  PSRAM CE#
-	MUX_RDY_6   IOCR = 0x06 << 15 //  DBI CSX
-	MUX_RDY_7   IOCR = 0x07 << 15 //  NOR/PSRAM Address bit 27
-	MUX_CLKX0   IOCR = 0x01 << 24 //+ SEMC_CLKX0 function selection
-	MUX_CLKX0_0 IOCR = 0x00 << 24 //  NOR clock
-	MUX_CLKX0_1 IOCR = 0x01 << 24 //  SRAM clock
-	MUX_CLKX1   IOCR = 0x01 << 25 //+ SEMC_CLKX1 function selection
-	MUX_CLKX1_0 IOCR = 0x00 << 25 //  NOR clock
-	MUX_CLKX1_1 IOCR = 0x01 << 25 //  SRAM clock
+	MUX_A8     IOCR = 0x07 << 0  //+ SEMC_A8 output selection
+	MUX_A8_0   IOCR = 0x00 << 0  //  SDRAM Address bit (A8)
+	MUX_A8_1   IOCR = 0x01 << 0  //  NAND CE#
+	MUX_A8_2   IOCR = 0x02 << 0  //  NOR CE#
+	MUX_A8_3   IOCR = 0x03 << 0  //  PSRAM CE#
+	MUX_A8_4   IOCR = 0x04 << 0  //  DBI CSX
+	MUX_A8_5   IOCR = 0x05 << 0  //  SDRAM Address bit (A8)
+	MUX_A8_6   IOCR = 0x06 << 0  //  SDRAM Address bit (A8)
+	MUX_A8_7   IOCR = 0x07 << 0  //  SDRAM Address bit (A8)
+	MUX_CSX0   IOCR = 0x07 << 3  //+ SEMC_CSX0 output selection
+	MUX_CSX0_0 IOCR = 0x00 << 3  //  NOR/PSRAM Address bit 24 (A24)
+	MUX_CSX0_1 IOCR = 0x01 << 3  //  SDRAM CS1
+	MUX_CSX0_2 IOCR = 0x02 << 3  //  SDRAM CS2
+	MUX_CSX0_3 IOCR = 0x03 << 3  //  SDRAM CS3
+	MUX_CSX0_4 IOCR = 0x04 << 3  //  NAND CE#
+	MUX_CSX0_5 IOCR = 0x05 << 3  //  NOR CE#
+	MUX_CSX0_6 IOCR = 0x06 << 3  //  PSRAM CE#
+	MUX_CSX0_7 IOCR = 0x07 << 3  //  DBI CSX
+	MUX_CSX1   IOCR = 0x07 << 6  //+ SEMC_CSX1 output selection
+	MUX_CSX1_0 IOCR = 0x00 << 6  //  NOR/PSRAM Address bit 25 (A25)
+	MUX_CSX1_1 IOCR = 0x01 << 6  //  SDRAM CS1
+	MUX_CSX1_2 IOCR = 0x02 << 6  //  SDRAM CS2
+	MUX_CSX1_3 IOCR = 0x03 << 6  //  SDRAM CS3
+	MUX_CSX1_4 IOCR = 0x04 << 6  //  NAND CE#
+	MUX_CSX1_5 IOCR = 0x05 << 6  //  NOR CE#
+	MUX_CSX1_6 IOCR = 0x06 << 6  //  PSRAM CE#
+	MUX_CSX1_7 IOCR = 0x07 << 6  //  DBI CSX
+	MUX_CSX2   IOCR = 0x07 << 9  //+ SEMC_CSX2 output selection
+	MUX_CSX2_0 IOCR = 0x00 << 9  //  NOR/PSRAM Address bit 26 (A26)
+	MUX_CSX2_1 IOCR = 0x01 << 9  //  SDRAM CS1
+	MUX_CSX2_2 IOCR = 0x02 << 9  //  SDRAM CS2
+	MUX_CSX2_3 IOCR = 0x03 << 9  //  SDRAM CS3
+	MUX_CSX2_4 IOCR = 0x04 << 9  //  NAND CE#
+	MUX_CSX2_5 IOCR = 0x05 << 9  //  NOR CE#
+	MUX_CSX2_6 IOCR = 0x06 << 9  //  PSRAM CE#
+	MUX_CSX2_7 IOCR = 0x07 << 9  //  DBI CSX
+	MUX_CSX3   IOCR = 0x07 << 12 //+ SEMC_CSX3 output selection
+	MUX_CSX3_0 IOCR = 0x00 << 12 //  NOR/PSRAM Address bit 27 (A27)
+	MUX_CSX3_1 IOCR = 0x01 << 12 //  SDRAM CS1
+	MUX_CSX3_2 IOCR = 0x02 << 12 //  SDRAM CS2
+	MUX_CSX3_3 IOCR = 0x03 << 12 //  SDRAM CS3
+	MUX_CSX3_4 IOCR = 0x04 << 12 //  NAND CE#
+	MUX_CSX3_5 IOCR = 0x05 << 12 //  NOR CE#
+	MUX_CSX3_6 IOCR = 0x06 << 12 //  PSRAM CE#
+	MUX_CSX3_7 IOCR = 0x07 << 12 //  DBI CSX
+	MUX_RDY    IOCR = 0x07 << 15 //+ SEMC_RDY function selection
+	MUX_RDY_0  IOCR = 0x00 << 15 //  NAND Ready/Wait# input
+	MUX_RDY_1  IOCR = 0x01 << 15 //  SDRAM CS1
+	MUX_RDY_2  IOCR = 0x02 << 15 //  SDRAM CS2
+	MUX_RDY_3  IOCR = 0x03 << 15 //  SDRAM CS3
+	MUX_RDY_4  IOCR = 0x04 << 15 //  NOR CE#
+	MUX_RDY_5  IOCR = 0x05 << 15 //  PSRAM CE#
+	MUX_RDY_6  IOCR = 0x06 << 15 //  DBI CSX
+	MUX_RDY_7  IOCR = 0x07 << 15 //  NOR/PSRAM Address bit 27
+	MUX_CLKX0  IOCR = 0x01 << 24 //+ SEMC_CLKX0 function selection
+	MUX_CLKX1  IOCR = 0x01 << 25 //+ SEMC_CLKX1 function selection
 )
 
 const (
@@ -631,16 +615,12 @@ const (
 )
 
 const (
-	IPCMDDONEEN   INTEN = 0x01 << 0 //+ IP command done interrupt enable
-	IPCMDERREN    INTEN = 0x01 << 1 //+ IP command error interrupt enable
-	AXICMDERREN   INTEN = 0x01 << 2 //+ AXI command error interrupt enable
-	AXIBUSERREN   INTEN = 0x01 << 3 //+ AXI bus error interrupt enable
-	NDPAGEENDEN   INTEN = 0x01 << 4 //+ This bit enable/disable the NDPAGEEND interrupt generation.
-	NDPAGEENDEN_0 INTEN = 0x00 << 4 //  Disable
-	NDPAGEENDEN_1 INTEN = 0x01 << 4 //  Enable
-	NDNOPENDEN    INTEN = 0x01 << 5 //+ This bit enable/disable the NDNOPEND interrupt generation.
-	NDNOPENDEN_0  INTEN = 0x00 << 5 //  Disable
-	NDNOPENDEN_1  INTEN = 0x01 << 5 //  Enable
+	IPCMDDONEEN INTEN = 0x01 << 0 //+ IP command done interrupt enable
+	IPCMDERREN  INTEN = 0x01 << 1 //+ IP command error interrupt enable
+	AXICMDERREN INTEN = 0x01 << 2 //+ AXI command error interrupt enable
+	AXIBUSERREN INTEN = 0x01 << 3 //+ AXI bus error interrupt enable
+	NDPAGEENDEN INTEN = 0x01 << 4 //+ This bit enable/disable the NDPAGEEND interrupt generation.
+	NDNOPENDEN  INTEN = 0x01 << 5 //+ This bit enable/disable the NDNOPEND interrupt generation.
 )
 
 const (
@@ -671,34 +651,28 @@ const (
 )
 
 const (
-	PS      SDRAMCR0 = 0x01 << 0  //+ Port Size
-	PS_0    SDRAMCR0 = 0x00 << 0  //  8bit
-	PS_1    SDRAMCR0 = 0x01 << 0  //  16bit
-	BL      SDRAMCR0 = 0x07 << 4  //+ Burst Length
-	BL_0    SDRAMCR0 = 0x00 << 4  //  1
-	BL_1    SDRAMCR0 = 0x01 << 4  //  2
-	BL_2    SDRAMCR0 = 0x02 << 4  //  4
-	BL_3    SDRAMCR0 = 0x03 << 4  //  8
-	BL_4    SDRAMCR0 = 0x04 << 4  //  8
-	BL_5    SDRAMCR0 = 0x05 << 4  //  8
-	BL_6    SDRAMCR0 = 0x06 << 4  //  8
-	BL_7    SDRAMCR0 = 0x07 << 4  //  8
-	COL8    SDRAMCR0 = 0x01 << 7  //+ Column 8 selection bit
-	COL8_0  SDRAMCR0 = 0x00 << 7  //  Column address bit number is decided by COL field.
-	COL8_1  SDRAMCR0 = 0x01 << 7  //  Column address bit number is 8. COL field is ignored.
-	COL     SDRAMCR0 = 0x03 << 8  //+ Column address bit number
-	COL_0   SDRAMCR0 = 0x00 << 8  //  12 bit
-	COL_1   SDRAMCR0 = 0x01 << 8  //  11 bit
-	COL_2   SDRAMCR0 = 0x02 << 8  //  10 bit
-	COL_3   SDRAMCR0 = 0x03 << 8  //  9 bit
-	CL      SDRAMCR0 = 0x03 << 10 //+ CAS Latency
-	CL_0    SDRAMCR0 = 0x00 << 10 //  1
-	CL_1    SDRAMCR0 = 0x01 << 10 //  1
-	CL_2    SDRAMCR0 = 0x02 << 10 //  2
-	CL_3    SDRAMCR0 = 0x03 << 10 //  3
-	BANK2   SDRAMCR0 = 0x01 << 14 //+ 2 Bank selection bit
-	BANK2_0 SDRAMCR0 = 0x00 << 14 //  SDRAM device has 4 banks.
-	BANK2_1 SDRAMCR0 = 0x01 << 14 //  SDRAM device has 2 banks.
+	PS    SDRAMCR0 = 0x01 << 0  //+ Port Size
+	BL    SDRAMCR0 = 0x07 << 4  //+ Burst Length
+	BL_0  SDRAMCR0 = 0x00 << 4  //  1
+	BL_1  SDRAMCR0 = 0x01 << 4  //  2
+	BL_2  SDRAMCR0 = 0x02 << 4  //  4
+	BL_3  SDRAMCR0 = 0x03 << 4  //  8
+	BL_4  SDRAMCR0 = 0x04 << 4  //  8
+	BL_5  SDRAMCR0 = 0x05 << 4  //  8
+	BL_6  SDRAMCR0 = 0x06 << 4  //  8
+	BL_7  SDRAMCR0 = 0x07 << 4  //  8
+	COL8  SDRAMCR0 = 0x01 << 7  //+ Column 8 selection bit
+	COL   SDRAMCR0 = 0x03 << 8  //+ Column address bit number
+	COL_0 SDRAMCR0 = 0x00 << 8  //  12 bit
+	COL_1 SDRAMCR0 = 0x01 << 8  //  11 bit
+	COL_2 SDRAMCR0 = 0x02 << 8  //  10 bit
+	COL_3 SDRAMCR0 = 0x03 << 8  //  9 bit
+	CL    SDRAMCR0 = 0x03 << 10 //+ CAS Latency
+	CL_0  SDRAMCR0 = 0x00 << 10 //  1
+	CL_1  SDRAMCR0 = 0x01 << 10 //  1
+	CL_2  SDRAMCR0 = 0x02 << 10 //  2
+	CL_3  SDRAMCR0 = 0x03 << 10 //  3
+	BANK2 SDRAMCR0 = 0x01 << 14 //+ 2 Bank selection bit
 )
 
 const (
@@ -807,33 +781,27 @@ const (
 )
 
 const (
-	PS       NANDCR0 = 0x01 << 0 //+ Port Size
-	PS_0     NANDCR0 = 0x00 << 0 //  8bit
-	PS_1     NANDCR0 = 0x01 << 0 //  16bit
-	SYNCEN   NANDCR0 = 0x01 << 1 //+ Select NAND controller mode.
-	SYNCEN_0 NANDCR0 = 0x00 << 1 //  Asynchronous mode is enabled.
-	SYNCEN_1 NANDCR0 = 0x01 << 1 //  Synchronous mode is enabled.
-	BL       NANDCR0 = 0x07 << 4 //+ Burst Length
-	BL_0     NANDCR0 = 0x00 << 4 //  1
-	BL_1     NANDCR0 = 0x01 << 4 //  2
-	BL_2     NANDCR0 = 0x02 << 4 //  4
-	BL_3     NANDCR0 = 0x03 << 4 //  8
-	BL_4     NANDCR0 = 0x04 << 4 //  16
-	BL_5     NANDCR0 = 0x05 << 4 //  32
-	BL_6     NANDCR0 = 0x06 << 4 //  64
-	BL_7     NANDCR0 = 0x07 << 4 //  64
-	EDO      NANDCR0 = 0x01 << 7 //+ EDO mode enabled
-	EDO_0    NANDCR0 = 0x00 << 7 //  EDO mode disabled
-	EDO_1    NANDCR0 = 0x01 << 7 //  EDO mode enabled
-	COL      NANDCR0 = 0x07 << 8 //+ Column address bit number
-	COL_0    NANDCR0 = 0x00 << 8 //  16
-	COL_1    NANDCR0 = 0x01 << 8 //  15
-	COL_2    NANDCR0 = 0x02 << 8 //  14
-	COL_3    NANDCR0 = 0x03 << 8 //  13
-	COL_4    NANDCR0 = 0x04 << 8 //  12
-	COL_5    NANDCR0 = 0x05 << 8 //  11
-	COL_6    NANDCR0 = 0x06 << 8 //  10
-	COL_7    NANDCR0 = 0x07 << 8 //  9
+	PS     NANDCR0 = 0x01 << 0 //+ Port Size
+	SYNCEN NANDCR0 = 0x01 << 1 //+ Select NAND controller mode.
+	BL     NANDCR0 = 0x07 << 4 //+ Burst Length
+	BL_0   NANDCR0 = 0x00 << 4 //  1
+	BL_1   NANDCR0 = 0x01 << 4 //  2
+	BL_2   NANDCR0 = 0x02 << 4 //  4
+	BL_3   NANDCR0 = 0x03 << 4 //  8
+	BL_4   NANDCR0 = 0x04 << 4 //  16
+	BL_5   NANDCR0 = 0x05 << 4 //  32
+	BL_6   NANDCR0 = 0x06 << 4 //  64
+	BL_7   NANDCR0 = 0x07 << 4 //  64
+	EDO    NANDCR0 = 0x01 << 7 //+ EDO mode enabled
+	COL    NANDCR0 = 0x07 << 8 //+ Column address bit number
+	COL_0  NANDCR0 = 0x00 << 8 //  16
+	COL_1  NANDCR0 = 0x01 << 8 //  15
+	COL_2  NANDCR0 = 0x02 << 8 //  14
+	COL_3  NANDCR0 = 0x03 << 8 //  13
+	COL_4  NANDCR0 = 0x04 << 8 //  12
+	COL_5  NANDCR0 = 0x05 << 8 //  11
+	COL_6  NANDCR0 = 0x06 << 8 //  10
+	COL_7  NANDCR0 = 0x07 << 8 //  9
 )
 
 const (
@@ -905,49 +873,41 @@ const (
 )
 
 const (
-	PS       NORCR0 = 0x01 << 0  //+ Port Size
-	PS_0     NORCR0 = 0x00 << 0  //  8bit
-	PS_1     NORCR0 = 0x01 << 0  //  16bit
-	SYNCEN   NORCR0 = 0x01 << 1  //+ Select NOR controller mode.
-	SYNCEN_0 NORCR0 = 0x00 << 1  //  Asynchronous mode is enabled.
-	SYNCEN_1 NORCR0 = 0x01 << 1  //  Synchronous mode is enabled.
-	BL       NORCR0 = 0x07 << 4  //+ Burst Length
-	BL_0     NORCR0 = 0x00 << 4  //  1
-	BL_1     NORCR0 = 0x01 << 4  //  2
-	BL_2     NORCR0 = 0x02 << 4  //  4
-	BL_3     NORCR0 = 0x03 << 4  //  8
-	BL_4     NORCR0 = 0x04 << 4  //  16
-	BL_5     NORCR0 = 0x05 << 4  //  32
-	BL_6     NORCR0 = 0x06 << 4  //  64
-	BL_7     NORCR0 = 0x07 << 4  //  64
-	AM       NORCR0 = 0x03 << 8  //+ Address Mode
-	AM_0     NORCR0 = 0x00 << 8  //  Address/Data MUX mode
-	AM_1     NORCR0 = 0x01 << 8  //  Advanced Address/Data MUX mode
-	AM_2     NORCR0 = 0x02 << 8  //  Address/Data non-MUX mode
-	AM_3     NORCR0 = 0x03 << 8  //  Address/Data non-MUX mode
-	ADVP     NORCR0 = 0x01 << 10 //+ ADV# polarity
-	ADVP_0   NORCR0 = 0x00 << 10 //  ADV# is Low Active. In ASYNC mode, device sample address with ADV# rise edge; In SYNC mode, device sample address when ADV# is LOW.
-	ADVP_1   NORCR0 = 0x01 << 10 //  ADV# is High Active. In ASYNC mode, device sample address with ADV# fall edge; In SYNC mode, device sample address when ADV# is HIGH.
-	ADVH     NORCR0 = 0x01 << 11 //+ ADV# level control during address hold state
-	ADVH_0   NORCR0 = 0x00 << 11 //  ADV# is high during address hold state.
-	ADVH_1   NORCR0 = 0x01 << 11 //  ADV# is low during address hold state.
-	COL      NORCR0 = 0x0F << 12 //+ Column Address bit width
-	COL_0    NORCR0 = 0x00 << 12 //  12 Bits
-	COL_1    NORCR0 = 0x01 << 12 //  11 Bits
-	COL_2    NORCR0 = 0x02 << 12 //  10 Bits
-	COL_3    NORCR0 = 0x03 << 12 //  9 Bits
-	COL_4    NORCR0 = 0x04 << 12 //  8 Bits
-	COL_5    NORCR0 = 0x05 << 12 //  7 Bits
-	COL_6    NORCR0 = 0x06 << 12 //  6 Bits
-	COL_7    NORCR0 = 0x07 << 12 //  5 Bits
-	COL_8    NORCR0 = 0x08 << 12 //  4 Bits
-	COL_9    NORCR0 = 0x09 << 12 //  3 Bits
-	COL_10   NORCR0 = 0x0A << 12 //  2 Bits
-	COL_11   NORCR0 = 0x0B << 12 //  12 Bits
-	COL_12   NORCR0 = 0x0C << 12 //  12 Bits
-	COL_13   NORCR0 = 0x0D << 12 //  12 Bits
-	COL_14   NORCR0 = 0x0E << 12 //  12 Bits
-	COL_15   NORCR0 = 0x0F << 12 //  12 Bits
+	PS     NORCR0 = 0x01 << 0  //+ Port Size
+	SYNCEN NORCR0 = 0x01 << 1  //+ Select NOR controller mode.
+	BL     NORCR0 = 0x07 << 4  //+ Burst Length
+	BL_0   NORCR0 = 0x00 << 4  //  1
+	BL_1   NORCR0 = 0x01 << 4  //  2
+	BL_2   NORCR0 = 0x02 << 4  //  4
+	BL_3   NORCR0 = 0x03 << 4  //  8
+	BL_4   NORCR0 = 0x04 << 4  //  16
+	BL_5   NORCR0 = 0x05 << 4  //  32
+	BL_6   NORCR0 = 0x06 << 4  //  64
+	BL_7   NORCR0 = 0x07 << 4  //  64
+	AM     NORCR0 = 0x03 << 8  //+ Address Mode
+	AM_0   NORCR0 = 0x00 << 8  //  Address/Data MUX mode
+	AM_1   NORCR0 = 0x01 << 8  //  Advanced Address/Data MUX mode
+	AM_2   NORCR0 = 0x02 << 8  //  Address/Data non-MUX mode
+	AM_3   NORCR0 = 0x03 << 8  //  Address/Data non-MUX mode
+	ADVP   NORCR0 = 0x01 << 10 //+ ADV# polarity
+	ADVH   NORCR0 = 0x01 << 11 //+ ADV# level control during address hold state
+	COL    NORCR0 = 0x0F << 12 //+ Column Address bit width
+	COL_0  NORCR0 = 0x00 << 12 //  12 Bits
+	COL_1  NORCR0 = 0x01 << 12 //  11 Bits
+	COL_2  NORCR0 = 0x02 << 12 //  10 Bits
+	COL_3  NORCR0 = 0x03 << 12 //  9 Bits
+	COL_4  NORCR0 = 0x04 << 12 //  8 Bits
+	COL_5  NORCR0 = 0x05 << 12 //  7 Bits
+	COL_6  NORCR0 = 0x06 << 12 //  6 Bits
+	COL_7  NORCR0 = 0x07 << 12 //  5 Bits
+	COL_8  NORCR0 = 0x08 << 12 //  4 Bits
+	COL_9  NORCR0 = 0x09 << 12 //  3 Bits
+	COL_10 NORCR0 = 0x0A << 12 //  2 Bits
+	COL_11 NORCR0 = 0x0B << 12 //  12 Bits
+	COL_12 NORCR0 = 0x0C << 12 //  12 Bits
+	COL_13 NORCR0 = 0x0D << 12 //  12 Bits
+	COL_14 NORCR0 = 0x0E << 12 //  12 Bits
+	COL_15 NORCR0 = 0x0F << 12 //  12 Bits
 )
 
 const (
@@ -1011,49 +971,41 @@ const (
 )
 
 const (
-	PS       SRAMCR0 = 0x01 << 0  //+ Port Size
-	PS_0     SRAMCR0 = 0x00 << 0  //  8bit
-	PS_1     SRAMCR0 = 0x01 << 0  //  16bit
-	SYNCEN   SRAMCR0 = 0x01 << 1  //+ Select SRAM controller mode.
-	SYNCEN_0 SRAMCR0 = 0x00 << 1  //  Asynchronous mode is enabled.
-	SYNCEN_1 SRAMCR0 = 0x01 << 1  //  Synchronous mode is enabled.
-	BL       SRAMCR0 = 0x07 << 4  //+ Burst Length
-	BL_0     SRAMCR0 = 0x00 << 4  //  1
-	BL_1     SRAMCR0 = 0x01 << 4  //  2
-	BL_2     SRAMCR0 = 0x02 << 4  //  4
-	BL_3     SRAMCR0 = 0x03 << 4  //  8
-	BL_4     SRAMCR0 = 0x04 << 4  //  16
-	BL_5     SRAMCR0 = 0x05 << 4  //  32
-	BL_6     SRAMCR0 = 0x06 << 4  //  64
-	BL_7     SRAMCR0 = 0x07 << 4  //  64
-	AM       SRAMCR0 = 0x03 << 8  //+ Address Mode
-	AM_0     SRAMCR0 = 0x00 << 8  //  Address/Data MUX mode
-	AM_1     SRAMCR0 = 0x01 << 8  //  Advanced Address/Data MUX mode
-	AM_2     SRAMCR0 = 0x02 << 8  //  Address/Data non-MUX mode
-	AM_3     SRAMCR0 = 0x03 << 8  //  Address/Data non-MUX mode
-	ADVP     SRAMCR0 = 0x01 << 10 //+ ADV# polarity
-	ADVP_0   SRAMCR0 = 0x00 << 10 //  ADV# is Low Active. In ASYNC mode, device sample address with ADV# rise edge; In SYNC mode, device sample address when ADV# is LOW.
-	ADVP_1   SRAMCR0 = 0x01 << 10 //  ADV# is High Active. In ASYNC mode, device sample address with ADV# fall edge; In SYNC mode, device sample address when ADV# is HIGH.
-	ADVH     SRAMCR0 = 0x01 << 11 //+ ADV# level control during address hold state
-	ADVH_0   SRAMCR0 = 0x00 << 11 //  ADV# is high during address hold state.
-	ADVH_1   SRAMCR0 = 0x01 << 11 //  ADV# is low during address hold state.
-	COL      SRAMCR0 = 0x0F << 12 //+ Column Address bit width
-	COL_0    SRAMCR0 = 0x00 << 12 //  12 Bits
-	COL_1    SRAMCR0 = 0x01 << 12 //  11 Bits
-	COL_2    SRAMCR0 = 0x02 << 12 //  10 Bits
-	COL_3    SRAMCR0 = 0x03 << 12 //  9 Bits
-	COL_4    SRAMCR0 = 0x04 << 12 //  8 Bits
-	COL_5    SRAMCR0 = 0x05 << 12 //  7 Bits
-	COL_6    SRAMCR0 = 0x06 << 12 //  6 Bits
-	COL_7    SRAMCR0 = 0x07 << 12 //  5 Bits
-	COL_8    SRAMCR0 = 0x08 << 12 //  4 Bits
-	COL_9    SRAMCR0 = 0x09 << 12 //  3 Bits
-	COL_10   SRAMCR0 = 0x0A << 12 //  2 Bits
-	COL_11   SRAMCR0 = 0x0B << 12 //  12 Bits
-	COL_12   SRAMCR0 = 0x0C << 12 //  12 Bits
-	COL_13   SRAMCR0 = 0x0D << 12 //  12 Bits
-	COL_14   SRAMCR0 = 0x0E << 12 //  12 Bits
-	COL_15   SRAMCR0 = 0x0F << 12 //  12 Bits
+	PS     SRAMCR0 = 0x01 << 0  //+ Port Size
+	SYNCEN SRAMCR0 = 0x01 << 1  //+ Select SRAM controller mode.
+	BL     SRAMCR0 = 0x07 << 4  //+ Burst Length
+	BL_0   SRAMCR0 = 0x00 << 4  //  1
+	BL_1   SRAMCR0 = 0x01 << 4  //  2
+	BL_2   SRAMCR0 = 0x02 << 4  //  4
+	BL_3   SRAMCR0 = 0x03 << 4  //  8
+	BL_4   SRAMCR0 = 0x04 << 4  //  16
+	BL_5   SRAMCR0 = 0x05 << 4  //  32
+	BL_6   SRAMCR0 = 0x06 << 4  //  64
+	BL_7   SRAMCR0 = 0x07 << 4  //  64
+	AM     SRAMCR0 = 0x03 << 8  //+ Address Mode
+	AM_0   SRAMCR0 = 0x00 << 8  //  Address/Data MUX mode
+	AM_1   SRAMCR0 = 0x01 << 8  //  Advanced Address/Data MUX mode
+	AM_2   SRAMCR0 = 0x02 << 8  //  Address/Data non-MUX mode
+	AM_3   SRAMCR0 = 0x03 << 8  //  Address/Data non-MUX mode
+	ADVP   SRAMCR0 = 0x01 << 10 //+ ADV# polarity
+	ADVH   SRAMCR0 = 0x01 << 11 //+ ADV# level control during address hold state
+	COL    SRAMCR0 = 0x0F << 12 //+ Column Address bit width
+	COL_0  SRAMCR0 = 0x00 << 12 //  12 Bits
+	COL_1  SRAMCR0 = 0x01 << 12 //  11 Bits
+	COL_2  SRAMCR0 = 0x02 << 12 //  10 Bits
+	COL_3  SRAMCR0 = 0x03 << 12 //  9 Bits
+	COL_4  SRAMCR0 = 0x04 << 12 //  8 Bits
+	COL_5  SRAMCR0 = 0x05 << 12 //  7 Bits
+	COL_6  SRAMCR0 = 0x06 << 12 //  6 Bits
+	COL_7  SRAMCR0 = 0x07 << 12 //  5 Bits
+	COL_8  SRAMCR0 = 0x08 << 12 //  4 Bits
+	COL_9  SRAMCR0 = 0x09 << 12 //  3 Bits
+	COL_10 SRAMCR0 = 0x0A << 12 //  2 Bits
+	COL_11 SRAMCR0 = 0x0B << 12 //  12 Bits
+	COL_12 SRAMCR0 = 0x0C << 12 //  12 Bits
+	COL_13 SRAMCR0 = 0x0D << 12 //  12 Bits
+	COL_14 SRAMCR0 = 0x0E << 12 //  12 Bits
+	COL_15 SRAMCR0 = 0x0F << 12 //  12 Bits
 )
 
 const (
@@ -1112,8 +1064,6 @@ const (
 
 const (
 	PS     DBICR0 = 0x01 << 0  //+ Port Size
-	PS_0   DBICR0 = 0x00 << 0  //  8bit
-	PS_1   DBICR0 = 0x01 << 0  //  16bit
 	BL     DBICR0 = 0x07 << 4  //+ Burst Length
 	BL_0   DBICR0 = 0x00 << 4  //  1
 	BL_1   DBICR0 = 0x01 << 4  //  2
@@ -1195,18 +1145,10 @@ const (
 )
 
 const (
-	BM0   IPCR2 = 0x01 << 0 //+ Byte Mask for Byte 0 (IPTXD bit 7:0)
-	BM0_0 IPCR2 = 0x00 << 0 //  Byte Unmasked
-	BM0_1 IPCR2 = 0x01 << 0 //  Byte Masked
-	BM1   IPCR2 = 0x01 << 1 //+ Byte Mask for Byte 1 (IPTXD bit 15:8)
-	BM1_0 IPCR2 = 0x00 << 1 //  Byte Unmasked
-	BM1_1 IPCR2 = 0x01 << 1 //  Byte Masked
-	BM2   IPCR2 = 0x01 << 2 //+ Byte Mask for Byte 2 (IPTXD bit 23:16)
-	BM2_0 IPCR2 = 0x00 << 2 //  Byte Unmasked
-	BM2_1 IPCR2 = 0x01 << 2 //  Byte Masked
-	BM3   IPCR2 = 0x01 << 3 //+ Byte Mask for Byte 3 (IPTXD bit 31:24)
-	BM3_0 IPCR2 = 0x00 << 3 //  Byte Unmasked
-	BM3_1 IPCR2 = 0x01 << 3 //  Byte Masked
+	BM0 IPCR2 = 0x01 << 0 //+ Byte Mask for Byte 0 (IPTXD bit 7:0)
+	BM1 IPCR2 = 0x01 << 1 //+ Byte Mask for Byte 1 (IPTXD bit 15:8)
+	BM2 IPCR2 = 0x01 << 2 //+ Byte Mask for Byte 2 (IPTXD bit 23:16)
+	BM3 IPCR2 = 0x01 << 3 //+ Byte Mask for Byte 3 (IPTXD bit 31:24)
 )
 
 const (
@@ -1243,10 +1185,8 @@ const (
 )
 
 const (
-	IDLE    STS0 = 0x01 << 0 //+ Indicating whether SEMC is in IDLE state.
-	NARDY   STS0 = 0x01 << 1 //+ Indicating NAND device Ready/WAIT# pin level.
-	NARDY_0 STS0 = 0x00 << 1 //  NAND device is not ready
-	NARDY_1 STS0 = 0x01 << 1 //  NAND device is ready
+	IDLE  STS0 = 0x01 << 0 //+ Indicating whether SEMC is in IDLE state.
+	NARDY STS0 = 0x01 << 1 //+ Indicating NAND device Ready/WAIT# pin level.
 )
 
 const (
@@ -1255,9 +1195,7 @@ const (
 )
 
 const (
-	NDWRPEND   STS2 = 0x01 << 3 //+ This field indicating whether there is pending AXI command (write) to NAND device.
-	NDWRPEND_0 STS2 = 0x00 << 3 //  No pending
-	NDWRPEND_1 STS2 = 0x01 << 3 //  Pending
+	NDWRPEND STS2 = 0x01 << 3 //+ This field indicating whether there is pending AXI command (write) to NAND device.
 )
 
 const (

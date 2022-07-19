@@ -540,38 +540,18 @@
 package dma
 
 const (
-	EDBG     CR = 0x01 << 1  //+ Enable Debug
-	EDBG_0   CR = 0x00 << 1  //  When in debug mode, the DMA continues to operate.
-	EDBG_1   CR = 0x01 << 1  //  When in debug mode, the DMA stalls the start of a new channel. Executing channels are allowed to complete. Channel execution resumes when the system exits debug mode or the EDBG bit is cleared.
-	ERCA     CR = 0x01 << 2  //+ Enable Round Robin Channel Arbitration
-	ERCA_0   CR = 0x00 << 2  //  Fixed priority arbitration is used for channel selection within each group.
-	ERCA_1   CR = 0x01 << 2  //  Round robin arbitration is used for channel selection within each group.
-	ERGA     CR = 0x01 << 3  //+ Enable Round Robin Group Arbitration
-	ERGA_0   CR = 0x00 << 3  //  Fixed priority arbitration is used for selection among the groups.
-	ERGA_1   CR = 0x01 << 3  //  Round robin arbitration is used for selection among the groups.
-	HOE      CR = 0x01 << 4  //+ Halt On Error
-	HOE_0    CR = 0x00 << 4  //  Normal operation
-	HOE_1    CR = 0x01 << 4  //  Any error causes the HALT bit to set. Subsequently, all service requests are ignored until the HALT bit is cleared.
-	HALT     CR = 0x01 << 5  //+ Halt DMA Operations
-	HALT_0   CR = 0x00 << 5  //  Normal operation
-	HALT_1   CR = 0x01 << 5  //  Stall the start of any new channels. Executing channels are allowed to complete. Channel execution resumes when this bit is cleared.
-	CLM      CR = 0x01 << 6  //+ Continuous Link Mode
-	CLM_0    CR = 0x00 << 6  //  A minor loop channel link made to itself goes through channel arbitration before being activated again.
-	CLM_1    CR = 0x01 << 6  //  A minor loop channel link made to itself does not go through channel arbitration before being activated again. Upon minor loop completion, the channel activates again if that channel has a minor loop channel link enabled and the link channel is itself. This effectively applies the minor loop offsets and restarts the next minor loop.
-	EMLM     CR = 0x01 << 7  //+ Enable Minor Loop Mapping
-	EMLM_0   CR = 0x00 << 7  //  Disabled. TCDn.word2 is defined as a 32-bit NBYTES field.
-	EMLM_1   CR = 0x01 << 7  //  Enabled. TCDn.word2 is redefined to include individual enable fields, an offset field, and the NBYTES field. The individual enable fields allow the minor loop offset to be applied to the source address, the destination address, or both. The NBYTES field is reduced when either offset is enabled.
-	GRP0PRI  CR = 0x01 << 8  //+ Channel Group 0 Priority
-	GRP1PRI  CR = 0x01 << 10 //+ Channel Group 1 Priority
-	ECX      CR = 0x01 << 16 //+ Error Cancel Transfer
-	ECX_0    CR = 0x00 << 16 //  Normal operation
-	ECX_1    CR = 0x01 << 16 //  Cancel the remaining data transfer in the same fashion as the CX bit. Stop the executing channel and force the minor loop to finish. The cancel takes effect after the last write of the current read/write sequence. The ECX bit clears itself after the cancel is honored. In addition to cancelling the transfer, ECX treats the cancel as an error condition, thus updating the Error Status register (DMAx_ES) and generating an optional error interrupt.
-	CX       CR = 0x01 << 17 //+ Cancel Transfer
-	CX_0     CR = 0x00 << 17 //  Normal operation
-	CX_1     CR = 0x01 << 17 //  Cancel the remaining data transfer. Stop the executing channel and force the minor loop to finish. The cancel takes effect after the last write of the current read/write sequence. The CX bit clears itself after the cancel has been honored. This cancel retires the channel normally as if the minor loop was completed.
-	ACTIVE   CR = 0x01 << 31 //+ DMA Active Status
-	ACTIVE_0 CR = 0x00 << 31 //  eDMA is idle.
-	ACTIVE_1 CR = 0x01 << 31 //  eDMA is executing a channel.
+	EDBG    CR = 0x01 << 1  //+ Enable Debug
+	ERCA    CR = 0x01 << 2  //+ Enable Round Robin Channel Arbitration
+	ERGA    CR = 0x01 << 3  //+ Enable Round Robin Group Arbitration
+	HOE     CR = 0x01 << 4  //+ Halt On Error
+	HALT    CR = 0x01 << 5  //+ Halt DMA Operations
+	CLM     CR = 0x01 << 6  //+ Continuous Link Mode
+	EMLM    CR = 0x01 << 7  //+ Enable Minor Loop Mapping
+	GRP0PRI CR = 0x01 << 8  //+ Channel Group 0 Priority
+	GRP1PRI CR = 0x01 << 10 //+ Channel Group 1 Priority
+	ECX     CR = 0x01 << 16 //+ Error Cancel Transfer
+	CX      CR = 0x01 << 17 //+ Cancel Transfer
+	ACTIVE  CR = 0x01 << 31 //+ DMA Active Status
 )
 
 const (
@@ -591,42 +571,18 @@ const (
 
 const (
 	DBE    ES = 0x01 << 0  //+ Destination Bus Error
-	DBE_0  ES = 0x00 << 0  //  No destination bus error
-	DBE_1  ES = 0x01 << 0  //  The last recorded error was a bus error on a destination write
 	SBE    ES = 0x01 << 1  //+ Source Bus Error
-	SBE_0  ES = 0x00 << 1  //  No source bus error
-	SBE_1  ES = 0x01 << 1  //  The last recorded error was a bus error on a source read
 	SGE    ES = 0x01 << 2  //+ Scatter/Gather Configuration Error
-	SGE_0  ES = 0x00 << 2  //  No scatter/gather configuration error
-	SGE_1  ES = 0x01 << 2  //  The last recorded error was a configuration error detected in the TCDn_DLASTSGA field. This field is checked at the beginning of a scatter/gather operation after major loop completion if TCDn_CSR[ESG] is enabled. TCDn_DLASTSGA is not on a 32 byte boundary.
 	NCE    ES = 0x01 << 3  //+ NBYTES/CITER Configuration Error
-	NCE_0  ES = 0x00 << 3  //  No NBYTES/CITER configuration error
-	NCE_1  ES = 0x01 << 3  //  The last recorded error was a configuration error detected in the TCDn_NBYTES or TCDn_CITER fields. TCDn_NBYTES is not a multiple of TCDn_ATTR[SSIZE] and TCDn_ATTR[DSIZE], or TCDn_CITER[CITER] is equal to zero, or TCDn_CITER[ELINK] is not equal to TCDn_BITER[ELINK]
 	DOE    ES = 0x01 << 4  //+ Destination Offset Error
-	DOE_0  ES = 0x00 << 4  //  No destination offset configuration error
-	DOE_1  ES = 0x01 << 4  //  The last recorded error was a configuration error detected in the TCDn_DOFF field. TCDn_DOFF is inconsistent with TCDn_ATTR[DSIZE].
 	DAE    ES = 0x01 << 5  //+ Destination Address Error
-	DAE_0  ES = 0x00 << 5  //  No destination address configuration error
-	DAE_1  ES = 0x01 << 5  //  The last recorded error was a configuration error detected in the TCDn_DADDR field. TCDn_DADDR is inconsistent with TCDn_ATTR[DSIZE].
 	SOE    ES = 0x01 << 6  //+ Source Offset Error
-	SOE_0  ES = 0x00 << 6  //  No source offset configuration error
-	SOE_1  ES = 0x01 << 6  //  The last recorded error was a configuration error detected in the TCDn_SOFF field. TCDn_SOFF is inconsistent with TCDn_ATTR[SSIZE].
 	SAE    ES = 0x01 << 7  //+ Source Address Error
-	SAE_0  ES = 0x00 << 7  //  No source address configuration error.
-	SAE_1  ES = 0x01 << 7  //  The last recorded error was a configuration error detected in the TCDn_SADDR field. TCDn_SADDR is inconsistent with TCDn_ATTR[SSIZE].
 	ERRCHN ES = 0x1F << 8  //+ Error Channel Number or Canceled Channel Number
 	CPE    ES = 0x01 << 14 //+ Channel Priority Error
-	CPE_0  ES = 0x00 << 14 //  No channel priority error
-	CPE_1  ES = 0x01 << 14 //  The last recorded error was a configuration error in the channel priorities within a group. Channel priorities within a group are not unique.
 	GPE    ES = 0x01 << 15 //+ Group Priority Error
-	GPE_0  ES = 0x00 << 15 //  No group priority error
-	GPE_1  ES = 0x01 << 15 //  The last recorded error was a configuration error among the group priorities. All group priorities are not unique.
 	ECX    ES = 0x01 << 16 //+ Transfer Canceled
-	ECX_0  ES = 0x00 << 16 //  No canceled transfers
-	ECX_1  ES = 0x01 << 16 //  The last recorded entry was a canceled transfer by the error cancel transfer input
 	VLD    ES = 0x01 << 31 //+ VLD
-	VLD_0  ES = 0x00 << 31 //  No ERR bits are set.
-	VLD_1  ES = 0x01 << 31 //  At least one ERR bit is set indicating a valid error exists that has not been cleared.
 )
 
 const (
@@ -646,102 +602,38 @@ const (
 )
 
 const (
-	ERQ0    ERQ = 0x01 << 0  //+ Enable DMA Request 0
-	ERQ0_0  ERQ = 0x00 << 0  //  The DMA request signal for the corresponding channel is disabled
-	ERQ0_1  ERQ = 0x01 << 0  //  The DMA request signal for the corresponding channel is enabled
-	ERQ1    ERQ = 0x01 << 1  //+ Enable DMA Request 1
-	ERQ1_0  ERQ = 0x00 << 1  //  The DMA request signal for the corresponding channel is disabled
-	ERQ1_1  ERQ = 0x01 << 1  //  The DMA request signal for the corresponding channel is enabled
-	ERQ2    ERQ = 0x01 << 2  //+ Enable DMA Request 2
-	ERQ2_0  ERQ = 0x00 << 2  //  The DMA request signal for the corresponding channel is disabled
-	ERQ2_1  ERQ = 0x01 << 2  //  The DMA request signal for the corresponding channel is enabled
-	ERQ3    ERQ = 0x01 << 3  //+ Enable DMA Request 3
-	ERQ3_0  ERQ = 0x00 << 3  //  The DMA request signal for the corresponding channel is disabled
-	ERQ3_1  ERQ = 0x01 << 3  //  The DMA request signal for the corresponding channel is enabled
-	ERQ4    ERQ = 0x01 << 4  //+ Enable DMA Request 4
-	ERQ4_0  ERQ = 0x00 << 4  //  The DMA request signal for the corresponding channel is disabled
-	ERQ4_1  ERQ = 0x01 << 4  //  The DMA request signal for the corresponding channel is enabled
-	ERQ5    ERQ = 0x01 << 5  //+ Enable DMA Request 5
-	ERQ5_0  ERQ = 0x00 << 5  //  The DMA request signal for the corresponding channel is disabled
-	ERQ5_1  ERQ = 0x01 << 5  //  The DMA request signal for the corresponding channel is enabled
-	ERQ6    ERQ = 0x01 << 6  //+ Enable DMA Request 6
-	ERQ6_0  ERQ = 0x00 << 6  //  The DMA request signal for the corresponding channel is disabled
-	ERQ6_1  ERQ = 0x01 << 6  //  The DMA request signal for the corresponding channel is enabled
-	ERQ7    ERQ = 0x01 << 7  //+ Enable DMA Request 7
-	ERQ7_0  ERQ = 0x00 << 7  //  The DMA request signal for the corresponding channel is disabled
-	ERQ7_1  ERQ = 0x01 << 7  //  The DMA request signal for the corresponding channel is enabled
-	ERQ8    ERQ = 0x01 << 8  //+ Enable DMA Request 8
-	ERQ8_0  ERQ = 0x00 << 8  //  The DMA request signal for the corresponding channel is disabled
-	ERQ8_1  ERQ = 0x01 << 8  //  The DMA request signal for the corresponding channel is enabled
-	ERQ9    ERQ = 0x01 << 9  //+ Enable DMA Request 9
-	ERQ9_0  ERQ = 0x00 << 9  //  The DMA request signal for the corresponding channel is disabled
-	ERQ9_1  ERQ = 0x01 << 9  //  The DMA request signal for the corresponding channel is enabled
-	ERQ10   ERQ = 0x01 << 10 //+ Enable DMA Request 10
-	ERQ10_0 ERQ = 0x00 << 10 //  The DMA request signal for the corresponding channel is disabled
-	ERQ10_1 ERQ = 0x01 << 10 //  The DMA request signal for the corresponding channel is enabled
-	ERQ11   ERQ = 0x01 << 11 //+ Enable DMA Request 11
-	ERQ11_0 ERQ = 0x00 << 11 //  The DMA request signal for the corresponding channel is disabled
-	ERQ11_1 ERQ = 0x01 << 11 //  The DMA request signal for the corresponding channel is enabled
-	ERQ12   ERQ = 0x01 << 12 //+ Enable DMA Request 12
-	ERQ12_0 ERQ = 0x00 << 12 //  The DMA request signal for the corresponding channel is disabled
-	ERQ12_1 ERQ = 0x01 << 12 //  The DMA request signal for the corresponding channel is enabled
-	ERQ13   ERQ = 0x01 << 13 //+ Enable DMA Request 13
-	ERQ13_0 ERQ = 0x00 << 13 //  The DMA request signal for the corresponding channel is disabled
-	ERQ13_1 ERQ = 0x01 << 13 //  The DMA request signal for the corresponding channel is enabled
-	ERQ14   ERQ = 0x01 << 14 //+ Enable DMA Request 14
-	ERQ14_0 ERQ = 0x00 << 14 //  The DMA request signal for the corresponding channel is disabled
-	ERQ14_1 ERQ = 0x01 << 14 //  The DMA request signal for the corresponding channel is enabled
-	ERQ15   ERQ = 0x01 << 15 //+ Enable DMA Request 15
-	ERQ15_0 ERQ = 0x00 << 15 //  The DMA request signal for the corresponding channel is disabled
-	ERQ15_1 ERQ = 0x01 << 15 //  The DMA request signal for the corresponding channel is enabled
-	ERQ16   ERQ = 0x01 << 16 //+ Enable DMA Request 16
-	ERQ16_0 ERQ = 0x00 << 16 //  The DMA request signal for the corresponding channel is disabled
-	ERQ16_1 ERQ = 0x01 << 16 //  The DMA request signal for the corresponding channel is enabled
-	ERQ17   ERQ = 0x01 << 17 //+ Enable DMA Request 17
-	ERQ17_0 ERQ = 0x00 << 17 //  The DMA request signal for the corresponding channel is disabled
-	ERQ17_1 ERQ = 0x01 << 17 //  The DMA request signal for the corresponding channel is enabled
-	ERQ18   ERQ = 0x01 << 18 //+ Enable DMA Request 18
-	ERQ18_0 ERQ = 0x00 << 18 //  The DMA request signal for the corresponding channel is disabled
-	ERQ18_1 ERQ = 0x01 << 18 //  The DMA request signal for the corresponding channel is enabled
-	ERQ19   ERQ = 0x01 << 19 //+ Enable DMA Request 19
-	ERQ19_0 ERQ = 0x00 << 19 //  The DMA request signal for the corresponding channel is disabled
-	ERQ19_1 ERQ = 0x01 << 19 //  The DMA request signal for the corresponding channel is enabled
-	ERQ20   ERQ = 0x01 << 20 //+ Enable DMA Request 20
-	ERQ20_0 ERQ = 0x00 << 20 //  The DMA request signal for the corresponding channel is disabled
-	ERQ20_1 ERQ = 0x01 << 20 //  The DMA request signal for the corresponding channel is enabled
-	ERQ21   ERQ = 0x01 << 21 //+ Enable DMA Request 21
-	ERQ21_0 ERQ = 0x00 << 21 //  The DMA request signal for the corresponding channel is disabled
-	ERQ21_1 ERQ = 0x01 << 21 //  The DMA request signal for the corresponding channel is enabled
-	ERQ22   ERQ = 0x01 << 22 //+ Enable DMA Request 22
-	ERQ22_0 ERQ = 0x00 << 22 //  The DMA request signal for the corresponding channel is disabled
-	ERQ22_1 ERQ = 0x01 << 22 //  The DMA request signal for the corresponding channel is enabled
-	ERQ23   ERQ = 0x01 << 23 //+ Enable DMA Request 23
-	ERQ23_0 ERQ = 0x00 << 23 //  The DMA request signal for the corresponding channel is disabled
-	ERQ23_1 ERQ = 0x01 << 23 //  The DMA request signal for the corresponding channel is enabled
-	ERQ24   ERQ = 0x01 << 24 //+ Enable DMA Request 24
-	ERQ24_0 ERQ = 0x00 << 24 //  The DMA request signal for the corresponding channel is disabled
-	ERQ24_1 ERQ = 0x01 << 24 //  The DMA request signal for the corresponding channel is enabled
-	ERQ25   ERQ = 0x01 << 25 //+ Enable DMA Request 25
-	ERQ25_0 ERQ = 0x00 << 25 //  The DMA request signal for the corresponding channel is disabled
-	ERQ25_1 ERQ = 0x01 << 25 //  The DMA request signal for the corresponding channel is enabled
-	ERQ26   ERQ = 0x01 << 26 //+ Enable DMA Request 26
-	ERQ26_0 ERQ = 0x00 << 26 //  The DMA request signal for the corresponding channel is disabled
-	ERQ26_1 ERQ = 0x01 << 26 //  The DMA request signal for the corresponding channel is enabled
-	ERQ27   ERQ = 0x01 << 27 //+ Enable DMA Request 27
-	ERQ27_0 ERQ = 0x00 << 27 //  The DMA request signal for the corresponding channel is disabled
-	ERQ27_1 ERQ = 0x01 << 27 //  The DMA request signal for the corresponding channel is enabled
-	ERQ28   ERQ = 0x01 << 28 //+ Enable DMA Request 28
-	ERQ28_0 ERQ = 0x00 << 28 //  The DMA request signal for the corresponding channel is disabled
-	ERQ28_1 ERQ = 0x01 << 28 //  The DMA request signal for the corresponding channel is enabled
-	ERQ29   ERQ = 0x01 << 29 //+ Enable DMA Request 29
-	ERQ29_0 ERQ = 0x00 << 29 //  The DMA request signal for the corresponding channel is disabled
-	ERQ29_1 ERQ = 0x01 << 29 //  The DMA request signal for the corresponding channel is enabled
-	ERQ30   ERQ = 0x01 << 30 //+ Enable DMA Request 30
-	ERQ30_0 ERQ = 0x00 << 30 //  The DMA request signal for the corresponding channel is disabled
-	ERQ30_1 ERQ = 0x01 << 30 //  The DMA request signal for the corresponding channel is enabled
-	ERQ31   ERQ = 0x01 << 31 //+ Enable DMA Request 31
-	ERQ31_0 ERQ = 0x00 << 31 //  The DMA request signal for the corresponding channel is disabled
-	ERQ31_1 ERQ = 0x01 << 31 //  The DMA request signal for the corresponding channel is enabled
+	ERQ0  ERQ = 0x01 << 0  //+ Enable DMA Request 0
+	ERQ1  ERQ = 0x01 << 1  //+ Enable DMA Request 1
+	ERQ2  ERQ = 0x01 << 2  //+ Enable DMA Request 2
+	ERQ3  ERQ = 0x01 << 3  //+ Enable DMA Request 3
+	ERQ4  ERQ = 0x01 << 4  //+ Enable DMA Request 4
+	ERQ5  ERQ = 0x01 << 5  //+ Enable DMA Request 5
+	ERQ6  ERQ = 0x01 << 6  //+ Enable DMA Request 6
+	ERQ7  ERQ = 0x01 << 7  //+ Enable DMA Request 7
+	ERQ8  ERQ = 0x01 << 8  //+ Enable DMA Request 8
+	ERQ9  ERQ = 0x01 << 9  //+ Enable DMA Request 9
+	ERQ10 ERQ = 0x01 << 10 //+ Enable DMA Request 10
+	ERQ11 ERQ = 0x01 << 11 //+ Enable DMA Request 11
+	ERQ12 ERQ = 0x01 << 12 //+ Enable DMA Request 12
+	ERQ13 ERQ = 0x01 << 13 //+ Enable DMA Request 13
+	ERQ14 ERQ = 0x01 << 14 //+ Enable DMA Request 14
+	ERQ15 ERQ = 0x01 << 15 //+ Enable DMA Request 15
+	ERQ16 ERQ = 0x01 << 16 //+ Enable DMA Request 16
+	ERQ17 ERQ = 0x01 << 17 //+ Enable DMA Request 17
+	ERQ18 ERQ = 0x01 << 18 //+ Enable DMA Request 18
+	ERQ19 ERQ = 0x01 << 19 //+ Enable DMA Request 19
+	ERQ20 ERQ = 0x01 << 20 //+ Enable DMA Request 20
+	ERQ21 ERQ = 0x01 << 21 //+ Enable DMA Request 21
+	ERQ22 ERQ = 0x01 << 22 //+ Enable DMA Request 22
+	ERQ23 ERQ = 0x01 << 23 //+ Enable DMA Request 23
+	ERQ24 ERQ = 0x01 << 24 //+ Enable DMA Request 24
+	ERQ25 ERQ = 0x01 << 25 //+ Enable DMA Request 25
+	ERQ26 ERQ = 0x01 << 26 //+ Enable DMA Request 26
+	ERQ27 ERQ = 0x01 << 27 //+ Enable DMA Request 27
+	ERQ28 ERQ = 0x01 << 28 //+ Enable DMA Request 28
+	ERQ29 ERQ = 0x01 << 29 //+ Enable DMA Request 29
+	ERQ30 ERQ = 0x01 << 30 //+ Enable DMA Request 30
+	ERQ31 ERQ = 0x01 << 31 //+ Enable DMA Request 31
 )
 
 const (
@@ -780,102 +672,38 @@ const (
 )
 
 const (
-	EEI0    EEI = 0x01 << 0  //+ Enable Error Interrupt 0
-	EEI0_0  EEI = 0x00 << 0  //  The error signal for corresponding channel does not generate an error interrupt
-	EEI0_1  EEI = 0x01 << 0  //  The assertion of the error signal for corresponding channel generates an error interrupt request
-	EEI1    EEI = 0x01 << 1  //+ Enable Error Interrupt 1
-	EEI1_0  EEI = 0x00 << 1  //  The error signal for corresponding channel does not generate an error interrupt
-	EEI1_1  EEI = 0x01 << 1  //  The assertion of the error signal for corresponding channel generates an error interrupt request
-	EEI2    EEI = 0x01 << 2  //+ Enable Error Interrupt 2
-	EEI2_0  EEI = 0x00 << 2  //  The error signal for corresponding channel does not generate an error interrupt
-	EEI2_1  EEI = 0x01 << 2  //  The assertion of the error signal for corresponding channel generates an error interrupt request
-	EEI3    EEI = 0x01 << 3  //+ Enable Error Interrupt 3
-	EEI3_0  EEI = 0x00 << 3  //  The error signal for corresponding channel does not generate an error interrupt
-	EEI3_1  EEI = 0x01 << 3  //  The assertion of the error signal for corresponding channel generates an error interrupt request
-	EEI4    EEI = 0x01 << 4  //+ Enable Error Interrupt 4
-	EEI4_0  EEI = 0x00 << 4  //  The error signal for corresponding channel does not generate an error interrupt
-	EEI4_1  EEI = 0x01 << 4  //  The assertion of the error signal for corresponding channel generates an error interrupt request
-	EEI5    EEI = 0x01 << 5  //+ Enable Error Interrupt 5
-	EEI5_0  EEI = 0x00 << 5  //  The error signal for corresponding channel does not generate an error interrupt
-	EEI5_1  EEI = 0x01 << 5  //  The assertion of the error signal for corresponding channel generates an error interrupt request
-	EEI6    EEI = 0x01 << 6  //+ Enable Error Interrupt 6
-	EEI6_0  EEI = 0x00 << 6  //  The error signal for corresponding channel does not generate an error interrupt
-	EEI6_1  EEI = 0x01 << 6  //  The assertion of the error signal for corresponding channel generates an error interrupt request
-	EEI7    EEI = 0x01 << 7  //+ Enable Error Interrupt 7
-	EEI7_0  EEI = 0x00 << 7  //  The error signal for corresponding channel does not generate an error interrupt
-	EEI7_1  EEI = 0x01 << 7  //  The assertion of the error signal for corresponding channel generates an error interrupt request
-	EEI8    EEI = 0x01 << 8  //+ Enable Error Interrupt 8
-	EEI8_0  EEI = 0x00 << 8  //  The error signal for corresponding channel does not generate an error interrupt
-	EEI8_1  EEI = 0x01 << 8  //  The assertion of the error signal for corresponding channel generates an error interrupt request
-	EEI9    EEI = 0x01 << 9  //+ Enable Error Interrupt 9
-	EEI9_0  EEI = 0x00 << 9  //  The error signal for corresponding channel does not generate an error interrupt
-	EEI9_1  EEI = 0x01 << 9  //  The assertion of the error signal for corresponding channel generates an error interrupt request
-	EEI10   EEI = 0x01 << 10 //+ Enable Error Interrupt 10
-	EEI10_0 EEI = 0x00 << 10 //  The error signal for corresponding channel does not generate an error interrupt
-	EEI10_1 EEI = 0x01 << 10 //  The assertion of the error signal for corresponding channel generates an error interrupt request
-	EEI11   EEI = 0x01 << 11 //+ Enable Error Interrupt 11
-	EEI11_0 EEI = 0x00 << 11 //  The error signal for corresponding channel does not generate an error interrupt
-	EEI11_1 EEI = 0x01 << 11 //  The assertion of the error signal for corresponding channel generates an error interrupt request
-	EEI12   EEI = 0x01 << 12 //+ Enable Error Interrupt 12
-	EEI12_0 EEI = 0x00 << 12 //  The error signal for corresponding channel does not generate an error interrupt
-	EEI12_1 EEI = 0x01 << 12 //  The assertion of the error signal for corresponding channel generates an error interrupt request
-	EEI13   EEI = 0x01 << 13 //+ Enable Error Interrupt 13
-	EEI13_0 EEI = 0x00 << 13 //  The error signal for corresponding channel does not generate an error interrupt
-	EEI13_1 EEI = 0x01 << 13 //  The assertion of the error signal for corresponding channel generates an error interrupt request
-	EEI14   EEI = 0x01 << 14 //+ Enable Error Interrupt 14
-	EEI14_0 EEI = 0x00 << 14 //  The error signal for corresponding channel does not generate an error interrupt
-	EEI14_1 EEI = 0x01 << 14 //  The assertion of the error signal for corresponding channel generates an error interrupt request
-	EEI15   EEI = 0x01 << 15 //+ Enable Error Interrupt 15
-	EEI15_0 EEI = 0x00 << 15 //  The error signal for corresponding channel does not generate an error interrupt
-	EEI15_1 EEI = 0x01 << 15 //  The assertion of the error signal for corresponding channel generates an error interrupt request
-	EEI16   EEI = 0x01 << 16 //+ Enable Error Interrupt 16
-	EEI16_0 EEI = 0x00 << 16 //  The error signal for corresponding channel does not generate an error interrupt
-	EEI16_1 EEI = 0x01 << 16 //  The assertion of the error signal for corresponding channel generates an error interrupt request
-	EEI17   EEI = 0x01 << 17 //+ Enable Error Interrupt 17
-	EEI17_0 EEI = 0x00 << 17 //  The error signal for corresponding channel does not generate an error interrupt
-	EEI17_1 EEI = 0x01 << 17 //  The assertion of the error signal for corresponding channel generates an error interrupt request
-	EEI18   EEI = 0x01 << 18 //+ Enable Error Interrupt 18
-	EEI18_0 EEI = 0x00 << 18 //  The error signal for corresponding channel does not generate an error interrupt
-	EEI18_1 EEI = 0x01 << 18 //  The assertion of the error signal for corresponding channel generates an error interrupt request
-	EEI19   EEI = 0x01 << 19 //+ Enable Error Interrupt 19
-	EEI19_0 EEI = 0x00 << 19 //  The error signal for corresponding channel does not generate an error interrupt
-	EEI19_1 EEI = 0x01 << 19 //  The assertion of the error signal for corresponding channel generates an error interrupt request
-	EEI20   EEI = 0x01 << 20 //+ Enable Error Interrupt 20
-	EEI20_0 EEI = 0x00 << 20 //  The error signal for corresponding channel does not generate an error interrupt
-	EEI20_1 EEI = 0x01 << 20 //  The assertion of the error signal for corresponding channel generates an error interrupt request
-	EEI21   EEI = 0x01 << 21 //+ Enable Error Interrupt 21
-	EEI21_0 EEI = 0x00 << 21 //  The error signal for corresponding channel does not generate an error interrupt
-	EEI21_1 EEI = 0x01 << 21 //  The assertion of the error signal for corresponding channel generates an error interrupt request
-	EEI22   EEI = 0x01 << 22 //+ Enable Error Interrupt 22
-	EEI22_0 EEI = 0x00 << 22 //  The error signal for corresponding channel does not generate an error interrupt
-	EEI22_1 EEI = 0x01 << 22 //  The assertion of the error signal for corresponding channel generates an error interrupt request
-	EEI23   EEI = 0x01 << 23 //+ Enable Error Interrupt 23
-	EEI23_0 EEI = 0x00 << 23 //  The error signal for corresponding channel does not generate an error interrupt
-	EEI23_1 EEI = 0x01 << 23 //  The assertion of the error signal for corresponding channel generates an error interrupt request
-	EEI24   EEI = 0x01 << 24 //+ Enable Error Interrupt 24
-	EEI24_0 EEI = 0x00 << 24 //  The error signal for corresponding channel does not generate an error interrupt
-	EEI24_1 EEI = 0x01 << 24 //  The assertion of the error signal for corresponding channel generates an error interrupt request
-	EEI25   EEI = 0x01 << 25 //+ Enable Error Interrupt 25
-	EEI25_0 EEI = 0x00 << 25 //  The error signal for corresponding channel does not generate an error interrupt
-	EEI25_1 EEI = 0x01 << 25 //  The assertion of the error signal for corresponding channel generates an error interrupt request
-	EEI26   EEI = 0x01 << 26 //+ Enable Error Interrupt 26
-	EEI26_0 EEI = 0x00 << 26 //  The error signal for corresponding channel does not generate an error interrupt
-	EEI26_1 EEI = 0x01 << 26 //  The assertion of the error signal for corresponding channel generates an error interrupt request
-	EEI27   EEI = 0x01 << 27 //+ Enable Error Interrupt 27
-	EEI27_0 EEI = 0x00 << 27 //  The error signal for corresponding channel does not generate an error interrupt
-	EEI27_1 EEI = 0x01 << 27 //  The assertion of the error signal for corresponding channel generates an error interrupt request
-	EEI28   EEI = 0x01 << 28 //+ Enable Error Interrupt 28
-	EEI28_0 EEI = 0x00 << 28 //  The error signal for corresponding channel does not generate an error interrupt
-	EEI28_1 EEI = 0x01 << 28 //  The assertion of the error signal for corresponding channel generates an error interrupt request
-	EEI29   EEI = 0x01 << 29 //+ Enable Error Interrupt 29
-	EEI29_0 EEI = 0x00 << 29 //  The error signal for corresponding channel does not generate an error interrupt
-	EEI29_1 EEI = 0x01 << 29 //  The assertion of the error signal for corresponding channel generates an error interrupt request
-	EEI30   EEI = 0x01 << 30 //+ Enable Error Interrupt 30
-	EEI30_0 EEI = 0x00 << 30 //  The error signal for corresponding channel does not generate an error interrupt
-	EEI30_1 EEI = 0x01 << 30 //  The assertion of the error signal for corresponding channel generates an error interrupt request
-	EEI31   EEI = 0x01 << 31 //+ Enable Error Interrupt 31
-	EEI31_0 EEI = 0x00 << 31 //  The error signal for corresponding channel does not generate an error interrupt
-	EEI31_1 EEI = 0x01 << 31 //  The assertion of the error signal for corresponding channel generates an error interrupt request
+	EEI0  EEI = 0x01 << 0  //+ Enable Error Interrupt 0
+	EEI1  EEI = 0x01 << 1  //+ Enable Error Interrupt 1
+	EEI2  EEI = 0x01 << 2  //+ Enable Error Interrupt 2
+	EEI3  EEI = 0x01 << 3  //+ Enable Error Interrupt 3
+	EEI4  EEI = 0x01 << 4  //+ Enable Error Interrupt 4
+	EEI5  EEI = 0x01 << 5  //+ Enable Error Interrupt 5
+	EEI6  EEI = 0x01 << 6  //+ Enable Error Interrupt 6
+	EEI7  EEI = 0x01 << 7  //+ Enable Error Interrupt 7
+	EEI8  EEI = 0x01 << 8  //+ Enable Error Interrupt 8
+	EEI9  EEI = 0x01 << 9  //+ Enable Error Interrupt 9
+	EEI10 EEI = 0x01 << 10 //+ Enable Error Interrupt 10
+	EEI11 EEI = 0x01 << 11 //+ Enable Error Interrupt 11
+	EEI12 EEI = 0x01 << 12 //+ Enable Error Interrupt 12
+	EEI13 EEI = 0x01 << 13 //+ Enable Error Interrupt 13
+	EEI14 EEI = 0x01 << 14 //+ Enable Error Interrupt 14
+	EEI15 EEI = 0x01 << 15 //+ Enable Error Interrupt 15
+	EEI16 EEI = 0x01 << 16 //+ Enable Error Interrupt 16
+	EEI17 EEI = 0x01 << 17 //+ Enable Error Interrupt 17
+	EEI18 EEI = 0x01 << 18 //+ Enable Error Interrupt 18
+	EEI19 EEI = 0x01 << 19 //+ Enable Error Interrupt 19
+	EEI20 EEI = 0x01 << 20 //+ Enable Error Interrupt 20
+	EEI21 EEI = 0x01 << 21 //+ Enable Error Interrupt 21
+	EEI22 EEI = 0x01 << 22 //+ Enable Error Interrupt 22
+	EEI23 EEI = 0x01 << 23 //+ Enable Error Interrupt 23
+	EEI24 EEI = 0x01 << 24 //+ Enable Error Interrupt 24
+	EEI25 EEI = 0x01 << 25 //+ Enable Error Interrupt 25
+	EEI26 EEI = 0x01 << 26 //+ Enable Error Interrupt 26
+	EEI27 EEI = 0x01 << 27 //+ Enable Error Interrupt 27
+	EEI28 EEI = 0x01 << 28 //+ Enable Error Interrupt 28
+	EEI29 EEI = 0x01 << 29 //+ Enable Error Interrupt 29
+	EEI30 EEI = 0x01 << 30 //+ Enable Error Interrupt 30
+	EEI31 EEI = 0x01 << 31 //+ Enable Error Interrupt 31
 )
 
 const (
@@ -914,13 +742,9 @@ const (
 )
 
 const (
-	CEEI   CEEI = 0x1F << 0 //+ Clear Enable Error Interrupt
-	CAEE   CEEI = 0x01 << 6 //+ Clear All Enable Error Interrupts
-	CAEE_0 CEEI = 0x00 << 6 //  Clear only the EEI bit specified in the CEEI field
-	CAEE_1 CEEI = 0x01 << 6 //  Clear all bits in EEI
-	NOP    CEEI = 0x01 << 7 //+ No Op enable
-	NOP_0  CEEI = 0x00 << 7 //  Normal operation
-	NOP_1  CEEI = 0x01 << 7 //  No operation, ignore the other bits in this register
+	CEEI CEEI = 0x1F << 0 //+ Clear Enable Error Interrupt
+	CAEE CEEI = 0x01 << 6 //+ Clear All Enable Error Interrupts
+	NOP  CEEI = 0x01 << 7 //+ No Op enable
 )
 
 const (
@@ -930,13 +754,9 @@ const (
 )
 
 const (
-	SEEI   SEEI = 0x1F << 0 //+ Set Enable Error Interrupt
-	SAEE   SEEI = 0x01 << 6 //+ Sets All Enable Error Interrupts
-	SAEE_0 SEEI = 0x00 << 6 //  Set only the EEI bit specified in the SEEI field.
-	SAEE_1 SEEI = 0x01 << 6 //  Sets all bits in EEI
-	NOP    SEEI = 0x01 << 7 //+ No Op enable
-	NOP_0  SEEI = 0x00 << 7 //  Normal operation
-	NOP_1  SEEI = 0x01 << 7 //  No operation, ignore the other bits in this register
+	SEEI SEEI = 0x1F << 0 //+ Set Enable Error Interrupt
+	SAEE SEEI = 0x01 << 6 //+ Sets All Enable Error Interrupts
+	NOP  SEEI = 0x01 << 7 //+ No Op enable
 )
 
 const (
@@ -946,13 +766,9 @@ const (
 )
 
 const (
-	CERQ   CERQ = 0x1F << 0 //+ Clear Enable Request
-	CAER   CERQ = 0x01 << 6 //+ Clear All Enable Requests
-	CAER_0 CERQ = 0x00 << 6 //  Clear only the ERQ bit specified in the CERQ field
-	CAER_1 CERQ = 0x01 << 6 //  Clear all bits in ERQ
-	NOP    CERQ = 0x01 << 7 //+ No Op enable
-	NOP_0  CERQ = 0x00 << 7 //  Normal operation
-	NOP_1  CERQ = 0x01 << 7 //  No operation, ignore the other bits in this register
+	CERQ CERQ = 0x1F << 0 //+ Clear Enable Request
+	CAER CERQ = 0x01 << 6 //+ Clear All Enable Requests
+	NOP  CERQ = 0x01 << 7 //+ No Op enable
 )
 
 const (
@@ -962,13 +778,9 @@ const (
 )
 
 const (
-	SERQ   SERQ = 0x1F << 0 //+ Set Enable Request
-	SAER   SERQ = 0x01 << 6 //+ Set All Enable Requests
-	SAER_0 SERQ = 0x00 << 6 //  Set only the ERQ bit specified in the SERQ field
-	SAER_1 SERQ = 0x01 << 6 //  Set all bits in ERQ
-	NOP    SERQ = 0x01 << 7 //+ No Op enable
-	NOP_0  SERQ = 0x00 << 7 //  Normal operation
-	NOP_1  SERQ = 0x01 << 7 //  No operation, ignore the other bits in this register
+	SERQ SERQ = 0x1F << 0 //+ Set Enable Request
+	SAER SERQ = 0x01 << 6 //+ Set All Enable Requests
+	NOP  SERQ = 0x01 << 7 //+ No Op enable
 )
 
 const (
@@ -978,13 +790,9 @@ const (
 )
 
 const (
-	CDNE   CDNE = 0x1F << 0 //+ Clear DONE Bit
-	CADN   CDNE = 0x01 << 6 //+ Clears All DONE Bits
-	CADN_0 CDNE = 0x00 << 6 //  Clears only the TCDn_CSR[DONE] bit specified in the CDNE field
-	CADN_1 CDNE = 0x01 << 6 //  Clears all bits in TCDn_CSR[DONE]
-	NOP    CDNE = 0x01 << 7 //+ No Op enable
-	NOP_0  CDNE = 0x00 << 7 //  Normal operation
-	NOP_1  CDNE = 0x01 << 7 //  No operation, ignore the other bits in this register
+	CDNE CDNE = 0x1F << 0 //+ Clear DONE Bit
+	CADN CDNE = 0x01 << 6 //+ Clears All DONE Bits
+	NOP  CDNE = 0x01 << 7 //+ No Op enable
 )
 
 const (
@@ -994,13 +802,9 @@ const (
 )
 
 const (
-	SSRT   SSRT = 0x1F << 0 //+ Set START Bit
-	SAST   SSRT = 0x01 << 6 //+ Set All START Bits (activates all channels)
-	SAST_0 SSRT = 0x00 << 6 //  Set only the TCDn_CSR[START] bit specified in the SSRT field
-	SAST_1 SSRT = 0x01 << 6 //  Set all bits in TCDn_CSR[START]
-	NOP    SSRT = 0x01 << 7 //+ No Op enable
-	NOP_0  SSRT = 0x00 << 7 //  Normal operation
-	NOP_1  SSRT = 0x01 << 7 //  No operation, ignore the other bits in this register
+	SSRT SSRT = 0x1F << 0 //+ Set START Bit
+	SAST SSRT = 0x01 << 6 //+ Set All START Bits (activates all channels)
+	NOP  SSRT = 0x01 << 7 //+ No Op enable
 )
 
 const (
@@ -1010,13 +814,9 @@ const (
 )
 
 const (
-	CERR   CERR = 0x1F << 0 //+ Clear Error Indicator
-	CAEI   CERR = 0x01 << 6 //+ Clear All Error Indicators
-	CAEI_0 CERR = 0x00 << 6 //  Clear only the ERR bit specified in the CERR field
-	CAEI_1 CERR = 0x01 << 6 //  Clear all bits in ERR
-	NOP    CERR = 0x01 << 7 //+ No Op enable
-	NOP_0  CERR = 0x00 << 7 //  Normal operation
-	NOP_1  CERR = 0x01 << 7 //  No operation, ignore the other bits in this register
+	CERR CERR = 0x1F << 0 //+ Clear Error Indicator
+	CAEI CERR = 0x01 << 6 //+ Clear All Error Indicators
+	NOP  CERR = 0x01 << 7 //+ No Op enable
 )
 
 const (
@@ -1026,13 +826,9 @@ const (
 )
 
 const (
-	CINT   CINT = 0x1F << 0 //+ Clear Interrupt Request
-	CAIR   CINT = 0x01 << 6 //+ Clear All Interrupt Requests
-	CAIR_0 CINT = 0x00 << 6 //  Clear only the INT bit specified in the CINT field
-	CAIR_1 CINT = 0x01 << 6 //  Clear all bits in INT
-	NOP    CINT = 0x01 << 7 //+ No Op enable
-	NOP_0  CINT = 0x00 << 7 //  Normal operation
-	NOP_1  CINT = 0x01 << 7 //  No operation, ignore the other bits in this register
+	CINT CINT = 0x1F << 0 //+ Clear Interrupt Request
+	CAIR CINT = 0x01 << 6 //+ Clear All Interrupt Requests
+	NOP  CINT = 0x01 << 7 //+ No Op enable
 )
 
 const (
@@ -1042,102 +838,38 @@ const (
 )
 
 const (
-	INT0    INT = 0x01 << 0  //+ Interrupt Request 0
-	INT0_0  INT = 0x00 << 0  //  The interrupt request for corresponding channel is cleared
-	INT0_1  INT = 0x01 << 0  //  The interrupt request for corresponding channel is active
-	INT1    INT = 0x01 << 1  //+ Interrupt Request 1
-	INT1_0  INT = 0x00 << 1  //  The interrupt request for corresponding channel is cleared
-	INT1_1  INT = 0x01 << 1  //  The interrupt request for corresponding channel is active
-	INT2    INT = 0x01 << 2  //+ Interrupt Request 2
-	INT2_0  INT = 0x00 << 2  //  The interrupt request for corresponding channel is cleared
-	INT2_1  INT = 0x01 << 2  //  The interrupt request for corresponding channel is active
-	INT3    INT = 0x01 << 3  //+ Interrupt Request 3
-	INT3_0  INT = 0x00 << 3  //  The interrupt request for corresponding channel is cleared
-	INT3_1  INT = 0x01 << 3  //  The interrupt request for corresponding channel is active
-	INT4    INT = 0x01 << 4  //+ Interrupt Request 4
-	INT4_0  INT = 0x00 << 4  //  The interrupt request for corresponding channel is cleared
-	INT4_1  INT = 0x01 << 4  //  The interrupt request for corresponding channel is active
-	INT5    INT = 0x01 << 5  //+ Interrupt Request 5
-	INT5_0  INT = 0x00 << 5  //  The interrupt request for corresponding channel is cleared
-	INT5_1  INT = 0x01 << 5  //  The interrupt request for corresponding channel is active
-	INT6    INT = 0x01 << 6  //+ Interrupt Request 6
-	INT6_0  INT = 0x00 << 6  //  The interrupt request for corresponding channel is cleared
-	INT6_1  INT = 0x01 << 6  //  The interrupt request for corresponding channel is active
-	INT7    INT = 0x01 << 7  //+ Interrupt Request 7
-	INT7_0  INT = 0x00 << 7  //  The interrupt request for corresponding channel is cleared
-	INT7_1  INT = 0x01 << 7  //  The interrupt request for corresponding channel is active
-	INT8    INT = 0x01 << 8  //+ Interrupt Request 8
-	INT8_0  INT = 0x00 << 8  //  The interrupt request for corresponding channel is cleared
-	INT8_1  INT = 0x01 << 8  //  The interrupt request for corresponding channel is active
-	INT9    INT = 0x01 << 9  //+ Interrupt Request 9
-	INT9_0  INT = 0x00 << 9  //  The interrupt request for corresponding channel is cleared
-	INT9_1  INT = 0x01 << 9  //  The interrupt request for corresponding channel is active
-	INT10   INT = 0x01 << 10 //+ Interrupt Request 10
-	INT10_0 INT = 0x00 << 10 //  The interrupt request for corresponding channel is cleared
-	INT10_1 INT = 0x01 << 10 //  The interrupt request for corresponding channel is active
-	INT11   INT = 0x01 << 11 //+ Interrupt Request 11
-	INT11_0 INT = 0x00 << 11 //  The interrupt request for corresponding channel is cleared
-	INT11_1 INT = 0x01 << 11 //  The interrupt request for corresponding channel is active
-	INT12   INT = 0x01 << 12 //+ Interrupt Request 12
-	INT12_0 INT = 0x00 << 12 //  The interrupt request for corresponding channel is cleared
-	INT12_1 INT = 0x01 << 12 //  The interrupt request for corresponding channel is active
-	INT13   INT = 0x01 << 13 //+ Interrupt Request 13
-	INT13_0 INT = 0x00 << 13 //  The interrupt request for corresponding channel is cleared
-	INT13_1 INT = 0x01 << 13 //  The interrupt request for corresponding channel is active
-	INT14   INT = 0x01 << 14 //+ Interrupt Request 14
-	INT14_0 INT = 0x00 << 14 //  The interrupt request for corresponding channel is cleared
-	INT14_1 INT = 0x01 << 14 //  The interrupt request for corresponding channel is active
-	INT15   INT = 0x01 << 15 //+ Interrupt Request 15
-	INT15_0 INT = 0x00 << 15 //  The interrupt request for corresponding channel is cleared
-	INT15_1 INT = 0x01 << 15 //  The interrupt request for corresponding channel is active
-	INT16   INT = 0x01 << 16 //+ Interrupt Request 16
-	INT16_0 INT = 0x00 << 16 //  The interrupt request for corresponding channel is cleared
-	INT16_1 INT = 0x01 << 16 //  The interrupt request for corresponding channel is active
-	INT17   INT = 0x01 << 17 //+ Interrupt Request 17
-	INT17_0 INT = 0x00 << 17 //  The interrupt request for corresponding channel is cleared
-	INT17_1 INT = 0x01 << 17 //  The interrupt request for corresponding channel is active
-	INT18   INT = 0x01 << 18 //+ Interrupt Request 18
-	INT18_0 INT = 0x00 << 18 //  The interrupt request for corresponding channel is cleared
-	INT18_1 INT = 0x01 << 18 //  The interrupt request for corresponding channel is active
-	INT19   INT = 0x01 << 19 //+ Interrupt Request 19
-	INT19_0 INT = 0x00 << 19 //  The interrupt request for corresponding channel is cleared
-	INT19_1 INT = 0x01 << 19 //  The interrupt request for corresponding channel is active
-	INT20   INT = 0x01 << 20 //+ Interrupt Request 20
-	INT20_0 INT = 0x00 << 20 //  The interrupt request for corresponding channel is cleared
-	INT20_1 INT = 0x01 << 20 //  The interrupt request for corresponding channel is active
-	INT21   INT = 0x01 << 21 //+ Interrupt Request 21
-	INT21_0 INT = 0x00 << 21 //  The interrupt request for corresponding channel is cleared
-	INT21_1 INT = 0x01 << 21 //  The interrupt request for corresponding channel is active
-	INT22   INT = 0x01 << 22 //+ Interrupt Request 22
-	INT22_0 INT = 0x00 << 22 //  The interrupt request for corresponding channel is cleared
-	INT22_1 INT = 0x01 << 22 //  The interrupt request for corresponding channel is active
-	INT23   INT = 0x01 << 23 //+ Interrupt Request 23
-	INT23_0 INT = 0x00 << 23 //  The interrupt request for corresponding channel is cleared
-	INT23_1 INT = 0x01 << 23 //  The interrupt request for corresponding channel is active
-	INT24   INT = 0x01 << 24 //+ Interrupt Request 24
-	INT24_0 INT = 0x00 << 24 //  The interrupt request for corresponding channel is cleared
-	INT24_1 INT = 0x01 << 24 //  The interrupt request for corresponding channel is active
-	INT25   INT = 0x01 << 25 //+ Interrupt Request 25
-	INT25_0 INT = 0x00 << 25 //  The interrupt request for corresponding channel is cleared
-	INT25_1 INT = 0x01 << 25 //  The interrupt request for corresponding channel is active
-	INT26   INT = 0x01 << 26 //+ Interrupt Request 26
-	INT26_0 INT = 0x00 << 26 //  The interrupt request for corresponding channel is cleared
-	INT26_1 INT = 0x01 << 26 //  The interrupt request for corresponding channel is active
-	INT27   INT = 0x01 << 27 //+ Interrupt Request 27
-	INT27_0 INT = 0x00 << 27 //  The interrupt request for corresponding channel is cleared
-	INT27_1 INT = 0x01 << 27 //  The interrupt request for corresponding channel is active
-	INT28   INT = 0x01 << 28 //+ Interrupt Request 28
-	INT28_0 INT = 0x00 << 28 //  The interrupt request for corresponding channel is cleared
-	INT28_1 INT = 0x01 << 28 //  The interrupt request for corresponding channel is active
-	INT29   INT = 0x01 << 29 //+ Interrupt Request 29
-	INT29_0 INT = 0x00 << 29 //  The interrupt request for corresponding channel is cleared
-	INT29_1 INT = 0x01 << 29 //  The interrupt request for corresponding channel is active
-	INT30   INT = 0x01 << 30 //+ Interrupt Request 30
-	INT30_0 INT = 0x00 << 30 //  The interrupt request for corresponding channel is cleared
-	INT30_1 INT = 0x01 << 30 //  The interrupt request for corresponding channel is active
-	INT31   INT = 0x01 << 31 //+ Interrupt Request 31
-	INT31_0 INT = 0x00 << 31 //  The interrupt request for corresponding channel is cleared
-	INT31_1 INT = 0x01 << 31 //  The interrupt request for corresponding channel is active
+	INT0  INT = 0x01 << 0  //+ Interrupt Request 0
+	INT1  INT = 0x01 << 1  //+ Interrupt Request 1
+	INT2  INT = 0x01 << 2  //+ Interrupt Request 2
+	INT3  INT = 0x01 << 3  //+ Interrupt Request 3
+	INT4  INT = 0x01 << 4  //+ Interrupt Request 4
+	INT5  INT = 0x01 << 5  //+ Interrupt Request 5
+	INT6  INT = 0x01 << 6  //+ Interrupt Request 6
+	INT7  INT = 0x01 << 7  //+ Interrupt Request 7
+	INT8  INT = 0x01 << 8  //+ Interrupt Request 8
+	INT9  INT = 0x01 << 9  //+ Interrupt Request 9
+	INT10 INT = 0x01 << 10 //+ Interrupt Request 10
+	INT11 INT = 0x01 << 11 //+ Interrupt Request 11
+	INT12 INT = 0x01 << 12 //+ Interrupt Request 12
+	INT13 INT = 0x01 << 13 //+ Interrupt Request 13
+	INT14 INT = 0x01 << 14 //+ Interrupt Request 14
+	INT15 INT = 0x01 << 15 //+ Interrupt Request 15
+	INT16 INT = 0x01 << 16 //+ Interrupt Request 16
+	INT17 INT = 0x01 << 17 //+ Interrupt Request 17
+	INT18 INT = 0x01 << 18 //+ Interrupt Request 18
+	INT19 INT = 0x01 << 19 //+ Interrupt Request 19
+	INT20 INT = 0x01 << 20 //+ Interrupt Request 20
+	INT21 INT = 0x01 << 21 //+ Interrupt Request 21
+	INT22 INT = 0x01 << 22 //+ Interrupt Request 22
+	INT23 INT = 0x01 << 23 //+ Interrupt Request 23
+	INT24 INT = 0x01 << 24 //+ Interrupt Request 24
+	INT25 INT = 0x01 << 25 //+ Interrupt Request 25
+	INT26 INT = 0x01 << 26 //+ Interrupt Request 26
+	INT27 INT = 0x01 << 27 //+ Interrupt Request 27
+	INT28 INT = 0x01 << 28 //+ Interrupt Request 28
+	INT29 INT = 0x01 << 29 //+ Interrupt Request 29
+	INT30 INT = 0x01 << 30 //+ Interrupt Request 30
+	INT31 INT = 0x01 << 31 //+ Interrupt Request 31
 )
 
 const (
@@ -1176,102 +908,38 @@ const (
 )
 
 const (
-	ERR0    ERR = 0x01 << 0  //+ Error In Channel 0
-	ERR0_0  ERR = 0x00 << 0  //  An error in this channel has not occurred
-	ERR0_1  ERR = 0x01 << 0  //  An error in this channel has occurred
-	ERR1    ERR = 0x01 << 1  //+ Error In Channel 1
-	ERR1_0  ERR = 0x00 << 1  //  An error in this channel has not occurred
-	ERR1_1  ERR = 0x01 << 1  //  An error in this channel has occurred
-	ERR2    ERR = 0x01 << 2  //+ Error In Channel 2
-	ERR2_0  ERR = 0x00 << 2  //  An error in this channel has not occurred
-	ERR2_1  ERR = 0x01 << 2  //  An error in this channel has occurred
-	ERR3    ERR = 0x01 << 3  //+ Error In Channel 3
-	ERR3_0  ERR = 0x00 << 3  //  An error in this channel has not occurred
-	ERR3_1  ERR = 0x01 << 3  //  An error in this channel has occurred
-	ERR4    ERR = 0x01 << 4  //+ Error In Channel 4
-	ERR4_0  ERR = 0x00 << 4  //  An error in this channel has not occurred
-	ERR4_1  ERR = 0x01 << 4  //  An error in this channel has occurred
-	ERR5    ERR = 0x01 << 5  //+ Error In Channel 5
-	ERR5_0  ERR = 0x00 << 5  //  An error in this channel has not occurred
-	ERR5_1  ERR = 0x01 << 5  //  An error in this channel has occurred
-	ERR6    ERR = 0x01 << 6  //+ Error In Channel 6
-	ERR6_0  ERR = 0x00 << 6  //  An error in this channel has not occurred
-	ERR6_1  ERR = 0x01 << 6  //  An error in this channel has occurred
-	ERR7    ERR = 0x01 << 7  //+ Error In Channel 7
-	ERR7_0  ERR = 0x00 << 7  //  An error in this channel has not occurred
-	ERR7_1  ERR = 0x01 << 7  //  An error in this channel has occurred
-	ERR8    ERR = 0x01 << 8  //+ Error In Channel 8
-	ERR8_0  ERR = 0x00 << 8  //  An error in this channel has not occurred
-	ERR8_1  ERR = 0x01 << 8  //  An error in this channel has occurred
-	ERR9    ERR = 0x01 << 9  //+ Error In Channel 9
-	ERR9_0  ERR = 0x00 << 9  //  An error in this channel has not occurred
-	ERR9_1  ERR = 0x01 << 9  //  An error in this channel has occurred
-	ERR10   ERR = 0x01 << 10 //+ Error In Channel 10
-	ERR10_0 ERR = 0x00 << 10 //  An error in this channel has not occurred
-	ERR10_1 ERR = 0x01 << 10 //  An error in this channel has occurred
-	ERR11   ERR = 0x01 << 11 //+ Error In Channel 11
-	ERR11_0 ERR = 0x00 << 11 //  An error in this channel has not occurred
-	ERR11_1 ERR = 0x01 << 11 //  An error in this channel has occurred
-	ERR12   ERR = 0x01 << 12 //+ Error In Channel 12
-	ERR12_0 ERR = 0x00 << 12 //  An error in this channel has not occurred
-	ERR12_1 ERR = 0x01 << 12 //  An error in this channel has occurred
-	ERR13   ERR = 0x01 << 13 //+ Error In Channel 13
-	ERR13_0 ERR = 0x00 << 13 //  An error in this channel has not occurred
-	ERR13_1 ERR = 0x01 << 13 //  An error in this channel has occurred
-	ERR14   ERR = 0x01 << 14 //+ Error In Channel 14
-	ERR14_0 ERR = 0x00 << 14 //  An error in this channel has not occurred
-	ERR14_1 ERR = 0x01 << 14 //  An error in this channel has occurred
-	ERR15   ERR = 0x01 << 15 //+ Error In Channel 15
-	ERR15_0 ERR = 0x00 << 15 //  An error in this channel has not occurred
-	ERR15_1 ERR = 0x01 << 15 //  An error in this channel has occurred
-	ERR16   ERR = 0x01 << 16 //+ Error In Channel 16
-	ERR16_0 ERR = 0x00 << 16 //  An error in this channel has not occurred
-	ERR16_1 ERR = 0x01 << 16 //  An error in this channel has occurred
-	ERR17   ERR = 0x01 << 17 //+ Error In Channel 17
-	ERR17_0 ERR = 0x00 << 17 //  An error in this channel has not occurred
-	ERR17_1 ERR = 0x01 << 17 //  An error in this channel has occurred
-	ERR18   ERR = 0x01 << 18 //+ Error In Channel 18
-	ERR18_0 ERR = 0x00 << 18 //  An error in this channel has not occurred
-	ERR18_1 ERR = 0x01 << 18 //  An error in this channel has occurred
-	ERR19   ERR = 0x01 << 19 //+ Error In Channel 19
-	ERR19_0 ERR = 0x00 << 19 //  An error in this channel has not occurred
-	ERR19_1 ERR = 0x01 << 19 //  An error in this channel has occurred
-	ERR20   ERR = 0x01 << 20 //+ Error In Channel 20
-	ERR20_0 ERR = 0x00 << 20 //  An error in this channel has not occurred
-	ERR20_1 ERR = 0x01 << 20 //  An error in this channel has occurred
-	ERR21   ERR = 0x01 << 21 //+ Error In Channel 21
-	ERR21_0 ERR = 0x00 << 21 //  An error in this channel has not occurred
-	ERR21_1 ERR = 0x01 << 21 //  An error in this channel has occurred
-	ERR22   ERR = 0x01 << 22 //+ Error In Channel 22
-	ERR22_0 ERR = 0x00 << 22 //  An error in this channel has not occurred
-	ERR22_1 ERR = 0x01 << 22 //  An error in this channel has occurred
-	ERR23   ERR = 0x01 << 23 //+ Error In Channel 23
-	ERR23_0 ERR = 0x00 << 23 //  An error in this channel has not occurred
-	ERR23_1 ERR = 0x01 << 23 //  An error in this channel has occurred
-	ERR24   ERR = 0x01 << 24 //+ Error In Channel 24
-	ERR24_0 ERR = 0x00 << 24 //  An error in this channel has not occurred
-	ERR24_1 ERR = 0x01 << 24 //  An error in this channel has occurred
-	ERR25   ERR = 0x01 << 25 //+ Error In Channel 25
-	ERR25_0 ERR = 0x00 << 25 //  An error in this channel has not occurred
-	ERR25_1 ERR = 0x01 << 25 //  An error in this channel has occurred
-	ERR26   ERR = 0x01 << 26 //+ Error In Channel 26
-	ERR26_0 ERR = 0x00 << 26 //  An error in this channel has not occurred
-	ERR26_1 ERR = 0x01 << 26 //  An error in this channel has occurred
-	ERR27   ERR = 0x01 << 27 //+ Error In Channel 27
-	ERR27_0 ERR = 0x00 << 27 //  An error in this channel has not occurred
-	ERR27_1 ERR = 0x01 << 27 //  An error in this channel has occurred
-	ERR28   ERR = 0x01 << 28 //+ Error In Channel 28
-	ERR28_0 ERR = 0x00 << 28 //  An error in this channel has not occurred
-	ERR28_1 ERR = 0x01 << 28 //  An error in this channel has occurred
-	ERR29   ERR = 0x01 << 29 //+ Error In Channel 29
-	ERR29_0 ERR = 0x00 << 29 //  An error in this channel has not occurred
-	ERR29_1 ERR = 0x01 << 29 //  An error in this channel has occurred
-	ERR30   ERR = 0x01 << 30 //+ Error In Channel 30
-	ERR30_0 ERR = 0x00 << 30 //  An error in this channel has not occurred
-	ERR30_1 ERR = 0x01 << 30 //  An error in this channel has occurred
-	ERR31   ERR = 0x01 << 31 //+ Error In Channel 31
-	ERR31_0 ERR = 0x00 << 31 //  An error in this channel has not occurred
-	ERR31_1 ERR = 0x01 << 31 //  An error in this channel has occurred
+	ERR0  ERR = 0x01 << 0  //+ Error In Channel 0
+	ERR1  ERR = 0x01 << 1  //+ Error In Channel 1
+	ERR2  ERR = 0x01 << 2  //+ Error In Channel 2
+	ERR3  ERR = 0x01 << 3  //+ Error In Channel 3
+	ERR4  ERR = 0x01 << 4  //+ Error In Channel 4
+	ERR5  ERR = 0x01 << 5  //+ Error In Channel 5
+	ERR6  ERR = 0x01 << 6  //+ Error In Channel 6
+	ERR7  ERR = 0x01 << 7  //+ Error In Channel 7
+	ERR8  ERR = 0x01 << 8  //+ Error In Channel 8
+	ERR9  ERR = 0x01 << 9  //+ Error In Channel 9
+	ERR10 ERR = 0x01 << 10 //+ Error In Channel 10
+	ERR11 ERR = 0x01 << 11 //+ Error In Channel 11
+	ERR12 ERR = 0x01 << 12 //+ Error In Channel 12
+	ERR13 ERR = 0x01 << 13 //+ Error In Channel 13
+	ERR14 ERR = 0x01 << 14 //+ Error In Channel 14
+	ERR15 ERR = 0x01 << 15 //+ Error In Channel 15
+	ERR16 ERR = 0x01 << 16 //+ Error In Channel 16
+	ERR17 ERR = 0x01 << 17 //+ Error In Channel 17
+	ERR18 ERR = 0x01 << 18 //+ Error In Channel 18
+	ERR19 ERR = 0x01 << 19 //+ Error In Channel 19
+	ERR20 ERR = 0x01 << 20 //+ Error In Channel 20
+	ERR21 ERR = 0x01 << 21 //+ Error In Channel 21
+	ERR22 ERR = 0x01 << 22 //+ Error In Channel 22
+	ERR23 ERR = 0x01 << 23 //+ Error In Channel 23
+	ERR24 ERR = 0x01 << 24 //+ Error In Channel 24
+	ERR25 ERR = 0x01 << 25 //+ Error In Channel 25
+	ERR26 ERR = 0x01 << 26 //+ Error In Channel 26
+	ERR27 ERR = 0x01 << 27 //+ Error In Channel 27
+	ERR28 ERR = 0x01 << 28 //+ Error In Channel 28
+	ERR29 ERR = 0x01 << 29 //+ Error In Channel 29
+	ERR30 ERR = 0x01 << 30 //+ Error In Channel 30
+	ERR31 ERR = 0x01 << 31 //+ Error In Channel 31
 )
 
 const (
@@ -1310,102 +978,38 @@ const (
 )
 
 const (
-	HRS0    HRS = 0x01 << 0  //+ Hardware Request Status Channel 0
-	HRS0_0  HRS = 0x00 << 0  //  A hardware service request for channel 0 is not present
-	HRS0_1  HRS = 0x01 << 0  //  A hardware service request for channel 0 is present
-	HRS1    HRS = 0x01 << 1  //+ Hardware Request Status Channel 1
-	HRS1_0  HRS = 0x00 << 1  //  A hardware service request for channel 1 is not present
-	HRS1_1  HRS = 0x01 << 1  //  A hardware service request for channel 1 is present
-	HRS2    HRS = 0x01 << 2  //+ Hardware Request Status Channel 2
-	HRS2_0  HRS = 0x00 << 2  //  A hardware service request for channel 2 is not present
-	HRS2_1  HRS = 0x01 << 2  //  A hardware service request for channel 2 is present
-	HRS3    HRS = 0x01 << 3  //+ Hardware Request Status Channel 3
-	HRS3_0  HRS = 0x00 << 3  //  A hardware service request for channel 3 is not present
-	HRS3_1  HRS = 0x01 << 3  //  A hardware service request for channel 3 is present
-	HRS4    HRS = 0x01 << 4  //+ Hardware Request Status Channel 4
-	HRS4_0  HRS = 0x00 << 4  //  A hardware service request for channel 4 is not present
-	HRS4_1  HRS = 0x01 << 4  //  A hardware service request for channel 4 is present
-	HRS5    HRS = 0x01 << 5  //+ Hardware Request Status Channel 5
-	HRS5_0  HRS = 0x00 << 5  //  A hardware service request for channel 5 is not present
-	HRS5_1  HRS = 0x01 << 5  //  A hardware service request for channel 5 is present
-	HRS6    HRS = 0x01 << 6  //+ Hardware Request Status Channel 6
-	HRS6_0  HRS = 0x00 << 6  //  A hardware service request for channel 6 is not present
-	HRS6_1  HRS = 0x01 << 6  //  A hardware service request for channel 6 is present
-	HRS7    HRS = 0x01 << 7  //+ Hardware Request Status Channel 7
-	HRS7_0  HRS = 0x00 << 7  //  A hardware service request for channel 7 is not present
-	HRS7_1  HRS = 0x01 << 7  //  A hardware service request for channel 7 is present
-	HRS8    HRS = 0x01 << 8  //+ Hardware Request Status Channel 8
-	HRS8_0  HRS = 0x00 << 8  //  A hardware service request for channel 8 is not present
-	HRS8_1  HRS = 0x01 << 8  //  A hardware service request for channel 8 is present
-	HRS9    HRS = 0x01 << 9  //+ Hardware Request Status Channel 9
-	HRS9_0  HRS = 0x00 << 9  //  A hardware service request for channel 9 is not present
-	HRS9_1  HRS = 0x01 << 9  //  A hardware service request for channel 9 is present
-	HRS10   HRS = 0x01 << 10 //+ Hardware Request Status Channel 10
-	HRS10_0 HRS = 0x00 << 10 //  A hardware service request for channel 10 is not present
-	HRS10_1 HRS = 0x01 << 10 //  A hardware service request for channel 10 is present
-	HRS11   HRS = 0x01 << 11 //+ Hardware Request Status Channel 11
-	HRS11_0 HRS = 0x00 << 11 //  A hardware service request for channel 11 is not present
-	HRS11_1 HRS = 0x01 << 11 //  A hardware service request for channel 11 is present
-	HRS12   HRS = 0x01 << 12 //+ Hardware Request Status Channel 12
-	HRS12_0 HRS = 0x00 << 12 //  A hardware service request for channel 12 is not present
-	HRS12_1 HRS = 0x01 << 12 //  A hardware service request for channel 12 is present
-	HRS13   HRS = 0x01 << 13 //+ Hardware Request Status Channel 13
-	HRS13_0 HRS = 0x00 << 13 //  A hardware service request for channel 13 is not present
-	HRS13_1 HRS = 0x01 << 13 //  A hardware service request for channel 13 is present
-	HRS14   HRS = 0x01 << 14 //+ Hardware Request Status Channel 14
-	HRS14_0 HRS = 0x00 << 14 //  A hardware service request for channel 14 is not present
-	HRS14_1 HRS = 0x01 << 14 //  A hardware service request for channel 14 is present
-	HRS15   HRS = 0x01 << 15 //+ Hardware Request Status Channel 15
-	HRS15_0 HRS = 0x00 << 15 //  A hardware service request for channel 15 is not present
-	HRS15_1 HRS = 0x01 << 15 //  A hardware service request for channel 15 is present
-	HRS16   HRS = 0x01 << 16 //+ Hardware Request Status Channel 16
-	HRS16_0 HRS = 0x00 << 16 //  A hardware service request for channel 16 is not present
-	HRS16_1 HRS = 0x01 << 16 //  A hardware service request for channel 16 is present
-	HRS17   HRS = 0x01 << 17 //+ Hardware Request Status Channel 17
-	HRS17_0 HRS = 0x00 << 17 //  A hardware service request for channel 17 is not present
-	HRS17_1 HRS = 0x01 << 17 //  A hardware service request for channel 17 is present
-	HRS18   HRS = 0x01 << 18 //+ Hardware Request Status Channel 18
-	HRS18_0 HRS = 0x00 << 18 //  A hardware service request for channel 18 is not present
-	HRS18_1 HRS = 0x01 << 18 //  A hardware service request for channel 18 is present
-	HRS19   HRS = 0x01 << 19 //+ Hardware Request Status Channel 19
-	HRS19_0 HRS = 0x00 << 19 //  A hardware service request for channel 19 is not present
-	HRS19_1 HRS = 0x01 << 19 //  A hardware service request for channel 19 is present
-	HRS20   HRS = 0x01 << 20 //+ Hardware Request Status Channel 20
-	HRS20_0 HRS = 0x00 << 20 //  A hardware service request for channel 20 is not present
-	HRS20_1 HRS = 0x01 << 20 //  A hardware service request for channel 20 is present
-	HRS21   HRS = 0x01 << 21 //+ Hardware Request Status Channel 21
-	HRS21_0 HRS = 0x00 << 21 //  A hardware service request for channel 21 is not present
-	HRS21_1 HRS = 0x01 << 21 //  A hardware service request for channel 21 is present
-	HRS22   HRS = 0x01 << 22 //+ Hardware Request Status Channel 22
-	HRS22_0 HRS = 0x00 << 22 //  A hardware service request for channel 22 is not present
-	HRS22_1 HRS = 0x01 << 22 //  A hardware service request for channel 22 is present
-	HRS23   HRS = 0x01 << 23 //+ Hardware Request Status Channel 23
-	HRS23_0 HRS = 0x00 << 23 //  A hardware service request for channel 23 is not present
-	HRS23_1 HRS = 0x01 << 23 //  A hardware service request for channel 23 is present
-	HRS24   HRS = 0x01 << 24 //+ Hardware Request Status Channel 24
-	HRS24_0 HRS = 0x00 << 24 //  A hardware service request for channel 24 is not present
-	HRS24_1 HRS = 0x01 << 24 //  A hardware service request for channel 24 is present
-	HRS25   HRS = 0x01 << 25 //+ Hardware Request Status Channel 25
-	HRS25_0 HRS = 0x00 << 25 //  A hardware service request for channel 25 is not present
-	HRS25_1 HRS = 0x01 << 25 //  A hardware service request for channel 25 is present
-	HRS26   HRS = 0x01 << 26 //+ Hardware Request Status Channel 26
-	HRS26_0 HRS = 0x00 << 26 //  A hardware service request for channel 26 is not present
-	HRS26_1 HRS = 0x01 << 26 //  A hardware service request for channel 26 is present
-	HRS27   HRS = 0x01 << 27 //+ Hardware Request Status Channel 27
-	HRS27_0 HRS = 0x00 << 27 //  A hardware service request for channel 27 is not present
-	HRS27_1 HRS = 0x01 << 27 //  A hardware service request for channel 27 is present
-	HRS28   HRS = 0x01 << 28 //+ Hardware Request Status Channel 28
-	HRS28_0 HRS = 0x00 << 28 //  A hardware service request for channel 28 is not present
-	HRS28_1 HRS = 0x01 << 28 //  A hardware service request for channel 28 is present
-	HRS29   HRS = 0x01 << 29 //+ Hardware Request Status Channel 29
-	HRS29_0 HRS = 0x00 << 29 //  A hardware service request for channel 29 is not preset
-	HRS29_1 HRS = 0x01 << 29 //  A hardware service request for channel 29 is present
-	HRS30   HRS = 0x01 << 30 //+ Hardware Request Status Channel 30
-	HRS30_0 HRS = 0x00 << 30 //  A hardware service request for channel 30 is not present
-	HRS30_1 HRS = 0x01 << 30 //  A hardware service request for channel 30 is present
-	HRS31   HRS = 0x01 << 31 //+ Hardware Request Status Channel 31
-	HRS31_0 HRS = 0x00 << 31 //  A hardware service request for channel 31 is not present
-	HRS31_1 HRS = 0x01 << 31 //  A hardware service request for channel 31 is present
+	HRS0  HRS = 0x01 << 0  //+ Hardware Request Status Channel 0
+	HRS1  HRS = 0x01 << 1  //+ Hardware Request Status Channel 1
+	HRS2  HRS = 0x01 << 2  //+ Hardware Request Status Channel 2
+	HRS3  HRS = 0x01 << 3  //+ Hardware Request Status Channel 3
+	HRS4  HRS = 0x01 << 4  //+ Hardware Request Status Channel 4
+	HRS5  HRS = 0x01 << 5  //+ Hardware Request Status Channel 5
+	HRS6  HRS = 0x01 << 6  //+ Hardware Request Status Channel 6
+	HRS7  HRS = 0x01 << 7  //+ Hardware Request Status Channel 7
+	HRS8  HRS = 0x01 << 8  //+ Hardware Request Status Channel 8
+	HRS9  HRS = 0x01 << 9  //+ Hardware Request Status Channel 9
+	HRS10 HRS = 0x01 << 10 //+ Hardware Request Status Channel 10
+	HRS11 HRS = 0x01 << 11 //+ Hardware Request Status Channel 11
+	HRS12 HRS = 0x01 << 12 //+ Hardware Request Status Channel 12
+	HRS13 HRS = 0x01 << 13 //+ Hardware Request Status Channel 13
+	HRS14 HRS = 0x01 << 14 //+ Hardware Request Status Channel 14
+	HRS15 HRS = 0x01 << 15 //+ Hardware Request Status Channel 15
+	HRS16 HRS = 0x01 << 16 //+ Hardware Request Status Channel 16
+	HRS17 HRS = 0x01 << 17 //+ Hardware Request Status Channel 17
+	HRS18 HRS = 0x01 << 18 //+ Hardware Request Status Channel 18
+	HRS19 HRS = 0x01 << 19 //+ Hardware Request Status Channel 19
+	HRS20 HRS = 0x01 << 20 //+ Hardware Request Status Channel 20
+	HRS21 HRS = 0x01 << 21 //+ Hardware Request Status Channel 21
+	HRS22 HRS = 0x01 << 22 //+ Hardware Request Status Channel 22
+	HRS23 HRS = 0x01 << 23 //+ Hardware Request Status Channel 23
+	HRS24 HRS = 0x01 << 24 //+ Hardware Request Status Channel 24
+	HRS25 HRS = 0x01 << 25 //+ Hardware Request Status Channel 25
+	HRS26 HRS = 0x01 << 26 //+ Hardware Request Status Channel 26
+	HRS27 HRS = 0x01 << 27 //+ Hardware Request Status Channel 27
+	HRS28 HRS = 0x01 << 28 //+ Hardware Request Status Channel 28
+	HRS29 HRS = 0x01 << 29 //+ Hardware Request Status Channel 29
+	HRS30 HRS = 0x01 << 30 //+ Hardware Request Status Channel 30
+	HRS31 HRS = 0x01 << 31 //+ Hardware Request Status Channel 31
 )
 
 const (
@@ -1444,102 +1048,38 @@ const (
 )
 
 const (
-	EDREQ_0    EARS = 0x01 << 0  //+ Enable asynchronous DMA request in stop mode for channel 0.
-	EDREQ_0_0  EARS = 0x00 << 0  //  Disable asynchronous DMA request for channel 0.
-	EDREQ_0_1  EARS = 0x01 << 0  //  Enable asynchronous DMA request for channel 0.
-	EDREQ_1    EARS = 0x01 << 1  //+ Enable asynchronous DMA request in stop mode for channel 1.
-	EDREQ_1_0  EARS = 0x00 << 1  //  Disable asynchronous DMA request for channel 1
-	EDREQ_1_1  EARS = 0x01 << 1  //  Enable asynchronous DMA request for channel 1.
-	EDREQ_2    EARS = 0x01 << 2  //+ Enable asynchronous DMA request in stop mode for channel 2.
-	EDREQ_2_0  EARS = 0x00 << 2  //  Disable asynchronous DMA request for channel 2.
-	EDREQ_2_1  EARS = 0x01 << 2  //  Enable asynchronous DMA request for channel 2.
-	EDREQ_3    EARS = 0x01 << 3  //+ Enable asynchronous DMA request in stop mode for channel 3.
-	EDREQ_3_0  EARS = 0x00 << 3  //  Disable asynchronous DMA request for channel 3.
-	EDREQ_3_1  EARS = 0x01 << 3  //  Enable asynchronous DMA request for channel 3.
-	EDREQ_4    EARS = 0x01 << 4  //+ Enable asynchronous DMA request in stop mode for channel 4
-	EDREQ_4_0  EARS = 0x00 << 4  //  Disable asynchronous DMA request for channel 4.
-	EDREQ_4_1  EARS = 0x01 << 4  //  Enable asynchronous DMA request for channel 4.
-	EDREQ_5    EARS = 0x01 << 5  //+ Enable asynchronous DMA request in stop mode for channel 5
-	EDREQ_5_0  EARS = 0x00 << 5  //  Disable asynchronous DMA request for channel 5.
-	EDREQ_5_1  EARS = 0x01 << 5  //  Enable asynchronous DMA request for channel 5.
-	EDREQ_6    EARS = 0x01 << 6  //+ Enable asynchronous DMA request in stop mode for channel 6
-	EDREQ_6_0  EARS = 0x00 << 6  //  Disable asynchronous DMA request for channel 6.
-	EDREQ_6_1  EARS = 0x01 << 6  //  Enable asynchronous DMA request for channel 6.
-	EDREQ_7    EARS = 0x01 << 7  //+ Enable asynchronous DMA request in stop mode for channel 7
-	EDREQ_7_0  EARS = 0x00 << 7  //  Disable asynchronous DMA request for channel 7.
-	EDREQ_7_1  EARS = 0x01 << 7  //  Enable asynchronous DMA request for channel 7.
-	EDREQ_8    EARS = 0x01 << 8  //+ Enable asynchronous DMA request in stop mode for channel 8
-	EDREQ_8_0  EARS = 0x00 << 8  //  Disable asynchronous DMA request for channel 8.
-	EDREQ_8_1  EARS = 0x01 << 8  //  Enable asynchronous DMA request for channel 8.
-	EDREQ_9    EARS = 0x01 << 9  //+ Enable asynchronous DMA request in stop mode for channel 9
-	EDREQ_9_0  EARS = 0x00 << 9  //  Disable asynchronous DMA request for channel 9.
-	EDREQ_9_1  EARS = 0x01 << 9  //  Enable asynchronous DMA request for channel 9.
-	EDREQ_10   EARS = 0x01 << 10 //+ Enable asynchronous DMA request in stop mode for channel 10
-	EDREQ_10_0 EARS = 0x00 << 10 //  Disable asynchronous DMA request for channel 10.
-	EDREQ_10_1 EARS = 0x01 << 10 //  Enable asynchronous DMA request for channel 10.
-	EDREQ_11   EARS = 0x01 << 11 //+ Enable asynchronous DMA request in stop mode for channel 11
-	EDREQ_11_0 EARS = 0x00 << 11 //  Disable asynchronous DMA request for channel 11.
-	EDREQ_11_1 EARS = 0x01 << 11 //  Enable asynchronous DMA request for channel 11.
-	EDREQ_12   EARS = 0x01 << 12 //+ Enable asynchronous DMA request in stop mode for channel 12
-	EDREQ_12_0 EARS = 0x00 << 12 //  Disable asynchronous DMA request for channel 12.
-	EDREQ_12_1 EARS = 0x01 << 12 //  Enable asynchronous DMA request for channel 12.
-	EDREQ_13   EARS = 0x01 << 13 //+ Enable asynchronous DMA request in stop mode for channel 13
-	EDREQ_13_0 EARS = 0x00 << 13 //  Disable asynchronous DMA request for channel 13.
-	EDREQ_13_1 EARS = 0x01 << 13 //  Enable asynchronous DMA request for channel 13.
-	EDREQ_14   EARS = 0x01 << 14 //+ Enable asynchronous DMA request in stop mode for channel 14
-	EDREQ_14_0 EARS = 0x00 << 14 //  Disable asynchronous DMA request for channel 14.
-	EDREQ_14_1 EARS = 0x01 << 14 //  Enable asynchronous DMA request for channel 14.
-	EDREQ_15   EARS = 0x01 << 15 //+ Enable asynchronous DMA request in stop mode for channel 15
-	EDREQ_15_0 EARS = 0x00 << 15 //  Disable asynchronous DMA request for channel 15.
-	EDREQ_15_1 EARS = 0x01 << 15 //  Enable asynchronous DMA request for channel 15.
-	EDREQ_16   EARS = 0x01 << 16 //+ Enable asynchronous DMA request in stop mode for channel 16
-	EDREQ_16_0 EARS = 0x00 << 16 //  Disable asynchronous DMA request for channel 16
-	EDREQ_16_1 EARS = 0x01 << 16 //  Enable asynchronous DMA request for channel 16
-	EDREQ_17   EARS = 0x01 << 17 //+ Enable asynchronous DMA request in stop mode for channel 17
-	EDREQ_17_0 EARS = 0x00 << 17 //  Disable asynchronous DMA request for channel 17
-	EDREQ_17_1 EARS = 0x01 << 17 //  Enable asynchronous DMA request for channel 17
-	EDREQ_18   EARS = 0x01 << 18 //+ Enable asynchronous DMA request in stop mode for channel 18
-	EDREQ_18_0 EARS = 0x00 << 18 //  Disable asynchronous DMA request for channel 18
-	EDREQ_18_1 EARS = 0x01 << 18 //  Enable asynchronous DMA request for channel 18
-	EDREQ_19   EARS = 0x01 << 19 //+ Enable asynchronous DMA request in stop mode for channel 19
-	EDREQ_19_0 EARS = 0x00 << 19 //  Disable asynchronous DMA request for channel 19
-	EDREQ_19_1 EARS = 0x01 << 19 //  Enable asynchronous DMA request for channel 19
-	EDREQ_20   EARS = 0x01 << 20 //+ Enable asynchronous DMA request in stop mode for channel 20
-	EDREQ_20_0 EARS = 0x00 << 20 //  Disable asynchronous DMA request for channel 20
-	EDREQ_20_1 EARS = 0x01 << 20 //  Enable asynchronous DMA request for channel 20
-	EDREQ_21   EARS = 0x01 << 21 //+ Enable asynchronous DMA request in stop mode for channel 21
-	EDREQ_21_0 EARS = 0x00 << 21 //  Disable asynchronous DMA request for channel 21
-	EDREQ_21_1 EARS = 0x01 << 21 //  Enable asynchronous DMA request for channel 21
-	EDREQ_22   EARS = 0x01 << 22 //+ Enable asynchronous DMA request in stop mode for channel 22
-	EDREQ_22_0 EARS = 0x00 << 22 //  Disable asynchronous DMA request for channel 22
-	EDREQ_22_1 EARS = 0x01 << 22 //  Enable asynchronous DMA request for channel 22
-	EDREQ_23   EARS = 0x01 << 23 //+ Enable asynchronous DMA request in stop mode for channel 23
-	EDREQ_23_0 EARS = 0x00 << 23 //  Disable asynchronous DMA request for channel 23
-	EDREQ_23_1 EARS = 0x01 << 23 //  Enable asynchronous DMA request for channel 23
-	EDREQ_24   EARS = 0x01 << 24 //+ Enable asynchronous DMA request in stop mode for channel 24
-	EDREQ_24_0 EARS = 0x00 << 24 //  Disable asynchronous DMA request for channel 24
-	EDREQ_24_1 EARS = 0x01 << 24 //  Enable asynchronous DMA request for channel 24
-	EDREQ_25   EARS = 0x01 << 25 //+ Enable asynchronous DMA request in stop mode for channel 25
-	EDREQ_25_0 EARS = 0x00 << 25 //  Disable asynchronous DMA request for channel 25
-	EDREQ_25_1 EARS = 0x01 << 25 //  Enable asynchronous DMA request for channel 25
-	EDREQ_26   EARS = 0x01 << 26 //+ Enable asynchronous DMA request in stop mode for channel 26
-	EDREQ_26_0 EARS = 0x00 << 26 //  Disable asynchronous DMA request for channel 26
-	EDREQ_26_1 EARS = 0x01 << 26 //  Enable asynchronous DMA request for channel 26
-	EDREQ_27   EARS = 0x01 << 27 //+ Enable asynchronous DMA request in stop mode for channel 27
-	EDREQ_27_0 EARS = 0x00 << 27 //  Disable asynchronous DMA request for channel 27
-	EDREQ_27_1 EARS = 0x01 << 27 //  Enable asynchronous DMA request for channel 27
-	EDREQ_28   EARS = 0x01 << 28 //+ Enable asynchronous DMA request in stop mode for channel 28
-	EDREQ_28_0 EARS = 0x00 << 28 //  Disable asynchronous DMA request for channel 28
-	EDREQ_28_1 EARS = 0x01 << 28 //  Enable asynchronous DMA request for channel 28
-	EDREQ_29   EARS = 0x01 << 29 //+ Enable asynchronous DMA request in stop mode for channel 29
-	EDREQ_29_0 EARS = 0x00 << 29 //  Disable asynchronous DMA request for channel 29
-	EDREQ_29_1 EARS = 0x01 << 29 //  Enable asynchronous DMA request for channel 29
-	EDREQ_30   EARS = 0x01 << 30 //+ Enable asynchronous DMA request in stop mode for channel 30
-	EDREQ_30_0 EARS = 0x00 << 30 //  Disable asynchronous DMA request for channel 30
-	EDREQ_30_1 EARS = 0x01 << 30 //  Enable asynchronous DMA request for channel 30
-	EDREQ_31   EARS = 0x01 << 31 //+ Enable asynchronous DMA request in stop mode for channel 31
-	EDREQ_31_0 EARS = 0x00 << 31 //  Disable asynchronous DMA request for channel 31
-	EDREQ_31_1 EARS = 0x01 << 31 //  Enable asynchronous DMA request for channel 31
+	EDREQ_0  EARS = 0x01 << 0  //+ Enable asynchronous DMA request in stop mode for channel 0.
+	EDREQ_1  EARS = 0x01 << 1  //+ Enable asynchronous DMA request in stop mode for channel 1.
+	EDREQ_2  EARS = 0x01 << 2  //+ Enable asynchronous DMA request in stop mode for channel 2.
+	EDREQ_3  EARS = 0x01 << 3  //+ Enable asynchronous DMA request in stop mode for channel 3.
+	EDREQ_4  EARS = 0x01 << 4  //+ Enable asynchronous DMA request in stop mode for channel 4
+	EDREQ_5  EARS = 0x01 << 5  //+ Enable asynchronous DMA request in stop mode for channel 5
+	EDREQ_6  EARS = 0x01 << 6  //+ Enable asynchronous DMA request in stop mode for channel 6
+	EDREQ_7  EARS = 0x01 << 7  //+ Enable asynchronous DMA request in stop mode for channel 7
+	EDREQ_8  EARS = 0x01 << 8  //+ Enable asynchronous DMA request in stop mode for channel 8
+	EDREQ_9  EARS = 0x01 << 9  //+ Enable asynchronous DMA request in stop mode for channel 9
+	EDREQ_10 EARS = 0x01 << 10 //+ Enable asynchronous DMA request in stop mode for channel 10
+	EDREQ_11 EARS = 0x01 << 11 //+ Enable asynchronous DMA request in stop mode for channel 11
+	EDREQ_12 EARS = 0x01 << 12 //+ Enable asynchronous DMA request in stop mode for channel 12
+	EDREQ_13 EARS = 0x01 << 13 //+ Enable asynchronous DMA request in stop mode for channel 13
+	EDREQ_14 EARS = 0x01 << 14 //+ Enable asynchronous DMA request in stop mode for channel 14
+	EDREQ_15 EARS = 0x01 << 15 //+ Enable asynchronous DMA request in stop mode for channel 15
+	EDREQ_16 EARS = 0x01 << 16 //+ Enable asynchronous DMA request in stop mode for channel 16
+	EDREQ_17 EARS = 0x01 << 17 //+ Enable asynchronous DMA request in stop mode for channel 17
+	EDREQ_18 EARS = 0x01 << 18 //+ Enable asynchronous DMA request in stop mode for channel 18
+	EDREQ_19 EARS = 0x01 << 19 //+ Enable asynchronous DMA request in stop mode for channel 19
+	EDREQ_20 EARS = 0x01 << 20 //+ Enable asynchronous DMA request in stop mode for channel 20
+	EDREQ_21 EARS = 0x01 << 21 //+ Enable asynchronous DMA request in stop mode for channel 21
+	EDREQ_22 EARS = 0x01 << 22 //+ Enable asynchronous DMA request in stop mode for channel 22
+	EDREQ_23 EARS = 0x01 << 23 //+ Enable asynchronous DMA request in stop mode for channel 23
+	EDREQ_24 EARS = 0x01 << 24 //+ Enable asynchronous DMA request in stop mode for channel 24
+	EDREQ_25 EARS = 0x01 << 25 //+ Enable asynchronous DMA request in stop mode for channel 25
+	EDREQ_26 EARS = 0x01 << 26 //+ Enable asynchronous DMA request in stop mode for channel 26
+	EDREQ_27 EARS = 0x01 << 27 //+ Enable asynchronous DMA request in stop mode for channel 27
+	EDREQ_28 EARS = 0x01 << 28 //+ Enable asynchronous DMA request in stop mode for channel 28
+	EDREQ_29 EARS = 0x01 << 29 //+ Enable asynchronous DMA request in stop mode for channel 29
+	EDREQ_30 EARS = 0x01 << 30 //+ Enable asynchronous DMA request in stop mode for channel 30
+	EDREQ_31 EARS = 0x01 << 31 //+ Enable asynchronous DMA request in stop mode for channel 31
 )
 
 const (
@@ -1581,11 +1121,7 @@ const (
 	CHPRI  DCHPRI3 = 0x0F << 0 //+ Channel n Arbitration Priority
 	GRPPRI DCHPRI3 = 0x03 << 4 //+ Channel n Current Group Priority
 	DPA    DCHPRI3 = 0x01 << 6 //+ Disable Preempt Ability. This field resets to 0.
-	DPA_0  DCHPRI3 = 0x00 << 6 //  Channel n can suspend a lower priority channel.
-	DPA_1  DCHPRI3 = 0x01 << 6 //  Channel n cannot suspend any channel, regardless of channel priority.
 	ECP    DCHPRI3 = 0x01 << 7 //+ Enable Channel Preemption. This field resets to 0.
-	ECP_0  DCHPRI3 = 0x00 << 7 //  Channel n cannot be suspended by a higher priority channel's service request.
-	ECP_1  DCHPRI3 = 0x01 << 7 //  Channel n can be temporarily suspended by the service request of a higher priority channel.
 )
 
 const (
@@ -1599,11 +1135,7 @@ const (
 	CHPRI  DCHPRI2 = 0x0F << 0 //+ Channel n Arbitration Priority
 	GRPPRI DCHPRI2 = 0x03 << 4 //+ Channel n Current Group Priority
 	DPA    DCHPRI2 = 0x01 << 6 //+ Disable Preempt Ability. This field resets to 0.
-	DPA_0  DCHPRI2 = 0x00 << 6 //  Channel n can suspend a lower priority channel.
-	DPA_1  DCHPRI2 = 0x01 << 6 //  Channel n cannot suspend any channel, regardless of channel priority.
 	ECP    DCHPRI2 = 0x01 << 7 //+ Enable Channel Preemption. This field resets to 0.
-	ECP_0  DCHPRI2 = 0x00 << 7 //  Channel n cannot be suspended by a higher priority channel's service request.
-	ECP_1  DCHPRI2 = 0x01 << 7 //  Channel n can be temporarily suspended by the service request of a higher priority channel.
 )
 
 const (
@@ -1617,11 +1149,7 @@ const (
 	CHPRI  DCHPRI1 = 0x0F << 0 //+ Channel n Arbitration Priority
 	GRPPRI DCHPRI1 = 0x03 << 4 //+ Channel n Current Group Priority
 	DPA    DCHPRI1 = 0x01 << 6 //+ Disable Preempt Ability. This field resets to 0.
-	DPA_0  DCHPRI1 = 0x00 << 6 //  Channel n can suspend a lower priority channel.
-	DPA_1  DCHPRI1 = 0x01 << 6 //  Channel n cannot suspend any channel, regardless of channel priority.
 	ECP    DCHPRI1 = 0x01 << 7 //+ Enable Channel Preemption. This field resets to 0.
-	ECP_0  DCHPRI1 = 0x00 << 7 //  Channel n cannot be suspended by a higher priority channel's service request.
-	ECP_1  DCHPRI1 = 0x01 << 7 //  Channel n can be temporarily suspended by the service request of a higher priority channel.
 )
 
 const (
@@ -1635,11 +1163,7 @@ const (
 	CHPRI  DCHPRI0 = 0x0F << 0 //+ Channel n Arbitration Priority
 	GRPPRI DCHPRI0 = 0x03 << 4 //+ Channel n Current Group Priority
 	DPA    DCHPRI0 = 0x01 << 6 //+ Disable Preempt Ability. This field resets to 0.
-	DPA_0  DCHPRI0 = 0x00 << 6 //  Channel n can suspend a lower priority channel.
-	DPA_1  DCHPRI0 = 0x01 << 6 //  Channel n cannot suspend any channel, regardless of channel priority.
 	ECP    DCHPRI0 = 0x01 << 7 //+ Enable Channel Preemption. This field resets to 0.
-	ECP_0  DCHPRI0 = 0x00 << 7 //  Channel n cannot be suspended by a higher priority channel's service request.
-	ECP_1  DCHPRI0 = 0x01 << 7 //  Channel n can be temporarily suspended by the service request of a higher priority channel.
 )
 
 const (
@@ -1653,11 +1177,7 @@ const (
 	CHPRI  DCHPRI7 = 0x0F << 0 //+ Channel n Arbitration Priority
 	GRPPRI DCHPRI7 = 0x03 << 4 //+ Channel n Current Group Priority
 	DPA    DCHPRI7 = 0x01 << 6 //+ Disable Preempt Ability. This field resets to 0.
-	DPA_0  DCHPRI7 = 0x00 << 6 //  Channel n can suspend a lower priority channel.
-	DPA_1  DCHPRI7 = 0x01 << 6 //  Channel n cannot suspend any channel, regardless of channel priority.
 	ECP    DCHPRI7 = 0x01 << 7 //+ Enable Channel Preemption. This field resets to 0.
-	ECP_0  DCHPRI7 = 0x00 << 7 //  Channel n cannot be suspended by a higher priority channel's service request.
-	ECP_1  DCHPRI7 = 0x01 << 7 //  Channel n can be temporarily suspended by the service request of a higher priority channel.
 )
 
 const (
@@ -1671,11 +1191,7 @@ const (
 	CHPRI  DCHPRI6 = 0x0F << 0 //+ Channel n Arbitration Priority
 	GRPPRI DCHPRI6 = 0x03 << 4 //+ Channel n Current Group Priority
 	DPA    DCHPRI6 = 0x01 << 6 //+ Disable Preempt Ability. This field resets to 0.
-	DPA_0  DCHPRI6 = 0x00 << 6 //  Channel n can suspend a lower priority channel.
-	DPA_1  DCHPRI6 = 0x01 << 6 //  Channel n cannot suspend any channel, regardless of channel priority.
 	ECP    DCHPRI6 = 0x01 << 7 //+ Enable Channel Preemption. This field resets to 0.
-	ECP_0  DCHPRI6 = 0x00 << 7 //  Channel n cannot be suspended by a higher priority channel's service request.
-	ECP_1  DCHPRI6 = 0x01 << 7 //  Channel n can be temporarily suspended by the service request of a higher priority channel.
 )
 
 const (
@@ -1689,11 +1205,7 @@ const (
 	CHPRI  DCHPRI5 = 0x0F << 0 //+ Channel n Arbitration Priority
 	GRPPRI DCHPRI5 = 0x03 << 4 //+ Channel n Current Group Priority
 	DPA    DCHPRI5 = 0x01 << 6 //+ Disable Preempt Ability. This field resets to 0.
-	DPA_0  DCHPRI5 = 0x00 << 6 //  Channel n can suspend a lower priority channel.
-	DPA_1  DCHPRI5 = 0x01 << 6 //  Channel n cannot suspend any channel, regardless of channel priority.
 	ECP    DCHPRI5 = 0x01 << 7 //+ Enable Channel Preemption. This field resets to 0.
-	ECP_0  DCHPRI5 = 0x00 << 7 //  Channel n cannot be suspended by a higher priority channel's service request.
-	ECP_1  DCHPRI5 = 0x01 << 7 //  Channel n can be temporarily suspended by the service request of a higher priority channel.
 )
 
 const (
@@ -1707,11 +1219,7 @@ const (
 	CHPRI  DCHPRI4 = 0x0F << 0 //+ Channel n Arbitration Priority
 	GRPPRI DCHPRI4 = 0x03 << 4 //+ Channel n Current Group Priority
 	DPA    DCHPRI4 = 0x01 << 6 //+ Disable Preempt Ability. This field resets to 0.
-	DPA_0  DCHPRI4 = 0x00 << 6 //  Channel n can suspend a lower priority channel.
-	DPA_1  DCHPRI4 = 0x01 << 6 //  Channel n cannot suspend any channel, regardless of channel priority.
 	ECP    DCHPRI4 = 0x01 << 7 //+ Enable Channel Preemption. This field resets to 0.
-	ECP_0  DCHPRI4 = 0x00 << 7 //  Channel n cannot be suspended by a higher priority channel's service request.
-	ECP_1  DCHPRI4 = 0x01 << 7 //  Channel n can be temporarily suspended by the service request of a higher priority channel.
 )
 
 const (
@@ -1725,11 +1233,7 @@ const (
 	CHPRI  DCHPRI11 = 0x0F << 0 //+ Channel n Arbitration Priority
 	GRPPRI DCHPRI11 = 0x03 << 4 //+ Channel n Current Group Priority
 	DPA    DCHPRI11 = 0x01 << 6 //+ Disable Preempt Ability. This field resets to 0.
-	DPA_0  DCHPRI11 = 0x00 << 6 //  Channel n can suspend a lower priority channel.
-	DPA_1  DCHPRI11 = 0x01 << 6 //  Channel n cannot suspend any channel, regardless of channel priority.
 	ECP    DCHPRI11 = 0x01 << 7 //+ Enable Channel Preemption. This field resets to 0.
-	ECP_0  DCHPRI11 = 0x00 << 7 //  Channel n cannot be suspended by a higher priority channel's service request.
-	ECP_1  DCHPRI11 = 0x01 << 7 //  Channel n can be temporarily suspended by the service request of a higher priority channel.
 )
 
 const (
@@ -1743,11 +1247,7 @@ const (
 	CHPRI  DCHPRI10 = 0x0F << 0 //+ Channel n Arbitration Priority
 	GRPPRI DCHPRI10 = 0x03 << 4 //+ Channel n Current Group Priority
 	DPA    DCHPRI10 = 0x01 << 6 //+ Disable Preempt Ability. This field resets to 0.
-	DPA_0  DCHPRI10 = 0x00 << 6 //  Channel n can suspend a lower priority channel.
-	DPA_1  DCHPRI10 = 0x01 << 6 //  Channel n cannot suspend any channel, regardless of channel priority.
 	ECP    DCHPRI10 = 0x01 << 7 //+ Enable Channel Preemption. This field resets to 0.
-	ECP_0  DCHPRI10 = 0x00 << 7 //  Channel n cannot be suspended by a higher priority channel's service request.
-	ECP_1  DCHPRI10 = 0x01 << 7 //  Channel n can be temporarily suspended by the service request of a higher priority channel.
 )
 
 const (
@@ -1761,11 +1261,7 @@ const (
 	CHPRI  DCHPRI9 = 0x0F << 0 //+ Channel n Arbitration Priority
 	GRPPRI DCHPRI9 = 0x03 << 4 //+ Channel n Current Group Priority
 	DPA    DCHPRI9 = 0x01 << 6 //+ Disable Preempt Ability. This field resets to 0.
-	DPA_0  DCHPRI9 = 0x00 << 6 //  Channel n can suspend a lower priority channel.
-	DPA_1  DCHPRI9 = 0x01 << 6 //  Channel n cannot suspend any channel, regardless of channel priority.
 	ECP    DCHPRI9 = 0x01 << 7 //+ Enable Channel Preemption. This field resets to 0.
-	ECP_0  DCHPRI9 = 0x00 << 7 //  Channel n cannot be suspended by a higher priority channel's service request.
-	ECP_1  DCHPRI9 = 0x01 << 7 //  Channel n can be temporarily suspended by the service request of a higher priority channel.
 )
 
 const (
@@ -1779,11 +1275,7 @@ const (
 	CHPRI  DCHPRI8 = 0x0F << 0 //+ Channel n Arbitration Priority
 	GRPPRI DCHPRI8 = 0x03 << 4 //+ Channel n Current Group Priority
 	DPA    DCHPRI8 = 0x01 << 6 //+ Disable Preempt Ability. This field resets to 0.
-	DPA_0  DCHPRI8 = 0x00 << 6 //  Channel n can suspend a lower priority channel.
-	DPA_1  DCHPRI8 = 0x01 << 6 //  Channel n cannot suspend any channel, regardless of channel priority.
 	ECP    DCHPRI8 = 0x01 << 7 //+ Enable Channel Preemption. This field resets to 0.
-	ECP_0  DCHPRI8 = 0x00 << 7 //  Channel n cannot be suspended by a higher priority channel's service request.
-	ECP_1  DCHPRI8 = 0x01 << 7 //  Channel n can be temporarily suspended by the service request of a higher priority channel.
 )
 
 const (
@@ -1797,11 +1289,7 @@ const (
 	CHPRI  DCHPRI15 = 0x0F << 0 //+ Channel n Arbitration Priority
 	GRPPRI DCHPRI15 = 0x03 << 4 //+ Channel n Current Group Priority
 	DPA    DCHPRI15 = 0x01 << 6 //+ Disable Preempt Ability. This field resets to 0.
-	DPA_0  DCHPRI15 = 0x00 << 6 //  Channel n can suspend a lower priority channel.
-	DPA_1  DCHPRI15 = 0x01 << 6 //  Channel n cannot suspend any channel, regardless of channel priority.
 	ECP    DCHPRI15 = 0x01 << 7 //+ Enable Channel Preemption. This field resets to 0.
-	ECP_0  DCHPRI15 = 0x00 << 7 //  Channel n cannot be suspended by a higher priority channel's service request.
-	ECP_1  DCHPRI15 = 0x01 << 7 //  Channel n can be temporarily suspended by the service request of a higher priority channel.
 )
 
 const (
@@ -1815,11 +1303,7 @@ const (
 	CHPRI  DCHPRI14 = 0x0F << 0 //+ Channel n Arbitration Priority
 	GRPPRI DCHPRI14 = 0x03 << 4 //+ Channel n Current Group Priority
 	DPA    DCHPRI14 = 0x01 << 6 //+ Disable Preempt Ability. This field resets to 0.
-	DPA_0  DCHPRI14 = 0x00 << 6 //  Channel n can suspend a lower priority channel.
-	DPA_1  DCHPRI14 = 0x01 << 6 //  Channel n cannot suspend any channel, regardless of channel priority.
 	ECP    DCHPRI14 = 0x01 << 7 //+ Enable Channel Preemption. This field resets to 0.
-	ECP_0  DCHPRI14 = 0x00 << 7 //  Channel n cannot be suspended by a higher priority channel's service request.
-	ECP_1  DCHPRI14 = 0x01 << 7 //  Channel n can be temporarily suspended by the service request of a higher priority channel.
 )
 
 const (
@@ -1833,11 +1317,7 @@ const (
 	CHPRI  DCHPRI13 = 0x0F << 0 //+ Channel n Arbitration Priority
 	GRPPRI DCHPRI13 = 0x03 << 4 //+ Channel n Current Group Priority
 	DPA    DCHPRI13 = 0x01 << 6 //+ Disable Preempt Ability. This field resets to 0.
-	DPA_0  DCHPRI13 = 0x00 << 6 //  Channel n can suspend a lower priority channel.
-	DPA_1  DCHPRI13 = 0x01 << 6 //  Channel n cannot suspend any channel, regardless of channel priority.
 	ECP    DCHPRI13 = 0x01 << 7 //+ Enable Channel Preemption. This field resets to 0.
-	ECP_0  DCHPRI13 = 0x00 << 7 //  Channel n cannot be suspended by a higher priority channel's service request.
-	ECP_1  DCHPRI13 = 0x01 << 7 //  Channel n can be temporarily suspended by the service request of a higher priority channel.
 )
 
 const (
@@ -1851,11 +1331,7 @@ const (
 	CHPRI  DCHPRI12 = 0x0F << 0 //+ Channel n Arbitration Priority
 	GRPPRI DCHPRI12 = 0x03 << 4 //+ Channel n Current Group Priority
 	DPA    DCHPRI12 = 0x01 << 6 //+ Disable Preempt Ability. This field resets to 0.
-	DPA_0  DCHPRI12 = 0x00 << 6 //  Channel n can suspend a lower priority channel.
-	DPA_1  DCHPRI12 = 0x01 << 6 //  Channel n cannot suspend any channel, regardless of channel priority.
 	ECP    DCHPRI12 = 0x01 << 7 //+ Enable Channel Preemption. This field resets to 0.
-	ECP_0  DCHPRI12 = 0x00 << 7 //  Channel n cannot be suspended by a higher priority channel's service request.
-	ECP_1  DCHPRI12 = 0x01 << 7 //  Channel n can be temporarily suspended by the service request of a higher priority channel.
 )
 
 const (
@@ -1869,11 +1345,7 @@ const (
 	CHPRI  DCHPRI19 = 0x0F << 0 //+ Channel n Arbitration Priority
 	GRPPRI DCHPRI19 = 0x03 << 4 //+ Channel n Current Group Priority
 	DPA    DCHPRI19 = 0x01 << 6 //+ Disable Preempt Ability. This field resets to 0.
-	DPA_0  DCHPRI19 = 0x00 << 6 //  Channel n can suspend a lower priority channel.
-	DPA_1  DCHPRI19 = 0x01 << 6 //  Channel n cannot suspend any channel, regardless of channel priority.
 	ECP    DCHPRI19 = 0x01 << 7 //+ Enable Channel Preemption. This field resets to 0.
-	ECP_0  DCHPRI19 = 0x00 << 7 //  Channel n cannot be suspended by a higher priority channel's service request.
-	ECP_1  DCHPRI19 = 0x01 << 7 //  Channel n can be temporarily suspended by the service request of a higher priority channel.
 )
 
 const (
@@ -1887,11 +1359,7 @@ const (
 	CHPRI  DCHPRI18 = 0x0F << 0 //+ Channel n Arbitration Priority
 	GRPPRI DCHPRI18 = 0x03 << 4 //+ Channel n Current Group Priority
 	DPA    DCHPRI18 = 0x01 << 6 //+ Disable Preempt Ability. This field resets to 0.
-	DPA_0  DCHPRI18 = 0x00 << 6 //  Channel n can suspend a lower priority channel.
-	DPA_1  DCHPRI18 = 0x01 << 6 //  Channel n cannot suspend any channel, regardless of channel priority.
 	ECP    DCHPRI18 = 0x01 << 7 //+ Enable Channel Preemption. This field resets to 0.
-	ECP_0  DCHPRI18 = 0x00 << 7 //  Channel n cannot be suspended by a higher priority channel's service request.
-	ECP_1  DCHPRI18 = 0x01 << 7 //  Channel n can be temporarily suspended by the service request of a higher priority channel.
 )
 
 const (
@@ -1905,11 +1373,7 @@ const (
 	CHPRI  DCHPRI17 = 0x0F << 0 //+ Channel n Arbitration Priority
 	GRPPRI DCHPRI17 = 0x03 << 4 //+ Channel n Current Group Priority
 	DPA    DCHPRI17 = 0x01 << 6 //+ Disable Preempt Ability. This field resets to 0.
-	DPA_0  DCHPRI17 = 0x00 << 6 //  Channel n can suspend a lower priority channel.
-	DPA_1  DCHPRI17 = 0x01 << 6 //  Channel n cannot suspend any channel, regardless of channel priority.
 	ECP    DCHPRI17 = 0x01 << 7 //+ Enable Channel Preemption. This field resets to 0.
-	ECP_0  DCHPRI17 = 0x00 << 7 //  Channel n cannot be suspended by a higher priority channel's service request.
-	ECP_1  DCHPRI17 = 0x01 << 7 //  Channel n can be temporarily suspended by the service request of a higher priority channel.
 )
 
 const (
@@ -1923,11 +1387,7 @@ const (
 	CHPRI  DCHPRI16 = 0x0F << 0 //+ Channel n Arbitration Priority
 	GRPPRI DCHPRI16 = 0x03 << 4 //+ Channel n Current Group Priority
 	DPA    DCHPRI16 = 0x01 << 6 //+ Disable Preempt Ability. This field resets to 0.
-	DPA_0  DCHPRI16 = 0x00 << 6 //  Channel n can suspend a lower priority channel.
-	DPA_1  DCHPRI16 = 0x01 << 6 //  Channel n cannot suspend any channel, regardless of channel priority.
 	ECP    DCHPRI16 = 0x01 << 7 //+ Enable Channel Preemption. This field resets to 0.
-	ECP_0  DCHPRI16 = 0x00 << 7 //  Channel n cannot be suspended by a higher priority channel's service request.
-	ECP_1  DCHPRI16 = 0x01 << 7 //  Channel n can be temporarily suspended by the service request of a higher priority channel.
 )
 
 const (
@@ -1941,11 +1401,7 @@ const (
 	CHPRI  DCHPRI23 = 0x0F << 0 //+ Channel n Arbitration Priority
 	GRPPRI DCHPRI23 = 0x03 << 4 //+ Channel n Current Group Priority
 	DPA    DCHPRI23 = 0x01 << 6 //+ Disable Preempt Ability. This field resets to 0.
-	DPA_0  DCHPRI23 = 0x00 << 6 //  Channel n can suspend a lower priority channel.
-	DPA_1  DCHPRI23 = 0x01 << 6 //  Channel n cannot suspend any channel, regardless of channel priority.
 	ECP    DCHPRI23 = 0x01 << 7 //+ Enable Channel Preemption. This field resets to 0.
-	ECP_0  DCHPRI23 = 0x00 << 7 //  Channel n cannot be suspended by a higher priority channel's service request.
-	ECP_1  DCHPRI23 = 0x01 << 7 //  Channel n can be temporarily suspended by the service request of a higher priority channel.
 )
 
 const (
@@ -1959,11 +1415,7 @@ const (
 	CHPRI  DCHPRI22 = 0x0F << 0 //+ Channel n Arbitration Priority
 	GRPPRI DCHPRI22 = 0x03 << 4 //+ Channel n Current Group Priority
 	DPA    DCHPRI22 = 0x01 << 6 //+ Disable Preempt Ability. This field resets to 0.
-	DPA_0  DCHPRI22 = 0x00 << 6 //  Channel n can suspend a lower priority channel.
-	DPA_1  DCHPRI22 = 0x01 << 6 //  Channel n cannot suspend any channel, regardless of channel priority.
 	ECP    DCHPRI22 = 0x01 << 7 //+ Enable Channel Preemption. This field resets to 0.
-	ECP_0  DCHPRI22 = 0x00 << 7 //  Channel n cannot be suspended by a higher priority channel's service request.
-	ECP_1  DCHPRI22 = 0x01 << 7 //  Channel n can be temporarily suspended by the service request of a higher priority channel.
 )
 
 const (
@@ -1977,11 +1429,7 @@ const (
 	CHPRI  DCHPRI21 = 0x0F << 0 //+ Channel n Arbitration Priority
 	GRPPRI DCHPRI21 = 0x03 << 4 //+ Channel n Current Group Priority
 	DPA    DCHPRI21 = 0x01 << 6 //+ Disable Preempt Ability. This field resets to 0.
-	DPA_0  DCHPRI21 = 0x00 << 6 //  Channel n can suspend a lower priority channel.
-	DPA_1  DCHPRI21 = 0x01 << 6 //  Channel n cannot suspend any channel, regardless of channel priority.
 	ECP    DCHPRI21 = 0x01 << 7 //+ Enable Channel Preemption. This field resets to 0.
-	ECP_0  DCHPRI21 = 0x00 << 7 //  Channel n cannot be suspended by a higher priority channel's service request.
-	ECP_1  DCHPRI21 = 0x01 << 7 //  Channel n can be temporarily suspended by the service request of a higher priority channel.
 )
 
 const (
@@ -1995,11 +1443,7 @@ const (
 	CHPRI  DCHPRI20 = 0x0F << 0 //+ Channel n Arbitration Priority
 	GRPPRI DCHPRI20 = 0x03 << 4 //+ Channel n Current Group Priority
 	DPA    DCHPRI20 = 0x01 << 6 //+ Disable Preempt Ability. This field resets to 0.
-	DPA_0  DCHPRI20 = 0x00 << 6 //  Channel n can suspend a lower priority channel.
-	DPA_1  DCHPRI20 = 0x01 << 6 //  Channel n cannot suspend any channel, regardless of channel priority.
 	ECP    DCHPRI20 = 0x01 << 7 //+ Enable Channel Preemption. This field resets to 0.
-	ECP_0  DCHPRI20 = 0x00 << 7 //  Channel n cannot be suspended by a higher priority channel's service request.
-	ECP_1  DCHPRI20 = 0x01 << 7 //  Channel n can be temporarily suspended by the service request of a higher priority channel.
 )
 
 const (
@@ -2013,11 +1457,7 @@ const (
 	CHPRI  DCHPRI27 = 0x0F << 0 //+ Channel n Arbitration Priority
 	GRPPRI DCHPRI27 = 0x03 << 4 //+ Channel n Current Group Priority
 	DPA    DCHPRI27 = 0x01 << 6 //+ Disable Preempt Ability. This field resets to 0.
-	DPA_0  DCHPRI27 = 0x00 << 6 //  Channel n can suspend a lower priority channel.
-	DPA_1  DCHPRI27 = 0x01 << 6 //  Channel n cannot suspend any channel, regardless of channel priority.
 	ECP    DCHPRI27 = 0x01 << 7 //+ Enable Channel Preemption. This field resets to 0.
-	ECP_0  DCHPRI27 = 0x00 << 7 //  Channel n cannot be suspended by a higher priority channel's service request.
-	ECP_1  DCHPRI27 = 0x01 << 7 //  Channel n can be temporarily suspended by the service request of a higher priority channel.
 )
 
 const (
@@ -2031,11 +1471,7 @@ const (
 	CHPRI  DCHPRI26 = 0x0F << 0 //+ Channel n Arbitration Priority
 	GRPPRI DCHPRI26 = 0x03 << 4 //+ Channel n Current Group Priority
 	DPA    DCHPRI26 = 0x01 << 6 //+ Disable Preempt Ability. This field resets to 0.
-	DPA_0  DCHPRI26 = 0x00 << 6 //  Channel n can suspend a lower priority channel.
-	DPA_1  DCHPRI26 = 0x01 << 6 //  Channel n cannot suspend any channel, regardless of channel priority.
 	ECP    DCHPRI26 = 0x01 << 7 //+ Enable Channel Preemption. This field resets to 0.
-	ECP_0  DCHPRI26 = 0x00 << 7 //  Channel n cannot be suspended by a higher priority channel's service request.
-	ECP_1  DCHPRI26 = 0x01 << 7 //  Channel n can be temporarily suspended by the service request of a higher priority channel.
 )
 
 const (
@@ -2049,11 +1485,7 @@ const (
 	CHPRI  DCHPRI25 = 0x0F << 0 //+ Channel n Arbitration Priority
 	GRPPRI DCHPRI25 = 0x03 << 4 //+ Channel n Current Group Priority
 	DPA    DCHPRI25 = 0x01 << 6 //+ Disable Preempt Ability. This field resets to 0.
-	DPA_0  DCHPRI25 = 0x00 << 6 //  Channel n can suspend a lower priority channel.
-	DPA_1  DCHPRI25 = 0x01 << 6 //  Channel n cannot suspend any channel, regardless of channel priority.
 	ECP    DCHPRI25 = 0x01 << 7 //+ Enable Channel Preemption. This field resets to 0.
-	ECP_0  DCHPRI25 = 0x00 << 7 //  Channel n cannot be suspended by a higher priority channel's service request.
-	ECP_1  DCHPRI25 = 0x01 << 7 //  Channel n can be temporarily suspended by the service request of a higher priority channel.
 )
 
 const (
@@ -2067,11 +1499,7 @@ const (
 	CHPRI  DCHPRI24 = 0x0F << 0 //+ Channel n Arbitration Priority
 	GRPPRI DCHPRI24 = 0x03 << 4 //+ Channel n Current Group Priority
 	DPA    DCHPRI24 = 0x01 << 6 //+ Disable Preempt Ability. This field resets to 0.
-	DPA_0  DCHPRI24 = 0x00 << 6 //  Channel n can suspend a lower priority channel.
-	DPA_1  DCHPRI24 = 0x01 << 6 //  Channel n cannot suspend any channel, regardless of channel priority.
 	ECP    DCHPRI24 = 0x01 << 7 //+ Enable Channel Preemption. This field resets to 0.
-	ECP_0  DCHPRI24 = 0x00 << 7 //  Channel n cannot be suspended by a higher priority channel's service request.
-	ECP_1  DCHPRI24 = 0x01 << 7 //  Channel n can be temporarily suspended by the service request of a higher priority channel.
 )
 
 const (
@@ -2085,11 +1513,7 @@ const (
 	CHPRI  DCHPRI31 = 0x0F << 0 //+ Channel n Arbitration Priority
 	GRPPRI DCHPRI31 = 0x03 << 4 //+ Channel n Current Group Priority
 	DPA    DCHPRI31 = 0x01 << 6 //+ Disable Preempt Ability. This field resets to 0.
-	DPA_0  DCHPRI31 = 0x00 << 6 //  Channel n can suspend a lower priority channel.
-	DPA_1  DCHPRI31 = 0x01 << 6 //  Channel n cannot suspend any channel, regardless of channel priority.
 	ECP    DCHPRI31 = 0x01 << 7 //+ Enable Channel Preemption. This field resets to 0.
-	ECP_0  DCHPRI31 = 0x00 << 7 //  Channel n cannot be suspended by a higher priority channel's service request.
-	ECP_1  DCHPRI31 = 0x01 << 7 //  Channel n can be temporarily suspended by the service request of a higher priority channel.
 )
 
 const (
@@ -2103,11 +1527,7 @@ const (
 	CHPRI  DCHPRI30 = 0x0F << 0 //+ Channel n Arbitration Priority
 	GRPPRI DCHPRI30 = 0x03 << 4 //+ Channel n Current Group Priority
 	DPA    DCHPRI30 = 0x01 << 6 //+ Disable Preempt Ability. This field resets to 0.
-	DPA_0  DCHPRI30 = 0x00 << 6 //  Channel n can suspend a lower priority channel.
-	DPA_1  DCHPRI30 = 0x01 << 6 //  Channel n cannot suspend any channel, regardless of channel priority.
 	ECP    DCHPRI30 = 0x01 << 7 //+ Enable Channel Preemption. This field resets to 0.
-	ECP_0  DCHPRI30 = 0x00 << 7 //  Channel n cannot be suspended by a higher priority channel's service request.
-	ECP_1  DCHPRI30 = 0x01 << 7 //  Channel n can be temporarily suspended by the service request of a higher priority channel.
 )
 
 const (
@@ -2121,11 +1541,7 @@ const (
 	CHPRI  DCHPRI29 = 0x0F << 0 //+ Channel n Arbitration Priority
 	GRPPRI DCHPRI29 = 0x03 << 4 //+ Channel n Current Group Priority
 	DPA    DCHPRI29 = 0x01 << 6 //+ Disable Preempt Ability. This field resets to 0.
-	DPA_0  DCHPRI29 = 0x00 << 6 //  Channel n can suspend a lower priority channel.
-	DPA_1  DCHPRI29 = 0x01 << 6 //  Channel n cannot suspend any channel, regardless of channel priority.
 	ECP    DCHPRI29 = 0x01 << 7 //+ Enable Channel Preemption. This field resets to 0.
-	ECP_0  DCHPRI29 = 0x00 << 7 //  Channel n cannot be suspended by a higher priority channel's service request.
-	ECP_1  DCHPRI29 = 0x01 << 7 //  Channel n can be temporarily suspended by the service request of a higher priority channel.
 )
 
 const (
@@ -2139,11 +1555,7 @@ const (
 	CHPRI  DCHPRI28 = 0x0F << 0 //+ Channel n Arbitration Priority
 	GRPPRI DCHPRI28 = 0x03 << 4 //+ Channel n Current Group Priority
 	DPA    DCHPRI28 = 0x01 << 6 //+ Disable Preempt Ability. This field resets to 0.
-	DPA_0  DCHPRI28 = 0x00 << 6 //  Channel n can suspend a lower priority channel.
-	DPA_1  DCHPRI28 = 0x01 << 6 //  Channel n cannot suspend any channel, regardless of channel priority.
 	ECP    DCHPRI28 = 0x01 << 7 //+ Enable Channel Preemption. This field resets to 0.
-	ECP_0  DCHPRI28 = 0x00 << 7 //  Channel n cannot be suspended by a higher priority channel's service request.
-	ECP_1  DCHPRI28 = 0x01 << 7 //  Channel n can be temporarily suspended by the service request of a higher priority channel.
 )
 
 const (
@@ -2199,13 +1611,9 @@ const (
 )
 
 const (
-	NBYTES  TCD0_NBYTES_MLOFFNO = 0x3FFFFFFF << 0 //+ Minor Byte Transfer Count
-	DMLOE   TCD0_NBYTES_MLOFFNO = 0x01 << 30      //+ Destination Minor Loop Offset enable
-	DMLOE_0 TCD0_NBYTES_MLOFFNO = 0x00 << 30      //  The minor loop offset is not applied to the DADDR
-	DMLOE_1 TCD0_NBYTES_MLOFFNO = 0x01 << 30      //  The minor loop offset is applied to the DADDR
-	SMLOE   TCD0_NBYTES_MLOFFNO = 0x01 << 31      //+ Source Minor Loop Offset Enable
-	SMLOE_0 TCD0_NBYTES_MLOFFNO = 0x00 << 31      //  The minor loop offset is not applied to the SADDR
-	SMLOE_1 TCD0_NBYTES_MLOFFNO = 0x01 << 31      //  The minor loop offset is applied to the SADDR
+	NBYTES TCD0_NBYTES_MLOFFNO = 0x3FFFFFFF << 0 //+ Minor Byte Transfer Count
+	DMLOE  TCD0_NBYTES_MLOFFNO = 0x01 << 30      //+ Destination Minor Loop Offset enable
+	SMLOE  TCD0_NBYTES_MLOFFNO = 0x01 << 31      //+ Source Minor Loop Offset Enable
 )
 
 const (
@@ -2223,14 +1631,10 @@ const (
 )
 
 const (
-	NBYTES  TCD0_NBYTES_MLOFFYES = 0x3FF << 0    //+ Minor Byte Transfer Count
-	MLOFF   TCD0_NBYTES_MLOFFYES = 0xFFFFF << 10 //+ If SMLOE or DMLOE is set, this field represents a sign-extended offset applied to the source or destination address to form the next-state value after the minor loop completes.
-	DMLOE   TCD0_NBYTES_MLOFFYES = 0x01 << 30    //+ Destination Minor Loop Offset enable
-	DMLOE_0 TCD0_NBYTES_MLOFFYES = 0x00 << 30    //  The minor loop offset is not applied to the DADDR
-	DMLOE_1 TCD0_NBYTES_MLOFFYES = 0x01 << 30    //  The minor loop offset is applied to the DADDR
-	SMLOE   TCD0_NBYTES_MLOFFYES = 0x01 << 31    //+ Source Minor Loop Offset Enable
-	SMLOE_0 TCD0_NBYTES_MLOFFYES = 0x00 << 31    //  The minor loop offset is not applied to the SADDR
-	SMLOE_1 TCD0_NBYTES_MLOFFYES = 0x01 << 31    //  The minor loop offset is applied to the SADDR
+	NBYTES TCD0_NBYTES_MLOFFYES = 0x3FF << 0    //+ Minor Byte Transfer Count
+	MLOFF  TCD0_NBYTES_MLOFFYES = 0xFFFFF << 10 //+ If SMLOE or DMLOE is set, this field represents a sign-extended offset applied to the source or destination address to form the next-state value after the minor loop completes.
+	DMLOE  TCD0_NBYTES_MLOFFYES = 0x01 << 30    //+ Destination Minor Loop Offset enable
+	SMLOE  TCD0_NBYTES_MLOFFYES = 0x01 << 31    //+ Source Minor Loop Offset Enable
 )
 
 const (
@@ -2265,10 +1669,8 @@ const (
 )
 
 const (
-	CITER   TCD0_CITER_ELINKNO = 0x7FFF << 0 //+ Current Major Iteration Count
-	ELINK   TCD0_CITER_ELINKNO = 0x01 << 15  //+ Enable channel-to-channel linking on minor-loop complete
-	ELINK_0 TCD0_CITER_ELINKNO = 0x00 << 15  //  The channel-to-channel linking is disabled
-	ELINK_1 TCD0_CITER_ELINKNO = 0x01 << 15  //  The channel-to-channel linking is enabled
+	CITER TCD0_CITER_ELINKNO = 0x7FFF << 0 //+ Current Major Iteration Count
+	ELINK TCD0_CITER_ELINKNO = 0x01 << 15  //+ Enable channel-to-channel linking on minor-loop complete
 )
 
 const (
@@ -2277,11 +1679,9 @@ const (
 )
 
 const (
-	CITER   TCD0_CITER_ELINKYES = 0x1FF << 0 //+ Current Major Iteration Count
-	LINKCH  TCD0_CITER_ELINKYES = 0x1F << 9  //+ Minor Loop Link Channel Number
-	ELINK   TCD0_CITER_ELINKYES = 0x01 << 15 //+ Enable channel-to-channel linking on minor-loop complete
-	ELINK_0 TCD0_CITER_ELINKYES = 0x00 << 15 //  The channel-to-channel linking is disabled
-	ELINK_1 TCD0_CITER_ELINKYES = 0x01 << 15 //  The channel-to-channel linking is enabled
+	CITER  TCD0_CITER_ELINKYES = 0x1FF << 0 //+ Current Major Iteration Count
+	LINKCH TCD0_CITER_ELINKYES = 0x1F << 9  //+ Minor Loop Link Channel Number
+	ELINK  TCD0_CITER_ELINKYES = 0x01 << 15 //+ Enable channel-to-channel linking on minor-loop complete
 )
 
 const (
@@ -2299,31 +1699,19 @@ const (
 )
 
 const (
-	START        TCD0_CSR = 0x01 << 0  //+ Channel Start
-	START_0      TCD0_CSR = 0x00 << 0  //  The channel is not explicitly started.
-	START_1      TCD0_CSR = 0x01 << 0  //  The channel is explicitly started via a software initiated service request.
-	INTMAJOR     TCD0_CSR = 0x01 << 1  //+ Enable an interrupt when major iteration count completes.
-	INTMAJOR_0   TCD0_CSR = 0x00 << 1  //  The end-of-major loop interrupt is disabled.
-	INTMAJOR_1   TCD0_CSR = 0x01 << 1  //  The end-of-major loop interrupt is enabled.
-	INTHALF      TCD0_CSR = 0x01 << 2  //+ Enable an interrupt when major counter is half complete.
-	INTHALF_0    TCD0_CSR = 0x00 << 2  //  The half-point interrupt is disabled.
-	INTHALF_1    TCD0_CSR = 0x01 << 2  //  The half-point interrupt is enabled.
-	DREQ         TCD0_CSR = 0x01 << 3  //+ Disable Request
-	DREQ_0       TCD0_CSR = 0x00 << 3  //  The channel's ERQ bit is not affected.
-	DREQ_1       TCD0_CSR = 0x01 << 3  //  The channel's ERQ bit is cleared when the major loop is complete.
-	ESG          TCD0_CSR = 0x01 << 4  //+ Enable Scatter/Gather Processing
-	ESG_0        TCD0_CSR = 0x00 << 4  //  The current channel's TCD is normal format.
-	ESG_1        TCD0_CSR = 0x01 << 4  //  The current channel's TCD specifies a scatter gather format. The DLASTSGA field provides a memory pointer to the next TCD to be loaded into this channel after the major loop completes its execution.
-	MAJORELINK   TCD0_CSR = 0x01 << 5  //+ Enable channel-to-channel linking on major loop complete
-	MAJORELINK_0 TCD0_CSR = 0x00 << 5  //  The channel-to-channel linking is disabled.
-	MAJORELINK_1 TCD0_CSR = 0x01 << 5  //  The channel-to-channel linking is enabled.
-	ACTIVE       TCD0_CSR = 0x01 << 6  //+ Channel Active
-	DONE         TCD0_CSR = 0x01 << 7  //+ Channel Done
-	MAJORLINKCH  TCD0_CSR = 0x1F << 8  //+ Major Loop Link Channel Number
-	BWC          TCD0_CSR = 0x03 << 14 //+ Bandwidth Control
-	BWC_0        TCD0_CSR = 0x00 << 14 //  No eDMA engine stalls.
-	BWC_2        TCD0_CSR = 0x02 << 14 //  eDMA engine stalls for 4 cycles after each R/W.
-	BWC_3        TCD0_CSR = 0x03 << 14 //  eDMA engine stalls for 8 cycles after each R/W.
+	START       TCD0_CSR = 0x01 << 0  //+ Channel Start
+	INTMAJOR    TCD0_CSR = 0x01 << 1  //+ Enable an interrupt when major iteration count completes.
+	INTHALF     TCD0_CSR = 0x01 << 2  //+ Enable an interrupt when major counter is half complete.
+	DREQ        TCD0_CSR = 0x01 << 3  //+ Disable Request
+	ESG         TCD0_CSR = 0x01 << 4  //+ Enable Scatter/Gather Processing
+	MAJORELINK  TCD0_CSR = 0x01 << 5  //+ Enable channel-to-channel linking on major loop complete
+	ACTIVE      TCD0_CSR = 0x01 << 6  //+ Channel Active
+	DONE        TCD0_CSR = 0x01 << 7  //+ Channel Done
+	MAJORLINKCH TCD0_CSR = 0x1F << 8  //+ Major Loop Link Channel Number
+	BWC         TCD0_CSR = 0x03 << 14 //+ Bandwidth Control
+	BWC_0       TCD0_CSR = 0x00 << 14 //  No eDMA engine stalls.
+	BWC_2       TCD0_CSR = 0x02 << 14 //  eDMA engine stalls for 4 cycles after each R/W.
+	BWC_3       TCD0_CSR = 0x03 << 14 //  eDMA engine stalls for 8 cycles after each R/W.
 )
 
 const (
@@ -2340,10 +1728,8 @@ const (
 )
 
 const (
-	BITER   TCD0_BITER_ELINKNO = 0x7FFF << 0 //+ Starting Major Iteration Count
-	ELINK   TCD0_BITER_ELINKNO = 0x01 << 15  //+ Enables channel-to-channel linking on minor loop complete
-	ELINK_0 TCD0_BITER_ELINKNO = 0x00 << 15  //  The channel-to-channel linking is disabled
-	ELINK_1 TCD0_BITER_ELINKNO = 0x01 << 15  //  The channel-to-channel linking is enabled
+	BITER TCD0_BITER_ELINKNO = 0x7FFF << 0 //+ Starting Major Iteration Count
+	ELINK TCD0_BITER_ELINKNO = 0x01 << 15  //+ Enables channel-to-channel linking on minor loop complete
 )
 
 const (
@@ -2352,11 +1738,9 @@ const (
 )
 
 const (
-	BITER   TCD0_BITER_ELINKYES = 0x1FF << 0 //+ Starting major iteration count
-	LINKCH  TCD0_BITER_ELINKYES = 0x1F << 9  //+ Link Channel Number
-	ELINK   TCD0_BITER_ELINKYES = 0x01 << 15 //+ Enables channel-to-channel linking on minor loop complete
-	ELINK_0 TCD0_BITER_ELINKYES = 0x00 << 15 //  The channel-to-channel linking is disabled
-	ELINK_1 TCD0_BITER_ELINKYES = 0x01 << 15 //  The channel-to-channel linking is enabled
+	BITER  TCD0_BITER_ELINKYES = 0x1FF << 0 //+ Starting major iteration count
+	LINKCH TCD0_BITER_ELINKYES = 0x1F << 9  //+ Link Channel Number
+	ELINK  TCD0_BITER_ELINKYES = 0x01 << 15 //+ Enables channel-to-channel linking on minor loop complete
 )
 
 const (
@@ -2411,14 +1795,10 @@ const (
 )
 
 const (
-	NBYTES  TCD1_NBYTES_MLOFFYES = 0x3FF << 0    //+ Minor Byte Transfer Count
-	MLOFF   TCD1_NBYTES_MLOFFYES = 0xFFFFF << 10 //+ If SMLOE or DMLOE is set, this field represents a sign-extended offset applied to the source or destination address to form the next-state value after the minor loop completes.
-	DMLOE   TCD1_NBYTES_MLOFFYES = 0x01 << 30    //+ Destination Minor Loop Offset enable
-	DMLOE_0 TCD1_NBYTES_MLOFFYES = 0x00 << 30    //  The minor loop offset is not applied to the DADDR
-	DMLOE_1 TCD1_NBYTES_MLOFFYES = 0x01 << 30    //  The minor loop offset is applied to the DADDR
-	SMLOE   TCD1_NBYTES_MLOFFYES = 0x01 << 31    //+ Source Minor Loop Offset Enable
-	SMLOE_0 TCD1_NBYTES_MLOFFYES = 0x00 << 31    //  The minor loop offset is not applied to the SADDR
-	SMLOE_1 TCD1_NBYTES_MLOFFYES = 0x01 << 31    //  The minor loop offset is applied to the SADDR
+	NBYTES TCD1_NBYTES_MLOFFYES = 0x3FF << 0    //+ Minor Byte Transfer Count
+	MLOFF  TCD1_NBYTES_MLOFFYES = 0xFFFFF << 10 //+ If SMLOE or DMLOE is set, this field represents a sign-extended offset applied to the source or destination address to form the next-state value after the minor loop completes.
+	DMLOE  TCD1_NBYTES_MLOFFYES = 0x01 << 30    //+ Destination Minor Loop Offset enable
+	SMLOE  TCD1_NBYTES_MLOFFYES = 0x01 << 31    //+ Source Minor Loop Offset Enable
 )
 
 const (
@@ -2429,13 +1809,9 @@ const (
 )
 
 const (
-	NBYTES  TCD1_NBYTES_MLOFFNO = 0x3FFFFFFF << 0 //+ Minor Byte Transfer Count
-	DMLOE   TCD1_NBYTES_MLOFFNO = 0x01 << 30      //+ Destination Minor Loop Offset enable
-	DMLOE_0 TCD1_NBYTES_MLOFFNO = 0x00 << 30      //  The minor loop offset is not applied to the DADDR
-	DMLOE_1 TCD1_NBYTES_MLOFFNO = 0x01 << 30      //  The minor loop offset is applied to the DADDR
-	SMLOE   TCD1_NBYTES_MLOFFNO = 0x01 << 31      //+ Source Minor Loop Offset Enable
-	SMLOE_0 TCD1_NBYTES_MLOFFNO = 0x00 << 31      //  The minor loop offset is not applied to the SADDR
-	SMLOE_1 TCD1_NBYTES_MLOFFNO = 0x01 << 31      //  The minor loop offset is applied to the SADDR
+	NBYTES TCD1_NBYTES_MLOFFNO = 0x3FFFFFFF << 0 //+ Minor Byte Transfer Count
+	DMLOE  TCD1_NBYTES_MLOFFNO = 0x01 << 30      //+ Destination Minor Loop Offset enable
+	SMLOE  TCD1_NBYTES_MLOFFNO = 0x01 << 31      //+ Source Minor Loop Offset Enable
 )
 
 const (
@@ -2477,10 +1853,8 @@ const (
 )
 
 const (
-	CITER   TCD1_CITER_ELINKNO = 0x7FFF << 0 //+ Current Major Iteration Count
-	ELINK   TCD1_CITER_ELINKNO = 0x01 << 15  //+ Enable channel-to-channel linking on minor-loop complete
-	ELINK_0 TCD1_CITER_ELINKNO = 0x00 << 15  //  The channel-to-channel linking is disabled
-	ELINK_1 TCD1_CITER_ELINKNO = 0x01 << 15  //  The channel-to-channel linking is enabled
+	CITER TCD1_CITER_ELINKNO = 0x7FFF << 0 //+ Current Major Iteration Count
+	ELINK TCD1_CITER_ELINKNO = 0x01 << 15  //+ Enable channel-to-channel linking on minor-loop complete
 )
 
 const (
@@ -2489,11 +1863,9 @@ const (
 )
 
 const (
-	CITER   TCD1_CITER_ELINKYES = 0x1FF << 0 //+ Current Major Iteration Count
-	LINKCH  TCD1_CITER_ELINKYES = 0x1F << 9  //+ Minor Loop Link Channel Number
-	ELINK   TCD1_CITER_ELINKYES = 0x01 << 15 //+ Enable channel-to-channel linking on minor-loop complete
-	ELINK_0 TCD1_CITER_ELINKYES = 0x00 << 15 //  The channel-to-channel linking is disabled
-	ELINK_1 TCD1_CITER_ELINKYES = 0x01 << 15 //  The channel-to-channel linking is enabled
+	CITER  TCD1_CITER_ELINKYES = 0x1FF << 0 //+ Current Major Iteration Count
+	LINKCH TCD1_CITER_ELINKYES = 0x1F << 9  //+ Minor Loop Link Channel Number
+	ELINK  TCD1_CITER_ELINKYES = 0x01 << 15 //+ Enable channel-to-channel linking on minor-loop complete
 )
 
 const (
@@ -2511,31 +1883,19 @@ const (
 )
 
 const (
-	START        TCD1_CSR = 0x01 << 0  //+ Channel Start
-	START_0      TCD1_CSR = 0x00 << 0  //  The channel is not explicitly started.
-	START_1      TCD1_CSR = 0x01 << 0  //  The channel is explicitly started via a software initiated service request.
-	INTMAJOR     TCD1_CSR = 0x01 << 1  //+ Enable an interrupt when major iteration count completes.
-	INTMAJOR_0   TCD1_CSR = 0x00 << 1  //  The end-of-major loop interrupt is disabled.
-	INTMAJOR_1   TCD1_CSR = 0x01 << 1  //  The end-of-major loop interrupt is enabled.
-	INTHALF      TCD1_CSR = 0x01 << 2  //+ Enable an interrupt when major counter is half complete.
-	INTHALF_0    TCD1_CSR = 0x00 << 2  //  The half-point interrupt is disabled.
-	INTHALF_1    TCD1_CSR = 0x01 << 2  //  The half-point interrupt is enabled.
-	DREQ         TCD1_CSR = 0x01 << 3  //+ Disable Request
-	DREQ_0       TCD1_CSR = 0x00 << 3  //  The channel's ERQ bit is not affected.
-	DREQ_1       TCD1_CSR = 0x01 << 3  //  The channel's ERQ bit is cleared when the major loop is complete.
-	ESG          TCD1_CSR = 0x01 << 4  //+ Enable Scatter/Gather Processing
-	ESG_0        TCD1_CSR = 0x00 << 4  //  The current channel's TCD is normal format.
-	ESG_1        TCD1_CSR = 0x01 << 4  //  The current channel's TCD specifies a scatter gather format. The DLASTSGA field provides a memory pointer to the next TCD to be loaded into this channel after the major loop completes its execution.
-	MAJORELINK   TCD1_CSR = 0x01 << 5  //+ Enable channel-to-channel linking on major loop complete
-	MAJORELINK_0 TCD1_CSR = 0x00 << 5  //  The channel-to-channel linking is disabled.
-	MAJORELINK_1 TCD1_CSR = 0x01 << 5  //  The channel-to-channel linking is enabled.
-	ACTIVE       TCD1_CSR = 0x01 << 6  //+ Channel Active
-	DONE         TCD1_CSR = 0x01 << 7  //+ Channel Done
-	MAJORLINKCH  TCD1_CSR = 0x1F << 8  //+ Major Loop Link Channel Number
-	BWC          TCD1_CSR = 0x03 << 14 //+ Bandwidth Control
-	BWC_0        TCD1_CSR = 0x00 << 14 //  No eDMA engine stalls.
-	BWC_2        TCD1_CSR = 0x02 << 14 //  eDMA engine stalls for 4 cycles after each R/W.
-	BWC_3        TCD1_CSR = 0x03 << 14 //  eDMA engine stalls for 8 cycles after each R/W.
+	START       TCD1_CSR = 0x01 << 0  //+ Channel Start
+	INTMAJOR    TCD1_CSR = 0x01 << 1  //+ Enable an interrupt when major iteration count completes.
+	INTHALF     TCD1_CSR = 0x01 << 2  //+ Enable an interrupt when major counter is half complete.
+	DREQ        TCD1_CSR = 0x01 << 3  //+ Disable Request
+	ESG         TCD1_CSR = 0x01 << 4  //+ Enable Scatter/Gather Processing
+	MAJORELINK  TCD1_CSR = 0x01 << 5  //+ Enable channel-to-channel linking on major loop complete
+	ACTIVE      TCD1_CSR = 0x01 << 6  //+ Channel Active
+	DONE        TCD1_CSR = 0x01 << 7  //+ Channel Done
+	MAJORLINKCH TCD1_CSR = 0x1F << 8  //+ Major Loop Link Channel Number
+	BWC         TCD1_CSR = 0x03 << 14 //+ Bandwidth Control
+	BWC_0       TCD1_CSR = 0x00 << 14 //  No eDMA engine stalls.
+	BWC_2       TCD1_CSR = 0x02 << 14 //  eDMA engine stalls for 4 cycles after each R/W.
+	BWC_3       TCD1_CSR = 0x03 << 14 //  eDMA engine stalls for 8 cycles after each R/W.
 )
 
 const (
@@ -2552,10 +1912,8 @@ const (
 )
 
 const (
-	BITER   TCD1_BITER_ELINKNO = 0x7FFF << 0 //+ Starting Major Iteration Count
-	ELINK   TCD1_BITER_ELINKNO = 0x01 << 15  //+ Enables channel-to-channel linking on minor loop complete
-	ELINK_0 TCD1_BITER_ELINKNO = 0x00 << 15  //  The channel-to-channel linking is disabled
-	ELINK_1 TCD1_BITER_ELINKNO = 0x01 << 15  //  The channel-to-channel linking is enabled
+	BITER TCD1_BITER_ELINKNO = 0x7FFF << 0 //+ Starting Major Iteration Count
+	ELINK TCD1_BITER_ELINKNO = 0x01 << 15  //+ Enables channel-to-channel linking on minor loop complete
 )
 
 const (
@@ -2564,11 +1922,9 @@ const (
 )
 
 const (
-	BITER   TCD1_BITER_ELINKYES = 0x1FF << 0 //+ Starting major iteration count
-	LINKCH  TCD1_BITER_ELINKYES = 0x1F << 9  //+ Link Channel Number
-	ELINK   TCD1_BITER_ELINKYES = 0x01 << 15 //+ Enables channel-to-channel linking on minor loop complete
-	ELINK_0 TCD1_BITER_ELINKYES = 0x00 << 15 //  The channel-to-channel linking is disabled
-	ELINK_1 TCD1_BITER_ELINKYES = 0x01 << 15 //  The channel-to-channel linking is enabled
+	BITER  TCD1_BITER_ELINKYES = 0x1FF << 0 //+ Starting major iteration count
+	LINKCH TCD1_BITER_ELINKYES = 0x1F << 9  //+ Link Channel Number
+	ELINK  TCD1_BITER_ELINKYES = 0x01 << 15 //+ Enables channel-to-channel linking on minor loop complete
 )
 
 const (
@@ -2631,13 +1987,9 @@ const (
 )
 
 const (
-	NBYTES  TCD2_NBYTES_MLOFFNO = 0x3FFFFFFF << 0 //+ Minor Byte Transfer Count
-	DMLOE   TCD2_NBYTES_MLOFFNO = 0x01 << 30      //+ Destination Minor Loop Offset enable
-	DMLOE_0 TCD2_NBYTES_MLOFFNO = 0x00 << 30      //  The minor loop offset is not applied to the DADDR
-	DMLOE_1 TCD2_NBYTES_MLOFFNO = 0x01 << 30      //  The minor loop offset is applied to the DADDR
-	SMLOE   TCD2_NBYTES_MLOFFNO = 0x01 << 31      //+ Source Minor Loop Offset Enable
-	SMLOE_0 TCD2_NBYTES_MLOFFNO = 0x00 << 31      //  The minor loop offset is not applied to the SADDR
-	SMLOE_1 TCD2_NBYTES_MLOFFNO = 0x01 << 31      //  The minor loop offset is applied to the SADDR
+	NBYTES TCD2_NBYTES_MLOFFNO = 0x3FFFFFFF << 0 //+ Minor Byte Transfer Count
+	DMLOE  TCD2_NBYTES_MLOFFNO = 0x01 << 30      //+ Destination Minor Loop Offset enable
+	SMLOE  TCD2_NBYTES_MLOFFNO = 0x01 << 31      //+ Source Minor Loop Offset Enable
 )
 
 const (
@@ -2647,14 +1999,10 @@ const (
 )
 
 const (
-	NBYTES  TCD2_NBYTES_MLOFFYES = 0x3FF << 0    //+ Minor Byte Transfer Count
-	MLOFF   TCD2_NBYTES_MLOFFYES = 0xFFFFF << 10 //+ If SMLOE or DMLOE is set, this field represents a sign-extended offset applied to the source or destination address to form the next-state value after the minor loop completes.
-	DMLOE   TCD2_NBYTES_MLOFFYES = 0x01 << 30    //+ Destination Minor Loop Offset enable
-	DMLOE_0 TCD2_NBYTES_MLOFFYES = 0x00 << 30    //  The minor loop offset is not applied to the DADDR
-	DMLOE_1 TCD2_NBYTES_MLOFFYES = 0x01 << 30    //  The minor loop offset is applied to the DADDR
-	SMLOE   TCD2_NBYTES_MLOFFYES = 0x01 << 31    //+ Source Minor Loop Offset Enable
-	SMLOE_0 TCD2_NBYTES_MLOFFYES = 0x00 << 31    //  The minor loop offset is not applied to the SADDR
-	SMLOE_1 TCD2_NBYTES_MLOFFYES = 0x01 << 31    //  The minor loop offset is applied to the SADDR
+	NBYTES TCD2_NBYTES_MLOFFYES = 0x3FF << 0    //+ Minor Byte Transfer Count
+	MLOFF  TCD2_NBYTES_MLOFFYES = 0xFFFFF << 10 //+ If SMLOE or DMLOE is set, this field represents a sign-extended offset applied to the source or destination address to form the next-state value after the minor loop completes.
+	DMLOE  TCD2_NBYTES_MLOFFYES = 0x01 << 30    //+ Destination Minor Loop Offset enable
+	SMLOE  TCD2_NBYTES_MLOFFYES = 0x01 << 31    //+ Source Minor Loop Offset Enable
 )
 
 const (
@@ -2689,10 +2037,8 @@ const (
 )
 
 const (
-	CITER   TCD2_CITER_ELINKNO = 0x7FFF << 0 //+ Current Major Iteration Count
-	ELINK   TCD2_CITER_ELINKNO = 0x01 << 15  //+ Enable channel-to-channel linking on minor-loop complete
-	ELINK_0 TCD2_CITER_ELINKNO = 0x00 << 15  //  The channel-to-channel linking is disabled
-	ELINK_1 TCD2_CITER_ELINKNO = 0x01 << 15  //  The channel-to-channel linking is enabled
+	CITER TCD2_CITER_ELINKNO = 0x7FFF << 0 //+ Current Major Iteration Count
+	ELINK TCD2_CITER_ELINKNO = 0x01 << 15  //+ Enable channel-to-channel linking on minor-loop complete
 )
 
 const (
@@ -2701,11 +2047,9 @@ const (
 )
 
 const (
-	CITER   TCD2_CITER_ELINKYES = 0x1FF << 0 //+ Current Major Iteration Count
-	LINKCH  TCD2_CITER_ELINKYES = 0x1F << 9  //+ Minor Loop Link Channel Number
-	ELINK   TCD2_CITER_ELINKYES = 0x01 << 15 //+ Enable channel-to-channel linking on minor-loop complete
-	ELINK_0 TCD2_CITER_ELINKYES = 0x00 << 15 //  The channel-to-channel linking is disabled
-	ELINK_1 TCD2_CITER_ELINKYES = 0x01 << 15 //  The channel-to-channel linking is enabled
+	CITER  TCD2_CITER_ELINKYES = 0x1FF << 0 //+ Current Major Iteration Count
+	LINKCH TCD2_CITER_ELINKYES = 0x1F << 9  //+ Minor Loop Link Channel Number
+	ELINK  TCD2_CITER_ELINKYES = 0x01 << 15 //+ Enable channel-to-channel linking on minor-loop complete
 )
 
 const (
@@ -2723,31 +2067,19 @@ const (
 )
 
 const (
-	START        TCD2_CSR = 0x01 << 0  //+ Channel Start
-	START_0      TCD2_CSR = 0x00 << 0  //  The channel is not explicitly started.
-	START_1      TCD2_CSR = 0x01 << 0  //  The channel is explicitly started via a software initiated service request.
-	INTMAJOR     TCD2_CSR = 0x01 << 1  //+ Enable an interrupt when major iteration count completes.
-	INTMAJOR_0   TCD2_CSR = 0x00 << 1  //  The end-of-major loop interrupt is disabled.
-	INTMAJOR_1   TCD2_CSR = 0x01 << 1  //  The end-of-major loop interrupt is enabled.
-	INTHALF      TCD2_CSR = 0x01 << 2  //+ Enable an interrupt when major counter is half complete.
-	INTHALF_0    TCD2_CSR = 0x00 << 2  //  The half-point interrupt is disabled.
-	INTHALF_1    TCD2_CSR = 0x01 << 2  //  The half-point interrupt is enabled.
-	DREQ         TCD2_CSR = 0x01 << 3  //+ Disable Request
-	DREQ_0       TCD2_CSR = 0x00 << 3  //  The channel's ERQ bit is not affected.
-	DREQ_1       TCD2_CSR = 0x01 << 3  //  The channel's ERQ bit is cleared when the major loop is complete.
-	ESG          TCD2_CSR = 0x01 << 4  //+ Enable Scatter/Gather Processing
-	ESG_0        TCD2_CSR = 0x00 << 4  //  The current channel's TCD is normal format.
-	ESG_1        TCD2_CSR = 0x01 << 4  //  The current channel's TCD specifies a scatter gather format. The DLASTSGA field provides a memory pointer to the next TCD to be loaded into this channel after the major loop completes its execution.
-	MAJORELINK   TCD2_CSR = 0x01 << 5  //+ Enable channel-to-channel linking on major loop complete
-	MAJORELINK_0 TCD2_CSR = 0x00 << 5  //  The channel-to-channel linking is disabled.
-	MAJORELINK_1 TCD2_CSR = 0x01 << 5  //  The channel-to-channel linking is enabled.
-	ACTIVE       TCD2_CSR = 0x01 << 6  //+ Channel Active
-	DONE         TCD2_CSR = 0x01 << 7  //+ Channel Done
-	MAJORLINKCH  TCD2_CSR = 0x1F << 8  //+ Major Loop Link Channel Number
-	BWC          TCD2_CSR = 0x03 << 14 //+ Bandwidth Control
-	BWC_0        TCD2_CSR = 0x00 << 14 //  No eDMA engine stalls.
-	BWC_2        TCD2_CSR = 0x02 << 14 //  eDMA engine stalls for 4 cycles after each R/W.
-	BWC_3        TCD2_CSR = 0x03 << 14 //  eDMA engine stalls for 8 cycles after each R/W.
+	START       TCD2_CSR = 0x01 << 0  //+ Channel Start
+	INTMAJOR    TCD2_CSR = 0x01 << 1  //+ Enable an interrupt when major iteration count completes.
+	INTHALF     TCD2_CSR = 0x01 << 2  //+ Enable an interrupt when major counter is half complete.
+	DREQ        TCD2_CSR = 0x01 << 3  //+ Disable Request
+	ESG         TCD2_CSR = 0x01 << 4  //+ Enable Scatter/Gather Processing
+	MAJORELINK  TCD2_CSR = 0x01 << 5  //+ Enable channel-to-channel linking on major loop complete
+	ACTIVE      TCD2_CSR = 0x01 << 6  //+ Channel Active
+	DONE        TCD2_CSR = 0x01 << 7  //+ Channel Done
+	MAJORLINKCH TCD2_CSR = 0x1F << 8  //+ Major Loop Link Channel Number
+	BWC         TCD2_CSR = 0x03 << 14 //+ Bandwidth Control
+	BWC_0       TCD2_CSR = 0x00 << 14 //  No eDMA engine stalls.
+	BWC_2       TCD2_CSR = 0x02 << 14 //  eDMA engine stalls for 4 cycles after each R/W.
+	BWC_3       TCD2_CSR = 0x03 << 14 //  eDMA engine stalls for 8 cycles after each R/W.
 )
 
 const (
@@ -2764,10 +2096,8 @@ const (
 )
 
 const (
-	BITER   TCD2_BITER_ELINKNO = 0x7FFF << 0 //+ Starting Major Iteration Count
-	ELINK   TCD2_BITER_ELINKNO = 0x01 << 15  //+ Enables channel-to-channel linking on minor loop complete
-	ELINK_0 TCD2_BITER_ELINKNO = 0x00 << 15  //  The channel-to-channel linking is disabled
-	ELINK_1 TCD2_BITER_ELINKNO = 0x01 << 15  //  The channel-to-channel linking is enabled
+	BITER TCD2_BITER_ELINKNO = 0x7FFF << 0 //+ Starting Major Iteration Count
+	ELINK TCD2_BITER_ELINKNO = 0x01 << 15  //+ Enables channel-to-channel linking on minor loop complete
 )
 
 const (
@@ -2776,11 +2106,9 @@ const (
 )
 
 const (
-	BITER   TCD2_BITER_ELINKYES = 0x1FF << 0 //+ Starting major iteration count
-	LINKCH  TCD2_BITER_ELINKYES = 0x1F << 9  //+ Link Channel Number
-	ELINK   TCD2_BITER_ELINKYES = 0x01 << 15 //+ Enables channel-to-channel linking on minor loop complete
-	ELINK_0 TCD2_BITER_ELINKYES = 0x00 << 15 //  The channel-to-channel linking is disabled
-	ELINK_1 TCD2_BITER_ELINKYES = 0x01 << 15 //  The channel-to-channel linking is enabled
+	BITER  TCD2_BITER_ELINKYES = 0x1FF << 0 //+ Starting major iteration count
+	LINKCH TCD2_BITER_ELINKYES = 0x1F << 9  //+ Link Channel Number
+	ELINK  TCD2_BITER_ELINKYES = 0x01 << 15 //+ Enables channel-to-channel linking on minor loop complete
 )
 
 const (
@@ -2843,13 +2171,9 @@ const (
 )
 
 const (
-	NBYTES  TCD3_NBYTES_MLOFFNO = 0x3FFFFFFF << 0 //+ Minor Byte Transfer Count
-	DMLOE   TCD3_NBYTES_MLOFFNO = 0x01 << 30      //+ Destination Minor Loop Offset enable
-	DMLOE_0 TCD3_NBYTES_MLOFFNO = 0x00 << 30      //  The minor loop offset is not applied to the DADDR
-	DMLOE_1 TCD3_NBYTES_MLOFFNO = 0x01 << 30      //  The minor loop offset is applied to the DADDR
-	SMLOE   TCD3_NBYTES_MLOFFNO = 0x01 << 31      //+ Source Minor Loop Offset Enable
-	SMLOE_0 TCD3_NBYTES_MLOFFNO = 0x00 << 31      //  The minor loop offset is not applied to the SADDR
-	SMLOE_1 TCD3_NBYTES_MLOFFNO = 0x01 << 31      //  The minor loop offset is applied to the SADDR
+	NBYTES TCD3_NBYTES_MLOFFNO = 0x3FFFFFFF << 0 //+ Minor Byte Transfer Count
+	DMLOE  TCD3_NBYTES_MLOFFNO = 0x01 << 30      //+ Destination Minor Loop Offset enable
+	SMLOE  TCD3_NBYTES_MLOFFNO = 0x01 << 31      //+ Source Minor Loop Offset Enable
 )
 
 const (
@@ -2859,14 +2183,10 @@ const (
 )
 
 const (
-	NBYTES  TCD3_NBYTES_MLOFFYES = 0x3FF << 0    //+ Minor Byte Transfer Count
-	MLOFF   TCD3_NBYTES_MLOFFYES = 0xFFFFF << 10 //+ If SMLOE or DMLOE is set, this field represents a sign-extended offset applied to the source or destination address to form the next-state value after the minor loop completes.
-	DMLOE   TCD3_NBYTES_MLOFFYES = 0x01 << 30    //+ Destination Minor Loop Offset enable
-	DMLOE_0 TCD3_NBYTES_MLOFFYES = 0x00 << 30    //  The minor loop offset is not applied to the DADDR
-	DMLOE_1 TCD3_NBYTES_MLOFFYES = 0x01 << 30    //  The minor loop offset is applied to the DADDR
-	SMLOE   TCD3_NBYTES_MLOFFYES = 0x01 << 31    //+ Source Minor Loop Offset Enable
-	SMLOE_0 TCD3_NBYTES_MLOFFYES = 0x00 << 31    //  The minor loop offset is not applied to the SADDR
-	SMLOE_1 TCD3_NBYTES_MLOFFYES = 0x01 << 31    //  The minor loop offset is applied to the SADDR
+	NBYTES TCD3_NBYTES_MLOFFYES = 0x3FF << 0    //+ Minor Byte Transfer Count
+	MLOFF  TCD3_NBYTES_MLOFFYES = 0xFFFFF << 10 //+ If SMLOE or DMLOE is set, this field represents a sign-extended offset applied to the source or destination address to form the next-state value after the minor loop completes.
+	DMLOE  TCD3_NBYTES_MLOFFYES = 0x01 << 30    //+ Destination Minor Loop Offset enable
+	SMLOE  TCD3_NBYTES_MLOFFYES = 0x01 << 31    //+ Source Minor Loop Offset Enable
 )
 
 const (
@@ -2901,10 +2221,8 @@ const (
 )
 
 const (
-	CITER   TCD3_CITER_ELINKNO = 0x7FFF << 0 //+ Current Major Iteration Count
-	ELINK   TCD3_CITER_ELINKNO = 0x01 << 15  //+ Enable channel-to-channel linking on minor-loop complete
-	ELINK_0 TCD3_CITER_ELINKNO = 0x00 << 15  //  The channel-to-channel linking is disabled
-	ELINK_1 TCD3_CITER_ELINKNO = 0x01 << 15  //  The channel-to-channel linking is enabled
+	CITER TCD3_CITER_ELINKNO = 0x7FFF << 0 //+ Current Major Iteration Count
+	ELINK TCD3_CITER_ELINKNO = 0x01 << 15  //+ Enable channel-to-channel linking on minor-loop complete
 )
 
 const (
@@ -2913,11 +2231,9 @@ const (
 )
 
 const (
-	CITER   TCD3_CITER_ELINKYES = 0x1FF << 0 //+ Current Major Iteration Count
-	LINKCH  TCD3_CITER_ELINKYES = 0x1F << 9  //+ Minor Loop Link Channel Number
-	ELINK   TCD3_CITER_ELINKYES = 0x01 << 15 //+ Enable channel-to-channel linking on minor-loop complete
-	ELINK_0 TCD3_CITER_ELINKYES = 0x00 << 15 //  The channel-to-channel linking is disabled
-	ELINK_1 TCD3_CITER_ELINKYES = 0x01 << 15 //  The channel-to-channel linking is enabled
+	CITER  TCD3_CITER_ELINKYES = 0x1FF << 0 //+ Current Major Iteration Count
+	LINKCH TCD3_CITER_ELINKYES = 0x1F << 9  //+ Minor Loop Link Channel Number
+	ELINK  TCD3_CITER_ELINKYES = 0x01 << 15 //+ Enable channel-to-channel linking on minor-loop complete
 )
 
 const (
@@ -2935,31 +2251,19 @@ const (
 )
 
 const (
-	START        TCD3_CSR = 0x01 << 0  //+ Channel Start
-	START_0      TCD3_CSR = 0x00 << 0  //  The channel is not explicitly started.
-	START_1      TCD3_CSR = 0x01 << 0  //  The channel is explicitly started via a software initiated service request.
-	INTMAJOR     TCD3_CSR = 0x01 << 1  //+ Enable an interrupt when major iteration count completes.
-	INTMAJOR_0   TCD3_CSR = 0x00 << 1  //  The end-of-major loop interrupt is disabled.
-	INTMAJOR_1   TCD3_CSR = 0x01 << 1  //  The end-of-major loop interrupt is enabled.
-	INTHALF      TCD3_CSR = 0x01 << 2  //+ Enable an interrupt when major counter is half complete.
-	INTHALF_0    TCD3_CSR = 0x00 << 2  //  The half-point interrupt is disabled.
-	INTHALF_1    TCD3_CSR = 0x01 << 2  //  The half-point interrupt is enabled.
-	DREQ         TCD3_CSR = 0x01 << 3  //+ Disable Request
-	DREQ_0       TCD3_CSR = 0x00 << 3  //  The channel's ERQ bit is not affected.
-	DREQ_1       TCD3_CSR = 0x01 << 3  //  The channel's ERQ bit is cleared when the major loop is complete.
-	ESG          TCD3_CSR = 0x01 << 4  //+ Enable Scatter/Gather Processing
-	ESG_0        TCD3_CSR = 0x00 << 4  //  The current channel's TCD is normal format.
-	ESG_1        TCD3_CSR = 0x01 << 4  //  The current channel's TCD specifies a scatter gather format. The DLASTSGA field provides a memory pointer to the next TCD to be loaded into this channel after the major loop completes its execution.
-	MAJORELINK   TCD3_CSR = 0x01 << 5  //+ Enable channel-to-channel linking on major loop complete
-	MAJORELINK_0 TCD3_CSR = 0x00 << 5  //  The channel-to-channel linking is disabled.
-	MAJORELINK_1 TCD3_CSR = 0x01 << 5  //  The channel-to-channel linking is enabled.
-	ACTIVE       TCD3_CSR = 0x01 << 6  //+ Channel Active
-	DONE         TCD3_CSR = 0x01 << 7  //+ Channel Done
-	MAJORLINKCH  TCD3_CSR = 0x1F << 8  //+ Major Loop Link Channel Number
-	BWC          TCD3_CSR = 0x03 << 14 //+ Bandwidth Control
-	BWC_0        TCD3_CSR = 0x00 << 14 //  No eDMA engine stalls.
-	BWC_2        TCD3_CSR = 0x02 << 14 //  eDMA engine stalls for 4 cycles after each R/W.
-	BWC_3        TCD3_CSR = 0x03 << 14 //  eDMA engine stalls for 8 cycles after each R/W.
+	START       TCD3_CSR = 0x01 << 0  //+ Channel Start
+	INTMAJOR    TCD3_CSR = 0x01 << 1  //+ Enable an interrupt when major iteration count completes.
+	INTHALF     TCD3_CSR = 0x01 << 2  //+ Enable an interrupt when major counter is half complete.
+	DREQ        TCD3_CSR = 0x01 << 3  //+ Disable Request
+	ESG         TCD3_CSR = 0x01 << 4  //+ Enable Scatter/Gather Processing
+	MAJORELINK  TCD3_CSR = 0x01 << 5  //+ Enable channel-to-channel linking on major loop complete
+	ACTIVE      TCD3_CSR = 0x01 << 6  //+ Channel Active
+	DONE        TCD3_CSR = 0x01 << 7  //+ Channel Done
+	MAJORLINKCH TCD3_CSR = 0x1F << 8  //+ Major Loop Link Channel Number
+	BWC         TCD3_CSR = 0x03 << 14 //+ Bandwidth Control
+	BWC_0       TCD3_CSR = 0x00 << 14 //  No eDMA engine stalls.
+	BWC_2       TCD3_CSR = 0x02 << 14 //  eDMA engine stalls for 4 cycles after each R/W.
+	BWC_3       TCD3_CSR = 0x03 << 14 //  eDMA engine stalls for 8 cycles after each R/W.
 )
 
 const (
@@ -2976,10 +2280,8 @@ const (
 )
 
 const (
-	BITER   TCD3_BITER_ELINKNO = 0x7FFF << 0 //+ Starting Major Iteration Count
-	ELINK   TCD3_BITER_ELINKNO = 0x01 << 15  //+ Enables channel-to-channel linking on minor loop complete
-	ELINK_0 TCD3_BITER_ELINKNO = 0x00 << 15  //  The channel-to-channel linking is disabled
-	ELINK_1 TCD3_BITER_ELINKNO = 0x01 << 15  //  The channel-to-channel linking is enabled
+	BITER TCD3_BITER_ELINKNO = 0x7FFF << 0 //+ Starting Major Iteration Count
+	ELINK TCD3_BITER_ELINKNO = 0x01 << 15  //+ Enables channel-to-channel linking on minor loop complete
 )
 
 const (
@@ -2988,11 +2290,9 @@ const (
 )
 
 const (
-	BITER   TCD3_BITER_ELINKYES = 0x1FF << 0 //+ Starting major iteration count
-	LINKCH  TCD3_BITER_ELINKYES = 0x1F << 9  //+ Link Channel Number
-	ELINK   TCD3_BITER_ELINKYES = 0x01 << 15 //+ Enables channel-to-channel linking on minor loop complete
-	ELINK_0 TCD3_BITER_ELINKYES = 0x00 << 15 //  The channel-to-channel linking is disabled
-	ELINK_1 TCD3_BITER_ELINKYES = 0x01 << 15 //  The channel-to-channel linking is enabled
+	BITER  TCD3_BITER_ELINKYES = 0x1FF << 0 //+ Starting major iteration count
+	LINKCH TCD3_BITER_ELINKYES = 0x1F << 9  //+ Link Channel Number
+	ELINK  TCD3_BITER_ELINKYES = 0x01 << 15 //+ Enables channel-to-channel linking on minor loop complete
 )
 
 const (
@@ -3055,13 +2355,9 @@ const (
 )
 
 const (
-	NBYTES  TCD4_NBYTES_MLOFFNO = 0x3FFFFFFF << 0 //+ Minor Byte Transfer Count
-	DMLOE   TCD4_NBYTES_MLOFFNO = 0x01 << 30      //+ Destination Minor Loop Offset enable
-	DMLOE_0 TCD4_NBYTES_MLOFFNO = 0x00 << 30      //  The minor loop offset is not applied to the DADDR
-	DMLOE_1 TCD4_NBYTES_MLOFFNO = 0x01 << 30      //  The minor loop offset is applied to the DADDR
-	SMLOE   TCD4_NBYTES_MLOFFNO = 0x01 << 31      //+ Source Minor Loop Offset Enable
-	SMLOE_0 TCD4_NBYTES_MLOFFNO = 0x00 << 31      //  The minor loop offset is not applied to the SADDR
-	SMLOE_1 TCD4_NBYTES_MLOFFNO = 0x01 << 31      //  The minor loop offset is applied to the SADDR
+	NBYTES TCD4_NBYTES_MLOFFNO = 0x3FFFFFFF << 0 //+ Minor Byte Transfer Count
+	DMLOE  TCD4_NBYTES_MLOFFNO = 0x01 << 30      //+ Destination Minor Loop Offset enable
+	SMLOE  TCD4_NBYTES_MLOFFNO = 0x01 << 31      //+ Source Minor Loop Offset Enable
 )
 
 const (
@@ -3071,14 +2367,10 @@ const (
 )
 
 const (
-	NBYTES  TCD4_NBYTES_MLOFFYES = 0x3FF << 0    //+ Minor Byte Transfer Count
-	MLOFF   TCD4_NBYTES_MLOFFYES = 0xFFFFF << 10 //+ If SMLOE or DMLOE is set, this field represents a sign-extended offset applied to the source or destination address to form the next-state value after the minor loop completes.
-	DMLOE   TCD4_NBYTES_MLOFFYES = 0x01 << 30    //+ Destination Minor Loop Offset enable
-	DMLOE_0 TCD4_NBYTES_MLOFFYES = 0x00 << 30    //  The minor loop offset is not applied to the DADDR
-	DMLOE_1 TCD4_NBYTES_MLOFFYES = 0x01 << 30    //  The minor loop offset is applied to the DADDR
-	SMLOE   TCD4_NBYTES_MLOFFYES = 0x01 << 31    //+ Source Minor Loop Offset Enable
-	SMLOE_0 TCD4_NBYTES_MLOFFYES = 0x00 << 31    //  The minor loop offset is not applied to the SADDR
-	SMLOE_1 TCD4_NBYTES_MLOFFYES = 0x01 << 31    //  The minor loop offset is applied to the SADDR
+	NBYTES TCD4_NBYTES_MLOFFYES = 0x3FF << 0    //+ Minor Byte Transfer Count
+	MLOFF  TCD4_NBYTES_MLOFFYES = 0xFFFFF << 10 //+ If SMLOE or DMLOE is set, this field represents a sign-extended offset applied to the source or destination address to form the next-state value after the minor loop completes.
+	DMLOE  TCD4_NBYTES_MLOFFYES = 0x01 << 30    //+ Destination Minor Loop Offset enable
+	SMLOE  TCD4_NBYTES_MLOFFYES = 0x01 << 31    //+ Source Minor Loop Offset Enable
 )
 
 const (
@@ -3113,11 +2405,9 @@ const (
 )
 
 const (
-	CITER   TCD4_CITER_ELINKYES = 0x1FF << 0 //+ Current Major Iteration Count
-	LINKCH  TCD4_CITER_ELINKYES = 0x1F << 9  //+ Minor Loop Link Channel Number
-	ELINK   TCD4_CITER_ELINKYES = 0x01 << 15 //+ Enable channel-to-channel linking on minor-loop complete
-	ELINK_0 TCD4_CITER_ELINKYES = 0x00 << 15 //  The channel-to-channel linking is disabled
-	ELINK_1 TCD4_CITER_ELINKYES = 0x01 << 15 //  The channel-to-channel linking is enabled
+	CITER  TCD4_CITER_ELINKYES = 0x1FF << 0 //+ Current Major Iteration Count
+	LINKCH TCD4_CITER_ELINKYES = 0x1F << 9  //+ Minor Loop Link Channel Number
+	ELINK  TCD4_CITER_ELINKYES = 0x01 << 15 //+ Enable channel-to-channel linking on minor-loop complete
 )
 
 const (
@@ -3127,10 +2417,8 @@ const (
 )
 
 const (
-	CITER   TCD4_CITER_ELINKNO = 0x7FFF << 0 //+ Current Major Iteration Count
-	ELINK   TCD4_CITER_ELINKNO = 0x01 << 15  //+ Enable channel-to-channel linking on minor-loop complete
-	ELINK_0 TCD4_CITER_ELINKNO = 0x00 << 15  //  The channel-to-channel linking is disabled
-	ELINK_1 TCD4_CITER_ELINKNO = 0x01 << 15  //  The channel-to-channel linking is enabled
+	CITER TCD4_CITER_ELINKNO = 0x7FFF << 0 //+ Current Major Iteration Count
+	ELINK TCD4_CITER_ELINKNO = 0x01 << 15  //+ Enable channel-to-channel linking on minor-loop complete
 )
 
 const (
@@ -3147,31 +2435,19 @@ const (
 )
 
 const (
-	START        TCD4_CSR = 0x01 << 0  //+ Channel Start
-	START_0      TCD4_CSR = 0x00 << 0  //  The channel is not explicitly started.
-	START_1      TCD4_CSR = 0x01 << 0  //  The channel is explicitly started via a software initiated service request.
-	INTMAJOR     TCD4_CSR = 0x01 << 1  //+ Enable an interrupt when major iteration count completes.
-	INTMAJOR_0   TCD4_CSR = 0x00 << 1  //  The end-of-major loop interrupt is disabled.
-	INTMAJOR_1   TCD4_CSR = 0x01 << 1  //  The end-of-major loop interrupt is enabled.
-	INTHALF      TCD4_CSR = 0x01 << 2  //+ Enable an interrupt when major counter is half complete.
-	INTHALF_0    TCD4_CSR = 0x00 << 2  //  The half-point interrupt is disabled.
-	INTHALF_1    TCD4_CSR = 0x01 << 2  //  The half-point interrupt is enabled.
-	DREQ         TCD4_CSR = 0x01 << 3  //+ Disable Request
-	DREQ_0       TCD4_CSR = 0x00 << 3  //  The channel's ERQ bit is not affected.
-	DREQ_1       TCD4_CSR = 0x01 << 3  //  The channel's ERQ bit is cleared when the major loop is complete.
-	ESG          TCD4_CSR = 0x01 << 4  //+ Enable Scatter/Gather Processing
-	ESG_0        TCD4_CSR = 0x00 << 4  //  The current channel's TCD is normal format.
-	ESG_1        TCD4_CSR = 0x01 << 4  //  The current channel's TCD specifies a scatter gather format. The DLASTSGA field provides a memory pointer to the next TCD to be loaded into this channel after the major loop completes its execution.
-	MAJORELINK   TCD4_CSR = 0x01 << 5  //+ Enable channel-to-channel linking on major loop complete
-	MAJORELINK_0 TCD4_CSR = 0x00 << 5  //  The channel-to-channel linking is disabled.
-	MAJORELINK_1 TCD4_CSR = 0x01 << 5  //  The channel-to-channel linking is enabled.
-	ACTIVE       TCD4_CSR = 0x01 << 6  //+ Channel Active
-	DONE         TCD4_CSR = 0x01 << 7  //+ Channel Done
-	MAJORLINKCH  TCD4_CSR = 0x1F << 8  //+ Major Loop Link Channel Number
-	BWC          TCD4_CSR = 0x03 << 14 //+ Bandwidth Control
-	BWC_0        TCD4_CSR = 0x00 << 14 //  No eDMA engine stalls.
-	BWC_2        TCD4_CSR = 0x02 << 14 //  eDMA engine stalls for 4 cycles after each R/W.
-	BWC_3        TCD4_CSR = 0x03 << 14 //  eDMA engine stalls for 8 cycles after each R/W.
+	START       TCD4_CSR = 0x01 << 0  //+ Channel Start
+	INTMAJOR    TCD4_CSR = 0x01 << 1  //+ Enable an interrupt when major iteration count completes.
+	INTHALF     TCD4_CSR = 0x01 << 2  //+ Enable an interrupt when major counter is half complete.
+	DREQ        TCD4_CSR = 0x01 << 3  //+ Disable Request
+	ESG         TCD4_CSR = 0x01 << 4  //+ Enable Scatter/Gather Processing
+	MAJORELINK  TCD4_CSR = 0x01 << 5  //+ Enable channel-to-channel linking on major loop complete
+	ACTIVE      TCD4_CSR = 0x01 << 6  //+ Channel Active
+	DONE        TCD4_CSR = 0x01 << 7  //+ Channel Done
+	MAJORLINKCH TCD4_CSR = 0x1F << 8  //+ Major Loop Link Channel Number
+	BWC         TCD4_CSR = 0x03 << 14 //+ Bandwidth Control
+	BWC_0       TCD4_CSR = 0x00 << 14 //  No eDMA engine stalls.
+	BWC_2       TCD4_CSR = 0x02 << 14 //  eDMA engine stalls for 4 cycles after each R/W.
+	BWC_3       TCD4_CSR = 0x03 << 14 //  eDMA engine stalls for 8 cycles after each R/W.
 )
 
 const (
@@ -3188,10 +2464,8 @@ const (
 )
 
 const (
-	BITER   TCD4_BITER_ELINKNO = 0x7FFF << 0 //+ Starting Major Iteration Count
-	ELINK   TCD4_BITER_ELINKNO = 0x01 << 15  //+ Enables channel-to-channel linking on minor loop complete
-	ELINK_0 TCD4_BITER_ELINKNO = 0x00 << 15  //  The channel-to-channel linking is disabled
-	ELINK_1 TCD4_BITER_ELINKNO = 0x01 << 15  //  The channel-to-channel linking is enabled
+	BITER TCD4_BITER_ELINKNO = 0x7FFF << 0 //+ Starting Major Iteration Count
+	ELINK TCD4_BITER_ELINKNO = 0x01 << 15  //+ Enables channel-to-channel linking on minor loop complete
 )
 
 const (
@@ -3200,11 +2474,9 @@ const (
 )
 
 const (
-	BITER   TCD4_BITER_ELINKYES = 0x1FF << 0 //+ Starting major iteration count
-	LINKCH  TCD4_BITER_ELINKYES = 0x1F << 9  //+ Link Channel Number
-	ELINK   TCD4_BITER_ELINKYES = 0x01 << 15 //+ Enables channel-to-channel linking on minor loop complete
-	ELINK_0 TCD4_BITER_ELINKYES = 0x00 << 15 //  The channel-to-channel linking is disabled
-	ELINK_1 TCD4_BITER_ELINKYES = 0x01 << 15 //  The channel-to-channel linking is enabled
+	BITER  TCD4_BITER_ELINKYES = 0x1FF << 0 //+ Starting major iteration count
+	LINKCH TCD4_BITER_ELINKYES = 0x1F << 9  //+ Link Channel Number
+	ELINK  TCD4_BITER_ELINKYES = 0x01 << 15 //+ Enables channel-to-channel linking on minor loop complete
 )
 
 const (
@@ -3267,13 +2539,9 @@ const (
 )
 
 const (
-	NBYTES  TCD5_NBYTES_MLOFFNO = 0x3FFFFFFF << 0 //+ Minor Byte Transfer Count
-	DMLOE   TCD5_NBYTES_MLOFFNO = 0x01 << 30      //+ Destination Minor Loop Offset enable
-	DMLOE_0 TCD5_NBYTES_MLOFFNO = 0x00 << 30      //  The minor loop offset is not applied to the DADDR
-	DMLOE_1 TCD5_NBYTES_MLOFFNO = 0x01 << 30      //  The minor loop offset is applied to the DADDR
-	SMLOE   TCD5_NBYTES_MLOFFNO = 0x01 << 31      //+ Source Minor Loop Offset Enable
-	SMLOE_0 TCD5_NBYTES_MLOFFNO = 0x00 << 31      //  The minor loop offset is not applied to the SADDR
-	SMLOE_1 TCD5_NBYTES_MLOFFNO = 0x01 << 31      //  The minor loop offset is applied to the SADDR
+	NBYTES TCD5_NBYTES_MLOFFNO = 0x3FFFFFFF << 0 //+ Minor Byte Transfer Count
+	DMLOE  TCD5_NBYTES_MLOFFNO = 0x01 << 30      //+ Destination Minor Loop Offset enable
+	SMLOE  TCD5_NBYTES_MLOFFNO = 0x01 << 31      //+ Source Minor Loop Offset Enable
 )
 
 const (
@@ -3283,14 +2551,10 @@ const (
 )
 
 const (
-	NBYTES  TCD5_NBYTES_MLOFFYES = 0x3FF << 0    //+ Minor Byte Transfer Count
-	MLOFF   TCD5_NBYTES_MLOFFYES = 0xFFFFF << 10 //+ If SMLOE or DMLOE is set, this field represents a sign-extended offset applied to the source or destination address to form the next-state value after the minor loop completes.
-	DMLOE   TCD5_NBYTES_MLOFFYES = 0x01 << 30    //+ Destination Minor Loop Offset enable
-	DMLOE_0 TCD5_NBYTES_MLOFFYES = 0x00 << 30    //  The minor loop offset is not applied to the DADDR
-	DMLOE_1 TCD5_NBYTES_MLOFFYES = 0x01 << 30    //  The minor loop offset is applied to the DADDR
-	SMLOE   TCD5_NBYTES_MLOFFYES = 0x01 << 31    //+ Source Minor Loop Offset Enable
-	SMLOE_0 TCD5_NBYTES_MLOFFYES = 0x00 << 31    //  The minor loop offset is not applied to the SADDR
-	SMLOE_1 TCD5_NBYTES_MLOFFYES = 0x01 << 31    //  The minor loop offset is applied to the SADDR
+	NBYTES TCD5_NBYTES_MLOFFYES = 0x3FF << 0    //+ Minor Byte Transfer Count
+	MLOFF  TCD5_NBYTES_MLOFFYES = 0xFFFFF << 10 //+ If SMLOE or DMLOE is set, this field represents a sign-extended offset applied to the source or destination address to form the next-state value after the minor loop completes.
+	DMLOE  TCD5_NBYTES_MLOFFYES = 0x01 << 30    //+ Destination Minor Loop Offset enable
+	SMLOE  TCD5_NBYTES_MLOFFYES = 0x01 << 31    //+ Source Minor Loop Offset Enable
 )
 
 const (
@@ -3325,11 +2589,9 @@ const (
 )
 
 const (
-	CITER   TCD5_CITER_ELINKYES = 0x1FF << 0 //+ Current Major Iteration Count
-	LINKCH  TCD5_CITER_ELINKYES = 0x1F << 9  //+ Minor Loop Link Channel Number
-	ELINK   TCD5_CITER_ELINKYES = 0x01 << 15 //+ Enable channel-to-channel linking on minor-loop complete
-	ELINK_0 TCD5_CITER_ELINKYES = 0x00 << 15 //  The channel-to-channel linking is disabled
-	ELINK_1 TCD5_CITER_ELINKYES = 0x01 << 15 //  The channel-to-channel linking is enabled
+	CITER  TCD5_CITER_ELINKYES = 0x1FF << 0 //+ Current Major Iteration Count
+	LINKCH TCD5_CITER_ELINKYES = 0x1F << 9  //+ Minor Loop Link Channel Number
+	ELINK  TCD5_CITER_ELINKYES = 0x01 << 15 //+ Enable channel-to-channel linking on minor-loop complete
 )
 
 const (
@@ -3339,10 +2601,8 @@ const (
 )
 
 const (
-	CITER   TCD5_CITER_ELINKNO = 0x7FFF << 0 //+ Current Major Iteration Count
-	ELINK   TCD5_CITER_ELINKNO = 0x01 << 15  //+ Enable channel-to-channel linking on minor-loop complete
-	ELINK_0 TCD5_CITER_ELINKNO = 0x00 << 15  //  The channel-to-channel linking is disabled
-	ELINK_1 TCD5_CITER_ELINKNO = 0x01 << 15  //  The channel-to-channel linking is enabled
+	CITER TCD5_CITER_ELINKNO = 0x7FFF << 0 //+ Current Major Iteration Count
+	ELINK TCD5_CITER_ELINKNO = 0x01 << 15  //+ Enable channel-to-channel linking on minor-loop complete
 )
 
 const (
@@ -3359,31 +2619,19 @@ const (
 )
 
 const (
-	START        TCD5_CSR = 0x01 << 0  //+ Channel Start
-	START_0      TCD5_CSR = 0x00 << 0  //  The channel is not explicitly started.
-	START_1      TCD5_CSR = 0x01 << 0  //  The channel is explicitly started via a software initiated service request.
-	INTMAJOR     TCD5_CSR = 0x01 << 1  //+ Enable an interrupt when major iteration count completes.
-	INTMAJOR_0   TCD5_CSR = 0x00 << 1  //  The end-of-major loop interrupt is disabled.
-	INTMAJOR_1   TCD5_CSR = 0x01 << 1  //  The end-of-major loop interrupt is enabled.
-	INTHALF      TCD5_CSR = 0x01 << 2  //+ Enable an interrupt when major counter is half complete.
-	INTHALF_0    TCD5_CSR = 0x00 << 2  //  The half-point interrupt is disabled.
-	INTHALF_1    TCD5_CSR = 0x01 << 2  //  The half-point interrupt is enabled.
-	DREQ         TCD5_CSR = 0x01 << 3  //+ Disable Request
-	DREQ_0       TCD5_CSR = 0x00 << 3  //  The channel's ERQ bit is not affected.
-	DREQ_1       TCD5_CSR = 0x01 << 3  //  The channel's ERQ bit is cleared when the major loop is complete.
-	ESG          TCD5_CSR = 0x01 << 4  //+ Enable Scatter/Gather Processing
-	ESG_0        TCD5_CSR = 0x00 << 4  //  The current channel's TCD is normal format.
-	ESG_1        TCD5_CSR = 0x01 << 4  //  The current channel's TCD specifies a scatter gather format. The DLASTSGA field provides a memory pointer to the next TCD to be loaded into this channel after the major loop completes its execution.
-	MAJORELINK   TCD5_CSR = 0x01 << 5  //+ Enable channel-to-channel linking on major loop complete
-	MAJORELINK_0 TCD5_CSR = 0x00 << 5  //  The channel-to-channel linking is disabled.
-	MAJORELINK_1 TCD5_CSR = 0x01 << 5  //  The channel-to-channel linking is enabled.
-	ACTIVE       TCD5_CSR = 0x01 << 6  //+ Channel Active
-	DONE         TCD5_CSR = 0x01 << 7  //+ Channel Done
-	MAJORLINKCH  TCD5_CSR = 0x1F << 8  //+ Major Loop Link Channel Number
-	BWC          TCD5_CSR = 0x03 << 14 //+ Bandwidth Control
-	BWC_0        TCD5_CSR = 0x00 << 14 //  No eDMA engine stalls.
-	BWC_2        TCD5_CSR = 0x02 << 14 //  eDMA engine stalls for 4 cycles after each R/W.
-	BWC_3        TCD5_CSR = 0x03 << 14 //  eDMA engine stalls for 8 cycles after each R/W.
+	START       TCD5_CSR = 0x01 << 0  //+ Channel Start
+	INTMAJOR    TCD5_CSR = 0x01 << 1  //+ Enable an interrupt when major iteration count completes.
+	INTHALF     TCD5_CSR = 0x01 << 2  //+ Enable an interrupt when major counter is half complete.
+	DREQ        TCD5_CSR = 0x01 << 3  //+ Disable Request
+	ESG         TCD5_CSR = 0x01 << 4  //+ Enable Scatter/Gather Processing
+	MAJORELINK  TCD5_CSR = 0x01 << 5  //+ Enable channel-to-channel linking on major loop complete
+	ACTIVE      TCD5_CSR = 0x01 << 6  //+ Channel Active
+	DONE        TCD5_CSR = 0x01 << 7  //+ Channel Done
+	MAJORLINKCH TCD5_CSR = 0x1F << 8  //+ Major Loop Link Channel Number
+	BWC         TCD5_CSR = 0x03 << 14 //+ Bandwidth Control
+	BWC_0       TCD5_CSR = 0x00 << 14 //  No eDMA engine stalls.
+	BWC_2       TCD5_CSR = 0x02 << 14 //  eDMA engine stalls for 4 cycles after each R/W.
+	BWC_3       TCD5_CSR = 0x03 << 14 //  eDMA engine stalls for 8 cycles after each R/W.
 )
 
 const (
@@ -3400,11 +2648,9 @@ const (
 )
 
 const (
-	BITER   TCD5_BITER_ELINKYES = 0x1FF << 0 //+ Starting major iteration count
-	LINKCH  TCD5_BITER_ELINKYES = 0x1F << 9  //+ Link Channel Number
-	ELINK   TCD5_BITER_ELINKYES = 0x01 << 15 //+ Enables channel-to-channel linking on minor loop complete
-	ELINK_0 TCD5_BITER_ELINKYES = 0x00 << 15 //  The channel-to-channel linking is disabled
-	ELINK_1 TCD5_BITER_ELINKYES = 0x01 << 15 //  The channel-to-channel linking is enabled
+	BITER  TCD5_BITER_ELINKYES = 0x1FF << 0 //+ Starting major iteration count
+	LINKCH TCD5_BITER_ELINKYES = 0x1F << 9  //+ Link Channel Number
+	ELINK  TCD5_BITER_ELINKYES = 0x01 << 15 //+ Enables channel-to-channel linking on minor loop complete
 )
 
 const (
@@ -3414,10 +2660,8 @@ const (
 )
 
 const (
-	BITER   TCD5_BITER_ELINKNO = 0x7FFF << 0 //+ Starting Major Iteration Count
-	ELINK   TCD5_BITER_ELINKNO = 0x01 << 15  //+ Enables channel-to-channel linking on minor loop complete
-	ELINK_0 TCD5_BITER_ELINKNO = 0x00 << 15  //  The channel-to-channel linking is disabled
-	ELINK_1 TCD5_BITER_ELINKNO = 0x01 << 15  //  The channel-to-channel linking is enabled
+	BITER TCD5_BITER_ELINKNO = 0x7FFF << 0 //+ Starting Major Iteration Count
+	ELINK TCD5_BITER_ELINKNO = 0x01 << 15  //+ Enables channel-to-channel linking on minor loop complete
 )
 
 const (
@@ -3471,14 +2715,10 @@ const (
 )
 
 const (
-	NBYTES  TCD6_NBYTES_MLOFFYES = 0x3FF << 0    //+ Minor Byte Transfer Count
-	MLOFF   TCD6_NBYTES_MLOFFYES = 0xFFFFF << 10 //+ If SMLOE or DMLOE is set, this field represents a sign-extended offset applied to the source or destination address to form the next-state value after the minor loop completes.
-	DMLOE   TCD6_NBYTES_MLOFFYES = 0x01 << 30    //+ Destination Minor Loop Offset enable
-	DMLOE_0 TCD6_NBYTES_MLOFFYES = 0x00 << 30    //  The minor loop offset is not applied to the DADDR
-	DMLOE_1 TCD6_NBYTES_MLOFFYES = 0x01 << 30    //  The minor loop offset is applied to the DADDR
-	SMLOE   TCD6_NBYTES_MLOFFYES = 0x01 << 31    //+ Source Minor Loop Offset Enable
-	SMLOE_0 TCD6_NBYTES_MLOFFYES = 0x00 << 31    //  The minor loop offset is not applied to the SADDR
-	SMLOE_1 TCD6_NBYTES_MLOFFYES = 0x01 << 31    //  The minor loop offset is applied to the SADDR
+	NBYTES TCD6_NBYTES_MLOFFYES = 0x3FF << 0    //+ Minor Byte Transfer Count
+	MLOFF  TCD6_NBYTES_MLOFFYES = 0xFFFFF << 10 //+ If SMLOE or DMLOE is set, this field represents a sign-extended offset applied to the source or destination address to form the next-state value after the minor loop completes.
+	DMLOE  TCD6_NBYTES_MLOFFYES = 0x01 << 30    //+ Destination Minor Loop Offset enable
+	SMLOE  TCD6_NBYTES_MLOFFYES = 0x01 << 31    //+ Source Minor Loop Offset Enable
 )
 
 const (
@@ -3497,13 +2737,9 @@ const (
 )
 
 const (
-	NBYTES  TCD6_NBYTES_MLOFFNO = 0x3FFFFFFF << 0 //+ Minor Byte Transfer Count
-	DMLOE   TCD6_NBYTES_MLOFFNO = 0x01 << 30      //+ Destination Minor Loop Offset enable
-	DMLOE_0 TCD6_NBYTES_MLOFFNO = 0x00 << 30      //  The minor loop offset is not applied to the DADDR
-	DMLOE_1 TCD6_NBYTES_MLOFFNO = 0x01 << 30      //  The minor loop offset is applied to the DADDR
-	SMLOE   TCD6_NBYTES_MLOFFNO = 0x01 << 31      //+ Source Minor Loop Offset Enable
-	SMLOE_0 TCD6_NBYTES_MLOFFNO = 0x00 << 31      //  The minor loop offset is not applied to the SADDR
-	SMLOE_1 TCD6_NBYTES_MLOFFNO = 0x01 << 31      //  The minor loop offset is applied to the SADDR
+	NBYTES TCD6_NBYTES_MLOFFNO = 0x3FFFFFFF << 0 //+ Minor Byte Transfer Count
+	DMLOE  TCD6_NBYTES_MLOFFNO = 0x01 << 30      //+ Destination Minor Loop Offset enable
+	SMLOE  TCD6_NBYTES_MLOFFNO = 0x01 << 31      //+ Source Minor Loop Offset Enable
 )
 
 const (
@@ -3537,10 +2773,8 @@ const (
 )
 
 const (
-	CITER   TCD6_CITER_ELINKNO = 0x7FFF << 0 //+ Current Major Iteration Count
-	ELINK   TCD6_CITER_ELINKNO = 0x01 << 15  //+ Enable channel-to-channel linking on minor-loop complete
-	ELINK_0 TCD6_CITER_ELINKNO = 0x00 << 15  //  The channel-to-channel linking is disabled
-	ELINK_1 TCD6_CITER_ELINKNO = 0x01 << 15  //  The channel-to-channel linking is enabled
+	CITER TCD6_CITER_ELINKNO = 0x7FFF << 0 //+ Current Major Iteration Count
+	ELINK TCD6_CITER_ELINKNO = 0x01 << 15  //+ Enable channel-to-channel linking on minor-loop complete
 )
 
 const (
@@ -3549,11 +2783,9 @@ const (
 )
 
 const (
-	CITER   TCD6_CITER_ELINKYES = 0x1FF << 0 //+ Current Major Iteration Count
-	LINKCH  TCD6_CITER_ELINKYES = 0x1F << 9  //+ Minor Loop Link Channel Number
-	ELINK   TCD6_CITER_ELINKYES = 0x01 << 15 //+ Enable channel-to-channel linking on minor-loop complete
-	ELINK_0 TCD6_CITER_ELINKYES = 0x00 << 15 //  The channel-to-channel linking is disabled
-	ELINK_1 TCD6_CITER_ELINKYES = 0x01 << 15 //  The channel-to-channel linking is enabled
+	CITER  TCD6_CITER_ELINKYES = 0x1FF << 0 //+ Current Major Iteration Count
+	LINKCH TCD6_CITER_ELINKYES = 0x1F << 9  //+ Minor Loop Link Channel Number
+	ELINK  TCD6_CITER_ELINKYES = 0x01 << 15 //+ Enable channel-to-channel linking on minor-loop complete
 )
 
 const (
@@ -3571,31 +2803,19 @@ const (
 )
 
 const (
-	START        TCD6_CSR = 0x01 << 0  //+ Channel Start
-	START_0      TCD6_CSR = 0x00 << 0  //  The channel is not explicitly started.
-	START_1      TCD6_CSR = 0x01 << 0  //  The channel is explicitly started via a software initiated service request.
-	INTMAJOR     TCD6_CSR = 0x01 << 1  //+ Enable an interrupt when major iteration count completes.
-	INTMAJOR_0   TCD6_CSR = 0x00 << 1  //  The end-of-major loop interrupt is disabled.
-	INTMAJOR_1   TCD6_CSR = 0x01 << 1  //  The end-of-major loop interrupt is enabled.
-	INTHALF      TCD6_CSR = 0x01 << 2  //+ Enable an interrupt when major counter is half complete.
-	INTHALF_0    TCD6_CSR = 0x00 << 2  //  The half-point interrupt is disabled.
-	INTHALF_1    TCD6_CSR = 0x01 << 2  //  The half-point interrupt is enabled.
-	DREQ         TCD6_CSR = 0x01 << 3  //+ Disable Request
-	DREQ_0       TCD6_CSR = 0x00 << 3  //  The channel's ERQ bit is not affected.
-	DREQ_1       TCD6_CSR = 0x01 << 3  //  The channel's ERQ bit is cleared when the major loop is complete.
-	ESG          TCD6_CSR = 0x01 << 4  //+ Enable Scatter/Gather Processing
-	ESG_0        TCD6_CSR = 0x00 << 4  //  The current channel's TCD is normal format.
-	ESG_1        TCD6_CSR = 0x01 << 4  //  The current channel's TCD specifies a scatter gather format. The DLASTSGA field provides a memory pointer to the next TCD to be loaded into this channel after the major loop completes its execution.
-	MAJORELINK   TCD6_CSR = 0x01 << 5  //+ Enable channel-to-channel linking on major loop complete
-	MAJORELINK_0 TCD6_CSR = 0x00 << 5  //  The channel-to-channel linking is disabled.
-	MAJORELINK_1 TCD6_CSR = 0x01 << 5  //  The channel-to-channel linking is enabled.
-	ACTIVE       TCD6_CSR = 0x01 << 6  //+ Channel Active
-	DONE         TCD6_CSR = 0x01 << 7  //+ Channel Done
-	MAJORLINKCH  TCD6_CSR = 0x1F << 8  //+ Major Loop Link Channel Number
-	BWC          TCD6_CSR = 0x03 << 14 //+ Bandwidth Control
-	BWC_0        TCD6_CSR = 0x00 << 14 //  No eDMA engine stalls.
-	BWC_2        TCD6_CSR = 0x02 << 14 //  eDMA engine stalls for 4 cycles after each R/W.
-	BWC_3        TCD6_CSR = 0x03 << 14 //  eDMA engine stalls for 8 cycles after each R/W.
+	START       TCD6_CSR = 0x01 << 0  //+ Channel Start
+	INTMAJOR    TCD6_CSR = 0x01 << 1  //+ Enable an interrupt when major iteration count completes.
+	INTHALF     TCD6_CSR = 0x01 << 2  //+ Enable an interrupt when major counter is half complete.
+	DREQ        TCD6_CSR = 0x01 << 3  //+ Disable Request
+	ESG         TCD6_CSR = 0x01 << 4  //+ Enable Scatter/Gather Processing
+	MAJORELINK  TCD6_CSR = 0x01 << 5  //+ Enable channel-to-channel linking on major loop complete
+	ACTIVE      TCD6_CSR = 0x01 << 6  //+ Channel Active
+	DONE        TCD6_CSR = 0x01 << 7  //+ Channel Done
+	MAJORLINKCH TCD6_CSR = 0x1F << 8  //+ Major Loop Link Channel Number
+	BWC         TCD6_CSR = 0x03 << 14 //+ Bandwidth Control
+	BWC_0       TCD6_CSR = 0x00 << 14 //  No eDMA engine stalls.
+	BWC_2       TCD6_CSR = 0x02 << 14 //  eDMA engine stalls for 4 cycles after each R/W.
+	BWC_3       TCD6_CSR = 0x03 << 14 //  eDMA engine stalls for 8 cycles after each R/W.
 )
 
 const (
@@ -3612,10 +2832,8 @@ const (
 )
 
 const (
-	BITER   TCD6_BITER_ELINKNO = 0x7FFF << 0 //+ Starting Major Iteration Count
-	ELINK   TCD6_BITER_ELINKNO = 0x01 << 15  //+ Enables channel-to-channel linking on minor loop complete
-	ELINK_0 TCD6_BITER_ELINKNO = 0x00 << 15  //  The channel-to-channel linking is disabled
-	ELINK_1 TCD6_BITER_ELINKNO = 0x01 << 15  //  The channel-to-channel linking is enabled
+	BITER TCD6_BITER_ELINKNO = 0x7FFF << 0 //+ Starting Major Iteration Count
+	ELINK TCD6_BITER_ELINKNO = 0x01 << 15  //+ Enables channel-to-channel linking on minor loop complete
 )
 
 const (
@@ -3624,11 +2842,9 @@ const (
 )
 
 const (
-	BITER   TCD6_BITER_ELINKYES = 0x1FF << 0 //+ Starting major iteration count
-	LINKCH  TCD6_BITER_ELINKYES = 0x1F << 9  //+ Link Channel Number
-	ELINK   TCD6_BITER_ELINKYES = 0x01 << 15 //+ Enables channel-to-channel linking on minor loop complete
-	ELINK_0 TCD6_BITER_ELINKYES = 0x00 << 15 //  The channel-to-channel linking is disabled
-	ELINK_1 TCD6_BITER_ELINKYES = 0x01 << 15 //  The channel-to-channel linking is enabled
+	BITER  TCD6_BITER_ELINKYES = 0x1FF << 0 //+ Starting major iteration count
+	LINKCH TCD6_BITER_ELINKYES = 0x1F << 9  //+ Link Channel Number
+	ELINK  TCD6_BITER_ELINKYES = 0x01 << 15 //+ Enables channel-to-channel linking on minor loop complete
 )
 
 const (
@@ -3691,13 +2907,9 @@ const (
 )
 
 const (
-	NBYTES  TCD7_NBYTES_MLOFFNO = 0x3FFFFFFF << 0 //+ Minor Byte Transfer Count
-	DMLOE   TCD7_NBYTES_MLOFFNO = 0x01 << 30      //+ Destination Minor Loop Offset enable
-	DMLOE_0 TCD7_NBYTES_MLOFFNO = 0x00 << 30      //  The minor loop offset is not applied to the DADDR
-	DMLOE_1 TCD7_NBYTES_MLOFFNO = 0x01 << 30      //  The minor loop offset is applied to the DADDR
-	SMLOE   TCD7_NBYTES_MLOFFNO = 0x01 << 31      //+ Source Minor Loop Offset Enable
-	SMLOE_0 TCD7_NBYTES_MLOFFNO = 0x00 << 31      //  The minor loop offset is not applied to the SADDR
-	SMLOE_1 TCD7_NBYTES_MLOFFNO = 0x01 << 31      //  The minor loop offset is applied to the SADDR
+	NBYTES TCD7_NBYTES_MLOFFNO = 0x3FFFFFFF << 0 //+ Minor Byte Transfer Count
+	DMLOE  TCD7_NBYTES_MLOFFNO = 0x01 << 30      //+ Destination Minor Loop Offset enable
+	SMLOE  TCD7_NBYTES_MLOFFNO = 0x01 << 31      //+ Source Minor Loop Offset Enable
 )
 
 const (
@@ -3707,14 +2919,10 @@ const (
 )
 
 const (
-	NBYTES  TCD7_NBYTES_MLOFFYES = 0x3FF << 0    //+ Minor Byte Transfer Count
-	MLOFF   TCD7_NBYTES_MLOFFYES = 0xFFFFF << 10 //+ If SMLOE or DMLOE is set, this field represents a sign-extended offset applied to the source or destination address to form the next-state value after the minor loop completes.
-	DMLOE   TCD7_NBYTES_MLOFFYES = 0x01 << 30    //+ Destination Minor Loop Offset enable
-	DMLOE_0 TCD7_NBYTES_MLOFFYES = 0x00 << 30    //  The minor loop offset is not applied to the DADDR
-	DMLOE_1 TCD7_NBYTES_MLOFFYES = 0x01 << 30    //  The minor loop offset is applied to the DADDR
-	SMLOE   TCD7_NBYTES_MLOFFYES = 0x01 << 31    //+ Source Minor Loop Offset Enable
-	SMLOE_0 TCD7_NBYTES_MLOFFYES = 0x00 << 31    //  The minor loop offset is not applied to the SADDR
-	SMLOE_1 TCD7_NBYTES_MLOFFYES = 0x01 << 31    //  The minor loop offset is applied to the SADDR
+	NBYTES TCD7_NBYTES_MLOFFYES = 0x3FF << 0    //+ Minor Byte Transfer Count
+	MLOFF  TCD7_NBYTES_MLOFFYES = 0xFFFFF << 10 //+ If SMLOE or DMLOE is set, this field represents a sign-extended offset applied to the source or destination address to form the next-state value after the minor loop completes.
+	DMLOE  TCD7_NBYTES_MLOFFYES = 0x01 << 30    //+ Destination Minor Loop Offset enable
+	SMLOE  TCD7_NBYTES_MLOFFYES = 0x01 << 31    //+ Source Minor Loop Offset Enable
 )
 
 const (
@@ -3749,10 +2957,8 @@ const (
 )
 
 const (
-	CITER   TCD7_CITER_ELINKNO = 0x7FFF << 0 //+ Current Major Iteration Count
-	ELINK   TCD7_CITER_ELINKNO = 0x01 << 15  //+ Enable channel-to-channel linking on minor-loop complete
-	ELINK_0 TCD7_CITER_ELINKNO = 0x00 << 15  //  The channel-to-channel linking is disabled
-	ELINK_1 TCD7_CITER_ELINKNO = 0x01 << 15  //  The channel-to-channel linking is enabled
+	CITER TCD7_CITER_ELINKNO = 0x7FFF << 0 //+ Current Major Iteration Count
+	ELINK TCD7_CITER_ELINKNO = 0x01 << 15  //+ Enable channel-to-channel linking on minor-loop complete
 )
 
 const (
@@ -3761,11 +2967,9 @@ const (
 )
 
 const (
-	CITER   TCD7_CITER_ELINKYES = 0x1FF << 0 //+ Current Major Iteration Count
-	LINKCH  TCD7_CITER_ELINKYES = 0x1F << 9  //+ Minor Loop Link Channel Number
-	ELINK   TCD7_CITER_ELINKYES = 0x01 << 15 //+ Enable channel-to-channel linking on minor-loop complete
-	ELINK_0 TCD7_CITER_ELINKYES = 0x00 << 15 //  The channel-to-channel linking is disabled
-	ELINK_1 TCD7_CITER_ELINKYES = 0x01 << 15 //  The channel-to-channel linking is enabled
+	CITER  TCD7_CITER_ELINKYES = 0x1FF << 0 //+ Current Major Iteration Count
+	LINKCH TCD7_CITER_ELINKYES = 0x1F << 9  //+ Minor Loop Link Channel Number
+	ELINK  TCD7_CITER_ELINKYES = 0x01 << 15 //+ Enable channel-to-channel linking on minor-loop complete
 )
 
 const (
@@ -3783,31 +2987,19 @@ const (
 )
 
 const (
-	START        TCD7_CSR = 0x01 << 0  //+ Channel Start
-	START_0      TCD7_CSR = 0x00 << 0  //  The channel is not explicitly started.
-	START_1      TCD7_CSR = 0x01 << 0  //  The channel is explicitly started via a software initiated service request.
-	INTMAJOR     TCD7_CSR = 0x01 << 1  //+ Enable an interrupt when major iteration count completes.
-	INTMAJOR_0   TCD7_CSR = 0x00 << 1  //  The end-of-major loop interrupt is disabled.
-	INTMAJOR_1   TCD7_CSR = 0x01 << 1  //  The end-of-major loop interrupt is enabled.
-	INTHALF      TCD7_CSR = 0x01 << 2  //+ Enable an interrupt when major counter is half complete.
-	INTHALF_0    TCD7_CSR = 0x00 << 2  //  The half-point interrupt is disabled.
-	INTHALF_1    TCD7_CSR = 0x01 << 2  //  The half-point interrupt is enabled.
-	DREQ         TCD7_CSR = 0x01 << 3  //+ Disable Request
-	DREQ_0       TCD7_CSR = 0x00 << 3  //  The channel's ERQ bit is not affected.
-	DREQ_1       TCD7_CSR = 0x01 << 3  //  The channel's ERQ bit is cleared when the major loop is complete.
-	ESG          TCD7_CSR = 0x01 << 4  //+ Enable Scatter/Gather Processing
-	ESG_0        TCD7_CSR = 0x00 << 4  //  The current channel's TCD is normal format.
-	ESG_1        TCD7_CSR = 0x01 << 4  //  The current channel's TCD specifies a scatter gather format. The DLASTSGA field provides a memory pointer to the next TCD to be loaded into this channel after the major loop completes its execution.
-	MAJORELINK   TCD7_CSR = 0x01 << 5  //+ Enable channel-to-channel linking on major loop complete
-	MAJORELINK_0 TCD7_CSR = 0x00 << 5  //  The channel-to-channel linking is disabled.
-	MAJORELINK_1 TCD7_CSR = 0x01 << 5  //  The channel-to-channel linking is enabled.
-	ACTIVE       TCD7_CSR = 0x01 << 6  //+ Channel Active
-	DONE         TCD7_CSR = 0x01 << 7  //+ Channel Done
-	MAJORLINKCH  TCD7_CSR = 0x1F << 8  //+ Major Loop Link Channel Number
-	BWC          TCD7_CSR = 0x03 << 14 //+ Bandwidth Control
-	BWC_0        TCD7_CSR = 0x00 << 14 //  No eDMA engine stalls.
-	BWC_2        TCD7_CSR = 0x02 << 14 //  eDMA engine stalls for 4 cycles after each R/W.
-	BWC_3        TCD7_CSR = 0x03 << 14 //  eDMA engine stalls for 8 cycles after each R/W.
+	START       TCD7_CSR = 0x01 << 0  //+ Channel Start
+	INTMAJOR    TCD7_CSR = 0x01 << 1  //+ Enable an interrupt when major iteration count completes.
+	INTHALF     TCD7_CSR = 0x01 << 2  //+ Enable an interrupt when major counter is half complete.
+	DREQ        TCD7_CSR = 0x01 << 3  //+ Disable Request
+	ESG         TCD7_CSR = 0x01 << 4  //+ Enable Scatter/Gather Processing
+	MAJORELINK  TCD7_CSR = 0x01 << 5  //+ Enable channel-to-channel linking on major loop complete
+	ACTIVE      TCD7_CSR = 0x01 << 6  //+ Channel Active
+	DONE        TCD7_CSR = 0x01 << 7  //+ Channel Done
+	MAJORLINKCH TCD7_CSR = 0x1F << 8  //+ Major Loop Link Channel Number
+	BWC         TCD7_CSR = 0x03 << 14 //+ Bandwidth Control
+	BWC_0       TCD7_CSR = 0x00 << 14 //  No eDMA engine stalls.
+	BWC_2       TCD7_CSR = 0x02 << 14 //  eDMA engine stalls for 4 cycles after each R/W.
+	BWC_3       TCD7_CSR = 0x03 << 14 //  eDMA engine stalls for 8 cycles after each R/W.
 )
 
 const (
@@ -3824,11 +3016,9 @@ const (
 )
 
 const (
-	BITER   TCD7_BITER_ELINKYES = 0x1FF << 0 //+ Starting major iteration count
-	LINKCH  TCD7_BITER_ELINKYES = 0x1F << 9  //+ Link Channel Number
-	ELINK   TCD7_BITER_ELINKYES = 0x01 << 15 //+ Enables channel-to-channel linking on minor loop complete
-	ELINK_0 TCD7_BITER_ELINKYES = 0x00 << 15 //  The channel-to-channel linking is disabled
-	ELINK_1 TCD7_BITER_ELINKYES = 0x01 << 15 //  The channel-to-channel linking is enabled
+	BITER  TCD7_BITER_ELINKYES = 0x1FF << 0 //+ Starting major iteration count
+	LINKCH TCD7_BITER_ELINKYES = 0x1F << 9  //+ Link Channel Number
+	ELINK  TCD7_BITER_ELINKYES = 0x01 << 15 //+ Enables channel-to-channel linking on minor loop complete
 )
 
 const (
@@ -3838,10 +3028,8 @@ const (
 )
 
 const (
-	BITER   TCD7_BITER_ELINKNO = 0x7FFF << 0 //+ Starting Major Iteration Count
-	ELINK   TCD7_BITER_ELINKNO = 0x01 << 15  //+ Enables channel-to-channel linking on minor loop complete
-	ELINK_0 TCD7_BITER_ELINKNO = 0x00 << 15  //  The channel-to-channel linking is disabled
-	ELINK_1 TCD7_BITER_ELINKNO = 0x01 << 15  //  The channel-to-channel linking is enabled
+	BITER TCD7_BITER_ELINKNO = 0x7FFF << 0 //+ Starting Major Iteration Count
+	ELINK TCD7_BITER_ELINKNO = 0x01 << 15  //+ Enables channel-to-channel linking on minor loop complete
 )
 
 const (
@@ -3903,13 +3091,9 @@ const (
 )
 
 const (
-	NBYTES  TCD8_NBYTES_MLOFFNO = 0x3FFFFFFF << 0 //+ Minor Byte Transfer Count
-	DMLOE   TCD8_NBYTES_MLOFFNO = 0x01 << 30      //+ Destination Minor Loop Offset enable
-	DMLOE_0 TCD8_NBYTES_MLOFFNO = 0x00 << 30      //  The minor loop offset is not applied to the DADDR
-	DMLOE_1 TCD8_NBYTES_MLOFFNO = 0x01 << 30      //  The minor loop offset is applied to the DADDR
-	SMLOE   TCD8_NBYTES_MLOFFNO = 0x01 << 31      //+ Source Minor Loop Offset Enable
-	SMLOE_0 TCD8_NBYTES_MLOFFNO = 0x00 << 31      //  The minor loop offset is not applied to the SADDR
-	SMLOE_1 TCD8_NBYTES_MLOFFNO = 0x01 << 31      //  The minor loop offset is applied to the SADDR
+	NBYTES TCD8_NBYTES_MLOFFNO = 0x3FFFFFFF << 0 //+ Minor Byte Transfer Count
+	DMLOE  TCD8_NBYTES_MLOFFNO = 0x01 << 30      //+ Destination Minor Loop Offset enable
+	SMLOE  TCD8_NBYTES_MLOFFNO = 0x01 << 31      //+ Source Minor Loop Offset Enable
 )
 
 const (
@@ -3919,14 +3103,10 @@ const (
 )
 
 const (
-	NBYTES  TCD8_NBYTES_MLOFFYES = 0x3FF << 0    //+ Minor Byte Transfer Count
-	MLOFF   TCD8_NBYTES_MLOFFYES = 0xFFFFF << 10 //+ If SMLOE or DMLOE is set, this field represents a sign-extended offset applied to the source or destination address to form the next-state value after the minor loop completes.
-	DMLOE   TCD8_NBYTES_MLOFFYES = 0x01 << 30    //+ Destination Minor Loop Offset enable
-	DMLOE_0 TCD8_NBYTES_MLOFFYES = 0x00 << 30    //  The minor loop offset is not applied to the DADDR
-	DMLOE_1 TCD8_NBYTES_MLOFFYES = 0x01 << 30    //  The minor loop offset is applied to the DADDR
-	SMLOE   TCD8_NBYTES_MLOFFYES = 0x01 << 31    //+ Source Minor Loop Offset Enable
-	SMLOE_0 TCD8_NBYTES_MLOFFYES = 0x00 << 31    //  The minor loop offset is not applied to the SADDR
-	SMLOE_1 TCD8_NBYTES_MLOFFYES = 0x01 << 31    //  The minor loop offset is applied to the SADDR
+	NBYTES TCD8_NBYTES_MLOFFYES = 0x3FF << 0    //+ Minor Byte Transfer Count
+	MLOFF  TCD8_NBYTES_MLOFFYES = 0xFFFFF << 10 //+ If SMLOE or DMLOE is set, this field represents a sign-extended offset applied to the source or destination address to form the next-state value after the minor loop completes.
+	DMLOE  TCD8_NBYTES_MLOFFYES = 0x01 << 30    //+ Destination Minor Loop Offset enable
+	SMLOE  TCD8_NBYTES_MLOFFYES = 0x01 << 31    //+ Source Minor Loop Offset Enable
 )
 
 const (
@@ -3961,10 +3141,8 @@ const (
 )
 
 const (
-	CITER   TCD8_CITER_ELINKNO = 0x7FFF << 0 //+ Current Major Iteration Count
-	ELINK   TCD8_CITER_ELINKNO = 0x01 << 15  //+ Enable channel-to-channel linking on minor-loop complete
-	ELINK_0 TCD8_CITER_ELINKNO = 0x00 << 15  //  The channel-to-channel linking is disabled
-	ELINK_1 TCD8_CITER_ELINKNO = 0x01 << 15  //  The channel-to-channel linking is enabled
+	CITER TCD8_CITER_ELINKNO = 0x7FFF << 0 //+ Current Major Iteration Count
+	ELINK TCD8_CITER_ELINKNO = 0x01 << 15  //+ Enable channel-to-channel linking on minor-loop complete
 )
 
 const (
@@ -3973,11 +3151,9 @@ const (
 )
 
 const (
-	CITER   TCD8_CITER_ELINKYES = 0x1FF << 0 //+ Current Major Iteration Count
-	LINKCH  TCD8_CITER_ELINKYES = 0x1F << 9  //+ Minor Loop Link Channel Number
-	ELINK   TCD8_CITER_ELINKYES = 0x01 << 15 //+ Enable channel-to-channel linking on minor-loop complete
-	ELINK_0 TCD8_CITER_ELINKYES = 0x00 << 15 //  The channel-to-channel linking is disabled
-	ELINK_1 TCD8_CITER_ELINKYES = 0x01 << 15 //  The channel-to-channel linking is enabled
+	CITER  TCD8_CITER_ELINKYES = 0x1FF << 0 //+ Current Major Iteration Count
+	LINKCH TCD8_CITER_ELINKYES = 0x1F << 9  //+ Minor Loop Link Channel Number
+	ELINK  TCD8_CITER_ELINKYES = 0x01 << 15 //+ Enable channel-to-channel linking on minor-loop complete
 )
 
 const (
@@ -3995,31 +3171,19 @@ const (
 )
 
 const (
-	START        TCD8_CSR = 0x01 << 0  //+ Channel Start
-	START_0      TCD8_CSR = 0x00 << 0  //  The channel is not explicitly started.
-	START_1      TCD8_CSR = 0x01 << 0  //  The channel is explicitly started via a software initiated service request.
-	INTMAJOR     TCD8_CSR = 0x01 << 1  //+ Enable an interrupt when major iteration count completes.
-	INTMAJOR_0   TCD8_CSR = 0x00 << 1  //  The end-of-major loop interrupt is disabled.
-	INTMAJOR_1   TCD8_CSR = 0x01 << 1  //  The end-of-major loop interrupt is enabled.
-	INTHALF      TCD8_CSR = 0x01 << 2  //+ Enable an interrupt when major counter is half complete.
-	INTHALF_0    TCD8_CSR = 0x00 << 2  //  The half-point interrupt is disabled.
-	INTHALF_1    TCD8_CSR = 0x01 << 2  //  The half-point interrupt is enabled.
-	DREQ         TCD8_CSR = 0x01 << 3  //+ Disable Request
-	DREQ_0       TCD8_CSR = 0x00 << 3  //  The channel's ERQ bit is not affected.
-	DREQ_1       TCD8_CSR = 0x01 << 3  //  The channel's ERQ bit is cleared when the major loop is complete.
-	ESG          TCD8_CSR = 0x01 << 4  //+ Enable Scatter/Gather Processing
-	ESG_0        TCD8_CSR = 0x00 << 4  //  The current channel's TCD is normal format.
-	ESG_1        TCD8_CSR = 0x01 << 4  //  The current channel's TCD specifies a scatter gather format. The DLASTSGA field provides a memory pointer to the next TCD to be loaded into this channel after the major loop completes its execution.
-	MAJORELINK   TCD8_CSR = 0x01 << 5  //+ Enable channel-to-channel linking on major loop complete
-	MAJORELINK_0 TCD8_CSR = 0x00 << 5  //  The channel-to-channel linking is disabled.
-	MAJORELINK_1 TCD8_CSR = 0x01 << 5  //  The channel-to-channel linking is enabled.
-	ACTIVE       TCD8_CSR = 0x01 << 6  //+ Channel Active
-	DONE         TCD8_CSR = 0x01 << 7  //+ Channel Done
-	MAJORLINKCH  TCD8_CSR = 0x1F << 8  //+ Major Loop Link Channel Number
-	BWC          TCD8_CSR = 0x03 << 14 //+ Bandwidth Control
-	BWC_0        TCD8_CSR = 0x00 << 14 //  No eDMA engine stalls.
-	BWC_2        TCD8_CSR = 0x02 << 14 //  eDMA engine stalls for 4 cycles after each R/W.
-	BWC_3        TCD8_CSR = 0x03 << 14 //  eDMA engine stalls for 8 cycles after each R/W.
+	START       TCD8_CSR = 0x01 << 0  //+ Channel Start
+	INTMAJOR    TCD8_CSR = 0x01 << 1  //+ Enable an interrupt when major iteration count completes.
+	INTHALF     TCD8_CSR = 0x01 << 2  //+ Enable an interrupt when major counter is half complete.
+	DREQ        TCD8_CSR = 0x01 << 3  //+ Disable Request
+	ESG         TCD8_CSR = 0x01 << 4  //+ Enable Scatter/Gather Processing
+	MAJORELINK  TCD8_CSR = 0x01 << 5  //+ Enable channel-to-channel linking on major loop complete
+	ACTIVE      TCD8_CSR = 0x01 << 6  //+ Channel Active
+	DONE        TCD8_CSR = 0x01 << 7  //+ Channel Done
+	MAJORLINKCH TCD8_CSR = 0x1F << 8  //+ Major Loop Link Channel Number
+	BWC         TCD8_CSR = 0x03 << 14 //+ Bandwidth Control
+	BWC_0       TCD8_CSR = 0x00 << 14 //  No eDMA engine stalls.
+	BWC_2       TCD8_CSR = 0x02 << 14 //  eDMA engine stalls for 4 cycles after each R/W.
+	BWC_3       TCD8_CSR = 0x03 << 14 //  eDMA engine stalls for 8 cycles after each R/W.
 )
 
 const (
@@ -4036,10 +3200,8 @@ const (
 )
 
 const (
-	BITER   TCD8_BITER_ELINKNO = 0x7FFF << 0 //+ Starting Major Iteration Count
-	ELINK   TCD8_BITER_ELINKNO = 0x01 << 15  //+ Enables channel-to-channel linking on minor loop complete
-	ELINK_0 TCD8_BITER_ELINKNO = 0x00 << 15  //  The channel-to-channel linking is disabled
-	ELINK_1 TCD8_BITER_ELINKNO = 0x01 << 15  //  The channel-to-channel linking is enabled
+	BITER TCD8_BITER_ELINKNO = 0x7FFF << 0 //+ Starting Major Iteration Count
+	ELINK TCD8_BITER_ELINKNO = 0x01 << 15  //+ Enables channel-to-channel linking on minor loop complete
 )
 
 const (
@@ -4048,11 +3210,9 @@ const (
 )
 
 const (
-	BITER   TCD8_BITER_ELINKYES = 0x1FF << 0 //+ Starting major iteration count
-	LINKCH  TCD8_BITER_ELINKYES = 0x1F << 9  //+ Link Channel Number
-	ELINK   TCD8_BITER_ELINKYES = 0x01 << 15 //+ Enables channel-to-channel linking on minor loop complete
-	ELINK_0 TCD8_BITER_ELINKYES = 0x00 << 15 //  The channel-to-channel linking is disabled
-	ELINK_1 TCD8_BITER_ELINKYES = 0x01 << 15 //  The channel-to-channel linking is enabled
+	BITER  TCD8_BITER_ELINKYES = 0x1FF << 0 //+ Starting major iteration count
+	LINKCH TCD8_BITER_ELINKYES = 0x1F << 9  //+ Link Channel Number
+	ELINK  TCD8_BITER_ELINKYES = 0x01 << 15 //+ Enables channel-to-channel linking on minor loop complete
 )
 
 const (
@@ -4115,13 +3275,9 @@ const (
 )
 
 const (
-	NBYTES  TCD9_NBYTES_MLOFFNO = 0x3FFFFFFF << 0 //+ Minor Byte Transfer Count
-	DMLOE   TCD9_NBYTES_MLOFFNO = 0x01 << 30      //+ Destination Minor Loop Offset enable
-	DMLOE_0 TCD9_NBYTES_MLOFFNO = 0x00 << 30      //  The minor loop offset is not applied to the DADDR
-	DMLOE_1 TCD9_NBYTES_MLOFFNO = 0x01 << 30      //  The minor loop offset is applied to the DADDR
-	SMLOE   TCD9_NBYTES_MLOFFNO = 0x01 << 31      //+ Source Minor Loop Offset Enable
-	SMLOE_0 TCD9_NBYTES_MLOFFNO = 0x00 << 31      //  The minor loop offset is not applied to the SADDR
-	SMLOE_1 TCD9_NBYTES_MLOFFNO = 0x01 << 31      //  The minor loop offset is applied to the SADDR
+	NBYTES TCD9_NBYTES_MLOFFNO = 0x3FFFFFFF << 0 //+ Minor Byte Transfer Count
+	DMLOE  TCD9_NBYTES_MLOFFNO = 0x01 << 30      //+ Destination Minor Loop Offset enable
+	SMLOE  TCD9_NBYTES_MLOFFNO = 0x01 << 31      //+ Source Minor Loop Offset Enable
 )
 
 const (
@@ -4131,14 +3287,10 @@ const (
 )
 
 const (
-	NBYTES  TCD9_NBYTES_MLOFFYES = 0x3FF << 0    //+ Minor Byte Transfer Count
-	MLOFF   TCD9_NBYTES_MLOFFYES = 0xFFFFF << 10 //+ If SMLOE or DMLOE is set, this field represents a sign-extended offset applied to the source or destination address to form the next-state value after the minor loop completes.
-	DMLOE   TCD9_NBYTES_MLOFFYES = 0x01 << 30    //+ Destination Minor Loop Offset enable
-	DMLOE_0 TCD9_NBYTES_MLOFFYES = 0x00 << 30    //  The minor loop offset is not applied to the DADDR
-	DMLOE_1 TCD9_NBYTES_MLOFFYES = 0x01 << 30    //  The minor loop offset is applied to the DADDR
-	SMLOE   TCD9_NBYTES_MLOFFYES = 0x01 << 31    //+ Source Minor Loop Offset Enable
-	SMLOE_0 TCD9_NBYTES_MLOFFYES = 0x00 << 31    //  The minor loop offset is not applied to the SADDR
-	SMLOE_1 TCD9_NBYTES_MLOFFYES = 0x01 << 31    //  The minor loop offset is applied to the SADDR
+	NBYTES TCD9_NBYTES_MLOFFYES = 0x3FF << 0    //+ Minor Byte Transfer Count
+	MLOFF  TCD9_NBYTES_MLOFFYES = 0xFFFFF << 10 //+ If SMLOE or DMLOE is set, this field represents a sign-extended offset applied to the source or destination address to form the next-state value after the minor loop completes.
+	DMLOE  TCD9_NBYTES_MLOFFYES = 0x01 << 30    //+ Destination Minor Loop Offset enable
+	SMLOE  TCD9_NBYTES_MLOFFYES = 0x01 << 31    //+ Source Minor Loop Offset Enable
 )
 
 const (
@@ -4173,11 +3325,9 @@ const (
 )
 
 const (
-	CITER   TCD9_CITER_ELINKYES = 0x1FF << 0 //+ Current Major Iteration Count
-	LINKCH  TCD9_CITER_ELINKYES = 0x1F << 9  //+ Minor Loop Link Channel Number
-	ELINK   TCD9_CITER_ELINKYES = 0x01 << 15 //+ Enable channel-to-channel linking on minor-loop complete
-	ELINK_0 TCD9_CITER_ELINKYES = 0x00 << 15 //  The channel-to-channel linking is disabled
-	ELINK_1 TCD9_CITER_ELINKYES = 0x01 << 15 //  The channel-to-channel linking is enabled
+	CITER  TCD9_CITER_ELINKYES = 0x1FF << 0 //+ Current Major Iteration Count
+	LINKCH TCD9_CITER_ELINKYES = 0x1F << 9  //+ Minor Loop Link Channel Number
+	ELINK  TCD9_CITER_ELINKYES = 0x01 << 15 //+ Enable channel-to-channel linking on minor-loop complete
 )
 
 const (
@@ -4187,10 +3337,8 @@ const (
 )
 
 const (
-	CITER   TCD9_CITER_ELINKNO = 0x7FFF << 0 //+ Current Major Iteration Count
-	ELINK   TCD9_CITER_ELINKNO = 0x01 << 15  //+ Enable channel-to-channel linking on minor-loop complete
-	ELINK_0 TCD9_CITER_ELINKNO = 0x00 << 15  //  The channel-to-channel linking is disabled
-	ELINK_1 TCD9_CITER_ELINKNO = 0x01 << 15  //  The channel-to-channel linking is enabled
+	CITER TCD9_CITER_ELINKNO = 0x7FFF << 0 //+ Current Major Iteration Count
+	ELINK TCD9_CITER_ELINKNO = 0x01 << 15  //+ Enable channel-to-channel linking on minor-loop complete
 )
 
 const (
@@ -4207,31 +3355,19 @@ const (
 )
 
 const (
-	START        TCD9_CSR = 0x01 << 0  //+ Channel Start
-	START_0      TCD9_CSR = 0x00 << 0  //  The channel is not explicitly started.
-	START_1      TCD9_CSR = 0x01 << 0  //  The channel is explicitly started via a software initiated service request.
-	INTMAJOR     TCD9_CSR = 0x01 << 1  //+ Enable an interrupt when major iteration count completes.
-	INTMAJOR_0   TCD9_CSR = 0x00 << 1  //  The end-of-major loop interrupt is disabled.
-	INTMAJOR_1   TCD9_CSR = 0x01 << 1  //  The end-of-major loop interrupt is enabled.
-	INTHALF      TCD9_CSR = 0x01 << 2  //+ Enable an interrupt when major counter is half complete.
-	INTHALF_0    TCD9_CSR = 0x00 << 2  //  The half-point interrupt is disabled.
-	INTHALF_1    TCD9_CSR = 0x01 << 2  //  The half-point interrupt is enabled.
-	DREQ         TCD9_CSR = 0x01 << 3  //+ Disable Request
-	DREQ_0       TCD9_CSR = 0x00 << 3  //  The channel's ERQ bit is not affected.
-	DREQ_1       TCD9_CSR = 0x01 << 3  //  The channel's ERQ bit is cleared when the major loop is complete.
-	ESG          TCD9_CSR = 0x01 << 4  //+ Enable Scatter/Gather Processing
-	ESG_0        TCD9_CSR = 0x00 << 4  //  The current channel's TCD is normal format.
-	ESG_1        TCD9_CSR = 0x01 << 4  //  The current channel's TCD specifies a scatter gather format. The DLASTSGA field provides a memory pointer to the next TCD to be loaded into this channel after the major loop completes its execution.
-	MAJORELINK   TCD9_CSR = 0x01 << 5  //+ Enable channel-to-channel linking on major loop complete
-	MAJORELINK_0 TCD9_CSR = 0x00 << 5  //  The channel-to-channel linking is disabled.
-	MAJORELINK_1 TCD9_CSR = 0x01 << 5  //  The channel-to-channel linking is enabled.
-	ACTIVE       TCD9_CSR = 0x01 << 6  //+ Channel Active
-	DONE         TCD9_CSR = 0x01 << 7  //+ Channel Done
-	MAJORLINKCH  TCD9_CSR = 0x1F << 8  //+ Major Loop Link Channel Number
-	BWC          TCD9_CSR = 0x03 << 14 //+ Bandwidth Control
-	BWC_0        TCD9_CSR = 0x00 << 14 //  No eDMA engine stalls.
-	BWC_2        TCD9_CSR = 0x02 << 14 //  eDMA engine stalls for 4 cycles after each R/W.
-	BWC_3        TCD9_CSR = 0x03 << 14 //  eDMA engine stalls for 8 cycles after each R/W.
+	START       TCD9_CSR = 0x01 << 0  //+ Channel Start
+	INTMAJOR    TCD9_CSR = 0x01 << 1  //+ Enable an interrupt when major iteration count completes.
+	INTHALF     TCD9_CSR = 0x01 << 2  //+ Enable an interrupt when major counter is half complete.
+	DREQ        TCD9_CSR = 0x01 << 3  //+ Disable Request
+	ESG         TCD9_CSR = 0x01 << 4  //+ Enable Scatter/Gather Processing
+	MAJORELINK  TCD9_CSR = 0x01 << 5  //+ Enable channel-to-channel linking on major loop complete
+	ACTIVE      TCD9_CSR = 0x01 << 6  //+ Channel Active
+	DONE        TCD9_CSR = 0x01 << 7  //+ Channel Done
+	MAJORLINKCH TCD9_CSR = 0x1F << 8  //+ Major Loop Link Channel Number
+	BWC         TCD9_CSR = 0x03 << 14 //+ Bandwidth Control
+	BWC_0       TCD9_CSR = 0x00 << 14 //  No eDMA engine stalls.
+	BWC_2       TCD9_CSR = 0x02 << 14 //  eDMA engine stalls for 4 cycles after each R/W.
+	BWC_3       TCD9_CSR = 0x03 << 14 //  eDMA engine stalls for 8 cycles after each R/W.
 )
 
 const (
@@ -4248,11 +3384,9 @@ const (
 )
 
 const (
-	BITER   TCD9_BITER_ELINKYES = 0x1FF << 0 //+ Starting major iteration count
-	LINKCH  TCD9_BITER_ELINKYES = 0x1F << 9  //+ Link Channel Number
-	ELINK   TCD9_BITER_ELINKYES = 0x01 << 15 //+ Enables channel-to-channel linking on minor loop complete
-	ELINK_0 TCD9_BITER_ELINKYES = 0x00 << 15 //  The channel-to-channel linking is disabled
-	ELINK_1 TCD9_BITER_ELINKYES = 0x01 << 15 //  The channel-to-channel linking is enabled
+	BITER  TCD9_BITER_ELINKYES = 0x1FF << 0 //+ Starting major iteration count
+	LINKCH TCD9_BITER_ELINKYES = 0x1F << 9  //+ Link Channel Number
+	ELINK  TCD9_BITER_ELINKYES = 0x01 << 15 //+ Enables channel-to-channel linking on minor loop complete
 )
 
 const (
@@ -4262,10 +3396,8 @@ const (
 )
 
 const (
-	BITER   TCD9_BITER_ELINKNO = 0x7FFF << 0 //+ Starting Major Iteration Count
-	ELINK   TCD9_BITER_ELINKNO = 0x01 << 15  //+ Enables channel-to-channel linking on minor loop complete
-	ELINK_0 TCD9_BITER_ELINKNO = 0x00 << 15  //  The channel-to-channel linking is disabled
-	ELINK_1 TCD9_BITER_ELINKNO = 0x01 << 15  //  The channel-to-channel linking is enabled
+	BITER TCD9_BITER_ELINKNO = 0x7FFF << 0 //+ Starting Major Iteration Count
+	ELINK TCD9_BITER_ELINKNO = 0x01 << 15  //+ Enables channel-to-channel linking on minor loop complete
 )
 
 const (
@@ -4327,13 +3459,9 @@ const (
 )
 
 const (
-	NBYTES  TCD10_NBYTES_MLOFFNO = 0x3FFFFFFF << 0 //+ Minor Byte Transfer Count
-	DMLOE   TCD10_NBYTES_MLOFFNO = 0x01 << 30      //+ Destination Minor Loop Offset enable
-	DMLOE_0 TCD10_NBYTES_MLOFFNO = 0x00 << 30      //  The minor loop offset is not applied to the DADDR
-	DMLOE_1 TCD10_NBYTES_MLOFFNO = 0x01 << 30      //  The minor loop offset is applied to the DADDR
-	SMLOE   TCD10_NBYTES_MLOFFNO = 0x01 << 31      //+ Source Minor Loop Offset Enable
-	SMLOE_0 TCD10_NBYTES_MLOFFNO = 0x00 << 31      //  The minor loop offset is not applied to the SADDR
-	SMLOE_1 TCD10_NBYTES_MLOFFNO = 0x01 << 31      //  The minor loop offset is applied to the SADDR
+	NBYTES TCD10_NBYTES_MLOFFNO = 0x3FFFFFFF << 0 //+ Minor Byte Transfer Count
+	DMLOE  TCD10_NBYTES_MLOFFNO = 0x01 << 30      //+ Destination Minor Loop Offset enable
+	SMLOE  TCD10_NBYTES_MLOFFNO = 0x01 << 31      //+ Source Minor Loop Offset Enable
 )
 
 const (
@@ -4343,14 +3471,10 @@ const (
 )
 
 const (
-	NBYTES  TCD10_NBYTES_MLOFFYES = 0x3FF << 0    //+ Minor Byte Transfer Count
-	MLOFF   TCD10_NBYTES_MLOFFYES = 0xFFFFF << 10 //+ If SMLOE or DMLOE is set, this field represents a sign-extended offset applied to the source or destination address to form the next-state value after the minor loop completes.
-	DMLOE   TCD10_NBYTES_MLOFFYES = 0x01 << 30    //+ Destination Minor Loop Offset enable
-	DMLOE_0 TCD10_NBYTES_MLOFFYES = 0x00 << 30    //  The minor loop offset is not applied to the DADDR
-	DMLOE_1 TCD10_NBYTES_MLOFFYES = 0x01 << 30    //  The minor loop offset is applied to the DADDR
-	SMLOE   TCD10_NBYTES_MLOFFYES = 0x01 << 31    //+ Source Minor Loop Offset Enable
-	SMLOE_0 TCD10_NBYTES_MLOFFYES = 0x00 << 31    //  The minor loop offset is not applied to the SADDR
-	SMLOE_1 TCD10_NBYTES_MLOFFYES = 0x01 << 31    //  The minor loop offset is applied to the SADDR
+	NBYTES TCD10_NBYTES_MLOFFYES = 0x3FF << 0    //+ Minor Byte Transfer Count
+	MLOFF  TCD10_NBYTES_MLOFFYES = 0xFFFFF << 10 //+ If SMLOE or DMLOE is set, this field represents a sign-extended offset applied to the source or destination address to form the next-state value after the minor loop completes.
+	DMLOE  TCD10_NBYTES_MLOFFYES = 0x01 << 30    //+ Destination Minor Loop Offset enable
+	SMLOE  TCD10_NBYTES_MLOFFYES = 0x01 << 31    //+ Source Minor Loop Offset Enable
 )
 
 const (
@@ -4385,10 +3509,8 @@ const (
 )
 
 const (
-	CITER   TCD10_CITER_ELINKNO = 0x7FFF << 0 //+ Current Major Iteration Count
-	ELINK   TCD10_CITER_ELINKNO = 0x01 << 15  //+ Enable channel-to-channel linking on minor-loop complete
-	ELINK_0 TCD10_CITER_ELINKNO = 0x00 << 15  //  The channel-to-channel linking is disabled
-	ELINK_1 TCD10_CITER_ELINKNO = 0x01 << 15  //  The channel-to-channel linking is enabled
+	CITER TCD10_CITER_ELINKNO = 0x7FFF << 0 //+ Current Major Iteration Count
+	ELINK TCD10_CITER_ELINKNO = 0x01 << 15  //+ Enable channel-to-channel linking on minor-loop complete
 )
 
 const (
@@ -4397,11 +3519,9 @@ const (
 )
 
 const (
-	CITER   TCD10_CITER_ELINKYES = 0x1FF << 0 //+ Current Major Iteration Count
-	LINKCH  TCD10_CITER_ELINKYES = 0x1F << 9  //+ Minor Loop Link Channel Number
-	ELINK   TCD10_CITER_ELINKYES = 0x01 << 15 //+ Enable channel-to-channel linking on minor-loop complete
-	ELINK_0 TCD10_CITER_ELINKYES = 0x00 << 15 //  The channel-to-channel linking is disabled
-	ELINK_1 TCD10_CITER_ELINKYES = 0x01 << 15 //  The channel-to-channel linking is enabled
+	CITER  TCD10_CITER_ELINKYES = 0x1FF << 0 //+ Current Major Iteration Count
+	LINKCH TCD10_CITER_ELINKYES = 0x1F << 9  //+ Minor Loop Link Channel Number
+	ELINK  TCD10_CITER_ELINKYES = 0x01 << 15 //+ Enable channel-to-channel linking on minor-loop complete
 )
 
 const (
@@ -4419,31 +3539,19 @@ const (
 )
 
 const (
-	START        TCD10_CSR = 0x01 << 0  //+ Channel Start
-	START_0      TCD10_CSR = 0x00 << 0  //  The channel is not explicitly started.
-	START_1      TCD10_CSR = 0x01 << 0  //  The channel is explicitly started via a software initiated service request.
-	INTMAJOR     TCD10_CSR = 0x01 << 1  //+ Enable an interrupt when major iteration count completes.
-	INTMAJOR_0   TCD10_CSR = 0x00 << 1  //  The end-of-major loop interrupt is disabled.
-	INTMAJOR_1   TCD10_CSR = 0x01 << 1  //  The end-of-major loop interrupt is enabled.
-	INTHALF      TCD10_CSR = 0x01 << 2  //+ Enable an interrupt when major counter is half complete.
-	INTHALF_0    TCD10_CSR = 0x00 << 2  //  The half-point interrupt is disabled.
-	INTHALF_1    TCD10_CSR = 0x01 << 2  //  The half-point interrupt is enabled.
-	DREQ         TCD10_CSR = 0x01 << 3  //+ Disable Request
-	DREQ_0       TCD10_CSR = 0x00 << 3  //  The channel's ERQ bit is not affected.
-	DREQ_1       TCD10_CSR = 0x01 << 3  //  The channel's ERQ bit is cleared when the major loop is complete.
-	ESG          TCD10_CSR = 0x01 << 4  //+ Enable Scatter/Gather Processing
-	ESG_0        TCD10_CSR = 0x00 << 4  //  The current channel's TCD is normal format.
-	ESG_1        TCD10_CSR = 0x01 << 4  //  The current channel's TCD specifies a scatter gather format. The DLASTSGA field provides a memory pointer to the next TCD to be loaded into this channel after the major loop completes its execution.
-	MAJORELINK   TCD10_CSR = 0x01 << 5  //+ Enable channel-to-channel linking on major loop complete
-	MAJORELINK_0 TCD10_CSR = 0x00 << 5  //  The channel-to-channel linking is disabled.
-	MAJORELINK_1 TCD10_CSR = 0x01 << 5  //  The channel-to-channel linking is enabled.
-	ACTIVE       TCD10_CSR = 0x01 << 6  //+ Channel Active
-	DONE         TCD10_CSR = 0x01 << 7  //+ Channel Done
-	MAJORLINKCH  TCD10_CSR = 0x1F << 8  //+ Major Loop Link Channel Number
-	BWC          TCD10_CSR = 0x03 << 14 //+ Bandwidth Control
-	BWC_0        TCD10_CSR = 0x00 << 14 //  No eDMA engine stalls.
-	BWC_2        TCD10_CSR = 0x02 << 14 //  eDMA engine stalls for 4 cycles after each R/W.
-	BWC_3        TCD10_CSR = 0x03 << 14 //  eDMA engine stalls for 8 cycles after each R/W.
+	START       TCD10_CSR = 0x01 << 0  //+ Channel Start
+	INTMAJOR    TCD10_CSR = 0x01 << 1  //+ Enable an interrupt when major iteration count completes.
+	INTHALF     TCD10_CSR = 0x01 << 2  //+ Enable an interrupt when major counter is half complete.
+	DREQ        TCD10_CSR = 0x01 << 3  //+ Disable Request
+	ESG         TCD10_CSR = 0x01 << 4  //+ Enable Scatter/Gather Processing
+	MAJORELINK  TCD10_CSR = 0x01 << 5  //+ Enable channel-to-channel linking on major loop complete
+	ACTIVE      TCD10_CSR = 0x01 << 6  //+ Channel Active
+	DONE        TCD10_CSR = 0x01 << 7  //+ Channel Done
+	MAJORLINKCH TCD10_CSR = 0x1F << 8  //+ Major Loop Link Channel Number
+	BWC         TCD10_CSR = 0x03 << 14 //+ Bandwidth Control
+	BWC_0       TCD10_CSR = 0x00 << 14 //  No eDMA engine stalls.
+	BWC_2       TCD10_CSR = 0x02 << 14 //  eDMA engine stalls for 4 cycles after each R/W.
+	BWC_3       TCD10_CSR = 0x03 << 14 //  eDMA engine stalls for 8 cycles after each R/W.
 )
 
 const (
@@ -4460,10 +3568,8 @@ const (
 )
 
 const (
-	BITER   TCD10_BITER_ELINKNO = 0x7FFF << 0 //+ Starting Major Iteration Count
-	ELINK   TCD10_BITER_ELINKNO = 0x01 << 15  //+ Enables channel-to-channel linking on minor loop complete
-	ELINK_0 TCD10_BITER_ELINKNO = 0x00 << 15  //  The channel-to-channel linking is disabled
-	ELINK_1 TCD10_BITER_ELINKNO = 0x01 << 15  //  The channel-to-channel linking is enabled
+	BITER TCD10_BITER_ELINKNO = 0x7FFF << 0 //+ Starting Major Iteration Count
+	ELINK TCD10_BITER_ELINKNO = 0x01 << 15  //+ Enables channel-to-channel linking on minor loop complete
 )
 
 const (
@@ -4472,11 +3578,9 @@ const (
 )
 
 const (
-	BITER   TCD10_BITER_ELINKYES = 0x1FF << 0 //+ Starting major iteration count
-	LINKCH  TCD10_BITER_ELINKYES = 0x1F << 9  //+ Link Channel Number
-	ELINK   TCD10_BITER_ELINKYES = 0x01 << 15 //+ Enables channel-to-channel linking on minor loop complete
-	ELINK_0 TCD10_BITER_ELINKYES = 0x00 << 15 //  The channel-to-channel linking is disabled
-	ELINK_1 TCD10_BITER_ELINKYES = 0x01 << 15 //  The channel-to-channel linking is enabled
+	BITER  TCD10_BITER_ELINKYES = 0x1FF << 0 //+ Starting major iteration count
+	LINKCH TCD10_BITER_ELINKYES = 0x1F << 9  //+ Link Channel Number
+	ELINK  TCD10_BITER_ELINKYES = 0x01 << 15 //+ Enables channel-to-channel linking on minor loop complete
 )
 
 const (
@@ -4531,14 +3635,10 @@ const (
 )
 
 const (
-	NBYTES  TCD11_NBYTES_MLOFFYES = 0x3FF << 0    //+ Minor Byte Transfer Count
-	MLOFF   TCD11_NBYTES_MLOFFYES = 0xFFFFF << 10 //+ If SMLOE or DMLOE is set, this field represents a sign-extended offset applied to the source or destination address to form the next-state value after the minor loop completes.
-	DMLOE   TCD11_NBYTES_MLOFFYES = 0x01 << 30    //+ Destination Minor Loop Offset enable
-	DMLOE_0 TCD11_NBYTES_MLOFFYES = 0x00 << 30    //  The minor loop offset is not applied to the DADDR
-	DMLOE_1 TCD11_NBYTES_MLOFFYES = 0x01 << 30    //  The minor loop offset is applied to the DADDR
-	SMLOE   TCD11_NBYTES_MLOFFYES = 0x01 << 31    //+ Source Minor Loop Offset Enable
-	SMLOE_0 TCD11_NBYTES_MLOFFYES = 0x00 << 31    //  The minor loop offset is not applied to the SADDR
-	SMLOE_1 TCD11_NBYTES_MLOFFYES = 0x01 << 31    //  The minor loop offset is applied to the SADDR
+	NBYTES TCD11_NBYTES_MLOFFYES = 0x3FF << 0    //+ Minor Byte Transfer Count
+	MLOFF  TCD11_NBYTES_MLOFFYES = 0xFFFFF << 10 //+ If SMLOE or DMLOE is set, this field represents a sign-extended offset applied to the source or destination address to form the next-state value after the minor loop completes.
+	DMLOE  TCD11_NBYTES_MLOFFYES = 0x01 << 30    //+ Destination Minor Loop Offset enable
+	SMLOE  TCD11_NBYTES_MLOFFYES = 0x01 << 31    //+ Source Minor Loop Offset Enable
 )
 
 const (
@@ -4549,13 +3649,9 @@ const (
 )
 
 const (
-	NBYTES  TCD11_NBYTES_MLOFFNO = 0x3FFFFFFF << 0 //+ Minor Byte Transfer Count
-	DMLOE   TCD11_NBYTES_MLOFFNO = 0x01 << 30      //+ Destination Minor Loop Offset enable
-	DMLOE_0 TCD11_NBYTES_MLOFFNO = 0x00 << 30      //  The minor loop offset is not applied to the DADDR
-	DMLOE_1 TCD11_NBYTES_MLOFFNO = 0x01 << 30      //  The minor loop offset is applied to the DADDR
-	SMLOE   TCD11_NBYTES_MLOFFNO = 0x01 << 31      //+ Source Minor Loop Offset Enable
-	SMLOE_0 TCD11_NBYTES_MLOFFNO = 0x00 << 31      //  The minor loop offset is not applied to the SADDR
-	SMLOE_1 TCD11_NBYTES_MLOFFNO = 0x01 << 31      //  The minor loop offset is applied to the SADDR
+	NBYTES TCD11_NBYTES_MLOFFNO = 0x3FFFFFFF << 0 //+ Minor Byte Transfer Count
+	DMLOE  TCD11_NBYTES_MLOFFNO = 0x01 << 30      //+ Destination Minor Loop Offset enable
+	SMLOE  TCD11_NBYTES_MLOFFNO = 0x01 << 31      //+ Source Minor Loop Offset Enable
 )
 
 const (
@@ -4597,10 +3693,8 @@ const (
 )
 
 const (
-	CITER   TCD11_CITER_ELINKNO = 0x7FFF << 0 //+ Current Major Iteration Count
-	ELINK   TCD11_CITER_ELINKNO = 0x01 << 15  //+ Enable channel-to-channel linking on minor-loop complete
-	ELINK_0 TCD11_CITER_ELINKNO = 0x00 << 15  //  The channel-to-channel linking is disabled
-	ELINK_1 TCD11_CITER_ELINKNO = 0x01 << 15  //  The channel-to-channel linking is enabled
+	CITER TCD11_CITER_ELINKNO = 0x7FFF << 0 //+ Current Major Iteration Count
+	ELINK TCD11_CITER_ELINKNO = 0x01 << 15  //+ Enable channel-to-channel linking on minor-loop complete
 )
 
 const (
@@ -4609,11 +3703,9 @@ const (
 )
 
 const (
-	CITER   TCD11_CITER_ELINKYES = 0x1FF << 0 //+ Current Major Iteration Count
-	LINKCH  TCD11_CITER_ELINKYES = 0x1F << 9  //+ Minor Loop Link Channel Number
-	ELINK   TCD11_CITER_ELINKYES = 0x01 << 15 //+ Enable channel-to-channel linking on minor-loop complete
-	ELINK_0 TCD11_CITER_ELINKYES = 0x00 << 15 //  The channel-to-channel linking is disabled
-	ELINK_1 TCD11_CITER_ELINKYES = 0x01 << 15 //  The channel-to-channel linking is enabled
+	CITER  TCD11_CITER_ELINKYES = 0x1FF << 0 //+ Current Major Iteration Count
+	LINKCH TCD11_CITER_ELINKYES = 0x1F << 9  //+ Minor Loop Link Channel Number
+	ELINK  TCD11_CITER_ELINKYES = 0x01 << 15 //+ Enable channel-to-channel linking on minor-loop complete
 )
 
 const (
@@ -4631,31 +3723,19 @@ const (
 )
 
 const (
-	START        TCD11_CSR = 0x01 << 0  //+ Channel Start
-	START_0      TCD11_CSR = 0x00 << 0  //  The channel is not explicitly started.
-	START_1      TCD11_CSR = 0x01 << 0  //  The channel is explicitly started via a software initiated service request.
-	INTMAJOR     TCD11_CSR = 0x01 << 1  //+ Enable an interrupt when major iteration count completes.
-	INTMAJOR_0   TCD11_CSR = 0x00 << 1  //  The end-of-major loop interrupt is disabled.
-	INTMAJOR_1   TCD11_CSR = 0x01 << 1  //  The end-of-major loop interrupt is enabled.
-	INTHALF      TCD11_CSR = 0x01 << 2  //+ Enable an interrupt when major counter is half complete.
-	INTHALF_0    TCD11_CSR = 0x00 << 2  //  The half-point interrupt is disabled.
-	INTHALF_1    TCD11_CSR = 0x01 << 2  //  The half-point interrupt is enabled.
-	DREQ         TCD11_CSR = 0x01 << 3  //+ Disable Request
-	DREQ_0       TCD11_CSR = 0x00 << 3  //  The channel's ERQ bit is not affected.
-	DREQ_1       TCD11_CSR = 0x01 << 3  //  The channel's ERQ bit is cleared when the major loop is complete.
-	ESG          TCD11_CSR = 0x01 << 4  //+ Enable Scatter/Gather Processing
-	ESG_0        TCD11_CSR = 0x00 << 4  //  The current channel's TCD is normal format.
-	ESG_1        TCD11_CSR = 0x01 << 4  //  The current channel's TCD specifies a scatter gather format. The DLASTSGA field provides a memory pointer to the next TCD to be loaded into this channel after the major loop completes its execution.
-	MAJORELINK   TCD11_CSR = 0x01 << 5  //+ Enable channel-to-channel linking on major loop complete
-	MAJORELINK_0 TCD11_CSR = 0x00 << 5  //  The channel-to-channel linking is disabled.
-	MAJORELINK_1 TCD11_CSR = 0x01 << 5  //  The channel-to-channel linking is enabled.
-	ACTIVE       TCD11_CSR = 0x01 << 6  //+ Channel Active
-	DONE         TCD11_CSR = 0x01 << 7  //+ Channel Done
-	MAJORLINKCH  TCD11_CSR = 0x1F << 8  //+ Major Loop Link Channel Number
-	BWC          TCD11_CSR = 0x03 << 14 //+ Bandwidth Control
-	BWC_0        TCD11_CSR = 0x00 << 14 //  No eDMA engine stalls.
-	BWC_2        TCD11_CSR = 0x02 << 14 //  eDMA engine stalls for 4 cycles after each R/W.
-	BWC_3        TCD11_CSR = 0x03 << 14 //  eDMA engine stalls for 8 cycles after each R/W.
+	START       TCD11_CSR = 0x01 << 0  //+ Channel Start
+	INTMAJOR    TCD11_CSR = 0x01 << 1  //+ Enable an interrupt when major iteration count completes.
+	INTHALF     TCD11_CSR = 0x01 << 2  //+ Enable an interrupt when major counter is half complete.
+	DREQ        TCD11_CSR = 0x01 << 3  //+ Disable Request
+	ESG         TCD11_CSR = 0x01 << 4  //+ Enable Scatter/Gather Processing
+	MAJORELINK  TCD11_CSR = 0x01 << 5  //+ Enable channel-to-channel linking on major loop complete
+	ACTIVE      TCD11_CSR = 0x01 << 6  //+ Channel Active
+	DONE        TCD11_CSR = 0x01 << 7  //+ Channel Done
+	MAJORLINKCH TCD11_CSR = 0x1F << 8  //+ Major Loop Link Channel Number
+	BWC         TCD11_CSR = 0x03 << 14 //+ Bandwidth Control
+	BWC_0       TCD11_CSR = 0x00 << 14 //  No eDMA engine stalls.
+	BWC_2       TCD11_CSR = 0x02 << 14 //  eDMA engine stalls for 4 cycles after each R/W.
+	BWC_3       TCD11_CSR = 0x03 << 14 //  eDMA engine stalls for 8 cycles after each R/W.
 )
 
 const (
@@ -4672,10 +3752,8 @@ const (
 )
 
 const (
-	BITER   TCD11_BITER_ELINKNO = 0x7FFF << 0 //+ Starting Major Iteration Count
-	ELINK   TCD11_BITER_ELINKNO = 0x01 << 15  //+ Enables channel-to-channel linking on minor loop complete
-	ELINK_0 TCD11_BITER_ELINKNO = 0x00 << 15  //  The channel-to-channel linking is disabled
-	ELINK_1 TCD11_BITER_ELINKNO = 0x01 << 15  //  The channel-to-channel linking is enabled
+	BITER TCD11_BITER_ELINKNO = 0x7FFF << 0 //+ Starting Major Iteration Count
+	ELINK TCD11_BITER_ELINKNO = 0x01 << 15  //+ Enables channel-to-channel linking on minor loop complete
 )
 
 const (
@@ -4684,11 +3762,9 @@ const (
 )
 
 const (
-	BITER   TCD11_BITER_ELINKYES = 0x1FF << 0 //+ Starting major iteration count
-	LINKCH  TCD11_BITER_ELINKYES = 0x1F << 9  //+ Link Channel Number
-	ELINK   TCD11_BITER_ELINKYES = 0x01 << 15 //+ Enables channel-to-channel linking on minor loop complete
-	ELINK_0 TCD11_BITER_ELINKYES = 0x00 << 15 //  The channel-to-channel linking is disabled
-	ELINK_1 TCD11_BITER_ELINKYES = 0x01 << 15 //  The channel-to-channel linking is enabled
+	BITER  TCD11_BITER_ELINKYES = 0x1FF << 0 //+ Starting major iteration count
+	LINKCH TCD11_BITER_ELINKYES = 0x1F << 9  //+ Link Channel Number
+	ELINK  TCD11_BITER_ELINKYES = 0x01 << 15 //+ Enables channel-to-channel linking on minor loop complete
 )
 
 const (
@@ -4743,14 +3819,10 @@ const (
 )
 
 const (
-	NBYTES  TCD12_NBYTES_MLOFFYES = 0x3FF << 0    //+ Minor Byte Transfer Count
-	MLOFF   TCD12_NBYTES_MLOFFYES = 0xFFFFF << 10 //+ If SMLOE or DMLOE is set, this field represents a sign-extended offset applied to the source or destination address to form the next-state value after the minor loop completes.
-	DMLOE   TCD12_NBYTES_MLOFFYES = 0x01 << 30    //+ Destination Minor Loop Offset enable
-	DMLOE_0 TCD12_NBYTES_MLOFFYES = 0x00 << 30    //  The minor loop offset is not applied to the DADDR
-	DMLOE_1 TCD12_NBYTES_MLOFFYES = 0x01 << 30    //  The minor loop offset is applied to the DADDR
-	SMLOE   TCD12_NBYTES_MLOFFYES = 0x01 << 31    //+ Source Minor Loop Offset Enable
-	SMLOE_0 TCD12_NBYTES_MLOFFYES = 0x00 << 31    //  The minor loop offset is not applied to the SADDR
-	SMLOE_1 TCD12_NBYTES_MLOFFYES = 0x01 << 31    //  The minor loop offset is applied to the SADDR
+	NBYTES TCD12_NBYTES_MLOFFYES = 0x3FF << 0    //+ Minor Byte Transfer Count
+	MLOFF  TCD12_NBYTES_MLOFFYES = 0xFFFFF << 10 //+ If SMLOE or DMLOE is set, this field represents a sign-extended offset applied to the source or destination address to form the next-state value after the minor loop completes.
+	DMLOE  TCD12_NBYTES_MLOFFYES = 0x01 << 30    //+ Destination Minor Loop Offset enable
+	SMLOE  TCD12_NBYTES_MLOFFYES = 0x01 << 31    //+ Source Minor Loop Offset Enable
 )
 
 const (
@@ -4761,13 +3833,9 @@ const (
 )
 
 const (
-	NBYTES  TCD12_NBYTES_MLOFFNO = 0x3FFFFFFF << 0 //+ Minor Byte Transfer Count
-	DMLOE   TCD12_NBYTES_MLOFFNO = 0x01 << 30      //+ Destination Minor Loop Offset enable
-	DMLOE_0 TCD12_NBYTES_MLOFFNO = 0x00 << 30      //  The minor loop offset is not applied to the DADDR
-	DMLOE_1 TCD12_NBYTES_MLOFFNO = 0x01 << 30      //  The minor loop offset is applied to the DADDR
-	SMLOE   TCD12_NBYTES_MLOFFNO = 0x01 << 31      //+ Source Minor Loop Offset Enable
-	SMLOE_0 TCD12_NBYTES_MLOFFNO = 0x00 << 31      //  The minor loop offset is not applied to the SADDR
-	SMLOE_1 TCD12_NBYTES_MLOFFNO = 0x01 << 31      //  The minor loop offset is applied to the SADDR
+	NBYTES TCD12_NBYTES_MLOFFNO = 0x3FFFFFFF << 0 //+ Minor Byte Transfer Count
+	DMLOE  TCD12_NBYTES_MLOFFNO = 0x01 << 30      //+ Destination Minor Loop Offset enable
+	SMLOE  TCD12_NBYTES_MLOFFNO = 0x01 << 31      //+ Source Minor Loop Offset Enable
 )
 
 const (
@@ -4809,10 +3877,8 @@ const (
 )
 
 const (
-	CITER   TCD12_CITER_ELINKNO = 0x7FFF << 0 //+ Current Major Iteration Count
-	ELINK   TCD12_CITER_ELINKNO = 0x01 << 15  //+ Enable channel-to-channel linking on minor-loop complete
-	ELINK_0 TCD12_CITER_ELINKNO = 0x00 << 15  //  The channel-to-channel linking is disabled
-	ELINK_1 TCD12_CITER_ELINKNO = 0x01 << 15  //  The channel-to-channel linking is enabled
+	CITER TCD12_CITER_ELINKNO = 0x7FFF << 0 //+ Current Major Iteration Count
+	ELINK TCD12_CITER_ELINKNO = 0x01 << 15  //+ Enable channel-to-channel linking on minor-loop complete
 )
 
 const (
@@ -4821,11 +3887,9 @@ const (
 )
 
 const (
-	CITER   TCD12_CITER_ELINKYES = 0x1FF << 0 //+ Current Major Iteration Count
-	LINKCH  TCD12_CITER_ELINKYES = 0x1F << 9  //+ Minor Loop Link Channel Number
-	ELINK   TCD12_CITER_ELINKYES = 0x01 << 15 //+ Enable channel-to-channel linking on minor-loop complete
-	ELINK_0 TCD12_CITER_ELINKYES = 0x00 << 15 //  The channel-to-channel linking is disabled
-	ELINK_1 TCD12_CITER_ELINKYES = 0x01 << 15 //  The channel-to-channel linking is enabled
+	CITER  TCD12_CITER_ELINKYES = 0x1FF << 0 //+ Current Major Iteration Count
+	LINKCH TCD12_CITER_ELINKYES = 0x1F << 9  //+ Minor Loop Link Channel Number
+	ELINK  TCD12_CITER_ELINKYES = 0x01 << 15 //+ Enable channel-to-channel linking on minor-loop complete
 )
 
 const (
@@ -4843,31 +3907,19 @@ const (
 )
 
 const (
-	START        TCD12_CSR = 0x01 << 0  //+ Channel Start
-	START_0      TCD12_CSR = 0x00 << 0  //  The channel is not explicitly started.
-	START_1      TCD12_CSR = 0x01 << 0  //  The channel is explicitly started via a software initiated service request.
-	INTMAJOR     TCD12_CSR = 0x01 << 1  //+ Enable an interrupt when major iteration count completes.
-	INTMAJOR_0   TCD12_CSR = 0x00 << 1  //  The end-of-major loop interrupt is disabled.
-	INTMAJOR_1   TCD12_CSR = 0x01 << 1  //  The end-of-major loop interrupt is enabled.
-	INTHALF      TCD12_CSR = 0x01 << 2  //+ Enable an interrupt when major counter is half complete.
-	INTHALF_0    TCD12_CSR = 0x00 << 2  //  The half-point interrupt is disabled.
-	INTHALF_1    TCD12_CSR = 0x01 << 2  //  The half-point interrupt is enabled.
-	DREQ         TCD12_CSR = 0x01 << 3  //+ Disable Request
-	DREQ_0       TCD12_CSR = 0x00 << 3  //  The channel's ERQ bit is not affected.
-	DREQ_1       TCD12_CSR = 0x01 << 3  //  The channel's ERQ bit is cleared when the major loop is complete.
-	ESG          TCD12_CSR = 0x01 << 4  //+ Enable Scatter/Gather Processing
-	ESG_0        TCD12_CSR = 0x00 << 4  //  The current channel's TCD is normal format.
-	ESG_1        TCD12_CSR = 0x01 << 4  //  The current channel's TCD specifies a scatter gather format. The DLASTSGA field provides a memory pointer to the next TCD to be loaded into this channel after the major loop completes its execution.
-	MAJORELINK   TCD12_CSR = 0x01 << 5  //+ Enable channel-to-channel linking on major loop complete
-	MAJORELINK_0 TCD12_CSR = 0x00 << 5  //  The channel-to-channel linking is disabled.
-	MAJORELINK_1 TCD12_CSR = 0x01 << 5  //  The channel-to-channel linking is enabled.
-	ACTIVE       TCD12_CSR = 0x01 << 6  //+ Channel Active
-	DONE         TCD12_CSR = 0x01 << 7  //+ Channel Done
-	MAJORLINKCH  TCD12_CSR = 0x1F << 8  //+ Major Loop Link Channel Number
-	BWC          TCD12_CSR = 0x03 << 14 //+ Bandwidth Control
-	BWC_0        TCD12_CSR = 0x00 << 14 //  No eDMA engine stalls.
-	BWC_2        TCD12_CSR = 0x02 << 14 //  eDMA engine stalls for 4 cycles after each R/W.
-	BWC_3        TCD12_CSR = 0x03 << 14 //  eDMA engine stalls for 8 cycles after each R/W.
+	START       TCD12_CSR = 0x01 << 0  //+ Channel Start
+	INTMAJOR    TCD12_CSR = 0x01 << 1  //+ Enable an interrupt when major iteration count completes.
+	INTHALF     TCD12_CSR = 0x01 << 2  //+ Enable an interrupt when major counter is half complete.
+	DREQ        TCD12_CSR = 0x01 << 3  //+ Disable Request
+	ESG         TCD12_CSR = 0x01 << 4  //+ Enable Scatter/Gather Processing
+	MAJORELINK  TCD12_CSR = 0x01 << 5  //+ Enable channel-to-channel linking on major loop complete
+	ACTIVE      TCD12_CSR = 0x01 << 6  //+ Channel Active
+	DONE        TCD12_CSR = 0x01 << 7  //+ Channel Done
+	MAJORLINKCH TCD12_CSR = 0x1F << 8  //+ Major Loop Link Channel Number
+	BWC         TCD12_CSR = 0x03 << 14 //+ Bandwidth Control
+	BWC_0       TCD12_CSR = 0x00 << 14 //  No eDMA engine stalls.
+	BWC_2       TCD12_CSR = 0x02 << 14 //  eDMA engine stalls for 4 cycles after each R/W.
+	BWC_3       TCD12_CSR = 0x03 << 14 //  eDMA engine stalls for 8 cycles after each R/W.
 )
 
 const (
@@ -4884,10 +3936,8 @@ const (
 )
 
 const (
-	BITER   TCD12_BITER_ELINKNO = 0x7FFF << 0 //+ Starting Major Iteration Count
-	ELINK   TCD12_BITER_ELINKNO = 0x01 << 15  //+ Enables channel-to-channel linking on minor loop complete
-	ELINK_0 TCD12_BITER_ELINKNO = 0x00 << 15  //  The channel-to-channel linking is disabled
-	ELINK_1 TCD12_BITER_ELINKNO = 0x01 << 15  //  The channel-to-channel linking is enabled
+	BITER TCD12_BITER_ELINKNO = 0x7FFF << 0 //+ Starting Major Iteration Count
+	ELINK TCD12_BITER_ELINKNO = 0x01 << 15  //+ Enables channel-to-channel linking on minor loop complete
 )
 
 const (
@@ -4896,11 +3946,9 @@ const (
 )
 
 const (
-	BITER   TCD12_BITER_ELINKYES = 0x1FF << 0 //+ Starting major iteration count
-	LINKCH  TCD12_BITER_ELINKYES = 0x1F << 9  //+ Link Channel Number
-	ELINK   TCD12_BITER_ELINKYES = 0x01 << 15 //+ Enables channel-to-channel linking on minor loop complete
-	ELINK_0 TCD12_BITER_ELINKYES = 0x00 << 15 //  The channel-to-channel linking is disabled
-	ELINK_1 TCD12_BITER_ELINKYES = 0x01 << 15 //  The channel-to-channel linking is enabled
+	BITER  TCD12_BITER_ELINKYES = 0x1FF << 0 //+ Starting major iteration count
+	LINKCH TCD12_BITER_ELINKYES = 0x1F << 9  //+ Link Channel Number
+	ELINK  TCD12_BITER_ELINKYES = 0x01 << 15 //+ Enables channel-to-channel linking on minor loop complete
 )
 
 const (
@@ -4963,14 +4011,10 @@ const (
 )
 
 const (
-	NBYTES  TCD13_NBYTES_MLOFFYES = 0x3FF << 0    //+ Minor Byte Transfer Count
-	MLOFF   TCD13_NBYTES_MLOFFYES = 0xFFFFF << 10 //+ If SMLOE or DMLOE is set, this field represents a sign-extended offset applied to the source or destination address to form the next-state value after the minor loop completes.
-	DMLOE   TCD13_NBYTES_MLOFFYES = 0x01 << 30    //+ Destination Minor Loop Offset enable
-	DMLOE_0 TCD13_NBYTES_MLOFFYES = 0x00 << 30    //  The minor loop offset is not applied to the DADDR
-	DMLOE_1 TCD13_NBYTES_MLOFFYES = 0x01 << 30    //  The minor loop offset is applied to the DADDR
-	SMLOE   TCD13_NBYTES_MLOFFYES = 0x01 << 31    //+ Source Minor Loop Offset Enable
-	SMLOE_0 TCD13_NBYTES_MLOFFYES = 0x00 << 31    //  The minor loop offset is not applied to the SADDR
-	SMLOE_1 TCD13_NBYTES_MLOFFYES = 0x01 << 31    //  The minor loop offset is applied to the SADDR
+	NBYTES TCD13_NBYTES_MLOFFYES = 0x3FF << 0    //+ Minor Byte Transfer Count
+	MLOFF  TCD13_NBYTES_MLOFFYES = 0xFFFFF << 10 //+ If SMLOE or DMLOE is set, this field represents a sign-extended offset applied to the source or destination address to form the next-state value after the minor loop completes.
+	DMLOE  TCD13_NBYTES_MLOFFYES = 0x01 << 30    //+ Destination Minor Loop Offset enable
+	SMLOE  TCD13_NBYTES_MLOFFYES = 0x01 << 31    //+ Source Minor Loop Offset Enable
 )
 
 const (
@@ -4981,13 +4025,9 @@ const (
 )
 
 const (
-	NBYTES  TCD13_NBYTES_MLOFFNO = 0x3FFFFFFF << 0 //+ Minor Byte Transfer Count
-	DMLOE   TCD13_NBYTES_MLOFFNO = 0x01 << 30      //+ Destination Minor Loop Offset enable
-	DMLOE_0 TCD13_NBYTES_MLOFFNO = 0x00 << 30      //  The minor loop offset is not applied to the DADDR
-	DMLOE_1 TCD13_NBYTES_MLOFFNO = 0x01 << 30      //  The minor loop offset is applied to the DADDR
-	SMLOE   TCD13_NBYTES_MLOFFNO = 0x01 << 31      //+ Source Minor Loop Offset Enable
-	SMLOE_0 TCD13_NBYTES_MLOFFNO = 0x00 << 31      //  The minor loop offset is not applied to the SADDR
-	SMLOE_1 TCD13_NBYTES_MLOFFNO = 0x01 << 31      //  The minor loop offset is applied to the SADDR
+	NBYTES TCD13_NBYTES_MLOFFNO = 0x3FFFFFFF << 0 //+ Minor Byte Transfer Count
+	DMLOE  TCD13_NBYTES_MLOFFNO = 0x01 << 30      //+ Destination Minor Loop Offset enable
+	SMLOE  TCD13_NBYTES_MLOFFNO = 0x01 << 31      //+ Source Minor Loop Offset Enable
 )
 
 const (
@@ -5021,10 +4061,8 @@ const (
 )
 
 const (
-	CITER   TCD13_CITER_ELINKNO = 0x7FFF << 0 //+ Current Major Iteration Count
-	ELINK   TCD13_CITER_ELINKNO = 0x01 << 15  //+ Enable channel-to-channel linking on minor-loop complete
-	ELINK_0 TCD13_CITER_ELINKNO = 0x00 << 15  //  The channel-to-channel linking is disabled
-	ELINK_1 TCD13_CITER_ELINKNO = 0x01 << 15  //  The channel-to-channel linking is enabled
+	CITER TCD13_CITER_ELINKNO = 0x7FFF << 0 //+ Current Major Iteration Count
+	ELINK TCD13_CITER_ELINKNO = 0x01 << 15  //+ Enable channel-to-channel linking on minor-loop complete
 )
 
 const (
@@ -5033,11 +4071,9 @@ const (
 )
 
 const (
-	CITER   TCD13_CITER_ELINKYES = 0x1FF << 0 //+ Current Major Iteration Count
-	LINKCH  TCD13_CITER_ELINKYES = 0x1F << 9  //+ Minor Loop Link Channel Number
-	ELINK   TCD13_CITER_ELINKYES = 0x01 << 15 //+ Enable channel-to-channel linking on minor-loop complete
-	ELINK_0 TCD13_CITER_ELINKYES = 0x00 << 15 //  The channel-to-channel linking is disabled
-	ELINK_1 TCD13_CITER_ELINKYES = 0x01 << 15 //  The channel-to-channel linking is enabled
+	CITER  TCD13_CITER_ELINKYES = 0x1FF << 0 //+ Current Major Iteration Count
+	LINKCH TCD13_CITER_ELINKYES = 0x1F << 9  //+ Minor Loop Link Channel Number
+	ELINK  TCD13_CITER_ELINKYES = 0x01 << 15 //+ Enable channel-to-channel linking on minor-loop complete
 )
 
 const (
@@ -5055,31 +4091,19 @@ const (
 )
 
 const (
-	START        TCD13_CSR = 0x01 << 0  //+ Channel Start
-	START_0      TCD13_CSR = 0x00 << 0  //  The channel is not explicitly started.
-	START_1      TCD13_CSR = 0x01 << 0  //  The channel is explicitly started via a software initiated service request.
-	INTMAJOR     TCD13_CSR = 0x01 << 1  //+ Enable an interrupt when major iteration count completes.
-	INTMAJOR_0   TCD13_CSR = 0x00 << 1  //  The end-of-major loop interrupt is disabled.
-	INTMAJOR_1   TCD13_CSR = 0x01 << 1  //  The end-of-major loop interrupt is enabled.
-	INTHALF      TCD13_CSR = 0x01 << 2  //+ Enable an interrupt when major counter is half complete.
-	INTHALF_0    TCD13_CSR = 0x00 << 2  //  The half-point interrupt is disabled.
-	INTHALF_1    TCD13_CSR = 0x01 << 2  //  The half-point interrupt is enabled.
-	DREQ         TCD13_CSR = 0x01 << 3  //+ Disable Request
-	DREQ_0       TCD13_CSR = 0x00 << 3  //  The channel's ERQ bit is not affected.
-	DREQ_1       TCD13_CSR = 0x01 << 3  //  The channel's ERQ bit is cleared when the major loop is complete.
-	ESG          TCD13_CSR = 0x01 << 4  //+ Enable Scatter/Gather Processing
-	ESG_0        TCD13_CSR = 0x00 << 4  //  The current channel's TCD is normal format.
-	ESG_1        TCD13_CSR = 0x01 << 4  //  The current channel's TCD specifies a scatter gather format. The DLASTSGA field provides a memory pointer to the next TCD to be loaded into this channel after the major loop completes its execution.
-	MAJORELINK   TCD13_CSR = 0x01 << 5  //+ Enable channel-to-channel linking on major loop complete
-	MAJORELINK_0 TCD13_CSR = 0x00 << 5  //  The channel-to-channel linking is disabled.
-	MAJORELINK_1 TCD13_CSR = 0x01 << 5  //  The channel-to-channel linking is enabled.
-	ACTIVE       TCD13_CSR = 0x01 << 6  //+ Channel Active
-	DONE         TCD13_CSR = 0x01 << 7  //+ Channel Done
-	MAJORLINKCH  TCD13_CSR = 0x1F << 8  //+ Major Loop Link Channel Number
-	BWC          TCD13_CSR = 0x03 << 14 //+ Bandwidth Control
-	BWC_0        TCD13_CSR = 0x00 << 14 //  No eDMA engine stalls.
-	BWC_2        TCD13_CSR = 0x02 << 14 //  eDMA engine stalls for 4 cycles after each R/W.
-	BWC_3        TCD13_CSR = 0x03 << 14 //  eDMA engine stalls for 8 cycles after each R/W.
+	START       TCD13_CSR = 0x01 << 0  //+ Channel Start
+	INTMAJOR    TCD13_CSR = 0x01 << 1  //+ Enable an interrupt when major iteration count completes.
+	INTHALF     TCD13_CSR = 0x01 << 2  //+ Enable an interrupt when major counter is half complete.
+	DREQ        TCD13_CSR = 0x01 << 3  //+ Disable Request
+	ESG         TCD13_CSR = 0x01 << 4  //+ Enable Scatter/Gather Processing
+	MAJORELINK  TCD13_CSR = 0x01 << 5  //+ Enable channel-to-channel linking on major loop complete
+	ACTIVE      TCD13_CSR = 0x01 << 6  //+ Channel Active
+	DONE        TCD13_CSR = 0x01 << 7  //+ Channel Done
+	MAJORLINKCH TCD13_CSR = 0x1F << 8  //+ Major Loop Link Channel Number
+	BWC         TCD13_CSR = 0x03 << 14 //+ Bandwidth Control
+	BWC_0       TCD13_CSR = 0x00 << 14 //  No eDMA engine stalls.
+	BWC_2       TCD13_CSR = 0x02 << 14 //  eDMA engine stalls for 4 cycles after each R/W.
+	BWC_3       TCD13_CSR = 0x03 << 14 //  eDMA engine stalls for 8 cycles after each R/W.
 )
 
 const (
@@ -5096,11 +4120,9 @@ const (
 )
 
 const (
-	BITER   TCD13_BITER_ELINKYES = 0x1FF << 0 //+ Starting major iteration count
-	LINKCH  TCD13_BITER_ELINKYES = 0x1F << 9  //+ Link Channel Number
-	ELINK   TCD13_BITER_ELINKYES = 0x01 << 15 //+ Enables channel-to-channel linking on minor loop complete
-	ELINK_0 TCD13_BITER_ELINKYES = 0x00 << 15 //  The channel-to-channel linking is disabled
-	ELINK_1 TCD13_BITER_ELINKYES = 0x01 << 15 //  The channel-to-channel linking is enabled
+	BITER  TCD13_BITER_ELINKYES = 0x1FF << 0 //+ Starting major iteration count
+	LINKCH TCD13_BITER_ELINKYES = 0x1F << 9  //+ Link Channel Number
+	ELINK  TCD13_BITER_ELINKYES = 0x01 << 15 //+ Enables channel-to-channel linking on minor loop complete
 )
 
 const (
@@ -5110,10 +4132,8 @@ const (
 )
 
 const (
-	BITER   TCD13_BITER_ELINKNO = 0x7FFF << 0 //+ Starting Major Iteration Count
-	ELINK   TCD13_BITER_ELINKNO = 0x01 << 15  //+ Enables channel-to-channel linking on minor loop complete
-	ELINK_0 TCD13_BITER_ELINKNO = 0x00 << 15  //  The channel-to-channel linking is disabled
-	ELINK_1 TCD13_BITER_ELINKNO = 0x01 << 15  //  The channel-to-channel linking is enabled
+	BITER TCD13_BITER_ELINKNO = 0x7FFF << 0 //+ Starting Major Iteration Count
+	ELINK TCD13_BITER_ELINKNO = 0x01 << 15  //+ Enables channel-to-channel linking on minor loop complete
 )
 
 const (
@@ -5167,14 +4187,10 @@ const (
 )
 
 const (
-	NBYTES  TCD14_NBYTES_MLOFFYES = 0x3FF << 0    //+ Minor Byte Transfer Count
-	MLOFF   TCD14_NBYTES_MLOFFYES = 0xFFFFF << 10 //+ If SMLOE or DMLOE is set, this field represents a sign-extended offset applied to the source or destination address to form the next-state value after the minor loop completes.
-	DMLOE   TCD14_NBYTES_MLOFFYES = 0x01 << 30    //+ Destination Minor Loop Offset enable
-	DMLOE_0 TCD14_NBYTES_MLOFFYES = 0x00 << 30    //  The minor loop offset is not applied to the DADDR
-	DMLOE_1 TCD14_NBYTES_MLOFFYES = 0x01 << 30    //  The minor loop offset is applied to the DADDR
-	SMLOE   TCD14_NBYTES_MLOFFYES = 0x01 << 31    //+ Source Minor Loop Offset Enable
-	SMLOE_0 TCD14_NBYTES_MLOFFYES = 0x00 << 31    //  The minor loop offset is not applied to the SADDR
-	SMLOE_1 TCD14_NBYTES_MLOFFYES = 0x01 << 31    //  The minor loop offset is applied to the SADDR
+	NBYTES TCD14_NBYTES_MLOFFYES = 0x3FF << 0    //+ Minor Byte Transfer Count
+	MLOFF  TCD14_NBYTES_MLOFFYES = 0xFFFFF << 10 //+ If SMLOE or DMLOE is set, this field represents a sign-extended offset applied to the source or destination address to form the next-state value after the minor loop completes.
+	DMLOE  TCD14_NBYTES_MLOFFYES = 0x01 << 30    //+ Destination Minor Loop Offset enable
+	SMLOE  TCD14_NBYTES_MLOFFYES = 0x01 << 31    //+ Source Minor Loop Offset Enable
 )
 
 const (
@@ -5193,13 +4209,9 @@ const (
 )
 
 const (
-	NBYTES  TCD14_NBYTES_MLOFFNO = 0x3FFFFFFF << 0 //+ Minor Byte Transfer Count
-	DMLOE   TCD14_NBYTES_MLOFFNO = 0x01 << 30      //+ Destination Minor Loop Offset enable
-	DMLOE_0 TCD14_NBYTES_MLOFFNO = 0x00 << 30      //  The minor loop offset is not applied to the DADDR
-	DMLOE_1 TCD14_NBYTES_MLOFFNO = 0x01 << 30      //  The minor loop offset is applied to the DADDR
-	SMLOE   TCD14_NBYTES_MLOFFNO = 0x01 << 31      //+ Source Minor Loop Offset Enable
-	SMLOE_0 TCD14_NBYTES_MLOFFNO = 0x00 << 31      //  The minor loop offset is not applied to the SADDR
-	SMLOE_1 TCD14_NBYTES_MLOFFNO = 0x01 << 31      //  The minor loop offset is applied to the SADDR
+	NBYTES TCD14_NBYTES_MLOFFNO = 0x3FFFFFFF << 0 //+ Minor Byte Transfer Count
+	DMLOE  TCD14_NBYTES_MLOFFNO = 0x01 << 30      //+ Destination Minor Loop Offset enable
+	SMLOE  TCD14_NBYTES_MLOFFNO = 0x01 << 31      //+ Source Minor Loop Offset Enable
 )
 
 const (
@@ -5233,10 +4245,8 @@ const (
 )
 
 const (
-	CITER   TCD14_CITER_ELINKNO = 0x7FFF << 0 //+ Current Major Iteration Count
-	ELINK   TCD14_CITER_ELINKNO = 0x01 << 15  //+ Enable channel-to-channel linking on minor-loop complete
-	ELINK_0 TCD14_CITER_ELINKNO = 0x00 << 15  //  The channel-to-channel linking is disabled
-	ELINK_1 TCD14_CITER_ELINKNO = 0x01 << 15  //  The channel-to-channel linking is enabled
+	CITER TCD14_CITER_ELINKNO = 0x7FFF << 0 //+ Current Major Iteration Count
+	ELINK TCD14_CITER_ELINKNO = 0x01 << 15  //+ Enable channel-to-channel linking on minor-loop complete
 )
 
 const (
@@ -5245,11 +4255,9 @@ const (
 )
 
 const (
-	CITER   TCD14_CITER_ELINKYES = 0x1FF << 0 //+ Current Major Iteration Count
-	LINKCH  TCD14_CITER_ELINKYES = 0x1F << 9  //+ Minor Loop Link Channel Number
-	ELINK   TCD14_CITER_ELINKYES = 0x01 << 15 //+ Enable channel-to-channel linking on minor-loop complete
-	ELINK_0 TCD14_CITER_ELINKYES = 0x00 << 15 //  The channel-to-channel linking is disabled
-	ELINK_1 TCD14_CITER_ELINKYES = 0x01 << 15 //  The channel-to-channel linking is enabled
+	CITER  TCD14_CITER_ELINKYES = 0x1FF << 0 //+ Current Major Iteration Count
+	LINKCH TCD14_CITER_ELINKYES = 0x1F << 9  //+ Minor Loop Link Channel Number
+	ELINK  TCD14_CITER_ELINKYES = 0x01 << 15 //+ Enable channel-to-channel linking on minor-loop complete
 )
 
 const (
@@ -5267,31 +4275,19 @@ const (
 )
 
 const (
-	START        TCD14_CSR = 0x01 << 0  //+ Channel Start
-	START_0      TCD14_CSR = 0x00 << 0  //  The channel is not explicitly started.
-	START_1      TCD14_CSR = 0x01 << 0  //  The channel is explicitly started via a software initiated service request.
-	INTMAJOR     TCD14_CSR = 0x01 << 1  //+ Enable an interrupt when major iteration count completes.
-	INTMAJOR_0   TCD14_CSR = 0x00 << 1  //  The end-of-major loop interrupt is disabled.
-	INTMAJOR_1   TCD14_CSR = 0x01 << 1  //  The end-of-major loop interrupt is enabled.
-	INTHALF      TCD14_CSR = 0x01 << 2  //+ Enable an interrupt when major counter is half complete.
-	INTHALF_0    TCD14_CSR = 0x00 << 2  //  The half-point interrupt is disabled.
-	INTHALF_1    TCD14_CSR = 0x01 << 2  //  The half-point interrupt is enabled.
-	DREQ         TCD14_CSR = 0x01 << 3  //+ Disable Request
-	DREQ_0       TCD14_CSR = 0x00 << 3  //  The channel's ERQ bit is not affected.
-	DREQ_1       TCD14_CSR = 0x01 << 3  //  The channel's ERQ bit is cleared when the major loop is complete.
-	ESG          TCD14_CSR = 0x01 << 4  //+ Enable Scatter/Gather Processing
-	ESG_0        TCD14_CSR = 0x00 << 4  //  The current channel's TCD is normal format.
-	ESG_1        TCD14_CSR = 0x01 << 4  //  The current channel's TCD specifies a scatter gather format. The DLASTSGA field provides a memory pointer to the next TCD to be loaded into this channel after the major loop completes its execution.
-	MAJORELINK   TCD14_CSR = 0x01 << 5  //+ Enable channel-to-channel linking on major loop complete
-	MAJORELINK_0 TCD14_CSR = 0x00 << 5  //  The channel-to-channel linking is disabled.
-	MAJORELINK_1 TCD14_CSR = 0x01 << 5  //  The channel-to-channel linking is enabled.
-	ACTIVE       TCD14_CSR = 0x01 << 6  //+ Channel Active
-	DONE         TCD14_CSR = 0x01 << 7  //+ Channel Done
-	MAJORLINKCH  TCD14_CSR = 0x1F << 8  //+ Major Loop Link Channel Number
-	BWC          TCD14_CSR = 0x03 << 14 //+ Bandwidth Control
-	BWC_0        TCD14_CSR = 0x00 << 14 //  No eDMA engine stalls.
-	BWC_2        TCD14_CSR = 0x02 << 14 //  eDMA engine stalls for 4 cycles after each R/W.
-	BWC_3        TCD14_CSR = 0x03 << 14 //  eDMA engine stalls for 8 cycles after each R/W.
+	START       TCD14_CSR = 0x01 << 0  //+ Channel Start
+	INTMAJOR    TCD14_CSR = 0x01 << 1  //+ Enable an interrupt when major iteration count completes.
+	INTHALF     TCD14_CSR = 0x01 << 2  //+ Enable an interrupt when major counter is half complete.
+	DREQ        TCD14_CSR = 0x01 << 3  //+ Disable Request
+	ESG         TCD14_CSR = 0x01 << 4  //+ Enable Scatter/Gather Processing
+	MAJORELINK  TCD14_CSR = 0x01 << 5  //+ Enable channel-to-channel linking on major loop complete
+	ACTIVE      TCD14_CSR = 0x01 << 6  //+ Channel Active
+	DONE        TCD14_CSR = 0x01 << 7  //+ Channel Done
+	MAJORLINKCH TCD14_CSR = 0x1F << 8  //+ Major Loop Link Channel Number
+	BWC         TCD14_CSR = 0x03 << 14 //+ Bandwidth Control
+	BWC_0       TCD14_CSR = 0x00 << 14 //  No eDMA engine stalls.
+	BWC_2       TCD14_CSR = 0x02 << 14 //  eDMA engine stalls for 4 cycles after each R/W.
+	BWC_3       TCD14_CSR = 0x03 << 14 //  eDMA engine stalls for 8 cycles after each R/W.
 )
 
 const (
@@ -5308,10 +4304,8 @@ const (
 )
 
 const (
-	BITER   TCD14_BITER_ELINKNO = 0x7FFF << 0 //+ Starting Major Iteration Count
-	ELINK   TCD14_BITER_ELINKNO = 0x01 << 15  //+ Enables channel-to-channel linking on minor loop complete
-	ELINK_0 TCD14_BITER_ELINKNO = 0x00 << 15  //  The channel-to-channel linking is disabled
-	ELINK_1 TCD14_BITER_ELINKNO = 0x01 << 15  //  The channel-to-channel linking is enabled
+	BITER TCD14_BITER_ELINKNO = 0x7FFF << 0 //+ Starting Major Iteration Count
+	ELINK TCD14_BITER_ELINKNO = 0x01 << 15  //+ Enables channel-to-channel linking on minor loop complete
 )
 
 const (
@@ -5320,11 +4314,9 @@ const (
 )
 
 const (
-	BITER   TCD14_BITER_ELINKYES = 0x1FF << 0 //+ Starting major iteration count
-	LINKCH  TCD14_BITER_ELINKYES = 0x1F << 9  //+ Link Channel Number
-	ELINK   TCD14_BITER_ELINKYES = 0x01 << 15 //+ Enables channel-to-channel linking on minor loop complete
-	ELINK_0 TCD14_BITER_ELINKYES = 0x00 << 15 //  The channel-to-channel linking is disabled
-	ELINK_1 TCD14_BITER_ELINKYES = 0x01 << 15 //  The channel-to-channel linking is enabled
+	BITER  TCD14_BITER_ELINKYES = 0x1FF << 0 //+ Starting major iteration count
+	LINKCH TCD14_BITER_ELINKYES = 0x1F << 9  //+ Link Channel Number
+	ELINK  TCD14_BITER_ELINKYES = 0x01 << 15 //+ Enables channel-to-channel linking on minor loop complete
 )
 
 const (
@@ -5387,13 +4379,9 @@ const (
 )
 
 const (
-	NBYTES  TCD15_NBYTES_MLOFFNO = 0x3FFFFFFF << 0 //+ Minor Byte Transfer Count
-	DMLOE   TCD15_NBYTES_MLOFFNO = 0x01 << 30      //+ Destination Minor Loop Offset enable
-	DMLOE_0 TCD15_NBYTES_MLOFFNO = 0x00 << 30      //  The minor loop offset is not applied to the DADDR
-	DMLOE_1 TCD15_NBYTES_MLOFFNO = 0x01 << 30      //  The minor loop offset is applied to the DADDR
-	SMLOE   TCD15_NBYTES_MLOFFNO = 0x01 << 31      //+ Source Minor Loop Offset Enable
-	SMLOE_0 TCD15_NBYTES_MLOFFNO = 0x00 << 31      //  The minor loop offset is not applied to the SADDR
-	SMLOE_1 TCD15_NBYTES_MLOFFNO = 0x01 << 31      //  The minor loop offset is applied to the SADDR
+	NBYTES TCD15_NBYTES_MLOFFNO = 0x3FFFFFFF << 0 //+ Minor Byte Transfer Count
+	DMLOE  TCD15_NBYTES_MLOFFNO = 0x01 << 30      //+ Destination Minor Loop Offset enable
+	SMLOE  TCD15_NBYTES_MLOFFNO = 0x01 << 31      //+ Source Minor Loop Offset Enable
 )
 
 const (
@@ -5403,14 +4391,10 @@ const (
 )
 
 const (
-	NBYTES  TCD15_NBYTES_MLOFFYES = 0x3FF << 0    //+ Minor Byte Transfer Count
-	MLOFF   TCD15_NBYTES_MLOFFYES = 0xFFFFF << 10 //+ If SMLOE or DMLOE is set, this field represents a sign-extended offset applied to the source or destination address to form the next-state value after the minor loop completes.
-	DMLOE   TCD15_NBYTES_MLOFFYES = 0x01 << 30    //+ Destination Minor Loop Offset enable
-	DMLOE_0 TCD15_NBYTES_MLOFFYES = 0x00 << 30    //  The minor loop offset is not applied to the DADDR
-	DMLOE_1 TCD15_NBYTES_MLOFFYES = 0x01 << 30    //  The minor loop offset is applied to the DADDR
-	SMLOE   TCD15_NBYTES_MLOFFYES = 0x01 << 31    //+ Source Minor Loop Offset Enable
-	SMLOE_0 TCD15_NBYTES_MLOFFYES = 0x00 << 31    //  The minor loop offset is not applied to the SADDR
-	SMLOE_1 TCD15_NBYTES_MLOFFYES = 0x01 << 31    //  The minor loop offset is applied to the SADDR
+	NBYTES TCD15_NBYTES_MLOFFYES = 0x3FF << 0    //+ Minor Byte Transfer Count
+	MLOFF  TCD15_NBYTES_MLOFFYES = 0xFFFFF << 10 //+ If SMLOE or DMLOE is set, this field represents a sign-extended offset applied to the source or destination address to form the next-state value after the minor loop completes.
+	DMLOE  TCD15_NBYTES_MLOFFYES = 0x01 << 30    //+ Destination Minor Loop Offset enable
+	SMLOE  TCD15_NBYTES_MLOFFYES = 0x01 << 31    //+ Source Minor Loop Offset Enable
 )
 
 const (
@@ -5445,10 +4429,8 @@ const (
 )
 
 const (
-	CITER   TCD15_CITER_ELINKNO = 0x7FFF << 0 //+ Current Major Iteration Count
-	ELINK   TCD15_CITER_ELINKNO = 0x01 << 15  //+ Enable channel-to-channel linking on minor-loop complete
-	ELINK_0 TCD15_CITER_ELINKNO = 0x00 << 15  //  The channel-to-channel linking is disabled
-	ELINK_1 TCD15_CITER_ELINKNO = 0x01 << 15  //  The channel-to-channel linking is enabled
+	CITER TCD15_CITER_ELINKNO = 0x7FFF << 0 //+ Current Major Iteration Count
+	ELINK TCD15_CITER_ELINKNO = 0x01 << 15  //+ Enable channel-to-channel linking on minor-loop complete
 )
 
 const (
@@ -5457,11 +4439,9 @@ const (
 )
 
 const (
-	CITER   TCD15_CITER_ELINKYES = 0x1FF << 0 //+ Current Major Iteration Count
-	LINKCH  TCD15_CITER_ELINKYES = 0x1F << 9  //+ Minor Loop Link Channel Number
-	ELINK   TCD15_CITER_ELINKYES = 0x01 << 15 //+ Enable channel-to-channel linking on minor-loop complete
-	ELINK_0 TCD15_CITER_ELINKYES = 0x00 << 15 //  The channel-to-channel linking is disabled
-	ELINK_1 TCD15_CITER_ELINKYES = 0x01 << 15 //  The channel-to-channel linking is enabled
+	CITER  TCD15_CITER_ELINKYES = 0x1FF << 0 //+ Current Major Iteration Count
+	LINKCH TCD15_CITER_ELINKYES = 0x1F << 9  //+ Minor Loop Link Channel Number
+	ELINK  TCD15_CITER_ELINKYES = 0x01 << 15 //+ Enable channel-to-channel linking on minor-loop complete
 )
 
 const (
@@ -5479,31 +4459,19 @@ const (
 )
 
 const (
-	START        TCD15_CSR = 0x01 << 0  //+ Channel Start
-	START_0      TCD15_CSR = 0x00 << 0  //  The channel is not explicitly started.
-	START_1      TCD15_CSR = 0x01 << 0  //  The channel is explicitly started via a software initiated service request.
-	INTMAJOR     TCD15_CSR = 0x01 << 1  //+ Enable an interrupt when major iteration count completes.
-	INTMAJOR_0   TCD15_CSR = 0x00 << 1  //  The end-of-major loop interrupt is disabled.
-	INTMAJOR_1   TCD15_CSR = 0x01 << 1  //  The end-of-major loop interrupt is enabled.
-	INTHALF      TCD15_CSR = 0x01 << 2  //+ Enable an interrupt when major counter is half complete.
-	INTHALF_0    TCD15_CSR = 0x00 << 2  //  The half-point interrupt is disabled.
-	INTHALF_1    TCD15_CSR = 0x01 << 2  //  The half-point interrupt is enabled.
-	DREQ         TCD15_CSR = 0x01 << 3  //+ Disable Request
-	DREQ_0       TCD15_CSR = 0x00 << 3  //  The channel's ERQ bit is not affected.
-	DREQ_1       TCD15_CSR = 0x01 << 3  //  The channel's ERQ bit is cleared when the major loop is complete.
-	ESG          TCD15_CSR = 0x01 << 4  //+ Enable Scatter/Gather Processing
-	ESG_0        TCD15_CSR = 0x00 << 4  //  The current channel's TCD is normal format.
-	ESG_1        TCD15_CSR = 0x01 << 4  //  The current channel's TCD specifies a scatter gather format. The DLASTSGA field provides a memory pointer to the next TCD to be loaded into this channel after the major loop completes its execution.
-	MAJORELINK   TCD15_CSR = 0x01 << 5  //+ Enable channel-to-channel linking on major loop complete
-	MAJORELINK_0 TCD15_CSR = 0x00 << 5  //  The channel-to-channel linking is disabled.
-	MAJORELINK_1 TCD15_CSR = 0x01 << 5  //  The channel-to-channel linking is enabled.
-	ACTIVE       TCD15_CSR = 0x01 << 6  //+ Channel Active
-	DONE         TCD15_CSR = 0x01 << 7  //+ Channel Done
-	MAJORLINKCH  TCD15_CSR = 0x1F << 8  //+ Major Loop Link Channel Number
-	BWC          TCD15_CSR = 0x03 << 14 //+ Bandwidth Control
-	BWC_0        TCD15_CSR = 0x00 << 14 //  No eDMA engine stalls.
-	BWC_2        TCD15_CSR = 0x02 << 14 //  eDMA engine stalls for 4 cycles after each R/W.
-	BWC_3        TCD15_CSR = 0x03 << 14 //  eDMA engine stalls for 8 cycles after each R/W.
+	START       TCD15_CSR = 0x01 << 0  //+ Channel Start
+	INTMAJOR    TCD15_CSR = 0x01 << 1  //+ Enable an interrupt when major iteration count completes.
+	INTHALF     TCD15_CSR = 0x01 << 2  //+ Enable an interrupt when major counter is half complete.
+	DREQ        TCD15_CSR = 0x01 << 3  //+ Disable Request
+	ESG         TCD15_CSR = 0x01 << 4  //+ Enable Scatter/Gather Processing
+	MAJORELINK  TCD15_CSR = 0x01 << 5  //+ Enable channel-to-channel linking on major loop complete
+	ACTIVE      TCD15_CSR = 0x01 << 6  //+ Channel Active
+	DONE        TCD15_CSR = 0x01 << 7  //+ Channel Done
+	MAJORLINKCH TCD15_CSR = 0x1F << 8  //+ Major Loop Link Channel Number
+	BWC         TCD15_CSR = 0x03 << 14 //+ Bandwidth Control
+	BWC_0       TCD15_CSR = 0x00 << 14 //  No eDMA engine stalls.
+	BWC_2       TCD15_CSR = 0x02 << 14 //  eDMA engine stalls for 4 cycles after each R/W.
+	BWC_3       TCD15_CSR = 0x03 << 14 //  eDMA engine stalls for 8 cycles after each R/W.
 )
 
 const (
@@ -5520,10 +4488,8 @@ const (
 )
 
 const (
-	BITER   TCD15_BITER_ELINKNO = 0x7FFF << 0 //+ Starting Major Iteration Count
-	ELINK   TCD15_BITER_ELINKNO = 0x01 << 15  //+ Enables channel-to-channel linking on minor loop complete
-	ELINK_0 TCD15_BITER_ELINKNO = 0x00 << 15  //  The channel-to-channel linking is disabled
-	ELINK_1 TCD15_BITER_ELINKNO = 0x01 << 15  //  The channel-to-channel linking is enabled
+	BITER TCD15_BITER_ELINKNO = 0x7FFF << 0 //+ Starting Major Iteration Count
+	ELINK TCD15_BITER_ELINKNO = 0x01 << 15  //+ Enables channel-to-channel linking on minor loop complete
 )
 
 const (
@@ -5532,11 +4498,9 @@ const (
 )
 
 const (
-	BITER   TCD15_BITER_ELINKYES = 0x1FF << 0 //+ Starting major iteration count
-	LINKCH  TCD15_BITER_ELINKYES = 0x1F << 9  //+ Link Channel Number
-	ELINK   TCD15_BITER_ELINKYES = 0x01 << 15 //+ Enables channel-to-channel linking on minor loop complete
-	ELINK_0 TCD15_BITER_ELINKYES = 0x00 << 15 //  The channel-to-channel linking is disabled
-	ELINK_1 TCD15_BITER_ELINKYES = 0x01 << 15 //  The channel-to-channel linking is enabled
+	BITER  TCD15_BITER_ELINKYES = 0x1FF << 0 //+ Starting major iteration count
+	LINKCH TCD15_BITER_ELINKYES = 0x1F << 9  //+ Link Channel Number
+	ELINK  TCD15_BITER_ELINKYES = 0x01 << 15 //+ Enables channel-to-channel linking on minor loop complete
 )
 
 const (
@@ -5599,13 +4563,9 @@ const (
 )
 
 const (
-	NBYTES  TCD16_NBYTES_MLOFFNO = 0x3FFFFFFF << 0 //+ Minor Byte Transfer Count
-	DMLOE   TCD16_NBYTES_MLOFFNO = 0x01 << 30      //+ Destination Minor Loop Offset enable
-	DMLOE_0 TCD16_NBYTES_MLOFFNO = 0x00 << 30      //  The minor loop offset is not applied to the DADDR
-	DMLOE_1 TCD16_NBYTES_MLOFFNO = 0x01 << 30      //  The minor loop offset is applied to the DADDR
-	SMLOE   TCD16_NBYTES_MLOFFNO = 0x01 << 31      //+ Source Minor Loop Offset Enable
-	SMLOE_0 TCD16_NBYTES_MLOFFNO = 0x00 << 31      //  The minor loop offset is not applied to the SADDR
-	SMLOE_1 TCD16_NBYTES_MLOFFNO = 0x01 << 31      //  The minor loop offset is applied to the SADDR
+	NBYTES TCD16_NBYTES_MLOFFNO = 0x3FFFFFFF << 0 //+ Minor Byte Transfer Count
+	DMLOE  TCD16_NBYTES_MLOFFNO = 0x01 << 30      //+ Destination Minor Loop Offset enable
+	SMLOE  TCD16_NBYTES_MLOFFNO = 0x01 << 31      //+ Source Minor Loop Offset Enable
 )
 
 const (
@@ -5615,14 +4575,10 @@ const (
 )
 
 const (
-	NBYTES  TCD16_NBYTES_MLOFFYES = 0x3FF << 0    //+ Minor Byte Transfer Count
-	MLOFF   TCD16_NBYTES_MLOFFYES = 0xFFFFF << 10 //+ If SMLOE or DMLOE is set, this field represents a sign-extended offset applied to the source or destination address to form the next-state value after the minor loop completes.
-	DMLOE   TCD16_NBYTES_MLOFFYES = 0x01 << 30    //+ Destination Minor Loop Offset enable
-	DMLOE_0 TCD16_NBYTES_MLOFFYES = 0x00 << 30    //  The minor loop offset is not applied to the DADDR
-	DMLOE_1 TCD16_NBYTES_MLOFFYES = 0x01 << 30    //  The minor loop offset is applied to the DADDR
-	SMLOE   TCD16_NBYTES_MLOFFYES = 0x01 << 31    //+ Source Minor Loop Offset Enable
-	SMLOE_0 TCD16_NBYTES_MLOFFYES = 0x00 << 31    //  The minor loop offset is not applied to the SADDR
-	SMLOE_1 TCD16_NBYTES_MLOFFYES = 0x01 << 31    //  The minor loop offset is applied to the SADDR
+	NBYTES TCD16_NBYTES_MLOFFYES = 0x3FF << 0    //+ Minor Byte Transfer Count
+	MLOFF  TCD16_NBYTES_MLOFFYES = 0xFFFFF << 10 //+ If SMLOE or DMLOE is set, this field represents a sign-extended offset applied to the source or destination address to form the next-state value after the minor loop completes.
+	DMLOE  TCD16_NBYTES_MLOFFYES = 0x01 << 30    //+ Destination Minor Loop Offset enable
+	SMLOE  TCD16_NBYTES_MLOFFYES = 0x01 << 31    //+ Source Minor Loop Offset Enable
 )
 
 const (
@@ -5657,10 +4613,8 @@ const (
 )
 
 const (
-	CITER   TCD16_CITER_ELINKNO = 0x7FFF << 0 //+ Current Major Iteration Count
-	ELINK   TCD16_CITER_ELINKNO = 0x01 << 15  //+ Enable channel-to-channel linking on minor-loop complete
-	ELINK_0 TCD16_CITER_ELINKNO = 0x00 << 15  //  The channel-to-channel linking is disabled
-	ELINK_1 TCD16_CITER_ELINKNO = 0x01 << 15  //  The channel-to-channel linking is enabled
+	CITER TCD16_CITER_ELINKNO = 0x7FFF << 0 //+ Current Major Iteration Count
+	ELINK TCD16_CITER_ELINKNO = 0x01 << 15  //+ Enable channel-to-channel linking on minor-loop complete
 )
 
 const (
@@ -5669,11 +4623,9 @@ const (
 )
 
 const (
-	CITER   TCD16_CITER_ELINKYES = 0x1FF << 0 //+ Current Major Iteration Count
-	LINKCH  TCD16_CITER_ELINKYES = 0x1F << 9  //+ Minor Loop Link Channel Number
-	ELINK   TCD16_CITER_ELINKYES = 0x01 << 15 //+ Enable channel-to-channel linking on minor-loop complete
-	ELINK_0 TCD16_CITER_ELINKYES = 0x00 << 15 //  The channel-to-channel linking is disabled
-	ELINK_1 TCD16_CITER_ELINKYES = 0x01 << 15 //  The channel-to-channel linking is enabled
+	CITER  TCD16_CITER_ELINKYES = 0x1FF << 0 //+ Current Major Iteration Count
+	LINKCH TCD16_CITER_ELINKYES = 0x1F << 9  //+ Minor Loop Link Channel Number
+	ELINK  TCD16_CITER_ELINKYES = 0x01 << 15 //+ Enable channel-to-channel linking on minor-loop complete
 )
 
 const (
@@ -5691,31 +4643,19 @@ const (
 )
 
 const (
-	START        TCD16_CSR = 0x01 << 0  //+ Channel Start
-	START_0      TCD16_CSR = 0x00 << 0  //  The channel is not explicitly started.
-	START_1      TCD16_CSR = 0x01 << 0  //  The channel is explicitly started via a software initiated service request.
-	INTMAJOR     TCD16_CSR = 0x01 << 1  //+ Enable an interrupt when major iteration count completes.
-	INTMAJOR_0   TCD16_CSR = 0x00 << 1  //  The end-of-major loop interrupt is disabled.
-	INTMAJOR_1   TCD16_CSR = 0x01 << 1  //  The end-of-major loop interrupt is enabled.
-	INTHALF      TCD16_CSR = 0x01 << 2  //+ Enable an interrupt when major counter is half complete.
-	INTHALF_0    TCD16_CSR = 0x00 << 2  //  The half-point interrupt is disabled.
-	INTHALF_1    TCD16_CSR = 0x01 << 2  //  The half-point interrupt is enabled.
-	DREQ         TCD16_CSR = 0x01 << 3  //+ Disable Request
-	DREQ_0       TCD16_CSR = 0x00 << 3  //  The channel's ERQ bit is not affected.
-	DREQ_1       TCD16_CSR = 0x01 << 3  //  The channel's ERQ bit is cleared when the major loop is complete.
-	ESG          TCD16_CSR = 0x01 << 4  //+ Enable Scatter/Gather Processing
-	ESG_0        TCD16_CSR = 0x00 << 4  //  The current channel's TCD is normal format.
-	ESG_1        TCD16_CSR = 0x01 << 4  //  The current channel's TCD specifies a scatter gather format. The DLASTSGA field provides a memory pointer to the next TCD to be loaded into this channel after the major loop completes its execution.
-	MAJORELINK   TCD16_CSR = 0x01 << 5  //+ Enable channel-to-channel linking on major loop complete
-	MAJORELINK_0 TCD16_CSR = 0x00 << 5  //  The channel-to-channel linking is disabled.
-	MAJORELINK_1 TCD16_CSR = 0x01 << 5  //  The channel-to-channel linking is enabled.
-	ACTIVE       TCD16_CSR = 0x01 << 6  //+ Channel Active
-	DONE         TCD16_CSR = 0x01 << 7  //+ Channel Done
-	MAJORLINKCH  TCD16_CSR = 0x1F << 8  //+ Major Loop Link Channel Number
-	BWC          TCD16_CSR = 0x03 << 14 //+ Bandwidth Control
-	BWC_0        TCD16_CSR = 0x00 << 14 //  No eDMA engine stalls.
-	BWC_2        TCD16_CSR = 0x02 << 14 //  eDMA engine stalls for 4 cycles after each R/W.
-	BWC_3        TCD16_CSR = 0x03 << 14 //  eDMA engine stalls for 8 cycles after each R/W.
+	START       TCD16_CSR = 0x01 << 0  //+ Channel Start
+	INTMAJOR    TCD16_CSR = 0x01 << 1  //+ Enable an interrupt when major iteration count completes.
+	INTHALF     TCD16_CSR = 0x01 << 2  //+ Enable an interrupt when major counter is half complete.
+	DREQ        TCD16_CSR = 0x01 << 3  //+ Disable Request
+	ESG         TCD16_CSR = 0x01 << 4  //+ Enable Scatter/Gather Processing
+	MAJORELINK  TCD16_CSR = 0x01 << 5  //+ Enable channel-to-channel linking on major loop complete
+	ACTIVE      TCD16_CSR = 0x01 << 6  //+ Channel Active
+	DONE        TCD16_CSR = 0x01 << 7  //+ Channel Done
+	MAJORLINKCH TCD16_CSR = 0x1F << 8  //+ Major Loop Link Channel Number
+	BWC         TCD16_CSR = 0x03 << 14 //+ Bandwidth Control
+	BWC_0       TCD16_CSR = 0x00 << 14 //  No eDMA engine stalls.
+	BWC_2       TCD16_CSR = 0x02 << 14 //  eDMA engine stalls for 4 cycles after each R/W.
+	BWC_3       TCD16_CSR = 0x03 << 14 //  eDMA engine stalls for 8 cycles after each R/W.
 )
 
 const (
@@ -5732,11 +4672,9 @@ const (
 )
 
 const (
-	BITER   TCD16_BITER_ELINKYES = 0x1FF << 0 //+ Starting major iteration count
-	LINKCH  TCD16_BITER_ELINKYES = 0x1F << 9  //+ Link Channel Number
-	ELINK   TCD16_BITER_ELINKYES = 0x01 << 15 //+ Enables channel-to-channel linking on minor loop complete
-	ELINK_0 TCD16_BITER_ELINKYES = 0x00 << 15 //  The channel-to-channel linking is disabled
-	ELINK_1 TCD16_BITER_ELINKYES = 0x01 << 15 //  The channel-to-channel linking is enabled
+	BITER  TCD16_BITER_ELINKYES = 0x1FF << 0 //+ Starting major iteration count
+	LINKCH TCD16_BITER_ELINKYES = 0x1F << 9  //+ Link Channel Number
+	ELINK  TCD16_BITER_ELINKYES = 0x01 << 15 //+ Enables channel-to-channel linking on minor loop complete
 )
 
 const (
@@ -5746,10 +4684,8 @@ const (
 )
 
 const (
-	BITER   TCD16_BITER_ELINKNO = 0x7FFF << 0 //+ Starting Major Iteration Count
-	ELINK   TCD16_BITER_ELINKNO = 0x01 << 15  //+ Enables channel-to-channel linking on minor loop complete
-	ELINK_0 TCD16_BITER_ELINKNO = 0x00 << 15  //  The channel-to-channel linking is disabled
-	ELINK_1 TCD16_BITER_ELINKNO = 0x01 << 15  //  The channel-to-channel linking is enabled
+	BITER TCD16_BITER_ELINKNO = 0x7FFF << 0 //+ Starting Major Iteration Count
+	ELINK TCD16_BITER_ELINKNO = 0x01 << 15  //+ Enables channel-to-channel linking on minor loop complete
 )
 
 const (
@@ -5803,14 +4739,10 @@ const (
 )
 
 const (
-	NBYTES  TCD17_NBYTES_MLOFFYES = 0x3FF << 0    //+ Minor Byte Transfer Count
-	MLOFF   TCD17_NBYTES_MLOFFYES = 0xFFFFF << 10 //+ If SMLOE or DMLOE is set, this field represents a sign-extended offset applied to the source or destination address to form the next-state value after the minor loop completes.
-	DMLOE   TCD17_NBYTES_MLOFFYES = 0x01 << 30    //+ Destination Minor Loop Offset enable
-	DMLOE_0 TCD17_NBYTES_MLOFFYES = 0x00 << 30    //  The minor loop offset is not applied to the DADDR
-	DMLOE_1 TCD17_NBYTES_MLOFFYES = 0x01 << 30    //  The minor loop offset is applied to the DADDR
-	SMLOE   TCD17_NBYTES_MLOFFYES = 0x01 << 31    //+ Source Minor Loop Offset Enable
-	SMLOE_0 TCD17_NBYTES_MLOFFYES = 0x00 << 31    //  The minor loop offset is not applied to the SADDR
-	SMLOE_1 TCD17_NBYTES_MLOFFYES = 0x01 << 31    //  The minor loop offset is applied to the SADDR
+	NBYTES TCD17_NBYTES_MLOFFYES = 0x3FF << 0    //+ Minor Byte Transfer Count
+	MLOFF  TCD17_NBYTES_MLOFFYES = 0xFFFFF << 10 //+ If SMLOE or DMLOE is set, this field represents a sign-extended offset applied to the source or destination address to form the next-state value after the minor loop completes.
+	DMLOE  TCD17_NBYTES_MLOFFYES = 0x01 << 30    //+ Destination Minor Loop Offset enable
+	SMLOE  TCD17_NBYTES_MLOFFYES = 0x01 << 31    //+ Source Minor Loop Offset Enable
 )
 
 const (
@@ -5829,13 +4761,9 @@ const (
 )
 
 const (
-	NBYTES  TCD17_NBYTES_MLOFFNO = 0x3FFFFFFF << 0 //+ Minor Byte Transfer Count
-	DMLOE   TCD17_NBYTES_MLOFFNO = 0x01 << 30      //+ Destination Minor Loop Offset enable
-	DMLOE_0 TCD17_NBYTES_MLOFFNO = 0x00 << 30      //  The minor loop offset is not applied to the DADDR
-	DMLOE_1 TCD17_NBYTES_MLOFFNO = 0x01 << 30      //  The minor loop offset is applied to the DADDR
-	SMLOE   TCD17_NBYTES_MLOFFNO = 0x01 << 31      //+ Source Minor Loop Offset Enable
-	SMLOE_0 TCD17_NBYTES_MLOFFNO = 0x00 << 31      //  The minor loop offset is not applied to the SADDR
-	SMLOE_1 TCD17_NBYTES_MLOFFNO = 0x01 << 31      //  The minor loop offset is applied to the SADDR
+	NBYTES TCD17_NBYTES_MLOFFNO = 0x3FFFFFFF << 0 //+ Minor Byte Transfer Count
+	DMLOE  TCD17_NBYTES_MLOFFNO = 0x01 << 30      //+ Destination Minor Loop Offset enable
+	SMLOE  TCD17_NBYTES_MLOFFNO = 0x01 << 31      //+ Source Minor Loop Offset Enable
 )
 
 const (
@@ -5869,10 +4797,8 @@ const (
 )
 
 const (
-	CITER   TCD17_CITER_ELINKNO = 0x7FFF << 0 //+ Current Major Iteration Count
-	ELINK   TCD17_CITER_ELINKNO = 0x01 << 15  //+ Enable channel-to-channel linking on minor-loop complete
-	ELINK_0 TCD17_CITER_ELINKNO = 0x00 << 15  //  The channel-to-channel linking is disabled
-	ELINK_1 TCD17_CITER_ELINKNO = 0x01 << 15  //  The channel-to-channel linking is enabled
+	CITER TCD17_CITER_ELINKNO = 0x7FFF << 0 //+ Current Major Iteration Count
+	ELINK TCD17_CITER_ELINKNO = 0x01 << 15  //+ Enable channel-to-channel linking on minor-loop complete
 )
 
 const (
@@ -5881,11 +4807,9 @@ const (
 )
 
 const (
-	CITER   TCD17_CITER_ELINKYES = 0x1FF << 0 //+ Current Major Iteration Count
-	LINKCH  TCD17_CITER_ELINKYES = 0x1F << 9  //+ Minor Loop Link Channel Number
-	ELINK   TCD17_CITER_ELINKYES = 0x01 << 15 //+ Enable channel-to-channel linking on minor-loop complete
-	ELINK_0 TCD17_CITER_ELINKYES = 0x00 << 15 //  The channel-to-channel linking is disabled
-	ELINK_1 TCD17_CITER_ELINKYES = 0x01 << 15 //  The channel-to-channel linking is enabled
+	CITER  TCD17_CITER_ELINKYES = 0x1FF << 0 //+ Current Major Iteration Count
+	LINKCH TCD17_CITER_ELINKYES = 0x1F << 9  //+ Minor Loop Link Channel Number
+	ELINK  TCD17_CITER_ELINKYES = 0x01 << 15 //+ Enable channel-to-channel linking on minor-loop complete
 )
 
 const (
@@ -5903,31 +4827,19 @@ const (
 )
 
 const (
-	START        TCD17_CSR = 0x01 << 0  //+ Channel Start
-	START_0      TCD17_CSR = 0x00 << 0  //  The channel is not explicitly started.
-	START_1      TCD17_CSR = 0x01 << 0  //  The channel is explicitly started via a software initiated service request.
-	INTMAJOR     TCD17_CSR = 0x01 << 1  //+ Enable an interrupt when major iteration count completes.
-	INTMAJOR_0   TCD17_CSR = 0x00 << 1  //  The end-of-major loop interrupt is disabled.
-	INTMAJOR_1   TCD17_CSR = 0x01 << 1  //  The end-of-major loop interrupt is enabled.
-	INTHALF      TCD17_CSR = 0x01 << 2  //+ Enable an interrupt when major counter is half complete.
-	INTHALF_0    TCD17_CSR = 0x00 << 2  //  The half-point interrupt is disabled.
-	INTHALF_1    TCD17_CSR = 0x01 << 2  //  The half-point interrupt is enabled.
-	DREQ         TCD17_CSR = 0x01 << 3  //+ Disable Request
-	DREQ_0       TCD17_CSR = 0x00 << 3  //  The channel's ERQ bit is not affected.
-	DREQ_1       TCD17_CSR = 0x01 << 3  //  The channel's ERQ bit is cleared when the major loop is complete.
-	ESG          TCD17_CSR = 0x01 << 4  //+ Enable Scatter/Gather Processing
-	ESG_0        TCD17_CSR = 0x00 << 4  //  The current channel's TCD is normal format.
-	ESG_1        TCD17_CSR = 0x01 << 4  //  The current channel's TCD specifies a scatter gather format. The DLASTSGA field provides a memory pointer to the next TCD to be loaded into this channel after the major loop completes its execution.
-	MAJORELINK   TCD17_CSR = 0x01 << 5  //+ Enable channel-to-channel linking on major loop complete
-	MAJORELINK_0 TCD17_CSR = 0x00 << 5  //  The channel-to-channel linking is disabled.
-	MAJORELINK_1 TCD17_CSR = 0x01 << 5  //  The channel-to-channel linking is enabled.
-	ACTIVE       TCD17_CSR = 0x01 << 6  //+ Channel Active
-	DONE         TCD17_CSR = 0x01 << 7  //+ Channel Done
-	MAJORLINKCH  TCD17_CSR = 0x1F << 8  //+ Major Loop Link Channel Number
-	BWC          TCD17_CSR = 0x03 << 14 //+ Bandwidth Control
-	BWC_0        TCD17_CSR = 0x00 << 14 //  No eDMA engine stalls.
-	BWC_2        TCD17_CSR = 0x02 << 14 //  eDMA engine stalls for 4 cycles after each R/W.
-	BWC_3        TCD17_CSR = 0x03 << 14 //  eDMA engine stalls for 8 cycles after each R/W.
+	START       TCD17_CSR = 0x01 << 0  //+ Channel Start
+	INTMAJOR    TCD17_CSR = 0x01 << 1  //+ Enable an interrupt when major iteration count completes.
+	INTHALF     TCD17_CSR = 0x01 << 2  //+ Enable an interrupt when major counter is half complete.
+	DREQ        TCD17_CSR = 0x01 << 3  //+ Disable Request
+	ESG         TCD17_CSR = 0x01 << 4  //+ Enable Scatter/Gather Processing
+	MAJORELINK  TCD17_CSR = 0x01 << 5  //+ Enable channel-to-channel linking on major loop complete
+	ACTIVE      TCD17_CSR = 0x01 << 6  //+ Channel Active
+	DONE        TCD17_CSR = 0x01 << 7  //+ Channel Done
+	MAJORLINKCH TCD17_CSR = 0x1F << 8  //+ Major Loop Link Channel Number
+	BWC         TCD17_CSR = 0x03 << 14 //+ Bandwidth Control
+	BWC_0       TCD17_CSR = 0x00 << 14 //  No eDMA engine stalls.
+	BWC_2       TCD17_CSR = 0x02 << 14 //  eDMA engine stalls for 4 cycles after each R/W.
+	BWC_3       TCD17_CSR = 0x03 << 14 //  eDMA engine stalls for 8 cycles after each R/W.
 )
 
 const (
@@ -5944,10 +4856,8 @@ const (
 )
 
 const (
-	BITER   TCD17_BITER_ELINKNO = 0x7FFF << 0 //+ Starting Major Iteration Count
-	ELINK   TCD17_BITER_ELINKNO = 0x01 << 15  //+ Enables channel-to-channel linking on minor loop complete
-	ELINK_0 TCD17_BITER_ELINKNO = 0x00 << 15  //  The channel-to-channel linking is disabled
-	ELINK_1 TCD17_BITER_ELINKNO = 0x01 << 15  //  The channel-to-channel linking is enabled
+	BITER TCD17_BITER_ELINKNO = 0x7FFF << 0 //+ Starting Major Iteration Count
+	ELINK TCD17_BITER_ELINKNO = 0x01 << 15  //+ Enables channel-to-channel linking on minor loop complete
 )
 
 const (
@@ -5956,11 +4866,9 @@ const (
 )
 
 const (
-	BITER   TCD17_BITER_ELINKYES = 0x1FF << 0 //+ Starting major iteration count
-	LINKCH  TCD17_BITER_ELINKYES = 0x1F << 9  //+ Link Channel Number
-	ELINK   TCD17_BITER_ELINKYES = 0x01 << 15 //+ Enables channel-to-channel linking on minor loop complete
-	ELINK_0 TCD17_BITER_ELINKYES = 0x00 << 15 //  The channel-to-channel linking is disabled
-	ELINK_1 TCD17_BITER_ELINKYES = 0x01 << 15 //  The channel-to-channel linking is enabled
+	BITER  TCD17_BITER_ELINKYES = 0x1FF << 0 //+ Starting major iteration count
+	LINKCH TCD17_BITER_ELINKYES = 0x1F << 9  //+ Link Channel Number
+	ELINK  TCD17_BITER_ELINKYES = 0x01 << 15 //+ Enables channel-to-channel linking on minor loop complete
 )
 
 const (
@@ -6023,13 +4931,9 @@ const (
 )
 
 const (
-	NBYTES  TCD18_NBYTES_MLOFFNO = 0x3FFFFFFF << 0 //+ Minor Byte Transfer Count
-	DMLOE   TCD18_NBYTES_MLOFFNO = 0x01 << 30      //+ Destination Minor Loop Offset enable
-	DMLOE_0 TCD18_NBYTES_MLOFFNO = 0x00 << 30      //  The minor loop offset is not applied to the DADDR
-	DMLOE_1 TCD18_NBYTES_MLOFFNO = 0x01 << 30      //  The minor loop offset is applied to the DADDR
-	SMLOE   TCD18_NBYTES_MLOFFNO = 0x01 << 31      //+ Source Minor Loop Offset Enable
-	SMLOE_0 TCD18_NBYTES_MLOFFNO = 0x00 << 31      //  The minor loop offset is not applied to the SADDR
-	SMLOE_1 TCD18_NBYTES_MLOFFNO = 0x01 << 31      //  The minor loop offset is applied to the SADDR
+	NBYTES TCD18_NBYTES_MLOFFNO = 0x3FFFFFFF << 0 //+ Minor Byte Transfer Count
+	DMLOE  TCD18_NBYTES_MLOFFNO = 0x01 << 30      //+ Destination Minor Loop Offset enable
+	SMLOE  TCD18_NBYTES_MLOFFNO = 0x01 << 31      //+ Source Minor Loop Offset Enable
 )
 
 const (
@@ -6039,14 +4943,10 @@ const (
 )
 
 const (
-	NBYTES  TCD18_NBYTES_MLOFFYES = 0x3FF << 0    //+ Minor Byte Transfer Count
-	MLOFF   TCD18_NBYTES_MLOFFYES = 0xFFFFF << 10 //+ If SMLOE or DMLOE is set, this field represents a sign-extended offset applied to the source or destination address to form the next-state value after the minor loop completes.
-	DMLOE   TCD18_NBYTES_MLOFFYES = 0x01 << 30    //+ Destination Minor Loop Offset enable
-	DMLOE_0 TCD18_NBYTES_MLOFFYES = 0x00 << 30    //  The minor loop offset is not applied to the DADDR
-	DMLOE_1 TCD18_NBYTES_MLOFFYES = 0x01 << 30    //  The minor loop offset is applied to the DADDR
-	SMLOE   TCD18_NBYTES_MLOFFYES = 0x01 << 31    //+ Source Minor Loop Offset Enable
-	SMLOE_0 TCD18_NBYTES_MLOFFYES = 0x00 << 31    //  The minor loop offset is not applied to the SADDR
-	SMLOE_1 TCD18_NBYTES_MLOFFYES = 0x01 << 31    //  The minor loop offset is applied to the SADDR
+	NBYTES TCD18_NBYTES_MLOFFYES = 0x3FF << 0    //+ Minor Byte Transfer Count
+	MLOFF  TCD18_NBYTES_MLOFFYES = 0xFFFFF << 10 //+ If SMLOE or DMLOE is set, this field represents a sign-extended offset applied to the source or destination address to form the next-state value after the minor loop completes.
+	DMLOE  TCD18_NBYTES_MLOFFYES = 0x01 << 30    //+ Destination Minor Loop Offset enable
+	SMLOE  TCD18_NBYTES_MLOFFYES = 0x01 << 31    //+ Source Minor Loop Offset Enable
 )
 
 const (
@@ -6081,10 +4981,8 @@ const (
 )
 
 const (
-	CITER   TCD18_CITER_ELINKNO = 0x7FFF << 0 //+ Current Major Iteration Count
-	ELINK   TCD18_CITER_ELINKNO = 0x01 << 15  //+ Enable channel-to-channel linking on minor-loop complete
-	ELINK_0 TCD18_CITER_ELINKNO = 0x00 << 15  //  The channel-to-channel linking is disabled
-	ELINK_1 TCD18_CITER_ELINKNO = 0x01 << 15  //  The channel-to-channel linking is enabled
+	CITER TCD18_CITER_ELINKNO = 0x7FFF << 0 //+ Current Major Iteration Count
+	ELINK TCD18_CITER_ELINKNO = 0x01 << 15  //+ Enable channel-to-channel linking on minor-loop complete
 )
 
 const (
@@ -6093,11 +4991,9 @@ const (
 )
 
 const (
-	CITER   TCD18_CITER_ELINKYES = 0x1FF << 0 //+ Current Major Iteration Count
-	LINKCH  TCD18_CITER_ELINKYES = 0x1F << 9  //+ Minor Loop Link Channel Number
-	ELINK   TCD18_CITER_ELINKYES = 0x01 << 15 //+ Enable channel-to-channel linking on minor-loop complete
-	ELINK_0 TCD18_CITER_ELINKYES = 0x00 << 15 //  The channel-to-channel linking is disabled
-	ELINK_1 TCD18_CITER_ELINKYES = 0x01 << 15 //  The channel-to-channel linking is enabled
+	CITER  TCD18_CITER_ELINKYES = 0x1FF << 0 //+ Current Major Iteration Count
+	LINKCH TCD18_CITER_ELINKYES = 0x1F << 9  //+ Minor Loop Link Channel Number
+	ELINK  TCD18_CITER_ELINKYES = 0x01 << 15 //+ Enable channel-to-channel linking on minor-loop complete
 )
 
 const (
@@ -6115,31 +5011,19 @@ const (
 )
 
 const (
-	START        TCD18_CSR = 0x01 << 0  //+ Channel Start
-	START_0      TCD18_CSR = 0x00 << 0  //  The channel is not explicitly started.
-	START_1      TCD18_CSR = 0x01 << 0  //  The channel is explicitly started via a software initiated service request.
-	INTMAJOR     TCD18_CSR = 0x01 << 1  //+ Enable an interrupt when major iteration count completes.
-	INTMAJOR_0   TCD18_CSR = 0x00 << 1  //  The end-of-major loop interrupt is disabled.
-	INTMAJOR_1   TCD18_CSR = 0x01 << 1  //  The end-of-major loop interrupt is enabled.
-	INTHALF      TCD18_CSR = 0x01 << 2  //+ Enable an interrupt when major counter is half complete.
-	INTHALF_0    TCD18_CSR = 0x00 << 2  //  The half-point interrupt is disabled.
-	INTHALF_1    TCD18_CSR = 0x01 << 2  //  The half-point interrupt is enabled.
-	DREQ         TCD18_CSR = 0x01 << 3  //+ Disable Request
-	DREQ_0       TCD18_CSR = 0x00 << 3  //  The channel's ERQ bit is not affected.
-	DREQ_1       TCD18_CSR = 0x01 << 3  //  The channel's ERQ bit is cleared when the major loop is complete.
-	ESG          TCD18_CSR = 0x01 << 4  //+ Enable Scatter/Gather Processing
-	ESG_0        TCD18_CSR = 0x00 << 4  //  The current channel's TCD is normal format.
-	ESG_1        TCD18_CSR = 0x01 << 4  //  The current channel's TCD specifies a scatter gather format. The DLASTSGA field provides a memory pointer to the next TCD to be loaded into this channel after the major loop completes its execution.
-	MAJORELINK   TCD18_CSR = 0x01 << 5  //+ Enable channel-to-channel linking on major loop complete
-	MAJORELINK_0 TCD18_CSR = 0x00 << 5  //  The channel-to-channel linking is disabled.
-	MAJORELINK_1 TCD18_CSR = 0x01 << 5  //  The channel-to-channel linking is enabled.
-	ACTIVE       TCD18_CSR = 0x01 << 6  //+ Channel Active
-	DONE         TCD18_CSR = 0x01 << 7  //+ Channel Done
-	MAJORLINKCH  TCD18_CSR = 0x1F << 8  //+ Major Loop Link Channel Number
-	BWC          TCD18_CSR = 0x03 << 14 //+ Bandwidth Control
-	BWC_0        TCD18_CSR = 0x00 << 14 //  No eDMA engine stalls.
-	BWC_2        TCD18_CSR = 0x02 << 14 //  eDMA engine stalls for 4 cycles after each R/W.
-	BWC_3        TCD18_CSR = 0x03 << 14 //  eDMA engine stalls for 8 cycles after each R/W.
+	START       TCD18_CSR = 0x01 << 0  //+ Channel Start
+	INTMAJOR    TCD18_CSR = 0x01 << 1  //+ Enable an interrupt when major iteration count completes.
+	INTHALF     TCD18_CSR = 0x01 << 2  //+ Enable an interrupt when major counter is half complete.
+	DREQ        TCD18_CSR = 0x01 << 3  //+ Disable Request
+	ESG         TCD18_CSR = 0x01 << 4  //+ Enable Scatter/Gather Processing
+	MAJORELINK  TCD18_CSR = 0x01 << 5  //+ Enable channel-to-channel linking on major loop complete
+	ACTIVE      TCD18_CSR = 0x01 << 6  //+ Channel Active
+	DONE        TCD18_CSR = 0x01 << 7  //+ Channel Done
+	MAJORLINKCH TCD18_CSR = 0x1F << 8  //+ Major Loop Link Channel Number
+	BWC         TCD18_CSR = 0x03 << 14 //+ Bandwidth Control
+	BWC_0       TCD18_CSR = 0x00 << 14 //  No eDMA engine stalls.
+	BWC_2       TCD18_CSR = 0x02 << 14 //  eDMA engine stalls for 4 cycles after each R/W.
+	BWC_3       TCD18_CSR = 0x03 << 14 //  eDMA engine stalls for 8 cycles after each R/W.
 )
 
 const (
@@ -6156,11 +5040,9 @@ const (
 )
 
 const (
-	BITER   TCD18_BITER_ELINKYES = 0x1FF << 0 //+ Starting major iteration count
-	LINKCH  TCD18_BITER_ELINKYES = 0x1F << 9  //+ Link Channel Number
-	ELINK   TCD18_BITER_ELINKYES = 0x01 << 15 //+ Enables channel-to-channel linking on minor loop complete
-	ELINK_0 TCD18_BITER_ELINKYES = 0x00 << 15 //  The channel-to-channel linking is disabled
-	ELINK_1 TCD18_BITER_ELINKYES = 0x01 << 15 //  The channel-to-channel linking is enabled
+	BITER  TCD18_BITER_ELINKYES = 0x1FF << 0 //+ Starting major iteration count
+	LINKCH TCD18_BITER_ELINKYES = 0x1F << 9  //+ Link Channel Number
+	ELINK  TCD18_BITER_ELINKYES = 0x01 << 15 //+ Enables channel-to-channel linking on minor loop complete
 )
 
 const (
@@ -6170,10 +5052,8 @@ const (
 )
 
 const (
-	BITER   TCD18_BITER_ELINKNO = 0x7FFF << 0 //+ Starting Major Iteration Count
-	ELINK   TCD18_BITER_ELINKNO = 0x01 << 15  //+ Enables channel-to-channel linking on minor loop complete
-	ELINK_0 TCD18_BITER_ELINKNO = 0x00 << 15  //  The channel-to-channel linking is disabled
-	ELINK_1 TCD18_BITER_ELINKNO = 0x01 << 15  //  The channel-to-channel linking is enabled
+	BITER TCD18_BITER_ELINKNO = 0x7FFF << 0 //+ Starting Major Iteration Count
+	ELINK TCD18_BITER_ELINKNO = 0x01 << 15  //+ Enables channel-to-channel linking on minor loop complete
 )
 
 const (
@@ -6235,13 +5115,9 @@ const (
 )
 
 const (
-	NBYTES  TCD19_NBYTES_MLOFFNO = 0x3FFFFFFF << 0 //+ Minor Byte Transfer Count
-	DMLOE   TCD19_NBYTES_MLOFFNO = 0x01 << 30      //+ Destination Minor Loop Offset enable
-	DMLOE_0 TCD19_NBYTES_MLOFFNO = 0x00 << 30      //  The minor loop offset is not applied to the DADDR
-	DMLOE_1 TCD19_NBYTES_MLOFFNO = 0x01 << 30      //  The minor loop offset is applied to the DADDR
-	SMLOE   TCD19_NBYTES_MLOFFNO = 0x01 << 31      //+ Source Minor Loop Offset Enable
-	SMLOE_0 TCD19_NBYTES_MLOFFNO = 0x00 << 31      //  The minor loop offset is not applied to the SADDR
-	SMLOE_1 TCD19_NBYTES_MLOFFNO = 0x01 << 31      //  The minor loop offset is applied to the SADDR
+	NBYTES TCD19_NBYTES_MLOFFNO = 0x3FFFFFFF << 0 //+ Minor Byte Transfer Count
+	DMLOE  TCD19_NBYTES_MLOFFNO = 0x01 << 30      //+ Destination Minor Loop Offset enable
+	SMLOE  TCD19_NBYTES_MLOFFNO = 0x01 << 31      //+ Source Minor Loop Offset Enable
 )
 
 const (
@@ -6251,14 +5127,10 @@ const (
 )
 
 const (
-	NBYTES  TCD19_NBYTES_MLOFFYES = 0x3FF << 0    //+ Minor Byte Transfer Count
-	MLOFF   TCD19_NBYTES_MLOFFYES = 0xFFFFF << 10 //+ If SMLOE or DMLOE is set, this field represents a sign-extended offset applied to the source or destination address to form the next-state value after the minor loop completes.
-	DMLOE   TCD19_NBYTES_MLOFFYES = 0x01 << 30    //+ Destination Minor Loop Offset enable
-	DMLOE_0 TCD19_NBYTES_MLOFFYES = 0x00 << 30    //  The minor loop offset is not applied to the DADDR
-	DMLOE_1 TCD19_NBYTES_MLOFFYES = 0x01 << 30    //  The minor loop offset is applied to the DADDR
-	SMLOE   TCD19_NBYTES_MLOFFYES = 0x01 << 31    //+ Source Minor Loop Offset Enable
-	SMLOE_0 TCD19_NBYTES_MLOFFYES = 0x00 << 31    //  The minor loop offset is not applied to the SADDR
-	SMLOE_1 TCD19_NBYTES_MLOFFYES = 0x01 << 31    //  The minor loop offset is applied to the SADDR
+	NBYTES TCD19_NBYTES_MLOFFYES = 0x3FF << 0    //+ Minor Byte Transfer Count
+	MLOFF  TCD19_NBYTES_MLOFFYES = 0xFFFFF << 10 //+ If SMLOE or DMLOE is set, this field represents a sign-extended offset applied to the source or destination address to form the next-state value after the minor loop completes.
+	DMLOE  TCD19_NBYTES_MLOFFYES = 0x01 << 30    //+ Destination Minor Loop Offset enable
+	SMLOE  TCD19_NBYTES_MLOFFYES = 0x01 << 31    //+ Source Minor Loop Offset Enable
 )
 
 const (
@@ -6293,10 +5165,8 @@ const (
 )
 
 const (
-	CITER   TCD19_CITER_ELINKNO = 0x7FFF << 0 //+ Current Major Iteration Count
-	ELINK   TCD19_CITER_ELINKNO = 0x01 << 15  //+ Enable channel-to-channel linking on minor-loop complete
-	ELINK_0 TCD19_CITER_ELINKNO = 0x00 << 15  //  The channel-to-channel linking is disabled
-	ELINK_1 TCD19_CITER_ELINKNO = 0x01 << 15  //  The channel-to-channel linking is enabled
+	CITER TCD19_CITER_ELINKNO = 0x7FFF << 0 //+ Current Major Iteration Count
+	ELINK TCD19_CITER_ELINKNO = 0x01 << 15  //+ Enable channel-to-channel linking on minor-loop complete
 )
 
 const (
@@ -6305,11 +5175,9 @@ const (
 )
 
 const (
-	CITER   TCD19_CITER_ELINKYES = 0x1FF << 0 //+ Current Major Iteration Count
-	LINKCH  TCD19_CITER_ELINKYES = 0x1F << 9  //+ Minor Loop Link Channel Number
-	ELINK   TCD19_CITER_ELINKYES = 0x01 << 15 //+ Enable channel-to-channel linking on minor-loop complete
-	ELINK_0 TCD19_CITER_ELINKYES = 0x00 << 15 //  The channel-to-channel linking is disabled
-	ELINK_1 TCD19_CITER_ELINKYES = 0x01 << 15 //  The channel-to-channel linking is enabled
+	CITER  TCD19_CITER_ELINKYES = 0x1FF << 0 //+ Current Major Iteration Count
+	LINKCH TCD19_CITER_ELINKYES = 0x1F << 9  //+ Minor Loop Link Channel Number
+	ELINK  TCD19_CITER_ELINKYES = 0x01 << 15 //+ Enable channel-to-channel linking on minor-loop complete
 )
 
 const (
@@ -6327,31 +5195,19 @@ const (
 )
 
 const (
-	START        TCD19_CSR = 0x01 << 0  //+ Channel Start
-	START_0      TCD19_CSR = 0x00 << 0  //  The channel is not explicitly started.
-	START_1      TCD19_CSR = 0x01 << 0  //  The channel is explicitly started via a software initiated service request.
-	INTMAJOR     TCD19_CSR = 0x01 << 1  //+ Enable an interrupt when major iteration count completes.
-	INTMAJOR_0   TCD19_CSR = 0x00 << 1  //  The end-of-major loop interrupt is disabled.
-	INTMAJOR_1   TCD19_CSR = 0x01 << 1  //  The end-of-major loop interrupt is enabled.
-	INTHALF      TCD19_CSR = 0x01 << 2  //+ Enable an interrupt when major counter is half complete.
-	INTHALF_0    TCD19_CSR = 0x00 << 2  //  The half-point interrupt is disabled.
-	INTHALF_1    TCD19_CSR = 0x01 << 2  //  The half-point interrupt is enabled.
-	DREQ         TCD19_CSR = 0x01 << 3  //+ Disable Request
-	DREQ_0       TCD19_CSR = 0x00 << 3  //  The channel's ERQ bit is not affected.
-	DREQ_1       TCD19_CSR = 0x01 << 3  //  The channel's ERQ bit is cleared when the major loop is complete.
-	ESG          TCD19_CSR = 0x01 << 4  //+ Enable Scatter/Gather Processing
-	ESG_0        TCD19_CSR = 0x00 << 4  //  The current channel's TCD is normal format.
-	ESG_1        TCD19_CSR = 0x01 << 4  //  The current channel's TCD specifies a scatter gather format. The DLASTSGA field provides a memory pointer to the next TCD to be loaded into this channel after the major loop completes its execution.
-	MAJORELINK   TCD19_CSR = 0x01 << 5  //+ Enable channel-to-channel linking on major loop complete
-	MAJORELINK_0 TCD19_CSR = 0x00 << 5  //  The channel-to-channel linking is disabled.
-	MAJORELINK_1 TCD19_CSR = 0x01 << 5  //  The channel-to-channel linking is enabled.
-	ACTIVE       TCD19_CSR = 0x01 << 6  //+ Channel Active
-	DONE         TCD19_CSR = 0x01 << 7  //+ Channel Done
-	MAJORLINKCH  TCD19_CSR = 0x1F << 8  //+ Major Loop Link Channel Number
-	BWC          TCD19_CSR = 0x03 << 14 //+ Bandwidth Control
-	BWC_0        TCD19_CSR = 0x00 << 14 //  No eDMA engine stalls.
-	BWC_2        TCD19_CSR = 0x02 << 14 //  eDMA engine stalls for 4 cycles after each R/W.
-	BWC_3        TCD19_CSR = 0x03 << 14 //  eDMA engine stalls for 8 cycles after each R/W.
+	START       TCD19_CSR = 0x01 << 0  //+ Channel Start
+	INTMAJOR    TCD19_CSR = 0x01 << 1  //+ Enable an interrupt when major iteration count completes.
+	INTHALF     TCD19_CSR = 0x01 << 2  //+ Enable an interrupt when major counter is half complete.
+	DREQ        TCD19_CSR = 0x01 << 3  //+ Disable Request
+	ESG         TCD19_CSR = 0x01 << 4  //+ Enable Scatter/Gather Processing
+	MAJORELINK  TCD19_CSR = 0x01 << 5  //+ Enable channel-to-channel linking on major loop complete
+	ACTIVE      TCD19_CSR = 0x01 << 6  //+ Channel Active
+	DONE        TCD19_CSR = 0x01 << 7  //+ Channel Done
+	MAJORLINKCH TCD19_CSR = 0x1F << 8  //+ Major Loop Link Channel Number
+	BWC         TCD19_CSR = 0x03 << 14 //+ Bandwidth Control
+	BWC_0       TCD19_CSR = 0x00 << 14 //  No eDMA engine stalls.
+	BWC_2       TCD19_CSR = 0x02 << 14 //  eDMA engine stalls for 4 cycles after each R/W.
+	BWC_3       TCD19_CSR = 0x03 << 14 //  eDMA engine stalls for 8 cycles after each R/W.
 )
 
 const (
@@ -6368,10 +5224,8 @@ const (
 )
 
 const (
-	BITER   TCD19_BITER_ELINKNO = 0x7FFF << 0 //+ Starting Major Iteration Count
-	ELINK   TCD19_BITER_ELINKNO = 0x01 << 15  //+ Enables channel-to-channel linking on minor loop complete
-	ELINK_0 TCD19_BITER_ELINKNO = 0x00 << 15  //  The channel-to-channel linking is disabled
-	ELINK_1 TCD19_BITER_ELINKNO = 0x01 << 15  //  The channel-to-channel linking is enabled
+	BITER TCD19_BITER_ELINKNO = 0x7FFF << 0 //+ Starting Major Iteration Count
+	ELINK TCD19_BITER_ELINKNO = 0x01 << 15  //+ Enables channel-to-channel linking on minor loop complete
 )
 
 const (
@@ -6380,11 +5234,9 @@ const (
 )
 
 const (
-	BITER   TCD19_BITER_ELINKYES = 0x1FF << 0 //+ Starting major iteration count
-	LINKCH  TCD19_BITER_ELINKYES = 0x1F << 9  //+ Link Channel Number
-	ELINK   TCD19_BITER_ELINKYES = 0x01 << 15 //+ Enables channel-to-channel linking on minor loop complete
-	ELINK_0 TCD19_BITER_ELINKYES = 0x00 << 15 //  The channel-to-channel linking is disabled
-	ELINK_1 TCD19_BITER_ELINKYES = 0x01 << 15 //  The channel-to-channel linking is enabled
+	BITER  TCD19_BITER_ELINKYES = 0x1FF << 0 //+ Starting major iteration count
+	LINKCH TCD19_BITER_ELINKYES = 0x1F << 9  //+ Link Channel Number
+	ELINK  TCD19_BITER_ELINKYES = 0x01 << 15 //+ Enables channel-to-channel linking on minor loop complete
 )
 
 const (
@@ -6439,13 +5291,9 @@ const (
 )
 
 const (
-	NBYTES  TCD20_NBYTES_MLOFFNO = 0x3FFFFFFF << 0 //+ Minor Byte Transfer Count
-	DMLOE   TCD20_NBYTES_MLOFFNO = 0x01 << 30      //+ Destination Minor Loop Offset enable
-	DMLOE_0 TCD20_NBYTES_MLOFFNO = 0x00 << 30      //  The minor loop offset is not applied to the DADDR
-	DMLOE_1 TCD20_NBYTES_MLOFFNO = 0x01 << 30      //  The minor loop offset is applied to the DADDR
-	SMLOE   TCD20_NBYTES_MLOFFNO = 0x01 << 31      //+ Source Minor Loop Offset Enable
-	SMLOE_0 TCD20_NBYTES_MLOFFNO = 0x00 << 31      //  The minor loop offset is not applied to the SADDR
-	SMLOE_1 TCD20_NBYTES_MLOFFNO = 0x01 << 31      //  The minor loop offset is applied to the SADDR
+	NBYTES TCD20_NBYTES_MLOFFNO = 0x3FFFFFFF << 0 //+ Minor Byte Transfer Count
+	DMLOE  TCD20_NBYTES_MLOFFNO = 0x01 << 30      //+ Destination Minor Loop Offset enable
+	SMLOE  TCD20_NBYTES_MLOFFNO = 0x01 << 31      //+ Source Minor Loop Offset Enable
 )
 
 const (
@@ -6455,14 +5303,10 @@ const (
 )
 
 const (
-	NBYTES  TCD20_NBYTES_MLOFFYES = 0x3FF << 0    //+ Minor Byte Transfer Count
-	MLOFF   TCD20_NBYTES_MLOFFYES = 0xFFFFF << 10 //+ If SMLOE or DMLOE is set, this field represents a sign-extended offset applied to the source or destination address to form the next-state value after the minor loop completes.
-	DMLOE   TCD20_NBYTES_MLOFFYES = 0x01 << 30    //+ Destination Minor Loop Offset enable
-	DMLOE_0 TCD20_NBYTES_MLOFFYES = 0x00 << 30    //  The minor loop offset is not applied to the DADDR
-	DMLOE_1 TCD20_NBYTES_MLOFFYES = 0x01 << 30    //  The minor loop offset is applied to the DADDR
-	SMLOE   TCD20_NBYTES_MLOFFYES = 0x01 << 31    //+ Source Minor Loop Offset Enable
-	SMLOE_0 TCD20_NBYTES_MLOFFYES = 0x00 << 31    //  The minor loop offset is not applied to the SADDR
-	SMLOE_1 TCD20_NBYTES_MLOFFYES = 0x01 << 31    //  The minor loop offset is applied to the SADDR
+	NBYTES TCD20_NBYTES_MLOFFYES = 0x3FF << 0    //+ Minor Byte Transfer Count
+	MLOFF  TCD20_NBYTES_MLOFFYES = 0xFFFFF << 10 //+ If SMLOE or DMLOE is set, this field represents a sign-extended offset applied to the source or destination address to form the next-state value after the minor loop completes.
+	DMLOE  TCD20_NBYTES_MLOFFYES = 0x01 << 30    //+ Destination Minor Loop Offset enable
+	SMLOE  TCD20_NBYTES_MLOFFYES = 0x01 << 31    //+ Source Minor Loop Offset Enable
 )
 
 const (
@@ -6505,11 +5349,9 @@ const (
 )
 
 const (
-	CITER   TCD20_CITER_ELINKYES = 0x1FF << 0 //+ Current Major Iteration Count
-	LINKCH  TCD20_CITER_ELINKYES = 0x1F << 9  //+ Minor Loop Link Channel Number
-	ELINK   TCD20_CITER_ELINKYES = 0x01 << 15 //+ Enable channel-to-channel linking on minor-loop complete
-	ELINK_0 TCD20_CITER_ELINKYES = 0x00 << 15 //  The channel-to-channel linking is disabled
-	ELINK_1 TCD20_CITER_ELINKYES = 0x01 << 15 //  The channel-to-channel linking is enabled
+	CITER  TCD20_CITER_ELINKYES = 0x1FF << 0 //+ Current Major Iteration Count
+	LINKCH TCD20_CITER_ELINKYES = 0x1F << 9  //+ Minor Loop Link Channel Number
+	ELINK  TCD20_CITER_ELINKYES = 0x01 << 15 //+ Enable channel-to-channel linking on minor-loop complete
 )
 
 const (
@@ -6519,10 +5361,8 @@ const (
 )
 
 const (
-	CITER   TCD20_CITER_ELINKNO = 0x7FFF << 0 //+ Current Major Iteration Count
-	ELINK   TCD20_CITER_ELINKNO = 0x01 << 15  //+ Enable channel-to-channel linking on minor-loop complete
-	ELINK_0 TCD20_CITER_ELINKNO = 0x00 << 15  //  The channel-to-channel linking is disabled
-	ELINK_1 TCD20_CITER_ELINKNO = 0x01 << 15  //  The channel-to-channel linking is enabled
+	CITER TCD20_CITER_ELINKNO = 0x7FFF << 0 //+ Current Major Iteration Count
+	ELINK TCD20_CITER_ELINKNO = 0x01 << 15  //+ Enable channel-to-channel linking on minor-loop complete
 )
 
 const (
@@ -6539,31 +5379,19 @@ const (
 )
 
 const (
-	START        TCD20_CSR = 0x01 << 0  //+ Channel Start
-	START_0      TCD20_CSR = 0x00 << 0  //  The channel is not explicitly started.
-	START_1      TCD20_CSR = 0x01 << 0  //  The channel is explicitly started via a software initiated service request.
-	INTMAJOR     TCD20_CSR = 0x01 << 1  //+ Enable an interrupt when major iteration count completes.
-	INTMAJOR_0   TCD20_CSR = 0x00 << 1  //  The end-of-major loop interrupt is disabled.
-	INTMAJOR_1   TCD20_CSR = 0x01 << 1  //  The end-of-major loop interrupt is enabled.
-	INTHALF      TCD20_CSR = 0x01 << 2  //+ Enable an interrupt when major counter is half complete.
-	INTHALF_0    TCD20_CSR = 0x00 << 2  //  The half-point interrupt is disabled.
-	INTHALF_1    TCD20_CSR = 0x01 << 2  //  The half-point interrupt is enabled.
-	DREQ         TCD20_CSR = 0x01 << 3  //+ Disable Request
-	DREQ_0       TCD20_CSR = 0x00 << 3  //  The channel's ERQ bit is not affected.
-	DREQ_1       TCD20_CSR = 0x01 << 3  //  The channel's ERQ bit is cleared when the major loop is complete.
-	ESG          TCD20_CSR = 0x01 << 4  //+ Enable Scatter/Gather Processing
-	ESG_0        TCD20_CSR = 0x00 << 4  //  The current channel's TCD is normal format.
-	ESG_1        TCD20_CSR = 0x01 << 4  //  The current channel's TCD specifies a scatter gather format. The DLASTSGA field provides a memory pointer to the next TCD to be loaded into this channel after the major loop completes its execution.
-	MAJORELINK   TCD20_CSR = 0x01 << 5  //+ Enable channel-to-channel linking on major loop complete
-	MAJORELINK_0 TCD20_CSR = 0x00 << 5  //  The channel-to-channel linking is disabled.
-	MAJORELINK_1 TCD20_CSR = 0x01 << 5  //  The channel-to-channel linking is enabled.
-	ACTIVE       TCD20_CSR = 0x01 << 6  //+ Channel Active
-	DONE         TCD20_CSR = 0x01 << 7  //+ Channel Done
-	MAJORLINKCH  TCD20_CSR = 0x1F << 8  //+ Major Loop Link Channel Number
-	BWC          TCD20_CSR = 0x03 << 14 //+ Bandwidth Control
-	BWC_0        TCD20_CSR = 0x00 << 14 //  No eDMA engine stalls.
-	BWC_2        TCD20_CSR = 0x02 << 14 //  eDMA engine stalls for 4 cycles after each R/W.
-	BWC_3        TCD20_CSR = 0x03 << 14 //  eDMA engine stalls for 8 cycles after each R/W.
+	START       TCD20_CSR = 0x01 << 0  //+ Channel Start
+	INTMAJOR    TCD20_CSR = 0x01 << 1  //+ Enable an interrupt when major iteration count completes.
+	INTHALF     TCD20_CSR = 0x01 << 2  //+ Enable an interrupt when major counter is half complete.
+	DREQ        TCD20_CSR = 0x01 << 3  //+ Disable Request
+	ESG         TCD20_CSR = 0x01 << 4  //+ Enable Scatter/Gather Processing
+	MAJORELINK  TCD20_CSR = 0x01 << 5  //+ Enable channel-to-channel linking on major loop complete
+	ACTIVE      TCD20_CSR = 0x01 << 6  //+ Channel Active
+	DONE        TCD20_CSR = 0x01 << 7  //+ Channel Done
+	MAJORLINKCH TCD20_CSR = 0x1F << 8  //+ Major Loop Link Channel Number
+	BWC         TCD20_CSR = 0x03 << 14 //+ Bandwidth Control
+	BWC_0       TCD20_CSR = 0x00 << 14 //  No eDMA engine stalls.
+	BWC_2       TCD20_CSR = 0x02 << 14 //  eDMA engine stalls for 4 cycles after each R/W.
+	BWC_3       TCD20_CSR = 0x03 << 14 //  eDMA engine stalls for 8 cycles after each R/W.
 )
 
 const (
@@ -6580,10 +5408,8 @@ const (
 )
 
 const (
-	BITER   TCD20_BITER_ELINKNO = 0x7FFF << 0 //+ Starting Major Iteration Count
-	ELINK   TCD20_BITER_ELINKNO = 0x01 << 15  //+ Enables channel-to-channel linking on minor loop complete
-	ELINK_0 TCD20_BITER_ELINKNO = 0x00 << 15  //  The channel-to-channel linking is disabled
-	ELINK_1 TCD20_BITER_ELINKNO = 0x01 << 15  //  The channel-to-channel linking is enabled
+	BITER TCD20_BITER_ELINKNO = 0x7FFF << 0 //+ Starting Major Iteration Count
+	ELINK TCD20_BITER_ELINKNO = 0x01 << 15  //+ Enables channel-to-channel linking on minor loop complete
 )
 
 const (
@@ -6592,11 +5418,9 @@ const (
 )
 
 const (
-	BITER   TCD20_BITER_ELINKYES = 0x1FF << 0 //+ Starting major iteration count
-	LINKCH  TCD20_BITER_ELINKYES = 0x1F << 9  //+ Link Channel Number
-	ELINK   TCD20_BITER_ELINKYES = 0x01 << 15 //+ Enables channel-to-channel linking on minor loop complete
-	ELINK_0 TCD20_BITER_ELINKYES = 0x00 << 15 //  The channel-to-channel linking is disabled
-	ELINK_1 TCD20_BITER_ELINKYES = 0x01 << 15 //  The channel-to-channel linking is enabled
+	BITER  TCD20_BITER_ELINKYES = 0x1FF << 0 //+ Starting major iteration count
+	LINKCH TCD20_BITER_ELINKYES = 0x1F << 9  //+ Link Channel Number
+	ELINK  TCD20_BITER_ELINKYES = 0x01 << 15 //+ Enables channel-to-channel linking on minor loop complete
 )
 
 const (
@@ -6659,13 +5483,9 @@ const (
 )
 
 const (
-	NBYTES  TCD21_NBYTES_MLOFFNO = 0x3FFFFFFF << 0 //+ Minor Byte Transfer Count
-	DMLOE   TCD21_NBYTES_MLOFFNO = 0x01 << 30      //+ Destination Minor Loop Offset enable
-	DMLOE_0 TCD21_NBYTES_MLOFFNO = 0x00 << 30      //  The minor loop offset is not applied to the DADDR
-	DMLOE_1 TCD21_NBYTES_MLOFFNO = 0x01 << 30      //  The minor loop offset is applied to the DADDR
-	SMLOE   TCD21_NBYTES_MLOFFNO = 0x01 << 31      //+ Source Minor Loop Offset Enable
-	SMLOE_0 TCD21_NBYTES_MLOFFNO = 0x00 << 31      //  The minor loop offset is not applied to the SADDR
-	SMLOE_1 TCD21_NBYTES_MLOFFNO = 0x01 << 31      //  The minor loop offset is applied to the SADDR
+	NBYTES TCD21_NBYTES_MLOFFNO = 0x3FFFFFFF << 0 //+ Minor Byte Transfer Count
+	DMLOE  TCD21_NBYTES_MLOFFNO = 0x01 << 30      //+ Destination Minor Loop Offset enable
+	SMLOE  TCD21_NBYTES_MLOFFNO = 0x01 << 31      //+ Source Minor Loop Offset Enable
 )
 
 const (
@@ -6675,14 +5495,10 @@ const (
 )
 
 const (
-	NBYTES  TCD21_NBYTES_MLOFFYES = 0x3FF << 0    //+ Minor Byte Transfer Count
-	MLOFF   TCD21_NBYTES_MLOFFYES = 0xFFFFF << 10 //+ If SMLOE or DMLOE is set, this field represents a sign-extended offset applied to the source or destination address to form the next-state value after the minor loop completes.
-	DMLOE   TCD21_NBYTES_MLOFFYES = 0x01 << 30    //+ Destination Minor Loop Offset enable
-	DMLOE_0 TCD21_NBYTES_MLOFFYES = 0x00 << 30    //  The minor loop offset is not applied to the DADDR
-	DMLOE_1 TCD21_NBYTES_MLOFFYES = 0x01 << 30    //  The minor loop offset is applied to the DADDR
-	SMLOE   TCD21_NBYTES_MLOFFYES = 0x01 << 31    //+ Source Minor Loop Offset Enable
-	SMLOE_0 TCD21_NBYTES_MLOFFYES = 0x00 << 31    //  The minor loop offset is not applied to the SADDR
-	SMLOE_1 TCD21_NBYTES_MLOFFYES = 0x01 << 31    //  The minor loop offset is applied to the SADDR
+	NBYTES TCD21_NBYTES_MLOFFYES = 0x3FF << 0    //+ Minor Byte Transfer Count
+	MLOFF  TCD21_NBYTES_MLOFFYES = 0xFFFFF << 10 //+ If SMLOE or DMLOE is set, this field represents a sign-extended offset applied to the source or destination address to form the next-state value after the minor loop completes.
+	DMLOE  TCD21_NBYTES_MLOFFYES = 0x01 << 30    //+ Destination Minor Loop Offset enable
+	SMLOE  TCD21_NBYTES_MLOFFYES = 0x01 << 31    //+ Source Minor Loop Offset Enable
 )
 
 const (
@@ -6717,10 +5533,8 @@ const (
 )
 
 const (
-	CITER   TCD21_CITER_ELINKNO = 0x7FFF << 0 //+ Current Major Iteration Count
-	ELINK   TCD21_CITER_ELINKNO = 0x01 << 15  //+ Enable channel-to-channel linking on minor-loop complete
-	ELINK_0 TCD21_CITER_ELINKNO = 0x00 << 15  //  The channel-to-channel linking is disabled
-	ELINK_1 TCD21_CITER_ELINKNO = 0x01 << 15  //  The channel-to-channel linking is enabled
+	CITER TCD21_CITER_ELINKNO = 0x7FFF << 0 //+ Current Major Iteration Count
+	ELINK TCD21_CITER_ELINKNO = 0x01 << 15  //+ Enable channel-to-channel linking on minor-loop complete
 )
 
 const (
@@ -6729,11 +5543,9 @@ const (
 )
 
 const (
-	CITER   TCD21_CITER_ELINKYES = 0x1FF << 0 //+ Current Major Iteration Count
-	LINKCH  TCD21_CITER_ELINKYES = 0x1F << 9  //+ Minor Loop Link Channel Number
-	ELINK   TCD21_CITER_ELINKYES = 0x01 << 15 //+ Enable channel-to-channel linking on minor-loop complete
-	ELINK_0 TCD21_CITER_ELINKYES = 0x00 << 15 //  The channel-to-channel linking is disabled
-	ELINK_1 TCD21_CITER_ELINKYES = 0x01 << 15 //  The channel-to-channel linking is enabled
+	CITER  TCD21_CITER_ELINKYES = 0x1FF << 0 //+ Current Major Iteration Count
+	LINKCH TCD21_CITER_ELINKYES = 0x1F << 9  //+ Minor Loop Link Channel Number
+	ELINK  TCD21_CITER_ELINKYES = 0x01 << 15 //+ Enable channel-to-channel linking on minor-loop complete
 )
 
 const (
@@ -6751,31 +5563,19 @@ const (
 )
 
 const (
-	START        TCD21_CSR = 0x01 << 0  //+ Channel Start
-	START_0      TCD21_CSR = 0x00 << 0  //  The channel is not explicitly started.
-	START_1      TCD21_CSR = 0x01 << 0  //  The channel is explicitly started via a software initiated service request.
-	INTMAJOR     TCD21_CSR = 0x01 << 1  //+ Enable an interrupt when major iteration count completes.
-	INTMAJOR_0   TCD21_CSR = 0x00 << 1  //  The end-of-major loop interrupt is disabled.
-	INTMAJOR_1   TCD21_CSR = 0x01 << 1  //  The end-of-major loop interrupt is enabled.
-	INTHALF      TCD21_CSR = 0x01 << 2  //+ Enable an interrupt when major counter is half complete.
-	INTHALF_0    TCD21_CSR = 0x00 << 2  //  The half-point interrupt is disabled.
-	INTHALF_1    TCD21_CSR = 0x01 << 2  //  The half-point interrupt is enabled.
-	DREQ         TCD21_CSR = 0x01 << 3  //+ Disable Request
-	DREQ_0       TCD21_CSR = 0x00 << 3  //  The channel's ERQ bit is not affected.
-	DREQ_1       TCD21_CSR = 0x01 << 3  //  The channel's ERQ bit is cleared when the major loop is complete.
-	ESG          TCD21_CSR = 0x01 << 4  //+ Enable Scatter/Gather Processing
-	ESG_0        TCD21_CSR = 0x00 << 4  //  The current channel's TCD is normal format.
-	ESG_1        TCD21_CSR = 0x01 << 4  //  The current channel's TCD specifies a scatter gather format. The DLASTSGA field provides a memory pointer to the next TCD to be loaded into this channel after the major loop completes its execution.
-	MAJORELINK   TCD21_CSR = 0x01 << 5  //+ Enable channel-to-channel linking on major loop complete
-	MAJORELINK_0 TCD21_CSR = 0x00 << 5  //  The channel-to-channel linking is disabled.
-	MAJORELINK_1 TCD21_CSR = 0x01 << 5  //  The channel-to-channel linking is enabled.
-	ACTIVE       TCD21_CSR = 0x01 << 6  //+ Channel Active
-	DONE         TCD21_CSR = 0x01 << 7  //+ Channel Done
-	MAJORLINKCH  TCD21_CSR = 0x1F << 8  //+ Major Loop Link Channel Number
-	BWC          TCD21_CSR = 0x03 << 14 //+ Bandwidth Control
-	BWC_0        TCD21_CSR = 0x00 << 14 //  No eDMA engine stalls.
-	BWC_2        TCD21_CSR = 0x02 << 14 //  eDMA engine stalls for 4 cycles after each R/W.
-	BWC_3        TCD21_CSR = 0x03 << 14 //  eDMA engine stalls for 8 cycles after each R/W.
+	START       TCD21_CSR = 0x01 << 0  //+ Channel Start
+	INTMAJOR    TCD21_CSR = 0x01 << 1  //+ Enable an interrupt when major iteration count completes.
+	INTHALF     TCD21_CSR = 0x01 << 2  //+ Enable an interrupt when major counter is half complete.
+	DREQ        TCD21_CSR = 0x01 << 3  //+ Disable Request
+	ESG         TCD21_CSR = 0x01 << 4  //+ Enable Scatter/Gather Processing
+	MAJORELINK  TCD21_CSR = 0x01 << 5  //+ Enable channel-to-channel linking on major loop complete
+	ACTIVE      TCD21_CSR = 0x01 << 6  //+ Channel Active
+	DONE        TCD21_CSR = 0x01 << 7  //+ Channel Done
+	MAJORLINKCH TCD21_CSR = 0x1F << 8  //+ Major Loop Link Channel Number
+	BWC         TCD21_CSR = 0x03 << 14 //+ Bandwidth Control
+	BWC_0       TCD21_CSR = 0x00 << 14 //  No eDMA engine stalls.
+	BWC_2       TCD21_CSR = 0x02 << 14 //  eDMA engine stalls for 4 cycles after each R/W.
+	BWC_3       TCD21_CSR = 0x03 << 14 //  eDMA engine stalls for 8 cycles after each R/W.
 )
 
 const (
@@ -6792,10 +5592,8 @@ const (
 )
 
 const (
-	BITER   TCD21_BITER_ELINKNO = 0x7FFF << 0 //+ Starting Major Iteration Count
-	ELINK   TCD21_BITER_ELINKNO = 0x01 << 15  //+ Enables channel-to-channel linking on minor loop complete
-	ELINK_0 TCD21_BITER_ELINKNO = 0x00 << 15  //  The channel-to-channel linking is disabled
-	ELINK_1 TCD21_BITER_ELINKNO = 0x01 << 15  //  The channel-to-channel linking is enabled
+	BITER TCD21_BITER_ELINKNO = 0x7FFF << 0 //+ Starting Major Iteration Count
+	ELINK TCD21_BITER_ELINKNO = 0x01 << 15  //+ Enables channel-to-channel linking on minor loop complete
 )
 
 const (
@@ -6804,11 +5602,9 @@ const (
 )
 
 const (
-	BITER   TCD21_BITER_ELINKYES = 0x1FF << 0 //+ Starting major iteration count
-	LINKCH  TCD21_BITER_ELINKYES = 0x1F << 9  //+ Link Channel Number
-	ELINK   TCD21_BITER_ELINKYES = 0x01 << 15 //+ Enables channel-to-channel linking on minor loop complete
-	ELINK_0 TCD21_BITER_ELINKYES = 0x00 << 15 //  The channel-to-channel linking is disabled
-	ELINK_1 TCD21_BITER_ELINKYES = 0x01 << 15 //  The channel-to-channel linking is enabled
+	BITER  TCD21_BITER_ELINKYES = 0x1FF << 0 //+ Starting major iteration count
+	LINKCH TCD21_BITER_ELINKYES = 0x1F << 9  //+ Link Channel Number
+	ELINK  TCD21_BITER_ELINKYES = 0x01 << 15 //+ Enables channel-to-channel linking on minor loop complete
 )
 
 const (
@@ -6863,14 +5659,10 @@ const (
 )
 
 const (
-	NBYTES  TCD22_NBYTES_MLOFFYES = 0x3FF << 0    //+ Minor Byte Transfer Count
-	MLOFF   TCD22_NBYTES_MLOFFYES = 0xFFFFF << 10 //+ If SMLOE or DMLOE is set, this field represents a sign-extended offset applied to the source or destination address to form the next-state value after the minor loop completes.
-	DMLOE   TCD22_NBYTES_MLOFFYES = 0x01 << 30    //+ Destination Minor Loop Offset enable
-	DMLOE_0 TCD22_NBYTES_MLOFFYES = 0x00 << 30    //  The minor loop offset is not applied to the DADDR
-	DMLOE_1 TCD22_NBYTES_MLOFFYES = 0x01 << 30    //  The minor loop offset is applied to the DADDR
-	SMLOE   TCD22_NBYTES_MLOFFYES = 0x01 << 31    //+ Source Minor Loop Offset Enable
-	SMLOE_0 TCD22_NBYTES_MLOFFYES = 0x00 << 31    //  The minor loop offset is not applied to the SADDR
-	SMLOE_1 TCD22_NBYTES_MLOFFYES = 0x01 << 31    //  The minor loop offset is applied to the SADDR
+	NBYTES TCD22_NBYTES_MLOFFYES = 0x3FF << 0    //+ Minor Byte Transfer Count
+	MLOFF  TCD22_NBYTES_MLOFFYES = 0xFFFFF << 10 //+ If SMLOE or DMLOE is set, this field represents a sign-extended offset applied to the source or destination address to form the next-state value after the minor loop completes.
+	DMLOE  TCD22_NBYTES_MLOFFYES = 0x01 << 30    //+ Destination Minor Loop Offset enable
+	SMLOE  TCD22_NBYTES_MLOFFYES = 0x01 << 31    //+ Source Minor Loop Offset Enable
 )
 
 const (
@@ -6881,13 +5673,9 @@ const (
 )
 
 const (
-	NBYTES  TCD22_NBYTES_MLOFFNO = 0x3FFFFFFF << 0 //+ Minor Byte Transfer Count
-	DMLOE   TCD22_NBYTES_MLOFFNO = 0x01 << 30      //+ Destination Minor Loop Offset enable
-	DMLOE_0 TCD22_NBYTES_MLOFFNO = 0x00 << 30      //  The minor loop offset is not applied to the DADDR
-	DMLOE_1 TCD22_NBYTES_MLOFFNO = 0x01 << 30      //  The minor loop offset is applied to the DADDR
-	SMLOE   TCD22_NBYTES_MLOFFNO = 0x01 << 31      //+ Source Minor Loop Offset Enable
-	SMLOE_0 TCD22_NBYTES_MLOFFNO = 0x00 << 31      //  The minor loop offset is not applied to the SADDR
-	SMLOE_1 TCD22_NBYTES_MLOFFNO = 0x01 << 31      //  The minor loop offset is applied to the SADDR
+	NBYTES TCD22_NBYTES_MLOFFNO = 0x3FFFFFFF << 0 //+ Minor Byte Transfer Count
+	DMLOE  TCD22_NBYTES_MLOFFNO = 0x01 << 30      //+ Destination Minor Loop Offset enable
+	SMLOE  TCD22_NBYTES_MLOFFNO = 0x01 << 31      //+ Source Minor Loop Offset Enable
 )
 
 const (
@@ -6929,10 +5717,8 @@ const (
 )
 
 const (
-	CITER   TCD22_CITER_ELINKNO = 0x7FFF << 0 //+ Current Major Iteration Count
-	ELINK   TCD22_CITER_ELINKNO = 0x01 << 15  //+ Enable channel-to-channel linking on minor-loop complete
-	ELINK_0 TCD22_CITER_ELINKNO = 0x00 << 15  //  The channel-to-channel linking is disabled
-	ELINK_1 TCD22_CITER_ELINKNO = 0x01 << 15  //  The channel-to-channel linking is enabled
+	CITER TCD22_CITER_ELINKNO = 0x7FFF << 0 //+ Current Major Iteration Count
+	ELINK TCD22_CITER_ELINKNO = 0x01 << 15  //+ Enable channel-to-channel linking on minor-loop complete
 )
 
 const (
@@ -6941,11 +5727,9 @@ const (
 )
 
 const (
-	CITER   TCD22_CITER_ELINKYES = 0x1FF << 0 //+ Current Major Iteration Count
-	LINKCH  TCD22_CITER_ELINKYES = 0x1F << 9  //+ Minor Loop Link Channel Number
-	ELINK   TCD22_CITER_ELINKYES = 0x01 << 15 //+ Enable channel-to-channel linking on minor-loop complete
-	ELINK_0 TCD22_CITER_ELINKYES = 0x00 << 15 //  The channel-to-channel linking is disabled
-	ELINK_1 TCD22_CITER_ELINKYES = 0x01 << 15 //  The channel-to-channel linking is enabled
+	CITER  TCD22_CITER_ELINKYES = 0x1FF << 0 //+ Current Major Iteration Count
+	LINKCH TCD22_CITER_ELINKYES = 0x1F << 9  //+ Minor Loop Link Channel Number
+	ELINK  TCD22_CITER_ELINKYES = 0x01 << 15 //+ Enable channel-to-channel linking on minor-loop complete
 )
 
 const (
@@ -6963,31 +5747,19 @@ const (
 )
 
 const (
-	START        TCD22_CSR = 0x01 << 0  //+ Channel Start
-	START_0      TCD22_CSR = 0x00 << 0  //  The channel is not explicitly started.
-	START_1      TCD22_CSR = 0x01 << 0  //  The channel is explicitly started via a software initiated service request.
-	INTMAJOR     TCD22_CSR = 0x01 << 1  //+ Enable an interrupt when major iteration count completes.
-	INTMAJOR_0   TCD22_CSR = 0x00 << 1  //  The end-of-major loop interrupt is disabled.
-	INTMAJOR_1   TCD22_CSR = 0x01 << 1  //  The end-of-major loop interrupt is enabled.
-	INTHALF      TCD22_CSR = 0x01 << 2  //+ Enable an interrupt when major counter is half complete.
-	INTHALF_0    TCD22_CSR = 0x00 << 2  //  The half-point interrupt is disabled.
-	INTHALF_1    TCD22_CSR = 0x01 << 2  //  The half-point interrupt is enabled.
-	DREQ         TCD22_CSR = 0x01 << 3  //+ Disable Request
-	DREQ_0       TCD22_CSR = 0x00 << 3  //  The channel's ERQ bit is not affected.
-	DREQ_1       TCD22_CSR = 0x01 << 3  //  The channel's ERQ bit is cleared when the major loop is complete.
-	ESG          TCD22_CSR = 0x01 << 4  //+ Enable Scatter/Gather Processing
-	ESG_0        TCD22_CSR = 0x00 << 4  //  The current channel's TCD is normal format.
-	ESG_1        TCD22_CSR = 0x01 << 4  //  The current channel's TCD specifies a scatter gather format. The DLASTSGA field provides a memory pointer to the next TCD to be loaded into this channel after the major loop completes its execution.
-	MAJORELINK   TCD22_CSR = 0x01 << 5  //+ Enable channel-to-channel linking on major loop complete
-	MAJORELINK_0 TCD22_CSR = 0x00 << 5  //  The channel-to-channel linking is disabled.
-	MAJORELINK_1 TCD22_CSR = 0x01 << 5  //  The channel-to-channel linking is enabled.
-	ACTIVE       TCD22_CSR = 0x01 << 6  //+ Channel Active
-	DONE         TCD22_CSR = 0x01 << 7  //+ Channel Done
-	MAJORLINKCH  TCD22_CSR = 0x1F << 8  //+ Major Loop Link Channel Number
-	BWC          TCD22_CSR = 0x03 << 14 //+ Bandwidth Control
-	BWC_0        TCD22_CSR = 0x00 << 14 //  No eDMA engine stalls.
-	BWC_2        TCD22_CSR = 0x02 << 14 //  eDMA engine stalls for 4 cycles after each R/W.
-	BWC_3        TCD22_CSR = 0x03 << 14 //  eDMA engine stalls for 8 cycles after each R/W.
+	START       TCD22_CSR = 0x01 << 0  //+ Channel Start
+	INTMAJOR    TCD22_CSR = 0x01 << 1  //+ Enable an interrupt when major iteration count completes.
+	INTHALF     TCD22_CSR = 0x01 << 2  //+ Enable an interrupt when major counter is half complete.
+	DREQ        TCD22_CSR = 0x01 << 3  //+ Disable Request
+	ESG         TCD22_CSR = 0x01 << 4  //+ Enable Scatter/Gather Processing
+	MAJORELINK  TCD22_CSR = 0x01 << 5  //+ Enable channel-to-channel linking on major loop complete
+	ACTIVE      TCD22_CSR = 0x01 << 6  //+ Channel Active
+	DONE        TCD22_CSR = 0x01 << 7  //+ Channel Done
+	MAJORLINKCH TCD22_CSR = 0x1F << 8  //+ Major Loop Link Channel Number
+	BWC         TCD22_CSR = 0x03 << 14 //+ Bandwidth Control
+	BWC_0       TCD22_CSR = 0x00 << 14 //  No eDMA engine stalls.
+	BWC_2       TCD22_CSR = 0x02 << 14 //  eDMA engine stalls for 4 cycles after each R/W.
+	BWC_3       TCD22_CSR = 0x03 << 14 //  eDMA engine stalls for 8 cycles after each R/W.
 )
 
 const (
@@ -7004,11 +5776,9 @@ const (
 )
 
 const (
-	BITER   TCD22_BITER_ELINKYES = 0x1FF << 0 //+ Starting major iteration count
-	LINKCH  TCD22_BITER_ELINKYES = 0x1F << 9  //+ Link Channel Number
-	ELINK   TCD22_BITER_ELINKYES = 0x01 << 15 //+ Enables channel-to-channel linking on minor loop complete
-	ELINK_0 TCD22_BITER_ELINKYES = 0x00 << 15 //  The channel-to-channel linking is disabled
-	ELINK_1 TCD22_BITER_ELINKYES = 0x01 << 15 //  The channel-to-channel linking is enabled
+	BITER  TCD22_BITER_ELINKYES = 0x1FF << 0 //+ Starting major iteration count
+	LINKCH TCD22_BITER_ELINKYES = 0x1F << 9  //+ Link Channel Number
+	ELINK  TCD22_BITER_ELINKYES = 0x01 << 15 //+ Enables channel-to-channel linking on minor loop complete
 )
 
 const (
@@ -7018,10 +5788,8 @@ const (
 )
 
 const (
-	BITER   TCD22_BITER_ELINKNO = 0x7FFF << 0 //+ Starting Major Iteration Count
-	ELINK   TCD22_BITER_ELINKNO = 0x01 << 15  //+ Enables channel-to-channel linking on minor loop complete
-	ELINK_0 TCD22_BITER_ELINKNO = 0x00 << 15  //  The channel-to-channel linking is disabled
-	ELINK_1 TCD22_BITER_ELINKNO = 0x01 << 15  //  The channel-to-channel linking is enabled
+	BITER TCD22_BITER_ELINKNO = 0x7FFF << 0 //+ Starting Major Iteration Count
+	ELINK TCD22_BITER_ELINKNO = 0x01 << 15  //+ Enables channel-to-channel linking on minor loop complete
 )
 
 const (
@@ -7075,13 +5843,9 @@ const (
 )
 
 const (
-	NBYTES  TCD23_NBYTES_MLOFFNO = 0x3FFFFFFF << 0 //+ Minor Byte Transfer Count
-	DMLOE   TCD23_NBYTES_MLOFFNO = 0x01 << 30      //+ Destination Minor Loop Offset enable
-	DMLOE_0 TCD23_NBYTES_MLOFFNO = 0x00 << 30      //  The minor loop offset is not applied to the DADDR
-	DMLOE_1 TCD23_NBYTES_MLOFFNO = 0x01 << 30      //  The minor loop offset is applied to the DADDR
-	SMLOE   TCD23_NBYTES_MLOFFNO = 0x01 << 31      //+ Source Minor Loop Offset Enable
-	SMLOE_0 TCD23_NBYTES_MLOFFNO = 0x00 << 31      //  The minor loop offset is not applied to the SADDR
-	SMLOE_1 TCD23_NBYTES_MLOFFNO = 0x01 << 31      //  The minor loop offset is applied to the SADDR
+	NBYTES TCD23_NBYTES_MLOFFNO = 0x3FFFFFFF << 0 //+ Minor Byte Transfer Count
+	DMLOE  TCD23_NBYTES_MLOFFNO = 0x01 << 30      //+ Destination Minor Loop Offset enable
+	SMLOE  TCD23_NBYTES_MLOFFNO = 0x01 << 31      //+ Source Minor Loop Offset Enable
 )
 
 const (
@@ -7091,14 +5855,10 @@ const (
 )
 
 const (
-	NBYTES  TCD23_NBYTES_MLOFFYES = 0x3FF << 0    //+ Minor Byte Transfer Count
-	MLOFF   TCD23_NBYTES_MLOFFYES = 0xFFFFF << 10 //+ If SMLOE or DMLOE is set, this field represents a sign-extended offset applied to the source or destination address to form the next-state value after the minor loop completes.
-	DMLOE   TCD23_NBYTES_MLOFFYES = 0x01 << 30    //+ Destination Minor Loop Offset enable
-	DMLOE_0 TCD23_NBYTES_MLOFFYES = 0x00 << 30    //  The minor loop offset is not applied to the DADDR
-	DMLOE_1 TCD23_NBYTES_MLOFFYES = 0x01 << 30    //  The minor loop offset is applied to the DADDR
-	SMLOE   TCD23_NBYTES_MLOFFYES = 0x01 << 31    //+ Source Minor Loop Offset Enable
-	SMLOE_0 TCD23_NBYTES_MLOFFYES = 0x00 << 31    //  The minor loop offset is not applied to the SADDR
-	SMLOE_1 TCD23_NBYTES_MLOFFYES = 0x01 << 31    //  The minor loop offset is applied to the SADDR
+	NBYTES TCD23_NBYTES_MLOFFYES = 0x3FF << 0    //+ Minor Byte Transfer Count
+	MLOFF  TCD23_NBYTES_MLOFFYES = 0xFFFFF << 10 //+ If SMLOE or DMLOE is set, this field represents a sign-extended offset applied to the source or destination address to form the next-state value after the minor loop completes.
+	DMLOE  TCD23_NBYTES_MLOFFYES = 0x01 << 30    //+ Destination Minor Loop Offset enable
+	SMLOE  TCD23_NBYTES_MLOFFYES = 0x01 << 31    //+ Source Minor Loop Offset Enable
 )
 
 const (
@@ -7141,10 +5901,8 @@ const (
 )
 
 const (
-	CITER   TCD23_CITER_ELINKNO = 0x7FFF << 0 //+ Current Major Iteration Count
-	ELINK   TCD23_CITER_ELINKNO = 0x01 << 15  //+ Enable channel-to-channel linking on minor-loop complete
-	ELINK_0 TCD23_CITER_ELINKNO = 0x00 << 15  //  The channel-to-channel linking is disabled
-	ELINK_1 TCD23_CITER_ELINKNO = 0x01 << 15  //  The channel-to-channel linking is enabled
+	CITER TCD23_CITER_ELINKNO = 0x7FFF << 0 //+ Current Major Iteration Count
+	ELINK TCD23_CITER_ELINKNO = 0x01 << 15  //+ Enable channel-to-channel linking on minor-loop complete
 )
 
 const (
@@ -7153,11 +5911,9 @@ const (
 )
 
 const (
-	CITER   TCD23_CITER_ELINKYES = 0x1FF << 0 //+ Current Major Iteration Count
-	LINKCH  TCD23_CITER_ELINKYES = 0x1F << 9  //+ Minor Loop Link Channel Number
-	ELINK   TCD23_CITER_ELINKYES = 0x01 << 15 //+ Enable channel-to-channel linking on minor-loop complete
-	ELINK_0 TCD23_CITER_ELINKYES = 0x00 << 15 //  The channel-to-channel linking is disabled
-	ELINK_1 TCD23_CITER_ELINKYES = 0x01 << 15 //  The channel-to-channel linking is enabled
+	CITER  TCD23_CITER_ELINKYES = 0x1FF << 0 //+ Current Major Iteration Count
+	LINKCH TCD23_CITER_ELINKYES = 0x1F << 9  //+ Minor Loop Link Channel Number
+	ELINK  TCD23_CITER_ELINKYES = 0x01 << 15 //+ Enable channel-to-channel linking on minor-loop complete
 )
 
 const (
@@ -7175,31 +5931,19 @@ const (
 )
 
 const (
-	START        TCD23_CSR = 0x01 << 0  //+ Channel Start
-	START_0      TCD23_CSR = 0x00 << 0  //  The channel is not explicitly started.
-	START_1      TCD23_CSR = 0x01 << 0  //  The channel is explicitly started via a software initiated service request.
-	INTMAJOR     TCD23_CSR = 0x01 << 1  //+ Enable an interrupt when major iteration count completes.
-	INTMAJOR_0   TCD23_CSR = 0x00 << 1  //  The end-of-major loop interrupt is disabled.
-	INTMAJOR_1   TCD23_CSR = 0x01 << 1  //  The end-of-major loop interrupt is enabled.
-	INTHALF      TCD23_CSR = 0x01 << 2  //+ Enable an interrupt when major counter is half complete.
-	INTHALF_0    TCD23_CSR = 0x00 << 2  //  The half-point interrupt is disabled.
-	INTHALF_1    TCD23_CSR = 0x01 << 2  //  The half-point interrupt is enabled.
-	DREQ         TCD23_CSR = 0x01 << 3  //+ Disable Request
-	DREQ_0       TCD23_CSR = 0x00 << 3  //  The channel's ERQ bit is not affected.
-	DREQ_1       TCD23_CSR = 0x01 << 3  //  The channel's ERQ bit is cleared when the major loop is complete.
-	ESG          TCD23_CSR = 0x01 << 4  //+ Enable Scatter/Gather Processing
-	ESG_0        TCD23_CSR = 0x00 << 4  //  The current channel's TCD is normal format.
-	ESG_1        TCD23_CSR = 0x01 << 4  //  The current channel's TCD specifies a scatter gather format. The DLASTSGA field provides a memory pointer to the next TCD to be loaded into this channel after the major loop completes its execution.
-	MAJORELINK   TCD23_CSR = 0x01 << 5  //+ Enable channel-to-channel linking on major loop complete
-	MAJORELINK_0 TCD23_CSR = 0x00 << 5  //  The channel-to-channel linking is disabled.
-	MAJORELINK_1 TCD23_CSR = 0x01 << 5  //  The channel-to-channel linking is enabled.
-	ACTIVE       TCD23_CSR = 0x01 << 6  //+ Channel Active
-	DONE         TCD23_CSR = 0x01 << 7  //+ Channel Done
-	MAJORLINKCH  TCD23_CSR = 0x1F << 8  //+ Major Loop Link Channel Number
-	BWC          TCD23_CSR = 0x03 << 14 //+ Bandwidth Control
-	BWC_0        TCD23_CSR = 0x00 << 14 //  No eDMA engine stalls.
-	BWC_2        TCD23_CSR = 0x02 << 14 //  eDMA engine stalls for 4 cycles after each R/W.
-	BWC_3        TCD23_CSR = 0x03 << 14 //  eDMA engine stalls for 8 cycles after each R/W.
+	START       TCD23_CSR = 0x01 << 0  //+ Channel Start
+	INTMAJOR    TCD23_CSR = 0x01 << 1  //+ Enable an interrupt when major iteration count completes.
+	INTHALF     TCD23_CSR = 0x01 << 2  //+ Enable an interrupt when major counter is half complete.
+	DREQ        TCD23_CSR = 0x01 << 3  //+ Disable Request
+	ESG         TCD23_CSR = 0x01 << 4  //+ Enable Scatter/Gather Processing
+	MAJORELINK  TCD23_CSR = 0x01 << 5  //+ Enable channel-to-channel linking on major loop complete
+	ACTIVE      TCD23_CSR = 0x01 << 6  //+ Channel Active
+	DONE        TCD23_CSR = 0x01 << 7  //+ Channel Done
+	MAJORLINKCH TCD23_CSR = 0x1F << 8  //+ Major Loop Link Channel Number
+	BWC         TCD23_CSR = 0x03 << 14 //+ Bandwidth Control
+	BWC_0       TCD23_CSR = 0x00 << 14 //  No eDMA engine stalls.
+	BWC_2       TCD23_CSR = 0x02 << 14 //  eDMA engine stalls for 4 cycles after each R/W.
+	BWC_3       TCD23_CSR = 0x03 << 14 //  eDMA engine stalls for 8 cycles after each R/W.
 )
 
 const (
@@ -7216,10 +5960,8 @@ const (
 )
 
 const (
-	BITER   TCD23_BITER_ELINKNO = 0x7FFF << 0 //+ Starting Major Iteration Count
-	ELINK   TCD23_BITER_ELINKNO = 0x01 << 15  //+ Enables channel-to-channel linking on minor loop complete
-	ELINK_0 TCD23_BITER_ELINKNO = 0x00 << 15  //  The channel-to-channel linking is disabled
-	ELINK_1 TCD23_BITER_ELINKNO = 0x01 << 15  //  The channel-to-channel linking is enabled
+	BITER TCD23_BITER_ELINKNO = 0x7FFF << 0 //+ Starting Major Iteration Count
+	ELINK TCD23_BITER_ELINKNO = 0x01 << 15  //+ Enables channel-to-channel linking on minor loop complete
 )
 
 const (
@@ -7228,11 +5970,9 @@ const (
 )
 
 const (
-	BITER   TCD23_BITER_ELINKYES = 0x1FF << 0 //+ Starting major iteration count
-	LINKCH  TCD23_BITER_ELINKYES = 0x1F << 9  //+ Link Channel Number
-	ELINK   TCD23_BITER_ELINKYES = 0x01 << 15 //+ Enables channel-to-channel linking on minor loop complete
-	ELINK_0 TCD23_BITER_ELINKYES = 0x00 << 15 //  The channel-to-channel linking is disabled
-	ELINK_1 TCD23_BITER_ELINKYES = 0x01 << 15 //  The channel-to-channel linking is enabled
+	BITER  TCD23_BITER_ELINKYES = 0x1FF << 0 //+ Starting major iteration count
+	LINKCH TCD23_BITER_ELINKYES = 0x1F << 9  //+ Link Channel Number
+	ELINK  TCD23_BITER_ELINKYES = 0x01 << 15 //+ Enables channel-to-channel linking on minor loop complete
 )
 
 const (
@@ -7295,13 +6035,9 @@ const (
 )
 
 const (
-	NBYTES  TCD24_NBYTES_MLOFFNO = 0x3FFFFFFF << 0 //+ Minor Byte Transfer Count
-	DMLOE   TCD24_NBYTES_MLOFFNO = 0x01 << 30      //+ Destination Minor Loop Offset enable
-	DMLOE_0 TCD24_NBYTES_MLOFFNO = 0x00 << 30      //  The minor loop offset is not applied to the DADDR
-	DMLOE_1 TCD24_NBYTES_MLOFFNO = 0x01 << 30      //  The minor loop offset is applied to the DADDR
-	SMLOE   TCD24_NBYTES_MLOFFNO = 0x01 << 31      //+ Source Minor Loop Offset Enable
-	SMLOE_0 TCD24_NBYTES_MLOFFNO = 0x00 << 31      //  The minor loop offset is not applied to the SADDR
-	SMLOE_1 TCD24_NBYTES_MLOFFNO = 0x01 << 31      //  The minor loop offset is applied to the SADDR
+	NBYTES TCD24_NBYTES_MLOFFNO = 0x3FFFFFFF << 0 //+ Minor Byte Transfer Count
+	DMLOE  TCD24_NBYTES_MLOFFNO = 0x01 << 30      //+ Destination Minor Loop Offset enable
+	SMLOE  TCD24_NBYTES_MLOFFNO = 0x01 << 31      //+ Source Minor Loop Offset Enable
 )
 
 const (
@@ -7311,14 +6047,10 @@ const (
 )
 
 const (
-	NBYTES  TCD24_NBYTES_MLOFFYES = 0x3FF << 0    //+ Minor Byte Transfer Count
-	MLOFF   TCD24_NBYTES_MLOFFYES = 0xFFFFF << 10 //+ If SMLOE or DMLOE is set, this field represents a sign-extended offset applied to the source or destination address to form the next-state value after the minor loop completes.
-	DMLOE   TCD24_NBYTES_MLOFFYES = 0x01 << 30    //+ Destination Minor Loop Offset enable
-	DMLOE_0 TCD24_NBYTES_MLOFFYES = 0x00 << 30    //  The minor loop offset is not applied to the DADDR
-	DMLOE_1 TCD24_NBYTES_MLOFFYES = 0x01 << 30    //  The minor loop offset is applied to the DADDR
-	SMLOE   TCD24_NBYTES_MLOFFYES = 0x01 << 31    //+ Source Minor Loop Offset Enable
-	SMLOE_0 TCD24_NBYTES_MLOFFYES = 0x00 << 31    //  The minor loop offset is not applied to the SADDR
-	SMLOE_1 TCD24_NBYTES_MLOFFYES = 0x01 << 31    //  The minor loop offset is applied to the SADDR
+	NBYTES TCD24_NBYTES_MLOFFYES = 0x3FF << 0    //+ Minor Byte Transfer Count
+	MLOFF  TCD24_NBYTES_MLOFFYES = 0xFFFFF << 10 //+ If SMLOE or DMLOE is set, this field represents a sign-extended offset applied to the source or destination address to form the next-state value after the minor loop completes.
+	DMLOE  TCD24_NBYTES_MLOFFYES = 0x01 << 30    //+ Destination Minor Loop Offset enable
+	SMLOE  TCD24_NBYTES_MLOFFYES = 0x01 << 31    //+ Source Minor Loop Offset Enable
 )
 
 const (
@@ -7353,10 +6085,8 @@ const (
 )
 
 const (
-	CITER   TCD24_CITER_ELINKNO = 0x7FFF << 0 //+ Current Major Iteration Count
-	ELINK   TCD24_CITER_ELINKNO = 0x01 << 15  //+ Enable channel-to-channel linking on minor-loop complete
-	ELINK_0 TCD24_CITER_ELINKNO = 0x00 << 15  //  The channel-to-channel linking is disabled
-	ELINK_1 TCD24_CITER_ELINKNO = 0x01 << 15  //  The channel-to-channel linking is enabled
+	CITER TCD24_CITER_ELINKNO = 0x7FFF << 0 //+ Current Major Iteration Count
+	ELINK TCD24_CITER_ELINKNO = 0x01 << 15  //+ Enable channel-to-channel linking on minor-loop complete
 )
 
 const (
@@ -7365,11 +6095,9 @@ const (
 )
 
 const (
-	CITER   TCD24_CITER_ELINKYES = 0x1FF << 0 //+ Current Major Iteration Count
-	LINKCH  TCD24_CITER_ELINKYES = 0x1F << 9  //+ Minor Loop Link Channel Number
-	ELINK   TCD24_CITER_ELINKYES = 0x01 << 15 //+ Enable channel-to-channel linking on minor-loop complete
-	ELINK_0 TCD24_CITER_ELINKYES = 0x00 << 15 //  The channel-to-channel linking is disabled
-	ELINK_1 TCD24_CITER_ELINKYES = 0x01 << 15 //  The channel-to-channel linking is enabled
+	CITER  TCD24_CITER_ELINKYES = 0x1FF << 0 //+ Current Major Iteration Count
+	LINKCH TCD24_CITER_ELINKYES = 0x1F << 9  //+ Minor Loop Link Channel Number
+	ELINK  TCD24_CITER_ELINKYES = 0x01 << 15 //+ Enable channel-to-channel linking on minor-loop complete
 )
 
 const (
@@ -7387,31 +6115,19 @@ const (
 )
 
 const (
-	START        TCD24_CSR = 0x01 << 0  //+ Channel Start
-	START_0      TCD24_CSR = 0x00 << 0  //  The channel is not explicitly started.
-	START_1      TCD24_CSR = 0x01 << 0  //  The channel is explicitly started via a software initiated service request.
-	INTMAJOR     TCD24_CSR = 0x01 << 1  //+ Enable an interrupt when major iteration count completes.
-	INTMAJOR_0   TCD24_CSR = 0x00 << 1  //  The end-of-major loop interrupt is disabled.
-	INTMAJOR_1   TCD24_CSR = 0x01 << 1  //  The end-of-major loop interrupt is enabled.
-	INTHALF      TCD24_CSR = 0x01 << 2  //+ Enable an interrupt when major counter is half complete.
-	INTHALF_0    TCD24_CSR = 0x00 << 2  //  The half-point interrupt is disabled.
-	INTHALF_1    TCD24_CSR = 0x01 << 2  //  The half-point interrupt is enabled.
-	DREQ         TCD24_CSR = 0x01 << 3  //+ Disable Request
-	DREQ_0       TCD24_CSR = 0x00 << 3  //  The channel's ERQ bit is not affected.
-	DREQ_1       TCD24_CSR = 0x01 << 3  //  The channel's ERQ bit is cleared when the major loop is complete.
-	ESG          TCD24_CSR = 0x01 << 4  //+ Enable Scatter/Gather Processing
-	ESG_0        TCD24_CSR = 0x00 << 4  //  The current channel's TCD is normal format.
-	ESG_1        TCD24_CSR = 0x01 << 4  //  The current channel's TCD specifies a scatter gather format. The DLASTSGA field provides a memory pointer to the next TCD to be loaded into this channel after the major loop completes its execution.
-	MAJORELINK   TCD24_CSR = 0x01 << 5  //+ Enable channel-to-channel linking on major loop complete
-	MAJORELINK_0 TCD24_CSR = 0x00 << 5  //  The channel-to-channel linking is disabled.
-	MAJORELINK_1 TCD24_CSR = 0x01 << 5  //  The channel-to-channel linking is enabled.
-	ACTIVE       TCD24_CSR = 0x01 << 6  //+ Channel Active
-	DONE         TCD24_CSR = 0x01 << 7  //+ Channel Done
-	MAJORLINKCH  TCD24_CSR = 0x1F << 8  //+ Major Loop Link Channel Number
-	BWC          TCD24_CSR = 0x03 << 14 //+ Bandwidth Control
-	BWC_0        TCD24_CSR = 0x00 << 14 //  No eDMA engine stalls.
-	BWC_2        TCD24_CSR = 0x02 << 14 //  eDMA engine stalls for 4 cycles after each R/W.
-	BWC_3        TCD24_CSR = 0x03 << 14 //  eDMA engine stalls for 8 cycles after each R/W.
+	START       TCD24_CSR = 0x01 << 0  //+ Channel Start
+	INTMAJOR    TCD24_CSR = 0x01 << 1  //+ Enable an interrupt when major iteration count completes.
+	INTHALF     TCD24_CSR = 0x01 << 2  //+ Enable an interrupt when major counter is half complete.
+	DREQ        TCD24_CSR = 0x01 << 3  //+ Disable Request
+	ESG         TCD24_CSR = 0x01 << 4  //+ Enable Scatter/Gather Processing
+	MAJORELINK  TCD24_CSR = 0x01 << 5  //+ Enable channel-to-channel linking on major loop complete
+	ACTIVE      TCD24_CSR = 0x01 << 6  //+ Channel Active
+	DONE        TCD24_CSR = 0x01 << 7  //+ Channel Done
+	MAJORLINKCH TCD24_CSR = 0x1F << 8  //+ Major Loop Link Channel Number
+	BWC         TCD24_CSR = 0x03 << 14 //+ Bandwidth Control
+	BWC_0       TCD24_CSR = 0x00 << 14 //  No eDMA engine stalls.
+	BWC_2       TCD24_CSR = 0x02 << 14 //  eDMA engine stalls for 4 cycles after each R/W.
+	BWC_3       TCD24_CSR = 0x03 << 14 //  eDMA engine stalls for 8 cycles after each R/W.
 )
 
 const (
@@ -7428,10 +6144,8 @@ const (
 )
 
 const (
-	BITER   TCD24_BITER_ELINKNO = 0x7FFF << 0 //+ Starting Major Iteration Count
-	ELINK   TCD24_BITER_ELINKNO = 0x01 << 15  //+ Enables channel-to-channel linking on minor loop complete
-	ELINK_0 TCD24_BITER_ELINKNO = 0x00 << 15  //  The channel-to-channel linking is disabled
-	ELINK_1 TCD24_BITER_ELINKNO = 0x01 << 15  //  The channel-to-channel linking is enabled
+	BITER TCD24_BITER_ELINKNO = 0x7FFF << 0 //+ Starting Major Iteration Count
+	ELINK TCD24_BITER_ELINKNO = 0x01 << 15  //+ Enables channel-to-channel linking on minor loop complete
 )
 
 const (
@@ -7440,11 +6154,9 @@ const (
 )
 
 const (
-	BITER   TCD24_BITER_ELINKYES = 0x1FF << 0 //+ Starting major iteration count
-	LINKCH  TCD24_BITER_ELINKYES = 0x1F << 9  //+ Link Channel Number
-	ELINK   TCD24_BITER_ELINKYES = 0x01 << 15 //+ Enables channel-to-channel linking on minor loop complete
-	ELINK_0 TCD24_BITER_ELINKYES = 0x00 << 15 //  The channel-to-channel linking is disabled
-	ELINK_1 TCD24_BITER_ELINKYES = 0x01 << 15 //  The channel-to-channel linking is enabled
+	BITER  TCD24_BITER_ELINKYES = 0x1FF << 0 //+ Starting major iteration count
+	LINKCH TCD24_BITER_ELINKYES = 0x1F << 9  //+ Link Channel Number
+	ELINK  TCD24_BITER_ELINKYES = 0x01 << 15 //+ Enables channel-to-channel linking on minor loop complete
 )
 
 const (
@@ -7507,13 +6219,9 @@ const (
 )
 
 const (
-	NBYTES  TCD25_NBYTES_MLOFFNO = 0x3FFFFFFF << 0 //+ Minor Byte Transfer Count
-	DMLOE   TCD25_NBYTES_MLOFFNO = 0x01 << 30      //+ Destination Minor Loop Offset enable
-	DMLOE_0 TCD25_NBYTES_MLOFFNO = 0x00 << 30      //  The minor loop offset is not applied to the DADDR
-	DMLOE_1 TCD25_NBYTES_MLOFFNO = 0x01 << 30      //  The minor loop offset is applied to the DADDR
-	SMLOE   TCD25_NBYTES_MLOFFNO = 0x01 << 31      //+ Source Minor Loop Offset Enable
-	SMLOE_0 TCD25_NBYTES_MLOFFNO = 0x00 << 31      //  The minor loop offset is not applied to the SADDR
-	SMLOE_1 TCD25_NBYTES_MLOFFNO = 0x01 << 31      //  The minor loop offset is applied to the SADDR
+	NBYTES TCD25_NBYTES_MLOFFNO = 0x3FFFFFFF << 0 //+ Minor Byte Transfer Count
+	DMLOE  TCD25_NBYTES_MLOFFNO = 0x01 << 30      //+ Destination Minor Loop Offset enable
+	SMLOE  TCD25_NBYTES_MLOFFNO = 0x01 << 31      //+ Source Minor Loop Offset Enable
 )
 
 const (
@@ -7523,14 +6231,10 @@ const (
 )
 
 const (
-	NBYTES  TCD25_NBYTES_MLOFFYES = 0x3FF << 0    //+ Minor Byte Transfer Count
-	MLOFF   TCD25_NBYTES_MLOFFYES = 0xFFFFF << 10 //+ If SMLOE or DMLOE is set, this field represents a sign-extended offset applied to the source or destination address to form the next-state value after the minor loop completes.
-	DMLOE   TCD25_NBYTES_MLOFFYES = 0x01 << 30    //+ Destination Minor Loop Offset enable
-	DMLOE_0 TCD25_NBYTES_MLOFFYES = 0x00 << 30    //  The minor loop offset is not applied to the DADDR
-	DMLOE_1 TCD25_NBYTES_MLOFFYES = 0x01 << 30    //  The minor loop offset is applied to the DADDR
-	SMLOE   TCD25_NBYTES_MLOFFYES = 0x01 << 31    //+ Source Minor Loop Offset Enable
-	SMLOE_0 TCD25_NBYTES_MLOFFYES = 0x00 << 31    //  The minor loop offset is not applied to the SADDR
-	SMLOE_1 TCD25_NBYTES_MLOFFYES = 0x01 << 31    //  The minor loop offset is applied to the SADDR
+	NBYTES TCD25_NBYTES_MLOFFYES = 0x3FF << 0    //+ Minor Byte Transfer Count
+	MLOFF  TCD25_NBYTES_MLOFFYES = 0xFFFFF << 10 //+ If SMLOE or DMLOE is set, this field represents a sign-extended offset applied to the source or destination address to form the next-state value after the minor loop completes.
+	DMLOE  TCD25_NBYTES_MLOFFYES = 0x01 << 30    //+ Destination Minor Loop Offset enable
+	SMLOE  TCD25_NBYTES_MLOFFYES = 0x01 << 31    //+ Source Minor Loop Offset Enable
 )
 
 const (
@@ -7565,10 +6269,8 @@ const (
 )
 
 const (
-	CITER   TCD25_CITER_ELINKNO = 0x7FFF << 0 //+ Current Major Iteration Count
-	ELINK   TCD25_CITER_ELINKNO = 0x01 << 15  //+ Enable channel-to-channel linking on minor-loop complete
-	ELINK_0 TCD25_CITER_ELINKNO = 0x00 << 15  //  The channel-to-channel linking is disabled
-	ELINK_1 TCD25_CITER_ELINKNO = 0x01 << 15  //  The channel-to-channel linking is enabled
+	CITER TCD25_CITER_ELINKNO = 0x7FFF << 0 //+ Current Major Iteration Count
+	ELINK TCD25_CITER_ELINKNO = 0x01 << 15  //+ Enable channel-to-channel linking on minor-loop complete
 )
 
 const (
@@ -7577,11 +6279,9 @@ const (
 )
 
 const (
-	CITER   TCD25_CITER_ELINKYES = 0x1FF << 0 //+ Current Major Iteration Count
-	LINKCH  TCD25_CITER_ELINKYES = 0x1F << 9  //+ Minor Loop Link Channel Number
-	ELINK   TCD25_CITER_ELINKYES = 0x01 << 15 //+ Enable channel-to-channel linking on minor-loop complete
-	ELINK_0 TCD25_CITER_ELINKYES = 0x00 << 15 //  The channel-to-channel linking is disabled
-	ELINK_1 TCD25_CITER_ELINKYES = 0x01 << 15 //  The channel-to-channel linking is enabled
+	CITER  TCD25_CITER_ELINKYES = 0x1FF << 0 //+ Current Major Iteration Count
+	LINKCH TCD25_CITER_ELINKYES = 0x1F << 9  //+ Minor Loop Link Channel Number
+	ELINK  TCD25_CITER_ELINKYES = 0x01 << 15 //+ Enable channel-to-channel linking on minor-loop complete
 )
 
 const (
@@ -7599,31 +6299,19 @@ const (
 )
 
 const (
-	START        TCD25_CSR = 0x01 << 0  //+ Channel Start
-	START_0      TCD25_CSR = 0x00 << 0  //  The channel is not explicitly started.
-	START_1      TCD25_CSR = 0x01 << 0  //  The channel is explicitly started via a software initiated service request.
-	INTMAJOR     TCD25_CSR = 0x01 << 1  //+ Enable an interrupt when major iteration count completes.
-	INTMAJOR_0   TCD25_CSR = 0x00 << 1  //  The end-of-major loop interrupt is disabled.
-	INTMAJOR_1   TCD25_CSR = 0x01 << 1  //  The end-of-major loop interrupt is enabled.
-	INTHALF      TCD25_CSR = 0x01 << 2  //+ Enable an interrupt when major counter is half complete.
-	INTHALF_0    TCD25_CSR = 0x00 << 2  //  The half-point interrupt is disabled.
-	INTHALF_1    TCD25_CSR = 0x01 << 2  //  The half-point interrupt is enabled.
-	DREQ         TCD25_CSR = 0x01 << 3  //+ Disable Request
-	DREQ_0       TCD25_CSR = 0x00 << 3  //  The channel's ERQ bit is not affected.
-	DREQ_1       TCD25_CSR = 0x01 << 3  //  The channel's ERQ bit is cleared when the major loop is complete.
-	ESG          TCD25_CSR = 0x01 << 4  //+ Enable Scatter/Gather Processing
-	ESG_0        TCD25_CSR = 0x00 << 4  //  The current channel's TCD is normal format.
-	ESG_1        TCD25_CSR = 0x01 << 4  //  The current channel's TCD specifies a scatter gather format. The DLASTSGA field provides a memory pointer to the next TCD to be loaded into this channel after the major loop completes its execution.
-	MAJORELINK   TCD25_CSR = 0x01 << 5  //+ Enable channel-to-channel linking on major loop complete
-	MAJORELINK_0 TCD25_CSR = 0x00 << 5  //  The channel-to-channel linking is disabled.
-	MAJORELINK_1 TCD25_CSR = 0x01 << 5  //  The channel-to-channel linking is enabled.
-	ACTIVE       TCD25_CSR = 0x01 << 6  //+ Channel Active
-	DONE         TCD25_CSR = 0x01 << 7  //+ Channel Done
-	MAJORLINKCH  TCD25_CSR = 0x1F << 8  //+ Major Loop Link Channel Number
-	BWC          TCD25_CSR = 0x03 << 14 //+ Bandwidth Control
-	BWC_0        TCD25_CSR = 0x00 << 14 //  No eDMA engine stalls.
-	BWC_2        TCD25_CSR = 0x02 << 14 //  eDMA engine stalls for 4 cycles after each R/W.
-	BWC_3        TCD25_CSR = 0x03 << 14 //  eDMA engine stalls for 8 cycles after each R/W.
+	START       TCD25_CSR = 0x01 << 0  //+ Channel Start
+	INTMAJOR    TCD25_CSR = 0x01 << 1  //+ Enable an interrupt when major iteration count completes.
+	INTHALF     TCD25_CSR = 0x01 << 2  //+ Enable an interrupt when major counter is half complete.
+	DREQ        TCD25_CSR = 0x01 << 3  //+ Disable Request
+	ESG         TCD25_CSR = 0x01 << 4  //+ Enable Scatter/Gather Processing
+	MAJORELINK  TCD25_CSR = 0x01 << 5  //+ Enable channel-to-channel linking on major loop complete
+	ACTIVE      TCD25_CSR = 0x01 << 6  //+ Channel Active
+	DONE        TCD25_CSR = 0x01 << 7  //+ Channel Done
+	MAJORLINKCH TCD25_CSR = 0x1F << 8  //+ Major Loop Link Channel Number
+	BWC         TCD25_CSR = 0x03 << 14 //+ Bandwidth Control
+	BWC_0       TCD25_CSR = 0x00 << 14 //  No eDMA engine stalls.
+	BWC_2       TCD25_CSR = 0x02 << 14 //  eDMA engine stalls for 4 cycles after each R/W.
+	BWC_3       TCD25_CSR = 0x03 << 14 //  eDMA engine stalls for 8 cycles after each R/W.
 )
 
 const (
@@ -7640,10 +6328,8 @@ const (
 )
 
 const (
-	BITER   TCD25_BITER_ELINKNO = 0x7FFF << 0 //+ Starting Major Iteration Count
-	ELINK   TCD25_BITER_ELINKNO = 0x01 << 15  //+ Enables channel-to-channel linking on minor loop complete
-	ELINK_0 TCD25_BITER_ELINKNO = 0x00 << 15  //  The channel-to-channel linking is disabled
-	ELINK_1 TCD25_BITER_ELINKNO = 0x01 << 15  //  The channel-to-channel linking is enabled
+	BITER TCD25_BITER_ELINKNO = 0x7FFF << 0 //+ Starting Major Iteration Count
+	ELINK TCD25_BITER_ELINKNO = 0x01 << 15  //+ Enables channel-to-channel linking on minor loop complete
 )
 
 const (
@@ -7652,11 +6338,9 @@ const (
 )
 
 const (
-	BITER   TCD25_BITER_ELINKYES = 0x1FF << 0 //+ Starting major iteration count
-	LINKCH  TCD25_BITER_ELINKYES = 0x1F << 9  //+ Link Channel Number
-	ELINK   TCD25_BITER_ELINKYES = 0x01 << 15 //+ Enables channel-to-channel linking on minor loop complete
-	ELINK_0 TCD25_BITER_ELINKYES = 0x00 << 15 //  The channel-to-channel linking is disabled
-	ELINK_1 TCD25_BITER_ELINKYES = 0x01 << 15 //  The channel-to-channel linking is enabled
+	BITER  TCD25_BITER_ELINKYES = 0x1FF << 0 //+ Starting major iteration count
+	LINKCH TCD25_BITER_ELINKYES = 0x1F << 9  //+ Link Channel Number
+	ELINK  TCD25_BITER_ELINKYES = 0x01 << 15 //+ Enables channel-to-channel linking on minor loop complete
 )
 
 const (
@@ -7719,13 +6403,9 @@ const (
 )
 
 const (
-	NBYTES  TCD26_NBYTES_MLOFFNO = 0x3FFFFFFF << 0 //+ Minor Byte Transfer Count
-	DMLOE   TCD26_NBYTES_MLOFFNO = 0x01 << 30      //+ Destination Minor Loop Offset enable
-	DMLOE_0 TCD26_NBYTES_MLOFFNO = 0x00 << 30      //  The minor loop offset is not applied to the DADDR
-	DMLOE_1 TCD26_NBYTES_MLOFFNO = 0x01 << 30      //  The minor loop offset is applied to the DADDR
-	SMLOE   TCD26_NBYTES_MLOFFNO = 0x01 << 31      //+ Source Minor Loop Offset Enable
-	SMLOE_0 TCD26_NBYTES_MLOFFNO = 0x00 << 31      //  The minor loop offset is not applied to the SADDR
-	SMLOE_1 TCD26_NBYTES_MLOFFNO = 0x01 << 31      //  The minor loop offset is applied to the SADDR
+	NBYTES TCD26_NBYTES_MLOFFNO = 0x3FFFFFFF << 0 //+ Minor Byte Transfer Count
+	DMLOE  TCD26_NBYTES_MLOFFNO = 0x01 << 30      //+ Destination Minor Loop Offset enable
+	SMLOE  TCD26_NBYTES_MLOFFNO = 0x01 << 31      //+ Source Minor Loop Offset Enable
 )
 
 const (
@@ -7735,14 +6415,10 @@ const (
 )
 
 const (
-	NBYTES  TCD26_NBYTES_MLOFFYES = 0x3FF << 0    //+ Minor Byte Transfer Count
-	MLOFF   TCD26_NBYTES_MLOFFYES = 0xFFFFF << 10 //+ If SMLOE or DMLOE is set, this field represents a sign-extended offset applied to the source or destination address to form the next-state value after the minor loop completes.
-	DMLOE   TCD26_NBYTES_MLOFFYES = 0x01 << 30    //+ Destination Minor Loop Offset enable
-	DMLOE_0 TCD26_NBYTES_MLOFFYES = 0x00 << 30    //  The minor loop offset is not applied to the DADDR
-	DMLOE_1 TCD26_NBYTES_MLOFFYES = 0x01 << 30    //  The minor loop offset is applied to the DADDR
-	SMLOE   TCD26_NBYTES_MLOFFYES = 0x01 << 31    //+ Source Minor Loop Offset Enable
-	SMLOE_0 TCD26_NBYTES_MLOFFYES = 0x00 << 31    //  The minor loop offset is not applied to the SADDR
-	SMLOE_1 TCD26_NBYTES_MLOFFYES = 0x01 << 31    //  The minor loop offset is applied to the SADDR
+	NBYTES TCD26_NBYTES_MLOFFYES = 0x3FF << 0    //+ Minor Byte Transfer Count
+	MLOFF  TCD26_NBYTES_MLOFFYES = 0xFFFFF << 10 //+ If SMLOE or DMLOE is set, this field represents a sign-extended offset applied to the source or destination address to form the next-state value after the minor loop completes.
+	DMLOE  TCD26_NBYTES_MLOFFYES = 0x01 << 30    //+ Destination Minor Loop Offset enable
+	SMLOE  TCD26_NBYTES_MLOFFYES = 0x01 << 31    //+ Source Minor Loop Offset Enable
 )
 
 const (
@@ -7777,11 +6453,9 @@ const (
 )
 
 const (
-	CITER   TCD26_CITER_ELINKYES = 0x1FF << 0 //+ Current Major Iteration Count
-	LINKCH  TCD26_CITER_ELINKYES = 0x1F << 9  //+ Minor Loop Link Channel Number
-	ELINK   TCD26_CITER_ELINKYES = 0x01 << 15 //+ Enable channel-to-channel linking on minor-loop complete
-	ELINK_0 TCD26_CITER_ELINKYES = 0x00 << 15 //  The channel-to-channel linking is disabled
-	ELINK_1 TCD26_CITER_ELINKYES = 0x01 << 15 //  The channel-to-channel linking is enabled
+	CITER  TCD26_CITER_ELINKYES = 0x1FF << 0 //+ Current Major Iteration Count
+	LINKCH TCD26_CITER_ELINKYES = 0x1F << 9  //+ Minor Loop Link Channel Number
+	ELINK  TCD26_CITER_ELINKYES = 0x01 << 15 //+ Enable channel-to-channel linking on minor-loop complete
 )
 
 const (
@@ -7791,10 +6465,8 @@ const (
 )
 
 const (
-	CITER   TCD26_CITER_ELINKNO = 0x7FFF << 0 //+ Current Major Iteration Count
-	ELINK   TCD26_CITER_ELINKNO = 0x01 << 15  //+ Enable channel-to-channel linking on minor-loop complete
-	ELINK_0 TCD26_CITER_ELINKNO = 0x00 << 15  //  The channel-to-channel linking is disabled
-	ELINK_1 TCD26_CITER_ELINKNO = 0x01 << 15  //  The channel-to-channel linking is enabled
+	CITER TCD26_CITER_ELINKNO = 0x7FFF << 0 //+ Current Major Iteration Count
+	ELINK TCD26_CITER_ELINKNO = 0x01 << 15  //+ Enable channel-to-channel linking on minor-loop complete
 )
 
 const (
@@ -7811,31 +6483,19 @@ const (
 )
 
 const (
-	START        TCD26_CSR = 0x01 << 0  //+ Channel Start
-	START_0      TCD26_CSR = 0x00 << 0  //  The channel is not explicitly started.
-	START_1      TCD26_CSR = 0x01 << 0  //  The channel is explicitly started via a software initiated service request.
-	INTMAJOR     TCD26_CSR = 0x01 << 1  //+ Enable an interrupt when major iteration count completes.
-	INTMAJOR_0   TCD26_CSR = 0x00 << 1  //  The end-of-major loop interrupt is disabled.
-	INTMAJOR_1   TCD26_CSR = 0x01 << 1  //  The end-of-major loop interrupt is enabled.
-	INTHALF      TCD26_CSR = 0x01 << 2  //+ Enable an interrupt when major counter is half complete.
-	INTHALF_0    TCD26_CSR = 0x00 << 2  //  The half-point interrupt is disabled.
-	INTHALF_1    TCD26_CSR = 0x01 << 2  //  The half-point interrupt is enabled.
-	DREQ         TCD26_CSR = 0x01 << 3  //+ Disable Request
-	DREQ_0       TCD26_CSR = 0x00 << 3  //  The channel's ERQ bit is not affected.
-	DREQ_1       TCD26_CSR = 0x01 << 3  //  The channel's ERQ bit is cleared when the major loop is complete.
-	ESG          TCD26_CSR = 0x01 << 4  //+ Enable Scatter/Gather Processing
-	ESG_0        TCD26_CSR = 0x00 << 4  //  The current channel's TCD is normal format.
-	ESG_1        TCD26_CSR = 0x01 << 4  //  The current channel's TCD specifies a scatter gather format. The DLASTSGA field provides a memory pointer to the next TCD to be loaded into this channel after the major loop completes its execution.
-	MAJORELINK   TCD26_CSR = 0x01 << 5  //+ Enable channel-to-channel linking on major loop complete
-	MAJORELINK_0 TCD26_CSR = 0x00 << 5  //  The channel-to-channel linking is disabled.
-	MAJORELINK_1 TCD26_CSR = 0x01 << 5  //  The channel-to-channel linking is enabled.
-	ACTIVE       TCD26_CSR = 0x01 << 6  //+ Channel Active
-	DONE         TCD26_CSR = 0x01 << 7  //+ Channel Done
-	MAJORLINKCH  TCD26_CSR = 0x1F << 8  //+ Major Loop Link Channel Number
-	BWC          TCD26_CSR = 0x03 << 14 //+ Bandwidth Control
-	BWC_0        TCD26_CSR = 0x00 << 14 //  No eDMA engine stalls.
-	BWC_2        TCD26_CSR = 0x02 << 14 //  eDMA engine stalls for 4 cycles after each R/W.
-	BWC_3        TCD26_CSR = 0x03 << 14 //  eDMA engine stalls for 8 cycles after each R/W.
+	START       TCD26_CSR = 0x01 << 0  //+ Channel Start
+	INTMAJOR    TCD26_CSR = 0x01 << 1  //+ Enable an interrupt when major iteration count completes.
+	INTHALF     TCD26_CSR = 0x01 << 2  //+ Enable an interrupt when major counter is half complete.
+	DREQ        TCD26_CSR = 0x01 << 3  //+ Disable Request
+	ESG         TCD26_CSR = 0x01 << 4  //+ Enable Scatter/Gather Processing
+	MAJORELINK  TCD26_CSR = 0x01 << 5  //+ Enable channel-to-channel linking on major loop complete
+	ACTIVE      TCD26_CSR = 0x01 << 6  //+ Channel Active
+	DONE        TCD26_CSR = 0x01 << 7  //+ Channel Done
+	MAJORLINKCH TCD26_CSR = 0x1F << 8  //+ Major Loop Link Channel Number
+	BWC         TCD26_CSR = 0x03 << 14 //+ Bandwidth Control
+	BWC_0       TCD26_CSR = 0x00 << 14 //  No eDMA engine stalls.
+	BWC_2       TCD26_CSR = 0x02 << 14 //  eDMA engine stalls for 4 cycles after each R/W.
+	BWC_3       TCD26_CSR = 0x03 << 14 //  eDMA engine stalls for 8 cycles after each R/W.
 )
 
 const (
@@ -7852,10 +6512,8 @@ const (
 )
 
 const (
-	BITER   TCD26_BITER_ELINKNO = 0x7FFF << 0 //+ Starting Major Iteration Count
-	ELINK   TCD26_BITER_ELINKNO = 0x01 << 15  //+ Enables channel-to-channel linking on minor loop complete
-	ELINK_0 TCD26_BITER_ELINKNO = 0x00 << 15  //  The channel-to-channel linking is disabled
-	ELINK_1 TCD26_BITER_ELINKNO = 0x01 << 15  //  The channel-to-channel linking is enabled
+	BITER TCD26_BITER_ELINKNO = 0x7FFF << 0 //+ Starting Major Iteration Count
+	ELINK TCD26_BITER_ELINKNO = 0x01 << 15  //+ Enables channel-to-channel linking on minor loop complete
 )
 
 const (
@@ -7864,11 +6522,9 @@ const (
 )
 
 const (
-	BITER   TCD26_BITER_ELINKYES = 0x1FF << 0 //+ Starting major iteration count
-	LINKCH  TCD26_BITER_ELINKYES = 0x1F << 9  //+ Link Channel Number
-	ELINK   TCD26_BITER_ELINKYES = 0x01 << 15 //+ Enables channel-to-channel linking on minor loop complete
-	ELINK_0 TCD26_BITER_ELINKYES = 0x00 << 15 //  The channel-to-channel linking is disabled
-	ELINK_1 TCD26_BITER_ELINKYES = 0x01 << 15 //  The channel-to-channel linking is enabled
+	BITER  TCD26_BITER_ELINKYES = 0x1FF << 0 //+ Starting major iteration count
+	LINKCH TCD26_BITER_ELINKYES = 0x1F << 9  //+ Link Channel Number
+	ELINK  TCD26_BITER_ELINKYES = 0x01 << 15 //+ Enables channel-to-channel linking on minor loop complete
 )
 
 const (
@@ -7931,13 +6587,9 @@ const (
 )
 
 const (
-	NBYTES  TCD27_NBYTES_MLOFFNO = 0x3FFFFFFF << 0 //+ Minor Byte Transfer Count
-	DMLOE   TCD27_NBYTES_MLOFFNO = 0x01 << 30      //+ Destination Minor Loop Offset enable
-	DMLOE_0 TCD27_NBYTES_MLOFFNO = 0x00 << 30      //  The minor loop offset is not applied to the DADDR
-	DMLOE_1 TCD27_NBYTES_MLOFFNO = 0x01 << 30      //  The minor loop offset is applied to the DADDR
-	SMLOE   TCD27_NBYTES_MLOFFNO = 0x01 << 31      //+ Source Minor Loop Offset Enable
-	SMLOE_0 TCD27_NBYTES_MLOFFNO = 0x00 << 31      //  The minor loop offset is not applied to the SADDR
-	SMLOE_1 TCD27_NBYTES_MLOFFNO = 0x01 << 31      //  The minor loop offset is applied to the SADDR
+	NBYTES TCD27_NBYTES_MLOFFNO = 0x3FFFFFFF << 0 //+ Minor Byte Transfer Count
+	DMLOE  TCD27_NBYTES_MLOFFNO = 0x01 << 30      //+ Destination Minor Loop Offset enable
+	SMLOE  TCD27_NBYTES_MLOFFNO = 0x01 << 31      //+ Source Minor Loop Offset Enable
 )
 
 const (
@@ -7947,14 +6599,10 @@ const (
 )
 
 const (
-	NBYTES  TCD27_NBYTES_MLOFFYES = 0x3FF << 0    //+ Minor Byte Transfer Count
-	MLOFF   TCD27_NBYTES_MLOFFYES = 0xFFFFF << 10 //+ If SMLOE or DMLOE is set, this field represents a sign-extended offset applied to the source or destination address to form the next-state value after the minor loop completes.
-	DMLOE   TCD27_NBYTES_MLOFFYES = 0x01 << 30    //+ Destination Minor Loop Offset enable
-	DMLOE_0 TCD27_NBYTES_MLOFFYES = 0x00 << 30    //  The minor loop offset is not applied to the DADDR
-	DMLOE_1 TCD27_NBYTES_MLOFFYES = 0x01 << 30    //  The minor loop offset is applied to the DADDR
-	SMLOE   TCD27_NBYTES_MLOFFYES = 0x01 << 31    //+ Source Minor Loop Offset Enable
-	SMLOE_0 TCD27_NBYTES_MLOFFYES = 0x00 << 31    //  The minor loop offset is not applied to the SADDR
-	SMLOE_1 TCD27_NBYTES_MLOFFYES = 0x01 << 31    //  The minor loop offset is applied to the SADDR
+	NBYTES TCD27_NBYTES_MLOFFYES = 0x3FF << 0    //+ Minor Byte Transfer Count
+	MLOFF  TCD27_NBYTES_MLOFFYES = 0xFFFFF << 10 //+ If SMLOE or DMLOE is set, this field represents a sign-extended offset applied to the source or destination address to form the next-state value after the minor loop completes.
+	DMLOE  TCD27_NBYTES_MLOFFYES = 0x01 << 30    //+ Destination Minor Loop Offset enable
+	SMLOE  TCD27_NBYTES_MLOFFYES = 0x01 << 31    //+ Source Minor Loop Offset Enable
 )
 
 const (
@@ -7989,10 +6637,8 @@ const (
 )
 
 const (
-	CITER   TCD27_CITER_ELINKNO = 0x7FFF << 0 //+ Current Major Iteration Count
-	ELINK   TCD27_CITER_ELINKNO = 0x01 << 15  //+ Enable channel-to-channel linking on minor-loop complete
-	ELINK_0 TCD27_CITER_ELINKNO = 0x00 << 15  //  The channel-to-channel linking is disabled
-	ELINK_1 TCD27_CITER_ELINKNO = 0x01 << 15  //  The channel-to-channel linking is enabled
+	CITER TCD27_CITER_ELINKNO = 0x7FFF << 0 //+ Current Major Iteration Count
+	ELINK TCD27_CITER_ELINKNO = 0x01 << 15  //+ Enable channel-to-channel linking on minor-loop complete
 )
 
 const (
@@ -8001,11 +6647,9 @@ const (
 )
 
 const (
-	CITER   TCD27_CITER_ELINKYES = 0x1FF << 0 //+ Current Major Iteration Count
-	LINKCH  TCD27_CITER_ELINKYES = 0x1F << 9  //+ Minor Loop Link Channel Number
-	ELINK   TCD27_CITER_ELINKYES = 0x01 << 15 //+ Enable channel-to-channel linking on minor-loop complete
-	ELINK_0 TCD27_CITER_ELINKYES = 0x00 << 15 //  The channel-to-channel linking is disabled
-	ELINK_1 TCD27_CITER_ELINKYES = 0x01 << 15 //  The channel-to-channel linking is enabled
+	CITER  TCD27_CITER_ELINKYES = 0x1FF << 0 //+ Current Major Iteration Count
+	LINKCH TCD27_CITER_ELINKYES = 0x1F << 9  //+ Minor Loop Link Channel Number
+	ELINK  TCD27_CITER_ELINKYES = 0x01 << 15 //+ Enable channel-to-channel linking on minor-loop complete
 )
 
 const (
@@ -8023,31 +6667,19 @@ const (
 )
 
 const (
-	START        TCD27_CSR = 0x01 << 0  //+ Channel Start
-	START_0      TCD27_CSR = 0x00 << 0  //  The channel is not explicitly started.
-	START_1      TCD27_CSR = 0x01 << 0  //  The channel is explicitly started via a software initiated service request.
-	INTMAJOR     TCD27_CSR = 0x01 << 1  //+ Enable an interrupt when major iteration count completes.
-	INTMAJOR_0   TCD27_CSR = 0x00 << 1  //  The end-of-major loop interrupt is disabled.
-	INTMAJOR_1   TCD27_CSR = 0x01 << 1  //  The end-of-major loop interrupt is enabled.
-	INTHALF      TCD27_CSR = 0x01 << 2  //+ Enable an interrupt when major counter is half complete.
-	INTHALF_0    TCD27_CSR = 0x00 << 2  //  The half-point interrupt is disabled.
-	INTHALF_1    TCD27_CSR = 0x01 << 2  //  The half-point interrupt is enabled.
-	DREQ         TCD27_CSR = 0x01 << 3  //+ Disable Request
-	DREQ_0       TCD27_CSR = 0x00 << 3  //  The channel's ERQ bit is not affected.
-	DREQ_1       TCD27_CSR = 0x01 << 3  //  The channel's ERQ bit is cleared when the major loop is complete.
-	ESG          TCD27_CSR = 0x01 << 4  //+ Enable Scatter/Gather Processing
-	ESG_0        TCD27_CSR = 0x00 << 4  //  The current channel's TCD is normal format.
-	ESG_1        TCD27_CSR = 0x01 << 4  //  The current channel's TCD specifies a scatter gather format. The DLASTSGA field provides a memory pointer to the next TCD to be loaded into this channel after the major loop completes its execution.
-	MAJORELINK   TCD27_CSR = 0x01 << 5  //+ Enable channel-to-channel linking on major loop complete
-	MAJORELINK_0 TCD27_CSR = 0x00 << 5  //  The channel-to-channel linking is disabled.
-	MAJORELINK_1 TCD27_CSR = 0x01 << 5  //  The channel-to-channel linking is enabled.
-	ACTIVE       TCD27_CSR = 0x01 << 6  //+ Channel Active
-	DONE         TCD27_CSR = 0x01 << 7  //+ Channel Done
-	MAJORLINKCH  TCD27_CSR = 0x1F << 8  //+ Major Loop Link Channel Number
-	BWC          TCD27_CSR = 0x03 << 14 //+ Bandwidth Control
-	BWC_0        TCD27_CSR = 0x00 << 14 //  No eDMA engine stalls.
-	BWC_2        TCD27_CSR = 0x02 << 14 //  eDMA engine stalls for 4 cycles after each R/W.
-	BWC_3        TCD27_CSR = 0x03 << 14 //  eDMA engine stalls for 8 cycles after each R/W.
+	START       TCD27_CSR = 0x01 << 0  //+ Channel Start
+	INTMAJOR    TCD27_CSR = 0x01 << 1  //+ Enable an interrupt when major iteration count completes.
+	INTHALF     TCD27_CSR = 0x01 << 2  //+ Enable an interrupt when major counter is half complete.
+	DREQ        TCD27_CSR = 0x01 << 3  //+ Disable Request
+	ESG         TCD27_CSR = 0x01 << 4  //+ Enable Scatter/Gather Processing
+	MAJORELINK  TCD27_CSR = 0x01 << 5  //+ Enable channel-to-channel linking on major loop complete
+	ACTIVE      TCD27_CSR = 0x01 << 6  //+ Channel Active
+	DONE        TCD27_CSR = 0x01 << 7  //+ Channel Done
+	MAJORLINKCH TCD27_CSR = 0x1F << 8  //+ Major Loop Link Channel Number
+	BWC         TCD27_CSR = 0x03 << 14 //+ Bandwidth Control
+	BWC_0       TCD27_CSR = 0x00 << 14 //  No eDMA engine stalls.
+	BWC_2       TCD27_CSR = 0x02 << 14 //  eDMA engine stalls for 4 cycles after each R/W.
+	BWC_3       TCD27_CSR = 0x03 << 14 //  eDMA engine stalls for 8 cycles after each R/W.
 )
 
 const (
@@ -8064,11 +6696,9 @@ const (
 )
 
 const (
-	BITER   TCD27_BITER_ELINKYES = 0x1FF << 0 //+ Starting major iteration count
-	LINKCH  TCD27_BITER_ELINKYES = 0x1F << 9  //+ Link Channel Number
-	ELINK   TCD27_BITER_ELINKYES = 0x01 << 15 //+ Enables channel-to-channel linking on minor loop complete
-	ELINK_0 TCD27_BITER_ELINKYES = 0x00 << 15 //  The channel-to-channel linking is disabled
-	ELINK_1 TCD27_BITER_ELINKYES = 0x01 << 15 //  The channel-to-channel linking is enabled
+	BITER  TCD27_BITER_ELINKYES = 0x1FF << 0 //+ Starting major iteration count
+	LINKCH TCD27_BITER_ELINKYES = 0x1F << 9  //+ Link Channel Number
+	ELINK  TCD27_BITER_ELINKYES = 0x01 << 15 //+ Enables channel-to-channel linking on minor loop complete
 )
 
 const (
@@ -8078,10 +6708,8 @@ const (
 )
 
 const (
-	BITER   TCD27_BITER_ELINKNO = 0x7FFF << 0 //+ Starting Major Iteration Count
-	ELINK   TCD27_BITER_ELINKNO = 0x01 << 15  //+ Enables channel-to-channel linking on minor loop complete
-	ELINK_0 TCD27_BITER_ELINKNO = 0x00 << 15  //  The channel-to-channel linking is disabled
-	ELINK_1 TCD27_BITER_ELINKNO = 0x01 << 15  //  The channel-to-channel linking is enabled
+	BITER TCD27_BITER_ELINKNO = 0x7FFF << 0 //+ Starting Major Iteration Count
+	ELINK TCD27_BITER_ELINKNO = 0x01 << 15  //+ Enables channel-to-channel linking on minor loop complete
 )
 
 const (
@@ -8135,14 +6763,10 @@ const (
 )
 
 const (
-	NBYTES  TCD28_NBYTES_MLOFFYES = 0x3FF << 0    //+ Minor Byte Transfer Count
-	MLOFF   TCD28_NBYTES_MLOFFYES = 0xFFFFF << 10 //+ If SMLOE or DMLOE is set, this field represents a sign-extended offset applied to the source or destination address to form the next-state value after the minor loop completes.
-	DMLOE   TCD28_NBYTES_MLOFFYES = 0x01 << 30    //+ Destination Minor Loop Offset enable
-	DMLOE_0 TCD28_NBYTES_MLOFFYES = 0x00 << 30    //  The minor loop offset is not applied to the DADDR
-	DMLOE_1 TCD28_NBYTES_MLOFFYES = 0x01 << 30    //  The minor loop offset is applied to the DADDR
-	SMLOE   TCD28_NBYTES_MLOFFYES = 0x01 << 31    //+ Source Minor Loop Offset Enable
-	SMLOE_0 TCD28_NBYTES_MLOFFYES = 0x00 << 31    //  The minor loop offset is not applied to the SADDR
-	SMLOE_1 TCD28_NBYTES_MLOFFYES = 0x01 << 31    //  The minor loop offset is applied to the SADDR
+	NBYTES TCD28_NBYTES_MLOFFYES = 0x3FF << 0    //+ Minor Byte Transfer Count
+	MLOFF  TCD28_NBYTES_MLOFFYES = 0xFFFFF << 10 //+ If SMLOE or DMLOE is set, this field represents a sign-extended offset applied to the source or destination address to form the next-state value after the minor loop completes.
+	DMLOE  TCD28_NBYTES_MLOFFYES = 0x01 << 30    //+ Destination Minor Loop Offset enable
+	SMLOE  TCD28_NBYTES_MLOFFYES = 0x01 << 31    //+ Source Minor Loop Offset Enable
 )
 
 const (
@@ -8161,13 +6785,9 @@ const (
 )
 
 const (
-	NBYTES  TCD28_NBYTES_MLOFFNO = 0x3FFFFFFF << 0 //+ Minor Byte Transfer Count
-	DMLOE   TCD28_NBYTES_MLOFFNO = 0x01 << 30      //+ Destination Minor Loop Offset enable
-	DMLOE_0 TCD28_NBYTES_MLOFFNO = 0x00 << 30      //  The minor loop offset is not applied to the DADDR
-	DMLOE_1 TCD28_NBYTES_MLOFFNO = 0x01 << 30      //  The minor loop offset is applied to the DADDR
-	SMLOE   TCD28_NBYTES_MLOFFNO = 0x01 << 31      //+ Source Minor Loop Offset Enable
-	SMLOE_0 TCD28_NBYTES_MLOFFNO = 0x00 << 31      //  The minor loop offset is not applied to the SADDR
-	SMLOE_1 TCD28_NBYTES_MLOFFNO = 0x01 << 31      //  The minor loop offset is applied to the SADDR
+	NBYTES TCD28_NBYTES_MLOFFNO = 0x3FFFFFFF << 0 //+ Minor Byte Transfer Count
+	DMLOE  TCD28_NBYTES_MLOFFNO = 0x01 << 30      //+ Destination Minor Loop Offset enable
+	SMLOE  TCD28_NBYTES_MLOFFNO = 0x01 << 31      //+ Source Minor Loop Offset Enable
 )
 
 const (
@@ -8201,10 +6821,8 @@ const (
 )
 
 const (
-	CITER   TCD28_CITER_ELINKNO = 0x7FFF << 0 //+ Current Major Iteration Count
-	ELINK   TCD28_CITER_ELINKNO = 0x01 << 15  //+ Enable channel-to-channel linking on minor-loop complete
-	ELINK_0 TCD28_CITER_ELINKNO = 0x00 << 15  //  The channel-to-channel linking is disabled
-	ELINK_1 TCD28_CITER_ELINKNO = 0x01 << 15  //  The channel-to-channel linking is enabled
+	CITER TCD28_CITER_ELINKNO = 0x7FFF << 0 //+ Current Major Iteration Count
+	ELINK TCD28_CITER_ELINKNO = 0x01 << 15  //+ Enable channel-to-channel linking on minor-loop complete
 )
 
 const (
@@ -8213,11 +6831,9 @@ const (
 )
 
 const (
-	CITER   TCD28_CITER_ELINKYES = 0x1FF << 0 //+ Current Major Iteration Count
-	LINKCH  TCD28_CITER_ELINKYES = 0x1F << 9  //+ Minor Loop Link Channel Number
-	ELINK   TCD28_CITER_ELINKYES = 0x01 << 15 //+ Enable channel-to-channel linking on minor-loop complete
-	ELINK_0 TCD28_CITER_ELINKYES = 0x00 << 15 //  The channel-to-channel linking is disabled
-	ELINK_1 TCD28_CITER_ELINKYES = 0x01 << 15 //  The channel-to-channel linking is enabled
+	CITER  TCD28_CITER_ELINKYES = 0x1FF << 0 //+ Current Major Iteration Count
+	LINKCH TCD28_CITER_ELINKYES = 0x1F << 9  //+ Minor Loop Link Channel Number
+	ELINK  TCD28_CITER_ELINKYES = 0x01 << 15 //+ Enable channel-to-channel linking on minor-loop complete
 )
 
 const (
@@ -8235,31 +6851,19 @@ const (
 )
 
 const (
-	START        TCD28_CSR = 0x01 << 0  //+ Channel Start
-	START_0      TCD28_CSR = 0x00 << 0  //  The channel is not explicitly started.
-	START_1      TCD28_CSR = 0x01 << 0  //  The channel is explicitly started via a software initiated service request.
-	INTMAJOR     TCD28_CSR = 0x01 << 1  //+ Enable an interrupt when major iteration count completes.
-	INTMAJOR_0   TCD28_CSR = 0x00 << 1  //  The end-of-major loop interrupt is disabled.
-	INTMAJOR_1   TCD28_CSR = 0x01 << 1  //  The end-of-major loop interrupt is enabled.
-	INTHALF      TCD28_CSR = 0x01 << 2  //+ Enable an interrupt when major counter is half complete.
-	INTHALF_0    TCD28_CSR = 0x00 << 2  //  The half-point interrupt is disabled.
-	INTHALF_1    TCD28_CSR = 0x01 << 2  //  The half-point interrupt is enabled.
-	DREQ         TCD28_CSR = 0x01 << 3  //+ Disable Request
-	DREQ_0       TCD28_CSR = 0x00 << 3  //  The channel's ERQ bit is not affected.
-	DREQ_1       TCD28_CSR = 0x01 << 3  //  The channel's ERQ bit is cleared when the major loop is complete.
-	ESG          TCD28_CSR = 0x01 << 4  //+ Enable Scatter/Gather Processing
-	ESG_0        TCD28_CSR = 0x00 << 4  //  The current channel's TCD is normal format.
-	ESG_1        TCD28_CSR = 0x01 << 4  //  The current channel's TCD specifies a scatter gather format. The DLASTSGA field provides a memory pointer to the next TCD to be loaded into this channel after the major loop completes its execution.
-	MAJORELINK   TCD28_CSR = 0x01 << 5  //+ Enable channel-to-channel linking on major loop complete
-	MAJORELINK_0 TCD28_CSR = 0x00 << 5  //  The channel-to-channel linking is disabled.
-	MAJORELINK_1 TCD28_CSR = 0x01 << 5  //  The channel-to-channel linking is enabled.
-	ACTIVE       TCD28_CSR = 0x01 << 6  //+ Channel Active
-	DONE         TCD28_CSR = 0x01 << 7  //+ Channel Done
-	MAJORLINKCH  TCD28_CSR = 0x1F << 8  //+ Major Loop Link Channel Number
-	BWC          TCD28_CSR = 0x03 << 14 //+ Bandwidth Control
-	BWC_0        TCD28_CSR = 0x00 << 14 //  No eDMA engine stalls.
-	BWC_2        TCD28_CSR = 0x02 << 14 //  eDMA engine stalls for 4 cycles after each R/W.
-	BWC_3        TCD28_CSR = 0x03 << 14 //  eDMA engine stalls for 8 cycles after each R/W.
+	START       TCD28_CSR = 0x01 << 0  //+ Channel Start
+	INTMAJOR    TCD28_CSR = 0x01 << 1  //+ Enable an interrupt when major iteration count completes.
+	INTHALF     TCD28_CSR = 0x01 << 2  //+ Enable an interrupt when major counter is half complete.
+	DREQ        TCD28_CSR = 0x01 << 3  //+ Disable Request
+	ESG         TCD28_CSR = 0x01 << 4  //+ Enable Scatter/Gather Processing
+	MAJORELINK  TCD28_CSR = 0x01 << 5  //+ Enable channel-to-channel linking on major loop complete
+	ACTIVE      TCD28_CSR = 0x01 << 6  //+ Channel Active
+	DONE        TCD28_CSR = 0x01 << 7  //+ Channel Done
+	MAJORLINKCH TCD28_CSR = 0x1F << 8  //+ Major Loop Link Channel Number
+	BWC         TCD28_CSR = 0x03 << 14 //+ Bandwidth Control
+	BWC_0       TCD28_CSR = 0x00 << 14 //  No eDMA engine stalls.
+	BWC_2       TCD28_CSR = 0x02 << 14 //  eDMA engine stalls for 4 cycles after each R/W.
+	BWC_3       TCD28_CSR = 0x03 << 14 //  eDMA engine stalls for 8 cycles after each R/W.
 )
 
 const (
@@ -8276,10 +6880,8 @@ const (
 )
 
 const (
-	BITER   TCD28_BITER_ELINKNO = 0x7FFF << 0 //+ Starting Major Iteration Count
-	ELINK   TCD28_BITER_ELINKNO = 0x01 << 15  //+ Enables channel-to-channel linking on minor loop complete
-	ELINK_0 TCD28_BITER_ELINKNO = 0x00 << 15  //  The channel-to-channel linking is disabled
-	ELINK_1 TCD28_BITER_ELINKNO = 0x01 << 15  //  The channel-to-channel linking is enabled
+	BITER TCD28_BITER_ELINKNO = 0x7FFF << 0 //+ Starting Major Iteration Count
+	ELINK TCD28_BITER_ELINKNO = 0x01 << 15  //+ Enables channel-to-channel linking on minor loop complete
 )
 
 const (
@@ -8288,11 +6890,9 @@ const (
 )
 
 const (
-	BITER   TCD28_BITER_ELINKYES = 0x1FF << 0 //+ Starting major iteration count
-	LINKCH  TCD28_BITER_ELINKYES = 0x1F << 9  //+ Link Channel Number
-	ELINK   TCD28_BITER_ELINKYES = 0x01 << 15 //+ Enables channel-to-channel linking on minor loop complete
-	ELINK_0 TCD28_BITER_ELINKYES = 0x00 << 15 //  The channel-to-channel linking is disabled
-	ELINK_1 TCD28_BITER_ELINKYES = 0x01 << 15 //  The channel-to-channel linking is enabled
+	BITER  TCD28_BITER_ELINKYES = 0x1FF << 0 //+ Starting major iteration count
+	LINKCH TCD28_BITER_ELINKYES = 0x1F << 9  //+ Link Channel Number
+	ELINK  TCD28_BITER_ELINKYES = 0x01 << 15 //+ Enables channel-to-channel linking on minor loop complete
 )
 
 const (
@@ -8355,13 +6955,9 @@ const (
 )
 
 const (
-	NBYTES  TCD29_NBYTES_MLOFFNO = 0x3FFFFFFF << 0 //+ Minor Byte Transfer Count
-	DMLOE   TCD29_NBYTES_MLOFFNO = 0x01 << 30      //+ Destination Minor Loop Offset enable
-	DMLOE_0 TCD29_NBYTES_MLOFFNO = 0x00 << 30      //  The minor loop offset is not applied to the DADDR
-	DMLOE_1 TCD29_NBYTES_MLOFFNO = 0x01 << 30      //  The minor loop offset is applied to the DADDR
-	SMLOE   TCD29_NBYTES_MLOFFNO = 0x01 << 31      //+ Source Minor Loop Offset Enable
-	SMLOE_0 TCD29_NBYTES_MLOFFNO = 0x00 << 31      //  The minor loop offset is not applied to the SADDR
-	SMLOE_1 TCD29_NBYTES_MLOFFNO = 0x01 << 31      //  The minor loop offset is applied to the SADDR
+	NBYTES TCD29_NBYTES_MLOFFNO = 0x3FFFFFFF << 0 //+ Minor Byte Transfer Count
+	DMLOE  TCD29_NBYTES_MLOFFNO = 0x01 << 30      //+ Destination Minor Loop Offset enable
+	SMLOE  TCD29_NBYTES_MLOFFNO = 0x01 << 31      //+ Source Minor Loop Offset Enable
 )
 
 const (
@@ -8371,14 +6967,10 @@ const (
 )
 
 const (
-	NBYTES  TCD29_NBYTES_MLOFFYES = 0x3FF << 0    //+ Minor Byte Transfer Count
-	MLOFF   TCD29_NBYTES_MLOFFYES = 0xFFFFF << 10 //+ If SMLOE or DMLOE is set, this field represents a sign-extended offset applied to the source or destination address to form the next-state value after the minor loop completes.
-	DMLOE   TCD29_NBYTES_MLOFFYES = 0x01 << 30    //+ Destination Minor Loop Offset enable
-	DMLOE_0 TCD29_NBYTES_MLOFFYES = 0x00 << 30    //  The minor loop offset is not applied to the DADDR
-	DMLOE_1 TCD29_NBYTES_MLOFFYES = 0x01 << 30    //  The minor loop offset is applied to the DADDR
-	SMLOE   TCD29_NBYTES_MLOFFYES = 0x01 << 31    //+ Source Minor Loop Offset Enable
-	SMLOE_0 TCD29_NBYTES_MLOFFYES = 0x00 << 31    //  The minor loop offset is not applied to the SADDR
-	SMLOE_1 TCD29_NBYTES_MLOFFYES = 0x01 << 31    //  The minor loop offset is applied to the SADDR
+	NBYTES TCD29_NBYTES_MLOFFYES = 0x3FF << 0    //+ Minor Byte Transfer Count
+	MLOFF  TCD29_NBYTES_MLOFFYES = 0xFFFFF << 10 //+ If SMLOE or DMLOE is set, this field represents a sign-extended offset applied to the source or destination address to form the next-state value after the minor loop completes.
+	DMLOE  TCD29_NBYTES_MLOFFYES = 0x01 << 30    //+ Destination Minor Loop Offset enable
+	SMLOE  TCD29_NBYTES_MLOFFYES = 0x01 << 31    //+ Source Minor Loop Offset Enable
 )
 
 const (
@@ -8413,10 +7005,8 @@ const (
 )
 
 const (
-	CITER   TCD29_CITER_ELINKNO = 0x7FFF << 0 //+ Current Major Iteration Count
-	ELINK   TCD29_CITER_ELINKNO = 0x01 << 15  //+ Enable channel-to-channel linking on minor-loop complete
-	ELINK_0 TCD29_CITER_ELINKNO = 0x00 << 15  //  The channel-to-channel linking is disabled
-	ELINK_1 TCD29_CITER_ELINKNO = 0x01 << 15  //  The channel-to-channel linking is enabled
+	CITER TCD29_CITER_ELINKNO = 0x7FFF << 0 //+ Current Major Iteration Count
+	ELINK TCD29_CITER_ELINKNO = 0x01 << 15  //+ Enable channel-to-channel linking on minor-loop complete
 )
 
 const (
@@ -8425,11 +7015,9 @@ const (
 )
 
 const (
-	CITER   TCD29_CITER_ELINKYES = 0x1FF << 0 //+ Current Major Iteration Count
-	LINKCH  TCD29_CITER_ELINKYES = 0x1F << 9  //+ Minor Loop Link Channel Number
-	ELINK   TCD29_CITER_ELINKYES = 0x01 << 15 //+ Enable channel-to-channel linking on minor-loop complete
-	ELINK_0 TCD29_CITER_ELINKYES = 0x00 << 15 //  The channel-to-channel linking is disabled
-	ELINK_1 TCD29_CITER_ELINKYES = 0x01 << 15 //  The channel-to-channel linking is enabled
+	CITER  TCD29_CITER_ELINKYES = 0x1FF << 0 //+ Current Major Iteration Count
+	LINKCH TCD29_CITER_ELINKYES = 0x1F << 9  //+ Minor Loop Link Channel Number
+	ELINK  TCD29_CITER_ELINKYES = 0x01 << 15 //+ Enable channel-to-channel linking on minor-loop complete
 )
 
 const (
@@ -8447,31 +7035,19 @@ const (
 )
 
 const (
-	START        TCD29_CSR = 0x01 << 0  //+ Channel Start
-	START_0      TCD29_CSR = 0x00 << 0  //  The channel is not explicitly started.
-	START_1      TCD29_CSR = 0x01 << 0  //  The channel is explicitly started via a software initiated service request.
-	INTMAJOR     TCD29_CSR = 0x01 << 1  //+ Enable an interrupt when major iteration count completes.
-	INTMAJOR_0   TCD29_CSR = 0x00 << 1  //  The end-of-major loop interrupt is disabled.
-	INTMAJOR_1   TCD29_CSR = 0x01 << 1  //  The end-of-major loop interrupt is enabled.
-	INTHALF      TCD29_CSR = 0x01 << 2  //+ Enable an interrupt when major counter is half complete.
-	INTHALF_0    TCD29_CSR = 0x00 << 2  //  The half-point interrupt is disabled.
-	INTHALF_1    TCD29_CSR = 0x01 << 2  //  The half-point interrupt is enabled.
-	DREQ         TCD29_CSR = 0x01 << 3  //+ Disable Request
-	DREQ_0       TCD29_CSR = 0x00 << 3  //  The channel's ERQ bit is not affected.
-	DREQ_1       TCD29_CSR = 0x01 << 3  //  The channel's ERQ bit is cleared when the major loop is complete.
-	ESG          TCD29_CSR = 0x01 << 4  //+ Enable Scatter/Gather Processing
-	ESG_0        TCD29_CSR = 0x00 << 4  //  The current channel's TCD is normal format.
-	ESG_1        TCD29_CSR = 0x01 << 4  //  The current channel's TCD specifies a scatter gather format. The DLASTSGA field provides a memory pointer to the next TCD to be loaded into this channel after the major loop completes its execution.
-	MAJORELINK   TCD29_CSR = 0x01 << 5  //+ Enable channel-to-channel linking on major loop complete
-	MAJORELINK_0 TCD29_CSR = 0x00 << 5  //  The channel-to-channel linking is disabled.
-	MAJORELINK_1 TCD29_CSR = 0x01 << 5  //  The channel-to-channel linking is enabled.
-	ACTIVE       TCD29_CSR = 0x01 << 6  //+ Channel Active
-	DONE         TCD29_CSR = 0x01 << 7  //+ Channel Done
-	MAJORLINKCH  TCD29_CSR = 0x1F << 8  //+ Major Loop Link Channel Number
-	BWC          TCD29_CSR = 0x03 << 14 //+ Bandwidth Control
-	BWC_0        TCD29_CSR = 0x00 << 14 //  No eDMA engine stalls.
-	BWC_2        TCD29_CSR = 0x02 << 14 //  eDMA engine stalls for 4 cycles after each R/W.
-	BWC_3        TCD29_CSR = 0x03 << 14 //  eDMA engine stalls for 8 cycles after each R/W.
+	START       TCD29_CSR = 0x01 << 0  //+ Channel Start
+	INTMAJOR    TCD29_CSR = 0x01 << 1  //+ Enable an interrupt when major iteration count completes.
+	INTHALF     TCD29_CSR = 0x01 << 2  //+ Enable an interrupt when major counter is half complete.
+	DREQ        TCD29_CSR = 0x01 << 3  //+ Disable Request
+	ESG         TCD29_CSR = 0x01 << 4  //+ Enable Scatter/Gather Processing
+	MAJORELINK  TCD29_CSR = 0x01 << 5  //+ Enable channel-to-channel linking on major loop complete
+	ACTIVE      TCD29_CSR = 0x01 << 6  //+ Channel Active
+	DONE        TCD29_CSR = 0x01 << 7  //+ Channel Done
+	MAJORLINKCH TCD29_CSR = 0x1F << 8  //+ Major Loop Link Channel Number
+	BWC         TCD29_CSR = 0x03 << 14 //+ Bandwidth Control
+	BWC_0       TCD29_CSR = 0x00 << 14 //  No eDMA engine stalls.
+	BWC_2       TCD29_CSR = 0x02 << 14 //  eDMA engine stalls for 4 cycles after each R/W.
+	BWC_3       TCD29_CSR = 0x03 << 14 //  eDMA engine stalls for 8 cycles after each R/W.
 )
 
 const (
@@ -8488,11 +7064,9 @@ const (
 )
 
 const (
-	BITER   TCD29_BITER_ELINKYES = 0x1FF << 0 //+ Starting major iteration count
-	LINKCH  TCD29_BITER_ELINKYES = 0x1F << 9  //+ Link Channel Number
-	ELINK   TCD29_BITER_ELINKYES = 0x01 << 15 //+ Enables channel-to-channel linking on minor loop complete
-	ELINK_0 TCD29_BITER_ELINKYES = 0x00 << 15 //  The channel-to-channel linking is disabled
-	ELINK_1 TCD29_BITER_ELINKYES = 0x01 << 15 //  The channel-to-channel linking is enabled
+	BITER  TCD29_BITER_ELINKYES = 0x1FF << 0 //+ Starting major iteration count
+	LINKCH TCD29_BITER_ELINKYES = 0x1F << 9  //+ Link Channel Number
+	ELINK  TCD29_BITER_ELINKYES = 0x01 << 15 //+ Enables channel-to-channel linking on minor loop complete
 )
 
 const (
@@ -8502,10 +7076,8 @@ const (
 )
 
 const (
-	BITER   TCD29_BITER_ELINKNO = 0x7FFF << 0 //+ Starting Major Iteration Count
-	ELINK   TCD29_BITER_ELINKNO = 0x01 << 15  //+ Enables channel-to-channel linking on minor loop complete
-	ELINK_0 TCD29_BITER_ELINKNO = 0x00 << 15  //  The channel-to-channel linking is disabled
-	ELINK_1 TCD29_BITER_ELINKNO = 0x01 << 15  //  The channel-to-channel linking is enabled
+	BITER TCD29_BITER_ELINKNO = 0x7FFF << 0 //+ Starting Major Iteration Count
+	ELINK TCD29_BITER_ELINKNO = 0x01 << 15  //+ Enables channel-to-channel linking on minor loop complete
 )
 
 const (
@@ -8567,13 +7139,9 @@ const (
 )
 
 const (
-	NBYTES  TCD30_NBYTES_MLOFFNO = 0x3FFFFFFF << 0 //+ Minor Byte Transfer Count
-	DMLOE   TCD30_NBYTES_MLOFFNO = 0x01 << 30      //+ Destination Minor Loop Offset enable
-	DMLOE_0 TCD30_NBYTES_MLOFFNO = 0x00 << 30      //  The minor loop offset is not applied to the DADDR
-	DMLOE_1 TCD30_NBYTES_MLOFFNO = 0x01 << 30      //  The minor loop offset is applied to the DADDR
-	SMLOE   TCD30_NBYTES_MLOFFNO = 0x01 << 31      //+ Source Minor Loop Offset Enable
-	SMLOE_0 TCD30_NBYTES_MLOFFNO = 0x00 << 31      //  The minor loop offset is not applied to the SADDR
-	SMLOE_1 TCD30_NBYTES_MLOFFNO = 0x01 << 31      //  The minor loop offset is applied to the SADDR
+	NBYTES TCD30_NBYTES_MLOFFNO = 0x3FFFFFFF << 0 //+ Minor Byte Transfer Count
+	DMLOE  TCD30_NBYTES_MLOFFNO = 0x01 << 30      //+ Destination Minor Loop Offset enable
+	SMLOE  TCD30_NBYTES_MLOFFNO = 0x01 << 31      //+ Source Minor Loop Offset Enable
 )
 
 const (
@@ -8583,14 +7151,10 @@ const (
 )
 
 const (
-	NBYTES  TCD30_NBYTES_MLOFFYES = 0x3FF << 0    //+ Minor Byte Transfer Count
-	MLOFF   TCD30_NBYTES_MLOFFYES = 0xFFFFF << 10 //+ If SMLOE or DMLOE is set, this field represents a sign-extended offset applied to the source or destination address to form the next-state value after the minor loop completes.
-	DMLOE   TCD30_NBYTES_MLOFFYES = 0x01 << 30    //+ Destination Minor Loop Offset enable
-	DMLOE_0 TCD30_NBYTES_MLOFFYES = 0x00 << 30    //  The minor loop offset is not applied to the DADDR
-	DMLOE_1 TCD30_NBYTES_MLOFFYES = 0x01 << 30    //  The minor loop offset is applied to the DADDR
-	SMLOE   TCD30_NBYTES_MLOFFYES = 0x01 << 31    //+ Source Minor Loop Offset Enable
-	SMLOE_0 TCD30_NBYTES_MLOFFYES = 0x00 << 31    //  The minor loop offset is not applied to the SADDR
-	SMLOE_1 TCD30_NBYTES_MLOFFYES = 0x01 << 31    //  The minor loop offset is applied to the SADDR
+	NBYTES TCD30_NBYTES_MLOFFYES = 0x3FF << 0    //+ Minor Byte Transfer Count
+	MLOFF  TCD30_NBYTES_MLOFFYES = 0xFFFFF << 10 //+ If SMLOE or DMLOE is set, this field represents a sign-extended offset applied to the source or destination address to form the next-state value after the minor loop completes.
+	DMLOE  TCD30_NBYTES_MLOFFYES = 0x01 << 30    //+ Destination Minor Loop Offset enable
+	SMLOE  TCD30_NBYTES_MLOFFYES = 0x01 << 31    //+ Source Minor Loop Offset Enable
 )
 
 const (
@@ -8625,10 +7189,8 @@ const (
 )
 
 const (
-	CITER   TCD30_CITER_ELINKNO = 0x7FFF << 0 //+ Current Major Iteration Count
-	ELINK   TCD30_CITER_ELINKNO = 0x01 << 15  //+ Enable channel-to-channel linking on minor-loop complete
-	ELINK_0 TCD30_CITER_ELINKNO = 0x00 << 15  //  The channel-to-channel linking is disabled
-	ELINK_1 TCD30_CITER_ELINKNO = 0x01 << 15  //  The channel-to-channel linking is enabled
+	CITER TCD30_CITER_ELINKNO = 0x7FFF << 0 //+ Current Major Iteration Count
+	ELINK TCD30_CITER_ELINKNO = 0x01 << 15  //+ Enable channel-to-channel linking on minor-loop complete
 )
 
 const (
@@ -8637,11 +7199,9 @@ const (
 )
 
 const (
-	CITER   TCD30_CITER_ELINKYES = 0x1FF << 0 //+ Current Major Iteration Count
-	LINKCH  TCD30_CITER_ELINKYES = 0x1F << 9  //+ Minor Loop Link Channel Number
-	ELINK   TCD30_CITER_ELINKYES = 0x01 << 15 //+ Enable channel-to-channel linking on minor-loop complete
-	ELINK_0 TCD30_CITER_ELINKYES = 0x00 << 15 //  The channel-to-channel linking is disabled
-	ELINK_1 TCD30_CITER_ELINKYES = 0x01 << 15 //  The channel-to-channel linking is enabled
+	CITER  TCD30_CITER_ELINKYES = 0x1FF << 0 //+ Current Major Iteration Count
+	LINKCH TCD30_CITER_ELINKYES = 0x1F << 9  //+ Minor Loop Link Channel Number
+	ELINK  TCD30_CITER_ELINKYES = 0x01 << 15 //+ Enable channel-to-channel linking on minor-loop complete
 )
 
 const (
@@ -8659,31 +7219,19 @@ const (
 )
 
 const (
-	START        TCD30_CSR = 0x01 << 0  //+ Channel Start
-	START_0      TCD30_CSR = 0x00 << 0  //  The channel is not explicitly started.
-	START_1      TCD30_CSR = 0x01 << 0  //  The channel is explicitly started via a software initiated service request.
-	INTMAJOR     TCD30_CSR = 0x01 << 1  //+ Enable an interrupt when major iteration count completes.
-	INTMAJOR_0   TCD30_CSR = 0x00 << 1  //  The end-of-major loop interrupt is disabled.
-	INTMAJOR_1   TCD30_CSR = 0x01 << 1  //  The end-of-major loop interrupt is enabled.
-	INTHALF      TCD30_CSR = 0x01 << 2  //+ Enable an interrupt when major counter is half complete.
-	INTHALF_0    TCD30_CSR = 0x00 << 2  //  The half-point interrupt is disabled.
-	INTHALF_1    TCD30_CSR = 0x01 << 2  //  The half-point interrupt is enabled.
-	DREQ         TCD30_CSR = 0x01 << 3  //+ Disable Request
-	DREQ_0       TCD30_CSR = 0x00 << 3  //  The channel's ERQ bit is not affected.
-	DREQ_1       TCD30_CSR = 0x01 << 3  //  The channel's ERQ bit is cleared when the major loop is complete.
-	ESG          TCD30_CSR = 0x01 << 4  //+ Enable Scatter/Gather Processing
-	ESG_0        TCD30_CSR = 0x00 << 4  //  The current channel's TCD is normal format.
-	ESG_1        TCD30_CSR = 0x01 << 4  //  The current channel's TCD specifies a scatter gather format. The DLASTSGA field provides a memory pointer to the next TCD to be loaded into this channel after the major loop completes its execution.
-	MAJORELINK   TCD30_CSR = 0x01 << 5  //+ Enable channel-to-channel linking on major loop complete
-	MAJORELINK_0 TCD30_CSR = 0x00 << 5  //  The channel-to-channel linking is disabled.
-	MAJORELINK_1 TCD30_CSR = 0x01 << 5  //  The channel-to-channel linking is enabled.
-	ACTIVE       TCD30_CSR = 0x01 << 6  //+ Channel Active
-	DONE         TCD30_CSR = 0x01 << 7  //+ Channel Done
-	MAJORLINKCH  TCD30_CSR = 0x1F << 8  //+ Major Loop Link Channel Number
-	BWC          TCD30_CSR = 0x03 << 14 //+ Bandwidth Control
-	BWC_0        TCD30_CSR = 0x00 << 14 //  No eDMA engine stalls.
-	BWC_2        TCD30_CSR = 0x02 << 14 //  eDMA engine stalls for 4 cycles after each R/W.
-	BWC_3        TCD30_CSR = 0x03 << 14 //  eDMA engine stalls for 8 cycles after each R/W.
+	START       TCD30_CSR = 0x01 << 0  //+ Channel Start
+	INTMAJOR    TCD30_CSR = 0x01 << 1  //+ Enable an interrupt when major iteration count completes.
+	INTHALF     TCD30_CSR = 0x01 << 2  //+ Enable an interrupt when major counter is half complete.
+	DREQ        TCD30_CSR = 0x01 << 3  //+ Disable Request
+	ESG         TCD30_CSR = 0x01 << 4  //+ Enable Scatter/Gather Processing
+	MAJORELINK  TCD30_CSR = 0x01 << 5  //+ Enable channel-to-channel linking on major loop complete
+	ACTIVE      TCD30_CSR = 0x01 << 6  //+ Channel Active
+	DONE        TCD30_CSR = 0x01 << 7  //+ Channel Done
+	MAJORLINKCH TCD30_CSR = 0x1F << 8  //+ Major Loop Link Channel Number
+	BWC         TCD30_CSR = 0x03 << 14 //+ Bandwidth Control
+	BWC_0       TCD30_CSR = 0x00 << 14 //  No eDMA engine stalls.
+	BWC_2       TCD30_CSR = 0x02 << 14 //  eDMA engine stalls for 4 cycles after each R/W.
+	BWC_3       TCD30_CSR = 0x03 << 14 //  eDMA engine stalls for 8 cycles after each R/W.
 )
 
 const (
@@ -8700,10 +7248,8 @@ const (
 )
 
 const (
-	BITER   TCD30_BITER_ELINKNO = 0x7FFF << 0 //+ Starting Major Iteration Count
-	ELINK   TCD30_BITER_ELINKNO = 0x01 << 15  //+ Enables channel-to-channel linking on minor loop complete
-	ELINK_0 TCD30_BITER_ELINKNO = 0x00 << 15  //  The channel-to-channel linking is disabled
-	ELINK_1 TCD30_BITER_ELINKNO = 0x01 << 15  //  The channel-to-channel linking is enabled
+	BITER TCD30_BITER_ELINKNO = 0x7FFF << 0 //+ Starting Major Iteration Count
+	ELINK TCD30_BITER_ELINKNO = 0x01 << 15  //+ Enables channel-to-channel linking on minor loop complete
 )
 
 const (
@@ -8712,11 +7258,9 @@ const (
 )
 
 const (
-	BITER   TCD30_BITER_ELINKYES = 0x1FF << 0 //+ Starting major iteration count
-	LINKCH  TCD30_BITER_ELINKYES = 0x1F << 9  //+ Link Channel Number
-	ELINK   TCD30_BITER_ELINKYES = 0x01 << 15 //+ Enables channel-to-channel linking on minor loop complete
-	ELINK_0 TCD30_BITER_ELINKYES = 0x00 << 15 //  The channel-to-channel linking is disabled
-	ELINK_1 TCD30_BITER_ELINKYES = 0x01 << 15 //  The channel-to-channel linking is enabled
+	BITER  TCD30_BITER_ELINKYES = 0x1FF << 0 //+ Starting major iteration count
+	LINKCH TCD30_BITER_ELINKYES = 0x1F << 9  //+ Link Channel Number
+	ELINK  TCD30_BITER_ELINKYES = 0x01 << 15 //+ Enables channel-to-channel linking on minor loop complete
 )
 
 const (
@@ -8779,13 +7323,9 @@ const (
 )
 
 const (
-	NBYTES  TCD31_NBYTES_MLOFFNO = 0x3FFFFFFF << 0 //+ Minor Byte Transfer Count
-	DMLOE   TCD31_NBYTES_MLOFFNO = 0x01 << 30      //+ Destination Minor Loop Offset enable
-	DMLOE_0 TCD31_NBYTES_MLOFFNO = 0x00 << 30      //  The minor loop offset is not applied to the DADDR
-	DMLOE_1 TCD31_NBYTES_MLOFFNO = 0x01 << 30      //  The minor loop offset is applied to the DADDR
-	SMLOE   TCD31_NBYTES_MLOFFNO = 0x01 << 31      //+ Source Minor Loop Offset Enable
-	SMLOE_0 TCD31_NBYTES_MLOFFNO = 0x00 << 31      //  The minor loop offset is not applied to the SADDR
-	SMLOE_1 TCD31_NBYTES_MLOFFNO = 0x01 << 31      //  The minor loop offset is applied to the SADDR
+	NBYTES TCD31_NBYTES_MLOFFNO = 0x3FFFFFFF << 0 //+ Minor Byte Transfer Count
+	DMLOE  TCD31_NBYTES_MLOFFNO = 0x01 << 30      //+ Destination Minor Loop Offset enable
+	SMLOE  TCD31_NBYTES_MLOFFNO = 0x01 << 31      //+ Source Minor Loop Offset Enable
 )
 
 const (
@@ -8795,14 +7335,10 @@ const (
 )
 
 const (
-	NBYTES  TCD31_NBYTES_MLOFFYES = 0x3FF << 0    //+ Minor Byte Transfer Count
-	MLOFF   TCD31_NBYTES_MLOFFYES = 0xFFFFF << 10 //+ If SMLOE or DMLOE is set, this field represents a sign-extended offset applied to the source or destination address to form the next-state value after the minor loop completes.
-	DMLOE   TCD31_NBYTES_MLOFFYES = 0x01 << 30    //+ Destination Minor Loop Offset enable
-	DMLOE_0 TCD31_NBYTES_MLOFFYES = 0x00 << 30    //  The minor loop offset is not applied to the DADDR
-	DMLOE_1 TCD31_NBYTES_MLOFFYES = 0x01 << 30    //  The minor loop offset is applied to the DADDR
-	SMLOE   TCD31_NBYTES_MLOFFYES = 0x01 << 31    //+ Source Minor Loop Offset Enable
-	SMLOE_0 TCD31_NBYTES_MLOFFYES = 0x00 << 31    //  The minor loop offset is not applied to the SADDR
-	SMLOE_1 TCD31_NBYTES_MLOFFYES = 0x01 << 31    //  The minor loop offset is applied to the SADDR
+	NBYTES TCD31_NBYTES_MLOFFYES = 0x3FF << 0    //+ Minor Byte Transfer Count
+	MLOFF  TCD31_NBYTES_MLOFFYES = 0xFFFFF << 10 //+ If SMLOE or DMLOE is set, this field represents a sign-extended offset applied to the source or destination address to form the next-state value after the minor loop completes.
+	DMLOE  TCD31_NBYTES_MLOFFYES = 0x01 << 30    //+ Destination Minor Loop Offset enable
+	SMLOE  TCD31_NBYTES_MLOFFYES = 0x01 << 31    //+ Source Minor Loop Offset Enable
 )
 
 const (
@@ -8837,10 +7373,8 @@ const (
 )
 
 const (
-	CITER   TCD31_CITER_ELINKNO = 0x7FFF << 0 //+ Current Major Iteration Count
-	ELINK   TCD31_CITER_ELINKNO = 0x01 << 15  //+ Enable channel-to-channel linking on minor-loop complete
-	ELINK_0 TCD31_CITER_ELINKNO = 0x00 << 15  //  The channel-to-channel linking is disabled
-	ELINK_1 TCD31_CITER_ELINKNO = 0x01 << 15  //  The channel-to-channel linking is enabled
+	CITER TCD31_CITER_ELINKNO = 0x7FFF << 0 //+ Current Major Iteration Count
+	ELINK TCD31_CITER_ELINKNO = 0x01 << 15  //+ Enable channel-to-channel linking on minor-loop complete
 )
 
 const (
@@ -8849,11 +7383,9 @@ const (
 )
 
 const (
-	CITER   TCD31_CITER_ELINKYES = 0x1FF << 0 //+ Current Major Iteration Count
-	LINKCH  TCD31_CITER_ELINKYES = 0x1F << 9  //+ Minor Loop Link Channel Number
-	ELINK   TCD31_CITER_ELINKYES = 0x01 << 15 //+ Enable channel-to-channel linking on minor-loop complete
-	ELINK_0 TCD31_CITER_ELINKYES = 0x00 << 15 //  The channel-to-channel linking is disabled
-	ELINK_1 TCD31_CITER_ELINKYES = 0x01 << 15 //  The channel-to-channel linking is enabled
+	CITER  TCD31_CITER_ELINKYES = 0x1FF << 0 //+ Current Major Iteration Count
+	LINKCH TCD31_CITER_ELINKYES = 0x1F << 9  //+ Minor Loop Link Channel Number
+	ELINK  TCD31_CITER_ELINKYES = 0x01 << 15 //+ Enable channel-to-channel linking on minor-loop complete
 )
 
 const (
@@ -8871,31 +7403,19 @@ const (
 )
 
 const (
-	START        TCD31_CSR = 0x01 << 0  //+ Channel Start
-	START_0      TCD31_CSR = 0x00 << 0  //  The channel is not explicitly started.
-	START_1      TCD31_CSR = 0x01 << 0  //  The channel is explicitly started via a software initiated service request.
-	INTMAJOR     TCD31_CSR = 0x01 << 1  //+ Enable an interrupt when major iteration count completes.
-	INTMAJOR_0   TCD31_CSR = 0x00 << 1  //  The end-of-major loop interrupt is disabled.
-	INTMAJOR_1   TCD31_CSR = 0x01 << 1  //  The end-of-major loop interrupt is enabled.
-	INTHALF      TCD31_CSR = 0x01 << 2  //+ Enable an interrupt when major counter is half complete.
-	INTHALF_0    TCD31_CSR = 0x00 << 2  //  The half-point interrupt is disabled.
-	INTHALF_1    TCD31_CSR = 0x01 << 2  //  The half-point interrupt is enabled.
-	DREQ         TCD31_CSR = 0x01 << 3  //+ Disable Request
-	DREQ_0       TCD31_CSR = 0x00 << 3  //  The channel's ERQ bit is not affected.
-	DREQ_1       TCD31_CSR = 0x01 << 3  //  The channel's ERQ bit is cleared when the major loop is complete.
-	ESG          TCD31_CSR = 0x01 << 4  //+ Enable Scatter/Gather Processing
-	ESG_0        TCD31_CSR = 0x00 << 4  //  The current channel's TCD is normal format.
-	ESG_1        TCD31_CSR = 0x01 << 4  //  The current channel's TCD specifies a scatter gather format. The DLASTSGA field provides a memory pointer to the next TCD to be loaded into this channel after the major loop completes its execution.
-	MAJORELINK   TCD31_CSR = 0x01 << 5  //+ Enable channel-to-channel linking on major loop complete
-	MAJORELINK_0 TCD31_CSR = 0x00 << 5  //  The channel-to-channel linking is disabled.
-	MAJORELINK_1 TCD31_CSR = 0x01 << 5  //  The channel-to-channel linking is enabled.
-	ACTIVE       TCD31_CSR = 0x01 << 6  //+ Channel Active
-	DONE         TCD31_CSR = 0x01 << 7  //+ Channel Done
-	MAJORLINKCH  TCD31_CSR = 0x1F << 8  //+ Major Loop Link Channel Number
-	BWC          TCD31_CSR = 0x03 << 14 //+ Bandwidth Control
-	BWC_0        TCD31_CSR = 0x00 << 14 //  No eDMA engine stalls.
-	BWC_2        TCD31_CSR = 0x02 << 14 //  eDMA engine stalls for 4 cycles after each R/W.
-	BWC_3        TCD31_CSR = 0x03 << 14 //  eDMA engine stalls for 8 cycles after each R/W.
+	START       TCD31_CSR = 0x01 << 0  //+ Channel Start
+	INTMAJOR    TCD31_CSR = 0x01 << 1  //+ Enable an interrupt when major iteration count completes.
+	INTHALF     TCD31_CSR = 0x01 << 2  //+ Enable an interrupt when major counter is half complete.
+	DREQ        TCD31_CSR = 0x01 << 3  //+ Disable Request
+	ESG         TCD31_CSR = 0x01 << 4  //+ Enable Scatter/Gather Processing
+	MAJORELINK  TCD31_CSR = 0x01 << 5  //+ Enable channel-to-channel linking on major loop complete
+	ACTIVE      TCD31_CSR = 0x01 << 6  //+ Channel Active
+	DONE        TCD31_CSR = 0x01 << 7  //+ Channel Done
+	MAJORLINKCH TCD31_CSR = 0x1F << 8  //+ Major Loop Link Channel Number
+	BWC         TCD31_CSR = 0x03 << 14 //+ Bandwidth Control
+	BWC_0       TCD31_CSR = 0x00 << 14 //  No eDMA engine stalls.
+	BWC_2       TCD31_CSR = 0x02 << 14 //  eDMA engine stalls for 4 cycles after each R/W.
+	BWC_3       TCD31_CSR = 0x03 << 14 //  eDMA engine stalls for 8 cycles after each R/W.
 )
 
 const (
@@ -8912,10 +7432,8 @@ const (
 )
 
 const (
-	BITER   TCD31_BITER_ELINKNO = 0x7FFF << 0 //+ Starting Major Iteration Count
-	ELINK   TCD31_BITER_ELINKNO = 0x01 << 15  //+ Enables channel-to-channel linking on minor loop complete
-	ELINK_0 TCD31_BITER_ELINKNO = 0x00 << 15  //  The channel-to-channel linking is disabled
-	ELINK_1 TCD31_BITER_ELINKNO = 0x01 << 15  //  The channel-to-channel linking is enabled
+	BITER TCD31_BITER_ELINKNO = 0x7FFF << 0 //+ Starting Major Iteration Count
+	ELINK TCD31_BITER_ELINKNO = 0x01 << 15  //+ Enables channel-to-channel linking on minor loop complete
 )
 
 const (
@@ -8924,11 +7442,9 @@ const (
 )
 
 const (
-	BITER   TCD31_BITER_ELINKYES = 0x1FF << 0 //+ Starting major iteration count
-	LINKCH  TCD31_BITER_ELINKYES = 0x1F << 9  //+ Link Channel Number
-	ELINK   TCD31_BITER_ELINKYES = 0x01 << 15 //+ Enables channel-to-channel linking on minor loop complete
-	ELINK_0 TCD31_BITER_ELINKYES = 0x00 << 15 //  The channel-to-channel linking is disabled
-	ELINK_1 TCD31_BITER_ELINKYES = 0x01 << 15 //  The channel-to-channel linking is enabled
+	BITER  TCD31_BITER_ELINKYES = 0x1FF << 0 //+ Starting major iteration count
+	LINKCH TCD31_BITER_ELINKYES = 0x1F << 9  //+ Link Channel Number
+	ELINK  TCD31_BITER_ELINKYES = 0x01 << 15 //+ Enables channel-to-channel linking on minor loop complete
 )
 
 const (

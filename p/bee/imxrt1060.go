@@ -31,26 +31,16 @@ package bee
 
 const (
 	BEE_ENABLE             CTRL = 0x01 << 0  //+ BEE enable bit
-	BEE_ENABLE_0           CTRL = 0x00 << 0  //  Disable BEE
-	BEE_ENABLE_1           CTRL = 0x01 << 0  //  Enable BEE
 	CTRL_CLK_EN            CTRL = 0x01 << 1  //+ Clock enable input, low inactive
 	CTRL_SFTRST_N          CTRL = 0x01 << 2  //+ Soft reset input, low active
 	KEY_VALID              CTRL = 0x01 << 4  //+ AES-128 key is ready
 	KEY_REGION_SEL         CTRL = 0x01 << 5  //+ AES key region select
-	KEY_REGION_SEL_0       CTRL = 0x00 << 5  //  Load AES key for region0
-	KEY_REGION_SEL_1       CTRL = 0x01 << 5  //  Load AES key for region1
 	AC_PROT_EN             CTRL = 0x01 << 6  //+ Enable access permission control When AC_PROT_EN is asserted, all encrypted regions are limited to be ARM core access only
 	LITTLE_ENDIAN          CTRL = 0x01 << 7  //+ Endian swap control for the 16 bytes input and output data of AES core.
-	LITTLE_ENDIAN_0        CTRL = 0x00 << 7  //  The input and output data of the AES core is swapped as below: {B15,B14,B13,B12,B11,B10,B9,B8, B7,B6,B5,B4,B3,B2,B1,B0} swap to {B0,B1,B2,B3,B4,B5,B6,B7, B8,B9,B10,B11,B12,B13,B14,B15}, where B0~B15 refers to Byte0 to Byte15.
-	LITTLE_ENDIAN_1        CTRL = 0x01 << 7  //  The input and output data of AES core is not swapped.
 	SECURITY_LEVEL_R0      CTRL = 0x03 << 8  //+ Security level of the allowed access for memory region0
 	CTRL_AES_MODE_R0       CTRL = 0x01 << 10 //+ AES mode of region0
-	CTRL_AES_MODE_R0_0     CTRL = 0x00 << 10 //  ECB
-	CTRL_AES_MODE_R0_1     CTRL = 0x01 << 10 //  CTR
 	SECURITY_LEVEL_R1      CTRL = 0x03 << 12 //+ Security level of the allowed access for memory region1
 	CTRL_AES_MODE_R1       CTRL = 0x01 << 14 //+ AES mode of region1
-	CTRL_AES_MODE_R1_0     CTRL = 0x00 << 14 //  ECB
-	CTRL_AES_MODE_R1_1     CTRL = 0x01 << 14 //  CTR
 	BEE_ENABLE_LOCK        CTRL = 0x01 << 16 //+ Lock bit for bee_enable
 	CTRL_CLK_EN_LOCK       CTRL = 0x01 << 17 //+ Lock bit for ctrl_clk_en
 	CTRL_SFTRST_N_LOCK     CTRL = 0x01 << 18 //+ Lock bit for ctrl_sftrst

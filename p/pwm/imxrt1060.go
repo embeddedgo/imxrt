@@ -214,39 +214,33 @@ const (
 )
 
 const (
-	CLK_SEL      SM0CTRL2 = 0x03 << 0  //+ Clock Source Select
-	CLK_SEL_0    SM0CTRL2 = 0x00 << 0  //  The IPBus clock is used as the clock for the local prescaler and counter.
-	CLK_SEL_1    SM0CTRL2 = 0x01 << 0  //  EXT_CLK is used as the clock for the local prescaler and counter.
-	CLK_SEL_2    SM0CTRL2 = 0x02 << 0  //  Submodule 0's clock (AUX_CLK) is used as the source clock for the local prescaler and counter. This setting should not be used in submodule 0 as it will force the clock to logic 0.
-	RELOAD_SEL   SM0CTRL2 = 0x01 << 2  //+ Reload Source Select
-	RELOAD_SEL_0 SM0CTRL2 = 0x00 << 2  //  The local RELOAD signal is used to reload registers.
-	RELOAD_SEL_1 SM0CTRL2 = 0x01 << 2  //  The master RELOAD signal (from submodule 0) is used to reload registers. This setting should not be used in submodule 0 as it will force the RELOAD signal to logic 0.
-	FORCE_SEL    SM0CTRL2 = 0x07 << 3  //+ This read/write bit determines the source of the FORCE OUTPUT signal for this submodule.
-	FORCE_SEL_0  SM0CTRL2 = 0x00 << 3  //  The local force signal, CTRL2[FORCE], from this submodule is used to force updates.
-	FORCE_SEL_1  SM0CTRL2 = 0x01 << 3  //  The master force signal from submodule 0 is used to force updates. This setting should not be used in submodule 0 as it will hold the FORCE OUTPUT signal to logic 0.
-	FORCE_SEL_2  SM0CTRL2 = 0x02 << 3  //  The local reload signal from this submodule is used to force updates without regard to the state of LDOK.
-	FORCE_SEL_3  SM0CTRL2 = 0x03 << 3  //  The master reload signal from submodule0 is used to force updates if LDOK is set. This setting should not be used in submodule0 as it will hold the FORCE OUTPUT signal to logic 0.
-	FORCE_SEL_4  SM0CTRL2 = 0x04 << 3  //  The local sync signal from this submodule is used to force updates.
-	FORCE_SEL_5  SM0CTRL2 = 0x05 << 3  //  The master sync signal from submodule0 is used to force updates. This setting should not be used in submodule0 as it will hold the FORCE OUTPUT signal to logic 0.
-	FORCE_SEL_6  SM0CTRL2 = 0x06 << 3  //  The external force signal, EXT_FORCE, from outside the PWM module causes updates.
-	FORCE_SEL_7  SM0CTRL2 = 0x07 << 3  //  The external sync signal, EXT_SYNC, from outside the PWM module causes updates.
-	FORCE        SM0CTRL2 = 0x01 << 6  //+ Force Initialization
-	FRCEN        SM0CTRL2 = 0x01 << 7  //+ FRCEN
-	FRCEN_0      SM0CTRL2 = 0x00 << 7  //  Initialization from a FORCE_OUT is disabled.
-	FRCEN_1      SM0CTRL2 = 0x01 << 7  //  Initialization from a FORCE_OUT is enabled.
-	INIT_SEL     SM0CTRL2 = 0x03 << 8  //+ Initialization Control Select
-	INIT_SEL_0   SM0CTRL2 = 0x00 << 8  //  Local sync (PWM_X) causes initialization.
-	INIT_SEL_1   SM0CTRL2 = 0x01 << 8  //  Master reload from submodule 0 causes initialization. This setting should not be used in submodule 0 as it will force the INIT signal to logic 0. The submodule counter will only reinitialize when a master reload occurs.
-	INIT_SEL_2   SM0CTRL2 = 0x02 << 8  //  Master sync from submodule 0 causes initialization. This setting should not be used in submodule 0 as it will force the INIT signal to logic 0.
-	INIT_SEL_3   SM0CTRL2 = 0x03 << 8  //  EXT_SYNC causes initialization.
-	PWMX_INIT    SM0CTRL2 = 0x01 << 10 //+ PWM_X Initial Value
-	PWM45_INIT   SM0CTRL2 = 0x01 << 11 //+ PWM45 Initial Value
-	PWM23_INIT   SM0CTRL2 = 0x01 << 12 //+ PWM23 Initial Value
-	INDEP        SM0CTRL2 = 0x01 << 13 //+ Independent or Complementary Pair Operation
-	INDEP_0      SM0CTRL2 = 0x00 << 13 //  PWM_A and PWM_B form a complementary PWM pair.
-	INDEP_1      SM0CTRL2 = 0x01 << 13 //  PWM_A and PWM_B outputs are independent PWMs.
-	WAITEN       SM0CTRL2 = 0x01 << 14 //+ WAIT Enable
-	DBGEN        SM0CTRL2 = 0x01 << 15 //+ Debug Enable
+	CLK_SEL     SM0CTRL2 = 0x03 << 0  //+ Clock Source Select
+	CLK_SEL_0   SM0CTRL2 = 0x00 << 0  //  The IPBus clock is used as the clock for the local prescaler and counter.
+	CLK_SEL_1   SM0CTRL2 = 0x01 << 0  //  EXT_CLK is used as the clock for the local prescaler and counter.
+	CLK_SEL_2   SM0CTRL2 = 0x02 << 0  //  Submodule 0's clock (AUX_CLK) is used as the source clock for the local prescaler and counter. This setting should not be used in submodule 0 as it will force the clock to logic 0.
+	RELOAD_SEL  SM0CTRL2 = 0x01 << 2  //+ Reload Source Select
+	FORCE_SEL   SM0CTRL2 = 0x07 << 3  //+ This read/write bit determines the source of the FORCE OUTPUT signal for this submodule.
+	FORCE_SEL_0 SM0CTRL2 = 0x00 << 3  //  The local force signal, CTRL2[FORCE], from this submodule is used to force updates.
+	FORCE_SEL_1 SM0CTRL2 = 0x01 << 3  //  The master force signal from submodule 0 is used to force updates. This setting should not be used in submodule 0 as it will hold the FORCE OUTPUT signal to logic 0.
+	FORCE_SEL_2 SM0CTRL2 = 0x02 << 3  //  The local reload signal from this submodule is used to force updates without regard to the state of LDOK.
+	FORCE_SEL_3 SM0CTRL2 = 0x03 << 3  //  The master reload signal from submodule0 is used to force updates if LDOK is set. This setting should not be used in submodule0 as it will hold the FORCE OUTPUT signal to logic 0.
+	FORCE_SEL_4 SM0CTRL2 = 0x04 << 3  //  The local sync signal from this submodule is used to force updates.
+	FORCE_SEL_5 SM0CTRL2 = 0x05 << 3  //  The master sync signal from submodule0 is used to force updates. This setting should not be used in submodule0 as it will hold the FORCE OUTPUT signal to logic 0.
+	FORCE_SEL_6 SM0CTRL2 = 0x06 << 3  //  The external force signal, EXT_FORCE, from outside the PWM module causes updates.
+	FORCE_SEL_7 SM0CTRL2 = 0x07 << 3  //  The external sync signal, EXT_SYNC, from outside the PWM module causes updates.
+	FORCE       SM0CTRL2 = 0x01 << 6  //+ Force Initialization
+	FRCEN       SM0CTRL2 = 0x01 << 7  //+ FRCEN
+	INIT_SEL    SM0CTRL2 = 0x03 << 8  //+ Initialization Control Select
+	INIT_SEL_0  SM0CTRL2 = 0x00 << 8  //  Local sync (PWM_X) causes initialization.
+	INIT_SEL_1  SM0CTRL2 = 0x01 << 8  //  Master reload from submodule 0 causes initialization. This setting should not be used in submodule 0 as it will force the INIT signal to logic 0. The submodule counter will only reinitialize when a master reload occurs.
+	INIT_SEL_2  SM0CTRL2 = 0x02 << 8  //  Master sync from submodule 0 causes initialization. This setting should not be used in submodule 0 as it will force the INIT signal to logic 0.
+	INIT_SEL_3  SM0CTRL2 = 0x03 << 8  //  EXT_SYNC causes initialization.
+	PWMX_INIT   SM0CTRL2 = 0x01 << 10 //+ PWM_X Initial Value
+	PWM45_INIT  SM0CTRL2 = 0x01 << 11 //+ PWM45 Initial Value
+	PWM23_INIT  SM0CTRL2 = 0x01 << 12 //+ PWM23 Initial Value
+	INDEP       SM0CTRL2 = 0x01 << 13 //+ Independent or Complementary Pair Operation
+	WAITEN      SM0CTRL2 = 0x01 << 14 //+ WAIT Enable
+	DBGEN       SM0CTRL2 = 0x01 << 15 //+ Debug Enable
 )
 
 const (
@@ -265,54 +259,40 @@ const (
 )
 
 const (
-	DBLEN      SM0CTRL = 0x01 << 0  //+ Double Switching Enable
-	DBLEN_0    SM0CTRL = 0x00 << 0  //  Double switching disabled.
-	DBLEN_1    SM0CTRL = 0x01 << 0  //  Double switching enabled.
-	DBLX       SM0CTRL = 0x01 << 1  //+ PWMX Double Switching Enable
-	DBLX_0     SM0CTRL = 0x00 << 1  //  PWMX double pulse disabled.
-	DBLX_1     SM0CTRL = 0x01 << 1  //  PWMX double pulse enabled.
-	LDMOD      SM0CTRL = 0x01 << 2  //+ Load Mode Select
-	LDMOD_0    SM0CTRL = 0x00 << 2  //  Buffered registers of this submodule are loaded and take effect at the next PWM reload if MCTRL[LDOK] is set.
-	LDMOD_1    SM0CTRL = 0x01 << 2  //  Buffered registers of this submodule are loaded and take effect immediately upon MCTRL[LDOK] being set. In this case it is not necessary to set CTRL[FULL] or CTRL[HALF].
-	SPLIT      SM0CTRL = 0x01 << 3  //+ Split the DBLPWM signal to PWMA and PWMB
-	SPLIT_0    SM0CTRL = 0x00 << 3  //  DBLPWM is not split. PWMA and PWMB each have double pulses.
-	SPLIT_1    SM0CTRL = 0x01 << 3  //  DBLPWM is split to PWMA and PWMB.
-	PRSC       SM0CTRL = 0x07 << 4  //+ Prescaler
-	PRSC_0     SM0CTRL = 0x00 << 4  //  PWM clock frequency = fclk
-	PRSC_1     SM0CTRL = 0x01 << 4  //  PWM clock frequency = fclk/2
-	PRSC_2     SM0CTRL = 0x02 << 4  //  PWM clock frequency = fclk/4
-	PRSC_3     SM0CTRL = 0x03 << 4  //  PWM clock frequency = fclk/8
-	PRSC_4     SM0CTRL = 0x04 << 4  //  PWM clock frequency = fclk/16
-	PRSC_5     SM0CTRL = 0x05 << 4  //  PWM clock frequency = fclk/32
-	PRSC_6     SM0CTRL = 0x06 << 4  //  PWM clock frequency = fclk/64
-	PRSC_7     SM0CTRL = 0x07 << 4  //  PWM clock frequency = fclk/128
-	COMPMODE   SM0CTRL = 0x01 << 7  //+ Compare Mode
-	COMPMODE_0 SM0CTRL = 0x00 << 7  //  The VAL* registers and the PWM counter are compared using an "equal to" method. This means that PWM edges are only produced when the counter is equal to one of the VAL* register values. This implies that a PWMA output that is high at the end of a period will maintain this state until a match with VAL3 clears the output in the following period.
-	COMPMODE_1 SM0CTRL = 0x01 << 7  //  The VAL* registers and the PWM counter are compared using an "equal to or greater than" method. This means that PWM edges are produced when the counter is equal to or greater than one of the VAL* register values. This implies that a PWMA output that is high at the end of a period could go low at the start of the next period if the starting counter value is greater than (but not necessarily equal to) the new VAL3 value.
-	DT         SM0CTRL = 0x03 << 8  //+ Deadtime
-	FULL       SM0CTRL = 0x01 << 10 //+ Full Cycle Reload
-	FULL_0     SM0CTRL = 0x00 << 10 //  Full-cycle reloads disabled.
-	FULL_1     SM0CTRL = 0x01 << 10 //  Full-cycle reloads enabled.
-	HALF       SM0CTRL = 0x01 << 11 //+ Half Cycle Reload
-	HALF_0     SM0CTRL = 0x00 << 11 //  Half-cycle reloads disabled.
-	HALF_1     SM0CTRL = 0x01 << 11 //  Half-cycle reloads enabled.
-	LDFQ       SM0CTRL = 0x0F << 12 //+ Load Frequency
-	LDFQ_0     SM0CTRL = 0x00 << 12 //  Every PWM opportunity
-	LDFQ_1     SM0CTRL = 0x01 << 12 //  Every 2 PWM opportunities
-	LDFQ_2     SM0CTRL = 0x02 << 12 //  Every 3 PWM opportunities
-	LDFQ_3     SM0CTRL = 0x03 << 12 //  Every 4 PWM opportunities
-	LDFQ_4     SM0CTRL = 0x04 << 12 //  Every 5 PWM opportunities
-	LDFQ_5     SM0CTRL = 0x05 << 12 //  Every 6 PWM opportunities
-	LDFQ_6     SM0CTRL = 0x06 << 12 //  Every 7 PWM opportunities
-	LDFQ_7     SM0CTRL = 0x07 << 12 //  Every 8 PWM opportunities
-	LDFQ_8     SM0CTRL = 0x08 << 12 //  Every 9 PWM opportunities
-	LDFQ_9     SM0CTRL = 0x09 << 12 //  Every 10 PWM opportunities
-	LDFQ_10    SM0CTRL = 0x0A << 12 //  Every 11 PWM opportunities
-	LDFQ_11    SM0CTRL = 0x0B << 12 //  Every 12 PWM opportunities
-	LDFQ_12    SM0CTRL = 0x0C << 12 //  Every 13 PWM opportunities
-	LDFQ_13    SM0CTRL = 0x0D << 12 //  Every 14 PWM opportunities
-	LDFQ_14    SM0CTRL = 0x0E << 12 //  Every 15 PWM opportunities
-	LDFQ_15    SM0CTRL = 0x0F << 12 //  Every 16 PWM opportunities
+	DBLEN    SM0CTRL = 0x01 << 0  //+ Double Switching Enable
+	DBLX     SM0CTRL = 0x01 << 1  //+ PWMX Double Switching Enable
+	LDMOD    SM0CTRL = 0x01 << 2  //+ Load Mode Select
+	SPLIT    SM0CTRL = 0x01 << 3  //+ Split the DBLPWM signal to PWMA and PWMB
+	PRSC     SM0CTRL = 0x07 << 4  //+ Prescaler
+	PRSC_0   SM0CTRL = 0x00 << 4  //  PWM clock frequency = fclk
+	PRSC_1   SM0CTRL = 0x01 << 4  //  PWM clock frequency = fclk/2
+	PRSC_2   SM0CTRL = 0x02 << 4  //  PWM clock frequency = fclk/4
+	PRSC_3   SM0CTRL = 0x03 << 4  //  PWM clock frequency = fclk/8
+	PRSC_4   SM0CTRL = 0x04 << 4  //  PWM clock frequency = fclk/16
+	PRSC_5   SM0CTRL = 0x05 << 4  //  PWM clock frequency = fclk/32
+	PRSC_6   SM0CTRL = 0x06 << 4  //  PWM clock frequency = fclk/64
+	PRSC_7   SM0CTRL = 0x07 << 4  //  PWM clock frequency = fclk/128
+	COMPMODE SM0CTRL = 0x01 << 7  //+ Compare Mode
+	DT       SM0CTRL = 0x03 << 8  //+ Deadtime
+	FULL     SM0CTRL = 0x01 << 10 //+ Full Cycle Reload
+	HALF     SM0CTRL = 0x01 << 11 //+ Half Cycle Reload
+	LDFQ     SM0CTRL = 0x0F << 12 //+ Load Frequency
+	LDFQ_0   SM0CTRL = 0x00 << 12 //  Every PWM opportunity
+	LDFQ_1   SM0CTRL = 0x01 << 12 //  Every 2 PWM opportunities
+	LDFQ_2   SM0CTRL = 0x02 << 12 //  Every 3 PWM opportunities
+	LDFQ_3   SM0CTRL = 0x03 << 12 //  Every 4 PWM opportunities
+	LDFQ_4   SM0CTRL = 0x04 << 12 //  Every 5 PWM opportunities
+	LDFQ_5   SM0CTRL = 0x05 << 12 //  Every 6 PWM opportunities
+	LDFQ_6   SM0CTRL = 0x06 << 12 //  Every 7 PWM opportunities
+	LDFQ_7   SM0CTRL = 0x07 << 12 //  Every 8 PWM opportunities
+	LDFQ_8   SM0CTRL = 0x08 << 12 //  Every 9 PWM opportunities
+	LDFQ_9   SM0CTRL = 0x09 << 12 //  Every 10 PWM opportunities
+	LDFQ_10  SM0CTRL = 0x0A << 12 //  Every 11 PWM opportunities
+	LDFQ_11  SM0CTRL = 0x0B << 12 //  Every 12 PWM opportunities
+	LDFQ_12  SM0CTRL = 0x0C << 12 //  Every 13 PWM opportunities
+	LDFQ_13  SM0CTRL = 0x0D << 12 //  Every 14 PWM opportunities
+	LDFQ_14  SM0CTRL = 0x0E << 12 //  Every 15 PWM opportunities
+	LDFQ_15  SM0CTRL = 0x0F << 12 //  Every 16 PWM opportunities
 )
 
 const (
@@ -417,19 +397,11 @@ const (
 )
 
 const (
-	FRAC1_EN    SM0FRCTRL = 0x01 << 1  //+ Fractional Cycle PWM Period Enable
-	FRAC1_EN_0  SM0FRCTRL = 0x00 << 1  //  Disable fractional cycle length for the PWM period.
-	FRAC1_EN_1  SM0FRCTRL = 0x01 << 1  //  Enable fractional cycle length for the PWM period.
-	FRAC23_EN   SM0FRCTRL = 0x01 << 2  //+ Fractional Cycle Placement Enable for PWM_A
-	FRAC23_EN_0 SM0FRCTRL = 0x00 << 2  //  Disable fractional cycle placement for PWM_A.
-	FRAC23_EN_1 SM0FRCTRL = 0x01 << 2  //  Enable fractional cycle placement for PWM_A.
-	FRAC45_EN   SM0FRCTRL = 0x01 << 4  //+ Fractional Cycle Placement Enable for PWM_B
-	FRAC45_EN_0 SM0FRCTRL = 0x00 << 4  //  Disable fractional cycle placement for PWM_B.
-	FRAC45_EN_1 SM0FRCTRL = 0x01 << 4  //  Enable fractional cycle placement for PWM_B.
-	FRAC_PU     SM0FRCTRL = 0x01 << 8  //+ Fractional Delay Circuit Power Up
-	FRAC_PU_0   SM0FRCTRL = 0x00 << 8  //  Turn off fractional delay logic.
-	FRAC_PU_1   SM0FRCTRL = 0x01 << 8  //  Power up fractional delay logic.
-	TEST        SM0FRCTRL = 0x01 << 15 //+ Test Status Bit
+	FRAC1_EN  SM0FRCTRL = 0x01 << 1  //+ Fractional Cycle PWM Period Enable
+	FRAC23_EN SM0FRCTRL = 0x01 << 2  //+ Fractional Cycle Placement Enable for PWM_A
+	FRAC45_EN SM0FRCTRL = 0x01 << 4  //+ Fractional Cycle Placement Enable for PWM_B
+	FRAC_PU   SM0FRCTRL = 0x01 << 8  //+ Fractional Delay Circuit Power Up
+	TEST      SM0FRCTRL = 0x01 << 15 //+ Test Status Bit
 )
 
 const (
@@ -457,14 +429,8 @@ const (
 	PWMAFS_2 SM0OCTRL = 0x02 << 4  //  Output is tristated.
 	PWMAFS_3 SM0OCTRL = 0x03 << 4  //  Output is tristated.
 	POLX     SM0OCTRL = 0x01 << 8  //+ PWM_X Output Polarity
-	POLX_0   SM0OCTRL = 0x00 << 8  //  PWM_X output not inverted. A high level on the PWM_X pin represents the "on" or "active" state.
-	POLX_1   SM0OCTRL = 0x01 << 8  //  PWM_X output inverted. A low level on the PWM_X pin represents the "on" or "active" state.
 	POLB     SM0OCTRL = 0x01 << 9  //+ PWM_B Output Polarity
-	POLB_0   SM0OCTRL = 0x00 << 9  //  PWM_B output not inverted. A high level on the PWM_B pin represents the "on" or "active" state.
-	POLB_1   SM0OCTRL = 0x01 << 9  //  PWM_B output inverted. A low level on the PWM_B pin represents the "on" or "active" state.
 	POLA     SM0OCTRL = 0x01 << 10 //+ PWM_A Output Polarity
-	POLA_0   SM0OCTRL = 0x00 << 10 //  PWM_A output not inverted. A high level on the PWM_A pin represents the "on" or "active" state.
-	POLA_1   SM0OCTRL = 0x01 << 10 //  PWM_A output inverted. A low level on the PWM_A pin represents the "on" or "active" state.
 	PWMX_IN  SM0OCTRL = 0x01 << 13 //+ PWM_X Input
 	PWMB_IN  SM0OCTRL = 0x01 << 14 //+ PWM_B Input
 	PWMA_IN  SM0OCTRL = 0x01 << 15 //+ PWM_A Input
@@ -493,14 +459,8 @@ const (
 	CFA0   SM0STS = 0x01 << 10 //+ Capture Flag A0
 	CFA1   SM0STS = 0x01 << 11 //+ Capture Flag A1
 	RF     SM0STS = 0x01 << 12 //+ Reload Flag
-	RF_0   SM0STS = 0x00 << 12 //  No new reload cycle since last STS[RF] clearing
-	RF_1   SM0STS = 0x01 << 12 //  New reload cycle since last STS[RF] clearing
 	REF    SM0STS = 0x01 << 13 //+ Reload Error Flag
-	REF_0  SM0STS = 0x00 << 13 //  No reload error occurred.
-	REF_1  SM0STS = 0x01 << 13 //  Reload signal occurred with non-coherent data and MCTRL[LDOK] = 0.
 	RUF    SM0STS = 0x01 << 14 //+ Registers Updated Flag
-	RUF_0  SM0STS = 0x00 << 14 //  No register update has occurred since last reload.
-	RUF_1  SM0STS = 0x01 << 14 //  At least one of the double buffered registers has been updated since the last reload.
 )
 
 const (
@@ -521,29 +481,13 @@ const (
 	CMPIE_0 SM0INTEN = 0x00 << 0  //  The corresponding STS[CMPF] bit will not cause an interrupt request.
 	CMPIE_1 SM0INTEN = 0x01 << 0  //  The corresponding STS[CMPF] bit will cause an interrupt request.
 	CX0IE   SM0INTEN = 0x01 << 6  //+ Capture X 0 Interrupt Enable
-	CX0IE_0 SM0INTEN = 0x00 << 6  //  Interrupt request disabled for STS[CFX0].
-	CX0IE_1 SM0INTEN = 0x01 << 6  //  Interrupt request enabled for STS[CFX0].
 	CX1IE   SM0INTEN = 0x01 << 7  //+ Capture X 1 Interrupt Enable
-	CX1IE_0 SM0INTEN = 0x00 << 7  //  Interrupt request disabled for STS[CFX1].
-	CX1IE_1 SM0INTEN = 0x01 << 7  //  Interrupt request enabled for STS[CFX1].
 	CB0IE   SM0INTEN = 0x01 << 8  //+ Capture B 0 Interrupt Enable
-	CB0IE_0 SM0INTEN = 0x00 << 8  //  Interrupt request disabled for STS[CFB0].
-	CB0IE_1 SM0INTEN = 0x01 << 8  //  Interrupt request enabled for STS[CFB0].
 	CB1IE   SM0INTEN = 0x01 << 9  //+ Capture B 1 Interrupt Enable
-	CB1IE_0 SM0INTEN = 0x00 << 9  //  Interrupt request disabled for STS[CFB1].
-	CB1IE_1 SM0INTEN = 0x01 << 9  //  Interrupt request enabled for STS[CFB1].
 	CA0IE   SM0INTEN = 0x01 << 10 //+ Capture A 0 Interrupt Enable
-	CA0IE_0 SM0INTEN = 0x00 << 10 //  Interrupt request disabled for STS[CFA0].
-	CA0IE_1 SM0INTEN = 0x01 << 10 //  Interrupt request enabled for STS[CFA0].
 	CA1IE   SM0INTEN = 0x01 << 11 //+ Capture A 1 Interrupt Enable
-	CA1IE_0 SM0INTEN = 0x00 << 11 //  Interrupt request disabled for STS[CFA1].
-	CA1IE_1 SM0INTEN = 0x01 << 11 //  Interrupt request enabled for STS[CFA1].
 	RIE     SM0INTEN = 0x01 << 12 //+ Reload Interrupt Enable
-	RIE_0   SM0INTEN = 0x00 << 12 //  STS[RF] CPU interrupt requests disabled
-	RIE_1   SM0INTEN = 0x01 << 12 //  STS[RF] CPU interrupt requests enabled
 	REIE    SM0INTEN = 0x01 << 13 //+ Reload Error Interrupt Enable
-	REIE_0  SM0INTEN = 0x00 << 13 //  STS[REF] CPU interrupt requests disabled
-	REIE_1  SM0INTEN = 0x01 << 13 //  STS[REF] CPU interrupt requests enabled
 )
 
 const (
@@ -571,11 +515,7 @@ const (
 	CAPTDE_2 SM0DMAEN = 0x02 << 6 //  A local sync (VAL1 matches counter) sets the read DMA request.
 	CAPTDE_3 SM0DMAEN = 0x03 << 6 //  A local reload (STS[RF] being set) sets the read DMA request.
 	FAND     SM0DMAEN = 0x01 << 8 //+ FIFO Watermark AND Control
-	FAND_0   SM0DMAEN = 0x00 << 8 //  Selected FIFO watermarks are OR'ed together.
-	FAND_1   SM0DMAEN = 0x01 << 8 //  Selected FIFO watermarks are AND'ed together.
 	VALDE    SM0DMAEN = 0x01 << 9 //+ Value Registers DMA Enable
-	VALDE_0  SM0DMAEN = 0x00 << 9 //  DMA write requests disabled
-	VALDE_1  SM0DMAEN = 0x01 << 9 //  DMA write requests for the VALx and FRACVALx registers enabled
 )
 
 const (
@@ -595,14 +535,8 @@ const (
 	OUT_TRIG_EN_0 SM0TCTRL = 0x00 << 0  //  PWM_OUT_TRIGx will not set when the counter value matches the VALx value.
 	OUT_TRIG_EN_1 SM0TCTRL = 0x01 << 0  //  PWM_OUT_TRIGx will set when the counter value matches the VALx value.
 	TRGFRQ        SM0TCTRL = 0x01 << 12 //+ Trigger frequency
-	TRGFRQ_0      SM0TCTRL = 0x00 << 12 //  Trigger outputs are generated during every PWM period even if the PWM is not reloaded every period due to CTRL[LDFQ] being non-zero.
-	TRGFRQ_1      SM0TCTRL = 0x01 << 12 //  Trigger outputs are generated only during the final PWM period prior to a reload opportunity when the PWM is not reloaded every period due to CTRL[LDFQ] being non-zero.
 	PWBOT1        SM0TCTRL = 0x01 << 14 //+ Output Trigger 1 Source Select
-	PWBOT1_0      SM0TCTRL = 0x00 << 14 //  Route the PWM_OUT_TRIG1 signal to PWM_OUT_TRIG1 port.
-	PWBOT1_1      SM0TCTRL = 0x01 << 14 //  Route the PWMB output to the PWM_OUT_TRIG1 port.
 	PWAOT0        SM0TCTRL = 0x01 << 15 //+ Output Trigger 0 Source Select
-	PWAOT0_0      SM0TCTRL = 0x00 << 15 //  Route the PWM_OUT_TRIG0 signal to PWM_OUT_TRIG0 port.
-	PWAOT0_1      SM0TCTRL = 0x01 << 15 //  Route the PWMA output to the PWM_OUT_TRIG0 port.
 )
 
 const (
@@ -653,31 +587,23 @@ const (
 )
 
 const (
-	ARMA         SM0CAPTCTRLA = 0x01 << 0  //+ Arm A
-	ARMA_0       SM0CAPTCTRLA = 0x00 << 0  //  Input capture operation is disabled.
-	ARMA_1       SM0CAPTCTRLA = 0x01 << 0  //  Input capture operation as specified by CAPTCTRLA[EDGAx] is enabled.
-	ONESHOTA     SM0CAPTCTRLA = 0x01 << 1  //+ One Shot Mode A
-	ONESHOTA_0   SM0CAPTCTRLA = 0x00 << 1  //  Free running mode is selected. If both capture circuits are enabled, then capture circuit 0 is armed first after CAPTCTRLA[ARMA] is set. Once a capture occurs, capture circuit 0 is disarmed and capture circuit 1 is armed. After capture circuit 1 performs a capture, it is disarmed and capture circuit 0 is re-armed. The process continues indefinitely.If only one of the capture circuits is enabled, then captures continue indefinitely on the enabled capture circuit.
-	ONESHOTA_1   SM0CAPTCTRLA = 0x01 << 1  //  One shot mode is selected. If both capture circuits are enabled, then capture circuit 0 is armed first after CAPTCTRLA[ARMA] is set. Once a capture occurs, capture circuit 0 is disarmed and capture circuit 1 is armed. After capture circuit 1 performs a capture, it is disarmed and CAPTCTRLA[ARMA] is cleared. No further captures will be performed until CAPTCTRLA[ARMA] is set again.If only one of the capture circuits is enabled, then a single capture will occur on the enabled capture circuit and CAPTCTRLA[ARMA] is then cleared.
-	EDGA0        SM0CAPTCTRLA = 0x03 << 2  //+ Edge A 0
-	EDGA0_0      SM0CAPTCTRLA = 0x00 << 2  //  Disabled
-	EDGA0_1      SM0CAPTCTRLA = 0x01 << 2  //  Capture falling edges
-	EDGA0_2      SM0CAPTCTRLA = 0x02 << 2  //  Capture rising edges
-	EDGA0_3      SM0CAPTCTRLA = 0x03 << 2  //  Capture any edge
-	EDGA1        SM0CAPTCTRLA = 0x03 << 4  //+ Edge A 1
-	EDGA1_0      SM0CAPTCTRLA = 0x00 << 4  //  Disabled
-	EDGA1_1      SM0CAPTCTRLA = 0x01 << 4  //  Capture falling edges
-	EDGA1_2      SM0CAPTCTRLA = 0x02 << 4  //  Capture rising edges
-	EDGA1_3      SM0CAPTCTRLA = 0x03 << 4  //  Capture any edge
-	INP_SELA     SM0CAPTCTRLA = 0x01 << 6  //+ Input Select A
-	INP_SELA_0   SM0CAPTCTRLA = 0x00 << 6  //  Raw PWM_A input signal selected as source.
-	INP_SELA_1   SM0CAPTCTRLA = 0x01 << 6  //  Output of edge counter/compare selected as source. Note that when this bitfield is set to 1, the internal edge counter is enabled and the rising and/or falling edges specified by the CAPTCTRLA[EDGA0] and CAPTCTRLA[EDGA1] fields are ignored. The software must still place a value other than 00 in either or both of the CAPTCTLRA[EDGA0] and/or CAPTCTRLA[EDGA1] fields in order to enable one or both of the capture registers.
-	EDGCNTA_EN   SM0CAPTCTRLA = 0x01 << 7  //+ Edge Counter A Enable
-	EDGCNTA_EN_0 SM0CAPTCTRLA = 0x00 << 7  //  Edge counter disabled and held in reset
-	EDGCNTA_EN_1 SM0CAPTCTRLA = 0x01 << 7  //  Edge counter enabled
-	CFAWM        SM0CAPTCTRLA = 0x03 << 8  //+ Capture A FIFOs Water Mark
-	CA0CNT       SM0CAPTCTRLA = 0x07 << 10 //+ Capture A0 FIFO Word Count
-	CA1CNT       SM0CAPTCTRLA = 0x07 << 13 //+ Capture A1 FIFO Word Count
+	ARMA       SM0CAPTCTRLA = 0x01 << 0  //+ Arm A
+	ONESHOTA   SM0CAPTCTRLA = 0x01 << 1  //+ One Shot Mode A
+	EDGA0      SM0CAPTCTRLA = 0x03 << 2  //+ Edge A 0
+	EDGA0_0    SM0CAPTCTRLA = 0x00 << 2  //  Disabled
+	EDGA0_1    SM0CAPTCTRLA = 0x01 << 2  //  Capture falling edges
+	EDGA0_2    SM0CAPTCTRLA = 0x02 << 2  //  Capture rising edges
+	EDGA0_3    SM0CAPTCTRLA = 0x03 << 2  //  Capture any edge
+	EDGA1      SM0CAPTCTRLA = 0x03 << 4  //+ Edge A 1
+	EDGA1_0    SM0CAPTCTRLA = 0x00 << 4  //  Disabled
+	EDGA1_1    SM0CAPTCTRLA = 0x01 << 4  //  Capture falling edges
+	EDGA1_2    SM0CAPTCTRLA = 0x02 << 4  //  Capture rising edges
+	EDGA1_3    SM0CAPTCTRLA = 0x03 << 4  //  Capture any edge
+	INP_SELA   SM0CAPTCTRLA = 0x01 << 6  //+ Input Select A
+	EDGCNTA_EN SM0CAPTCTRLA = 0x01 << 7  //+ Edge Counter A Enable
+	CFAWM      SM0CAPTCTRLA = 0x03 << 8  //+ Capture A FIFOs Water Mark
+	CA0CNT     SM0CAPTCTRLA = 0x07 << 10 //+ Capture A0 FIFO Word Count
+	CA1CNT     SM0CAPTCTRLA = 0x07 << 13 //+ Capture A1 FIFO Word Count
 )
 
 const (
@@ -703,31 +629,23 @@ const (
 )
 
 const (
-	ARMB         SM0CAPTCTRLB = 0x01 << 0  //+ Arm B
-	ARMB_0       SM0CAPTCTRLB = 0x00 << 0  //  Input capture operation is disabled.
-	ARMB_1       SM0CAPTCTRLB = 0x01 << 0  //  Input capture operation as specified by CAPTCTRLB[EDGBx] is enabled.
-	ONESHOTB     SM0CAPTCTRLB = 0x01 << 1  //+ One Shot Mode B
-	ONESHOTB_0   SM0CAPTCTRLB = 0x00 << 1  //  Free running mode is selected. If both capture circuits are enabled, then capture circuit 0 is armed first after CAPTCTRLB[ARMB] is set. Once a capture occurs, capture circuit 0 is disarmed and capture circuit 1 is armed. After capture circuit 1 performs a capture, it is disarmed and capture circuit 0 is re-armed. The process continues indefinitely.If only one of the capture circuits is enabled, then captures continue indefinitely on the enabled capture circuit.
-	ONESHOTB_1   SM0CAPTCTRLB = 0x01 << 1  //  One shot mode is selected. If both capture circuits are enabled, then capture circuit 0 is armed first after CAPTCTRLB[ARMB] is set. Once a capture occurs, capture circuit 0 is disarmed and capture circuit 1 is armed. After capture circuit 1 performs a capture, it is disarmed and CAPTCTRLB[ARMB] is cleared. No further captures will be performed until CAPTCTRLB[ARMB] is set again.If only one of the capture circuits is enabled, then a single capture will occur on the enabled capture circuit and CAPTCTRLB[ARMB] is then cleared.
-	EDGB0        SM0CAPTCTRLB = 0x03 << 2  //+ Edge B 0
-	EDGB0_0      SM0CAPTCTRLB = 0x00 << 2  //  Disabled
-	EDGB0_1      SM0CAPTCTRLB = 0x01 << 2  //  Capture falling edges
-	EDGB0_2      SM0CAPTCTRLB = 0x02 << 2  //  Capture rising edges
-	EDGB0_3      SM0CAPTCTRLB = 0x03 << 2  //  Capture any edge
-	EDGB1        SM0CAPTCTRLB = 0x03 << 4  //+ Edge B 1
-	EDGB1_0      SM0CAPTCTRLB = 0x00 << 4  //  Disabled
-	EDGB1_1      SM0CAPTCTRLB = 0x01 << 4  //  Capture falling edges
-	EDGB1_2      SM0CAPTCTRLB = 0x02 << 4  //  Capture rising edges
-	EDGB1_3      SM0CAPTCTRLB = 0x03 << 4  //  Capture any edge
-	INP_SELB     SM0CAPTCTRLB = 0x01 << 6  //+ Input Select B
-	INP_SELB_0   SM0CAPTCTRLB = 0x00 << 6  //  Raw PWM_B input signal selected as source.
-	INP_SELB_1   SM0CAPTCTRLB = 0x01 << 6  //  Output of edge counter/compare selected as source. Note that when this bitfield is set to 1, the internal edge counter is enabled and the rising and/or falling edges specified by the CAPTCTRLB[EDGB0] and CAPTCTRLB[EDGB1] fields are ignored. The software must still place a value other than 00 in either or both of the CAPTCTLRB[EDGB0] and/or CAPTCTRLB[EDGB1] fields in order to enable one or both of the capture registers.
-	EDGCNTB_EN   SM0CAPTCTRLB = 0x01 << 7  //+ Edge Counter B Enable
-	EDGCNTB_EN_0 SM0CAPTCTRLB = 0x00 << 7  //  Edge counter disabled and held in reset
-	EDGCNTB_EN_1 SM0CAPTCTRLB = 0x01 << 7  //  Edge counter enabled
-	CFBWM        SM0CAPTCTRLB = 0x03 << 8  //+ Capture B FIFOs Water Mark
-	CB0CNT       SM0CAPTCTRLB = 0x07 << 10 //+ Capture B0 FIFO Word Count
-	CB1CNT       SM0CAPTCTRLB = 0x07 << 13 //+ Capture B1 FIFO Word Count
+	ARMB       SM0CAPTCTRLB = 0x01 << 0  //+ Arm B
+	ONESHOTB   SM0CAPTCTRLB = 0x01 << 1  //+ One Shot Mode B
+	EDGB0      SM0CAPTCTRLB = 0x03 << 2  //+ Edge B 0
+	EDGB0_0    SM0CAPTCTRLB = 0x00 << 2  //  Disabled
+	EDGB0_1    SM0CAPTCTRLB = 0x01 << 2  //  Capture falling edges
+	EDGB0_2    SM0CAPTCTRLB = 0x02 << 2  //  Capture rising edges
+	EDGB0_3    SM0CAPTCTRLB = 0x03 << 2  //  Capture any edge
+	EDGB1      SM0CAPTCTRLB = 0x03 << 4  //+ Edge B 1
+	EDGB1_0    SM0CAPTCTRLB = 0x00 << 4  //  Disabled
+	EDGB1_1    SM0CAPTCTRLB = 0x01 << 4  //  Capture falling edges
+	EDGB1_2    SM0CAPTCTRLB = 0x02 << 4  //  Capture rising edges
+	EDGB1_3    SM0CAPTCTRLB = 0x03 << 4  //  Capture any edge
+	INP_SELB   SM0CAPTCTRLB = 0x01 << 6  //+ Input Select B
+	EDGCNTB_EN SM0CAPTCTRLB = 0x01 << 7  //+ Edge Counter B Enable
+	CFBWM      SM0CAPTCTRLB = 0x03 << 8  //+ Capture B FIFOs Water Mark
+	CB0CNT     SM0CAPTCTRLB = 0x07 << 10 //+ Capture B0 FIFO Word Count
+	CB1CNT     SM0CAPTCTRLB = 0x07 << 13 //+ Capture B1 FIFO Word Count
 )
 
 const (
@@ -753,31 +671,23 @@ const (
 )
 
 const (
-	ARMX         SM0CAPTCTRLX = 0x01 << 0  //+ Arm X
-	ARMX_0       SM0CAPTCTRLX = 0x00 << 0  //  Input capture operation is disabled.
-	ARMX_1       SM0CAPTCTRLX = 0x01 << 0  //  Input capture operation as specified by CAPTCTRLX[EDGXx] is enabled.
-	ONESHOTX     SM0CAPTCTRLX = 0x01 << 1  //+ One Shot Mode Aux
-	ONESHOTX_0   SM0CAPTCTRLX = 0x00 << 1  //  Free running mode is selected. If both capture circuits are enabled, then capture circuit 0 is armed first after the ARMX bit is set. Once a capture occurs, capture circuit 0 is disarmed and capture circuit 1 is armed. After capture circuit 1 performs a capture, it is disarmed and capture circuit 0 is re-armed. The process continues indefinitely.If only one of the capture circuits is enabled, then captures continue indefinitely on the enabled capture circuit.
-	ONESHOTX_1   SM0CAPTCTRLX = 0x01 << 1  //  One shot mode is selected. If both capture circuits are enabled, then capture circuit 0 is armed first after the ARMX bit is set. Once a capture occurs, capture circuit 0 is disarmed and capture circuit 1 is armed. After capture circuit 1 performs a capture, it is disarmed and the ARMX bit is cleared. No further captures will be performed until the ARMX bit is set again.If only one of the capture circuits is enabled, then a single capture will occur on the enabled capture circuit and the ARMX bit is then cleared.
-	EDGX0        SM0CAPTCTRLX = 0x03 << 2  //+ Edge X 0
-	EDGX0_0      SM0CAPTCTRLX = 0x00 << 2  //  Disabled
-	EDGX0_1      SM0CAPTCTRLX = 0x01 << 2  //  Capture falling edges
-	EDGX0_2      SM0CAPTCTRLX = 0x02 << 2  //  Capture rising edges
-	EDGX0_3      SM0CAPTCTRLX = 0x03 << 2  //  Capture any edge
-	EDGX1        SM0CAPTCTRLX = 0x03 << 4  //+ Edge X 1
-	EDGX1_0      SM0CAPTCTRLX = 0x00 << 4  //  Disabled
-	EDGX1_1      SM0CAPTCTRLX = 0x01 << 4  //  Capture falling edges
-	EDGX1_2      SM0CAPTCTRLX = 0x02 << 4  //  Capture rising edges
-	EDGX1_3      SM0CAPTCTRLX = 0x03 << 4  //  Capture any edge
-	INP_SELX     SM0CAPTCTRLX = 0x01 << 6  //+ Input Select X
-	INP_SELX_0   SM0CAPTCTRLX = 0x00 << 6  //  Raw PWM_X input signal selected as source.
-	INP_SELX_1   SM0CAPTCTRLX = 0x01 << 6  //  Output of edge counter/compare selected as source. Note that when this bitfield is set to 1, the internal edge counter is enabled and the rising and/or falling edges specified by the CAPTCTRLX[EDGX0] and CAPTCTRLX[EDGX1] fields are ignored. The software must still place a value other than 00 in either or both of the CAPTCTLRX[EDGX0] and/or CAPTCTRLX[EDGX1] fields in order to enable one or both of the capture registers.
-	EDGCNTX_EN   SM0CAPTCTRLX = 0x01 << 7  //+ Edge Counter X Enable
-	EDGCNTX_EN_0 SM0CAPTCTRLX = 0x00 << 7  //  Edge counter disabled and held in reset
-	EDGCNTX_EN_1 SM0CAPTCTRLX = 0x01 << 7  //  Edge counter enabled
-	CFXWM        SM0CAPTCTRLX = 0x03 << 8  //+ Capture X FIFOs Water Mark
-	CX0CNT       SM0CAPTCTRLX = 0x07 << 10 //+ Capture X0 FIFO Word Count
-	CX1CNT       SM0CAPTCTRLX = 0x07 << 13 //+ Capture X1 FIFO Word Count
+	ARMX       SM0CAPTCTRLX = 0x01 << 0  //+ Arm X
+	ONESHOTX   SM0CAPTCTRLX = 0x01 << 1  //+ One Shot Mode Aux
+	EDGX0      SM0CAPTCTRLX = 0x03 << 2  //+ Edge X 0
+	EDGX0_0    SM0CAPTCTRLX = 0x00 << 2  //  Disabled
+	EDGX0_1    SM0CAPTCTRLX = 0x01 << 2  //  Capture falling edges
+	EDGX0_2    SM0CAPTCTRLX = 0x02 << 2  //  Capture rising edges
+	EDGX0_3    SM0CAPTCTRLX = 0x03 << 2  //  Capture any edge
+	EDGX1      SM0CAPTCTRLX = 0x03 << 4  //+ Edge X 1
+	EDGX1_0    SM0CAPTCTRLX = 0x00 << 4  //  Disabled
+	EDGX1_1    SM0CAPTCTRLX = 0x01 << 4  //  Capture falling edges
+	EDGX1_2    SM0CAPTCTRLX = 0x02 << 4  //  Capture rising edges
+	EDGX1_3    SM0CAPTCTRLX = 0x03 << 4  //  Capture any edge
+	INP_SELX   SM0CAPTCTRLX = 0x01 << 6  //+ Input Select X
+	EDGCNTX_EN SM0CAPTCTRLX = 0x01 << 7  //+ Edge Counter X Enable
+	CFXWM      SM0CAPTCTRLX = 0x03 << 8  //+ Capture X FIFOs Water Mark
+	CX0CNT     SM0CAPTCTRLX = 0x07 << 10 //+ Capture X0 FIFO Word Count
+	CX1CNT     SM0CAPTCTRLX = 0x07 << 13 //+ Capture X1 FIFO Word Count
 )
 
 const (
@@ -915,39 +825,33 @@ const (
 )
 
 const (
-	CLK_SEL      SM1CTRL2 = 0x03 << 0  //+ Clock Source Select
-	CLK_SEL_0    SM1CTRL2 = 0x00 << 0  //  The IPBus clock is used as the clock for the local prescaler and counter.
-	CLK_SEL_1    SM1CTRL2 = 0x01 << 0  //  EXT_CLK is used as the clock for the local prescaler and counter.
-	CLK_SEL_2    SM1CTRL2 = 0x02 << 0  //  Submodule 0's clock (AUX_CLK) is used as the source clock for the local prescaler and counter. This setting should not be used in submodule 0 as it will force the clock to logic 0.
-	RELOAD_SEL   SM1CTRL2 = 0x01 << 2  //+ Reload Source Select
-	RELOAD_SEL_0 SM1CTRL2 = 0x00 << 2  //  The local RELOAD signal is used to reload registers.
-	RELOAD_SEL_1 SM1CTRL2 = 0x01 << 2  //  The master RELOAD signal (from submodule 0) is used to reload registers. This setting should not be used in submodule 0 as it will force the RELOAD signal to logic 0.
-	FORCE_SEL    SM1CTRL2 = 0x07 << 3  //+ This read/write bit determines the source of the FORCE OUTPUT signal for this submodule.
-	FORCE_SEL_0  SM1CTRL2 = 0x00 << 3  //  The local force signal, CTRL2[FORCE], from this submodule is used to force updates.
-	FORCE_SEL_1  SM1CTRL2 = 0x01 << 3  //  The master force signal from submodule 0 is used to force updates. This setting should not be used in submodule 0 as it will hold the FORCE OUTPUT signal to logic 0.
-	FORCE_SEL_2  SM1CTRL2 = 0x02 << 3  //  The local reload signal from this submodule is used to force updates without regard to the state of LDOK.
-	FORCE_SEL_3  SM1CTRL2 = 0x03 << 3  //  The master reload signal from submodule0 is used to force updates if LDOK is set. This setting should not be used in submodule0 as it will hold the FORCE OUTPUT signal to logic 0.
-	FORCE_SEL_4  SM1CTRL2 = 0x04 << 3  //  The local sync signal from this submodule is used to force updates.
-	FORCE_SEL_5  SM1CTRL2 = 0x05 << 3  //  The master sync signal from submodule0 is used to force updates. This setting should not be used in submodule0 as it will hold the FORCE OUTPUT signal to logic 0.
-	FORCE_SEL_6  SM1CTRL2 = 0x06 << 3  //  The external force signal, EXT_FORCE, from outside the PWM module causes updates.
-	FORCE_SEL_7  SM1CTRL2 = 0x07 << 3  //  The external sync signal, EXT_SYNC, from outside the PWM module causes updates.
-	FORCE        SM1CTRL2 = 0x01 << 6  //+ Force Initialization
-	FRCEN        SM1CTRL2 = 0x01 << 7  //+ FRCEN
-	FRCEN_0      SM1CTRL2 = 0x00 << 7  //  Initialization from a FORCE_OUT is disabled.
-	FRCEN_1      SM1CTRL2 = 0x01 << 7  //  Initialization from a FORCE_OUT is enabled.
-	INIT_SEL     SM1CTRL2 = 0x03 << 8  //+ Initialization Control Select
-	INIT_SEL_0   SM1CTRL2 = 0x00 << 8  //  Local sync (PWM_X) causes initialization.
-	INIT_SEL_1   SM1CTRL2 = 0x01 << 8  //  Master reload from submodule 0 causes initialization. This setting should not be used in submodule 0 as it will force the INIT signal to logic 0. The submodule counter will only reinitialize when a master reload occurs.
-	INIT_SEL_2   SM1CTRL2 = 0x02 << 8  //  Master sync from submodule 0 causes initialization. This setting should not be used in submodule 0 as it will force the INIT signal to logic 0.
-	INIT_SEL_3   SM1CTRL2 = 0x03 << 8  //  EXT_SYNC causes initialization.
-	PWMX_INIT    SM1CTRL2 = 0x01 << 10 //+ PWM_X Initial Value
-	PWM45_INIT   SM1CTRL2 = 0x01 << 11 //+ PWM45 Initial Value
-	PWM23_INIT   SM1CTRL2 = 0x01 << 12 //+ PWM23 Initial Value
-	INDEP        SM1CTRL2 = 0x01 << 13 //+ Independent or Complementary Pair Operation
-	INDEP_0      SM1CTRL2 = 0x00 << 13 //  PWM_A and PWM_B form a complementary PWM pair.
-	INDEP_1      SM1CTRL2 = 0x01 << 13 //  PWM_A and PWM_B outputs are independent PWMs.
-	WAITEN       SM1CTRL2 = 0x01 << 14 //+ WAIT Enable
-	DBGEN        SM1CTRL2 = 0x01 << 15 //+ Debug Enable
+	CLK_SEL     SM1CTRL2 = 0x03 << 0  //+ Clock Source Select
+	CLK_SEL_0   SM1CTRL2 = 0x00 << 0  //  The IPBus clock is used as the clock for the local prescaler and counter.
+	CLK_SEL_1   SM1CTRL2 = 0x01 << 0  //  EXT_CLK is used as the clock for the local prescaler and counter.
+	CLK_SEL_2   SM1CTRL2 = 0x02 << 0  //  Submodule 0's clock (AUX_CLK) is used as the source clock for the local prescaler and counter. This setting should not be used in submodule 0 as it will force the clock to logic 0.
+	RELOAD_SEL  SM1CTRL2 = 0x01 << 2  //+ Reload Source Select
+	FORCE_SEL   SM1CTRL2 = 0x07 << 3  //+ This read/write bit determines the source of the FORCE OUTPUT signal for this submodule.
+	FORCE_SEL_0 SM1CTRL2 = 0x00 << 3  //  The local force signal, CTRL2[FORCE], from this submodule is used to force updates.
+	FORCE_SEL_1 SM1CTRL2 = 0x01 << 3  //  The master force signal from submodule 0 is used to force updates. This setting should not be used in submodule 0 as it will hold the FORCE OUTPUT signal to logic 0.
+	FORCE_SEL_2 SM1CTRL2 = 0x02 << 3  //  The local reload signal from this submodule is used to force updates without regard to the state of LDOK.
+	FORCE_SEL_3 SM1CTRL2 = 0x03 << 3  //  The master reload signal from submodule0 is used to force updates if LDOK is set. This setting should not be used in submodule0 as it will hold the FORCE OUTPUT signal to logic 0.
+	FORCE_SEL_4 SM1CTRL2 = 0x04 << 3  //  The local sync signal from this submodule is used to force updates.
+	FORCE_SEL_5 SM1CTRL2 = 0x05 << 3  //  The master sync signal from submodule0 is used to force updates. This setting should not be used in submodule0 as it will hold the FORCE OUTPUT signal to logic 0.
+	FORCE_SEL_6 SM1CTRL2 = 0x06 << 3  //  The external force signal, EXT_FORCE, from outside the PWM module causes updates.
+	FORCE_SEL_7 SM1CTRL2 = 0x07 << 3  //  The external sync signal, EXT_SYNC, from outside the PWM module causes updates.
+	FORCE       SM1CTRL2 = 0x01 << 6  //+ Force Initialization
+	FRCEN       SM1CTRL2 = 0x01 << 7  //+ FRCEN
+	INIT_SEL    SM1CTRL2 = 0x03 << 8  //+ Initialization Control Select
+	INIT_SEL_0  SM1CTRL2 = 0x00 << 8  //  Local sync (PWM_X) causes initialization.
+	INIT_SEL_1  SM1CTRL2 = 0x01 << 8  //  Master reload from submodule 0 causes initialization. This setting should not be used in submodule 0 as it will force the INIT signal to logic 0. The submodule counter will only reinitialize when a master reload occurs.
+	INIT_SEL_2  SM1CTRL2 = 0x02 << 8  //  Master sync from submodule 0 causes initialization. This setting should not be used in submodule 0 as it will force the INIT signal to logic 0.
+	INIT_SEL_3  SM1CTRL2 = 0x03 << 8  //  EXT_SYNC causes initialization.
+	PWMX_INIT   SM1CTRL2 = 0x01 << 10 //+ PWM_X Initial Value
+	PWM45_INIT  SM1CTRL2 = 0x01 << 11 //+ PWM45 Initial Value
+	PWM23_INIT  SM1CTRL2 = 0x01 << 12 //+ PWM23 Initial Value
+	INDEP       SM1CTRL2 = 0x01 << 13 //+ Independent or Complementary Pair Operation
+	WAITEN      SM1CTRL2 = 0x01 << 14 //+ WAIT Enable
+	DBGEN       SM1CTRL2 = 0x01 << 15 //+ Debug Enable
 )
 
 const (
@@ -966,54 +870,40 @@ const (
 )
 
 const (
-	DBLEN      SM1CTRL = 0x01 << 0  //+ Double Switching Enable
-	DBLEN_0    SM1CTRL = 0x00 << 0  //  Double switching disabled.
-	DBLEN_1    SM1CTRL = 0x01 << 0  //  Double switching enabled.
-	DBLX       SM1CTRL = 0x01 << 1  //+ PWMX Double Switching Enable
-	DBLX_0     SM1CTRL = 0x00 << 1  //  PWMX double pulse disabled.
-	DBLX_1     SM1CTRL = 0x01 << 1  //  PWMX double pulse enabled.
-	LDMOD      SM1CTRL = 0x01 << 2  //+ Load Mode Select
-	LDMOD_0    SM1CTRL = 0x00 << 2  //  Buffered registers of this submodule are loaded and take effect at the next PWM reload if MCTRL[LDOK] is set.
-	LDMOD_1    SM1CTRL = 0x01 << 2  //  Buffered registers of this submodule are loaded and take effect immediately upon MCTRL[LDOK] being set. In this case it is not necessary to set CTRL[FULL] or CTRL[HALF].
-	SPLIT      SM1CTRL = 0x01 << 3  //+ Split the DBLPWM signal to PWMA and PWMB
-	SPLIT_0    SM1CTRL = 0x00 << 3  //  DBLPWM is not split. PWMA and PWMB each have double pulses.
-	SPLIT_1    SM1CTRL = 0x01 << 3  //  DBLPWM is split to PWMA and PWMB.
-	PRSC       SM1CTRL = 0x07 << 4  //+ Prescaler
-	PRSC_0     SM1CTRL = 0x00 << 4  //  PWM clock frequency = fclk
-	PRSC_1     SM1CTRL = 0x01 << 4  //  PWM clock frequency = fclk/2
-	PRSC_2     SM1CTRL = 0x02 << 4  //  PWM clock frequency = fclk/4
-	PRSC_3     SM1CTRL = 0x03 << 4  //  PWM clock frequency = fclk/8
-	PRSC_4     SM1CTRL = 0x04 << 4  //  PWM clock frequency = fclk/16
-	PRSC_5     SM1CTRL = 0x05 << 4  //  PWM clock frequency = fclk/32
-	PRSC_6     SM1CTRL = 0x06 << 4  //  PWM clock frequency = fclk/64
-	PRSC_7     SM1CTRL = 0x07 << 4  //  PWM clock frequency = fclk/128
-	COMPMODE   SM1CTRL = 0x01 << 7  //+ Compare Mode
-	COMPMODE_0 SM1CTRL = 0x00 << 7  //  The VAL* registers and the PWM counter are compared using an "equal to" method. This means that PWM edges are only produced when the counter is equal to one of the VAL* register values. This implies that a PWMA output that is high at the end of a period will maintain this state until a match with VAL3 clears the output in the following period.
-	COMPMODE_1 SM1CTRL = 0x01 << 7  //  The VAL* registers and the PWM counter are compared using an "equal to or greater than" method. This means that PWM edges are produced when the counter is equal to or greater than one of the VAL* register values. This implies that a PWMA output that is high at the end of a period could go low at the start of the next period if the starting counter value is greater than (but not necessarily equal to) the new VAL3 value.
-	DT         SM1CTRL = 0x03 << 8  //+ Deadtime
-	FULL       SM1CTRL = 0x01 << 10 //+ Full Cycle Reload
-	FULL_0     SM1CTRL = 0x00 << 10 //  Full-cycle reloads disabled.
-	FULL_1     SM1CTRL = 0x01 << 10 //  Full-cycle reloads enabled.
-	HALF       SM1CTRL = 0x01 << 11 //+ Half Cycle Reload
-	HALF_0     SM1CTRL = 0x00 << 11 //  Half-cycle reloads disabled.
-	HALF_1     SM1CTRL = 0x01 << 11 //  Half-cycle reloads enabled.
-	LDFQ       SM1CTRL = 0x0F << 12 //+ Load Frequency
-	LDFQ_0     SM1CTRL = 0x00 << 12 //  Every PWM opportunity
-	LDFQ_1     SM1CTRL = 0x01 << 12 //  Every 2 PWM opportunities
-	LDFQ_2     SM1CTRL = 0x02 << 12 //  Every 3 PWM opportunities
-	LDFQ_3     SM1CTRL = 0x03 << 12 //  Every 4 PWM opportunities
-	LDFQ_4     SM1CTRL = 0x04 << 12 //  Every 5 PWM opportunities
-	LDFQ_5     SM1CTRL = 0x05 << 12 //  Every 6 PWM opportunities
-	LDFQ_6     SM1CTRL = 0x06 << 12 //  Every 7 PWM opportunities
-	LDFQ_7     SM1CTRL = 0x07 << 12 //  Every 8 PWM opportunities
-	LDFQ_8     SM1CTRL = 0x08 << 12 //  Every 9 PWM opportunities
-	LDFQ_9     SM1CTRL = 0x09 << 12 //  Every 10 PWM opportunities
-	LDFQ_10    SM1CTRL = 0x0A << 12 //  Every 11 PWM opportunities
-	LDFQ_11    SM1CTRL = 0x0B << 12 //  Every 12 PWM opportunities
-	LDFQ_12    SM1CTRL = 0x0C << 12 //  Every 13 PWM opportunities
-	LDFQ_13    SM1CTRL = 0x0D << 12 //  Every 14 PWM opportunities
-	LDFQ_14    SM1CTRL = 0x0E << 12 //  Every 15 PWM opportunities
-	LDFQ_15    SM1CTRL = 0x0F << 12 //  Every 16 PWM opportunities
+	DBLEN    SM1CTRL = 0x01 << 0  //+ Double Switching Enable
+	DBLX     SM1CTRL = 0x01 << 1  //+ PWMX Double Switching Enable
+	LDMOD    SM1CTRL = 0x01 << 2  //+ Load Mode Select
+	SPLIT    SM1CTRL = 0x01 << 3  //+ Split the DBLPWM signal to PWMA and PWMB
+	PRSC     SM1CTRL = 0x07 << 4  //+ Prescaler
+	PRSC_0   SM1CTRL = 0x00 << 4  //  PWM clock frequency = fclk
+	PRSC_1   SM1CTRL = 0x01 << 4  //  PWM clock frequency = fclk/2
+	PRSC_2   SM1CTRL = 0x02 << 4  //  PWM clock frequency = fclk/4
+	PRSC_3   SM1CTRL = 0x03 << 4  //  PWM clock frequency = fclk/8
+	PRSC_4   SM1CTRL = 0x04 << 4  //  PWM clock frequency = fclk/16
+	PRSC_5   SM1CTRL = 0x05 << 4  //  PWM clock frequency = fclk/32
+	PRSC_6   SM1CTRL = 0x06 << 4  //  PWM clock frequency = fclk/64
+	PRSC_7   SM1CTRL = 0x07 << 4  //  PWM clock frequency = fclk/128
+	COMPMODE SM1CTRL = 0x01 << 7  //+ Compare Mode
+	DT       SM1CTRL = 0x03 << 8  //+ Deadtime
+	FULL     SM1CTRL = 0x01 << 10 //+ Full Cycle Reload
+	HALF     SM1CTRL = 0x01 << 11 //+ Half Cycle Reload
+	LDFQ     SM1CTRL = 0x0F << 12 //+ Load Frequency
+	LDFQ_0   SM1CTRL = 0x00 << 12 //  Every PWM opportunity
+	LDFQ_1   SM1CTRL = 0x01 << 12 //  Every 2 PWM opportunities
+	LDFQ_2   SM1CTRL = 0x02 << 12 //  Every 3 PWM opportunities
+	LDFQ_3   SM1CTRL = 0x03 << 12 //  Every 4 PWM opportunities
+	LDFQ_4   SM1CTRL = 0x04 << 12 //  Every 5 PWM opportunities
+	LDFQ_5   SM1CTRL = 0x05 << 12 //  Every 6 PWM opportunities
+	LDFQ_6   SM1CTRL = 0x06 << 12 //  Every 7 PWM opportunities
+	LDFQ_7   SM1CTRL = 0x07 << 12 //  Every 8 PWM opportunities
+	LDFQ_8   SM1CTRL = 0x08 << 12 //  Every 9 PWM opportunities
+	LDFQ_9   SM1CTRL = 0x09 << 12 //  Every 10 PWM opportunities
+	LDFQ_10  SM1CTRL = 0x0A << 12 //  Every 11 PWM opportunities
+	LDFQ_11  SM1CTRL = 0x0B << 12 //  Every 12 PWM opportunities
+	LDFQ_12  SM1CTRL = 0x0C << 12 //  Every 13 PWM opportunities
+	LDFQ_13  SM1CTRL = 0x0D << 12 //  Every 14 PWM opportunities
+	LDFQ_14  SM1CTRL = 0x0E << 12 //  Every 15 PWM opportunities
+	LDFQ_15  SM1CTRL = 0x0F << 12 //  Every 16 PWM opportunities
 )
 
 const (
@@ -1118,19 +1008,11 @@ const (
 )
 
 const (
-	FRAC1_EN    SM1FRCTRL = 0x01 << 1  //+ Fractional Cycle PWM Period Enable
-	FRAC1_EN_0  SM1FRCTRL = 0x00 << 1  //  Disable fractional cycle length for the PWM period.
-	FRAC1_EN_1  SM1FRCTRL = 0x01 << 1  //  Enable fractional cycle length for the PWM period.
-	FRAC23_EN   SM1FRCTRL = 0x01 << 2  //+ Fractional Cycle Placement Enable for PWM_A
-	FRAC23_EN_0 SM1FRCTRL = 0x00 << 2  //  Disable fractional cycle placement for PWM_A.
-	FRAC23_EN_1 SM1FRCTRL = 0x01 << 2  //  Enable fractional cycle placement for PWM_A.
-	FRAC45_EN   SM1FRCTRL = 0x01 << 4  //+ Fractional Cycle Placement Enable for PWM_B
-	FRAC45_EN_0 SM1FRCTRL = 0x00 << 4  //  Disable fractional cycle placement for PWM_B.
-	FRAC45_EN_1 SM1FRCTRL = 0x01 << 4  //  Enable fractional cycle placement for PWM_B.
-	FRAC_PU     SM1FRCTRL = 0x01 << 8  //+ Fractional Delay Circuit Power Up
-	FRAC_PU_0   SM1FRCTRL = 0x00 << 8  //  Turn off fractional delay logic.
-	FRAC_PU_1   SM1FRCTRL = 0x01 << 8  //  Power up fractional delay logic.
-	TEST        SM1FRCTRL = 0x01 << 15 //+ Test Status Bit
+	FRAC1_EN  SM1FRCTRL = 0x01 << 1  //+ Fractional Cycle PWM Period Enable
+	FRAC23_EN SM1FRCTRL = 0x01 << 2  //+ Fractional Cycle Placement Enable for PWM_A
+	FRAC45_EN SM1FRCTRL = 0x01 << 4  //+ Fractional Cycle Placement Enable for PWM_B
+	FRAC_PU   SM1FRCTRL = 0x01 << 8  //+ Fractional Delay Circuit Power Up
+	TEST      SM1FRCTRL = 0x01 << 15 //+ Test Status Bit
 )
 
 const (
@@ -1158,14 +1040,8 @@ const (
 	PWMAFS_2 SM1OCTRL = 0x02 << 4  //  Output is tristated.
 	PWMAFS_3 SM1OCTRL = 0x03 << 4  //  Output is tristated.
 	POLX     SM1OCTRL = 0x01 << 8  //+ PWM_X Output Polarity
-	POLX_0   SM1OCTRL = 0x00 << 8  //  PWM_X output not inverted. A high level on the PWM_X pin represents the "on" or "active" state.
-	POLX_1   SM1OCTRL = 0x01 << 8  //  PWM_X output inverted. A low level on the PWM_X pin represents the "on" or "active" state.
 	POLB     SM1OCTRL = 0x01 << 9  //+ PWM_B Output Polarity
-	POLB_0   SM1OCTRL = 0x00 << 9  //  PWM_B output not inverted. A high level on the PWM_B pin represents the "on" or "active" state.
-	POLB_1   SM1OCTRL = 0x01 << 9  //  PWM_B output inverted. A low level on the PWM_B pin represents the "on" or "active" state.
 	POLA     SM1OCTRL = 0x01 << 10 //+ PWM_A Output Polarity
-	POLA_0   SM1OCTRL = 0x00 << 10 //  PWM_A output not inverted. A high level on the PWM_A pin represents the "on" or "active" state.
-	POLA_1   SM1OCTRL = 0x01 << 10 //  PWM_A output inverted. A low level on the PWM_A pin represents the "on" or "active" state.
 	PWMX_IN  SM1OCTRL = 0x01 << 13 //+ PWM_X Input
 	PWMB_IN  SM1OCTRL = 0x01 << 14 //+ PWM_B Input
 	PWMA_IN  SM1OCTRL = 0x01 << 15 //+ PWM_A Input
@@ -1194,14 +1070,8 @@ const (
 	CFA0   SM1STS = 0x01 << 10 //+ Capture Flag A0
 	CFA1   SM1STS = 0x01 << 11 //+ Capture Flag A1
 	RF     SM1STS = 0x01 << 12 //+ Reload Flag
-	RF_0   SM1STS = 0x00 << 12 //  No new reload cycle since last STS[RF] clearing
-	RF_1   SM1STS = 0x01 << 12 //  New reload cycle since last STS[RF] clearing
 	REF    SM1STS = 0x01 << 13 //+ Reload Error Flag
-	REF_0  SM1STS = 0x00 << 13 //  No reload error occurred.
-	REF_1  SM1STS = 0x01 << 13 //  Reload signal occurred with non-coherent data and MCTRL[LDOK] = 0.
 	RUF    SM1STS = 0x01 << 14 //+ Registers Updated Flag
-	RUF_0  SM1STS = 0x00 << 14 //  No register update has occurred since last reload.
-	RUF_1  SM1STS = 0x01 << 14 //  At least one of the double buffered registers has been updated since the last reload.
 )
 
 const (
@@ -1222,29 +1092,13 @@ const (
 	CMPIE_0 SM1INTEN = 0x00 << 0  //  The corresponding STS[CMPF] bit will not cause an interrupt request.
 	CMPIE_1 SM1INTEN = 0x01 << 0  //  The corresponding STS[CMPF] bit will cause an interrupt request.
 	CX0IE   SM1INTEN = 0x01 << 6  //+ Capture X 0 Interrupt Enable
-	CX0IE_0 SM1INTEN = 0x00 << 6  //  Interrupt request disabled for STS[CFX0].
-	CX0IE_1 SM1INTEN = 0x01 << 6  //  Interrupt request enabled for STS[CFX0].
 	CX1IE   SM1INTEN = 0x01 << 7  //+ Capture X 1 Interrupt Enable
-	CX1IE_0 SM1INTEN = 0x00 << 7  //  Interrupt request disabled for STS[CFX1].
-	CX1IE_1 SM1INTEN = 0x01 << 7  //  Interrupt request enabled for STS[CFX1].
 	CB0IE   SM1INTEN = 0x01 << 8  //+ Capture B 0 Interrupt Enable
-	CB0IE_0 SM1INTEN = 0x00 << 8  //  Interrupt request disabled for STS[CFB0].
-	CB0IE_1 SM1INTEN = 0x01 << 8  //  Interrupt request enabled for STS[CFB0].
 	CB1IE   SM1INTEN = 0x01 << 9  //+ Capture B 1 Interrupt Enable
-	CB1IE_0 SM1INTEN = 0x00 << 9  //  Interrupt request disabled for STS[CFB1].
-	CB1IE_1 SM1INTEN = 0x01 << 9  //  Interrupt request enabled for STS[CFB1].
 	CA0IE   SM1INTEN = 0x01 << 10 //+ Capture A 0 Interrupt Enable
-	CA0IE_0 SM1INTEN = 0x00 << 10 //  Interrupt request disabled for STS[CFA0].
-	CA0IE_1 SM1INTEN = 0x01 << 10 //  Interrupt request enabled for STS[CFA0].
 	CA1IE   SM1INTEN = 0x01 << 11 //+ Capture A 1 Interrupt Enable
-	CA1IE_0 SM1INTEN = 0x00 << 11 //  Interrupt request disabled for STS[CFA1].
-	CA1IE_1 SM1INTEN = 0x01 << 11 //  Interrupt request enabled for STS[CFA1].
 	RIE     SM1INTEN = 0x01 << 12 //+ Reload Interrupt Enable
-	RIE_0   SM1INTEN = 0x00 << 12 //  STS[RF] CPU interrupt requests disabled
-	RIE_1   SM1INTEN = 0x01 << 12 //  STS[RF] CPU interrupt requests enabled
 	REIE    SM1INTEN = 0x01 << 13 //+ Reload Error Interrupt Enable
-	REIE_0  SM1INTEN = 0x00 << 13 //  STS[REF] CPU interrupt requests disabled
-	REIE_1  SM1INTEN = 0x01 << 13 //  STS[REF] CPU interrupt requests enabled
 )
 
 const (
@@ -1272,11 +1126,7 @@ const (
 	CAPTDE_2 SM1DMAEN = 0x02 << 6 //  A local sync (VAL1 matches counter) sets the read DMA request.
 	CAPTDE_3 SM1DMAEN = 0x03 << 6 //  A local reload (STS[RF] being set) sets the read DMA request.
 	FAND     SM1DMAEN = 0x01 << 8 //+ FIFO Watermark AND Control
-	FAND_0   SM1DMAEN = 0x00 << 8 //  Selected FIFO watermarks are OR'ed together.
-	FAND_1   SM1DMAEN = 0x01 << 8 //  Selected FIFO watermarks are AND'ed together.
 	VALDE    SM1DMAEN = 0x01 << 9 //+ Value Registers DMA Enable
-	VALDE_0  SM1DMAEN = 0x00 << 9 //  DMA write requests disabled
-	VALDE_1  SM1DMAEN = 0x01 << 9 //  DMA write requests for the VALx and FRACVALx registers enabled
 )
 
 const (
@@ -1296,14 +1146,8 @@ const (
 	OUT_TRIG_EN_0 SM1TCTRL = 0x00 << 0  //  PWM_OUT_TRIGx will not set when the counter value matches the VALx value.
 	OUT_TRIG_EN_1 SM1TCTRL = 0x01 << 0  //  PWM_OUT_TRIGx will set when the counter value matches the VALx value.
 	TRGFRQ        SM1TCTRL = 0x01 << 12 //+ Trigger frequency
-	TRGFRQ_0      SM1TCTRL = 0x00 << 12 //  Trigger outputs are generated during every PWM period even if the PWM is not reloaded every period due to CTRL[LDFQ] being non-zero.
-	TRGFRQ_1      SM1TCTRL = 0x01 << 12 //  Trigger outputs are generated only during the final PWM period prior to a reload opportunity when the PWM is not reloaded every period due to CTRL[LDFQ] being non-zero.
 	PWBOT1        SM1TCTRL = 0x01 << 14 //+ Output Trigger 1 Source Select
-	PWBOT1_0      SM1TCTRL = 0x00 << 14 //  Route the PWM_OUT_TRIG1 signal to PWM_OUT_TRIG1 port.
-	PWBOT1_1      SM1TCTRL = 0x01 << 14 //  Route the PWMB output to the PWM_OUT_TRIG1 port.
 	PWAOT0        SM1TCTRL = 0x01 << 15 //+ Output Trigger 0 Source Select
-	PWAOT0_0      SM1TCTRL = 0x00 << 15 //  Route the PWM_OUT_TRIG0 signal to PWM_OUT_TRIG0 port.
-	PWAOT0_1      SM1TCTRL = 0x01 << 15 //  Route the PWMA output to the PWM_OUT_TRIG0 port.
 )
 
 const (
@@ -1354,31 +1198,23 @@ const (
 )
 
 const (
-	ARMA         SM1CAPTCTRLA = 0x01 << 0  //+ Arm A
-	ARMA_0       SM1CAPTCTRLA = 0x00 << 0  //  Input capture operation is disabled.
-	ARMA_1       SM1CAPTCTRLA = 0x01 << 0  //  Input capture operation as specified by CAPTCTRLA[EDGAx] is enabled.
-	ONESHOTA     SM1CAPTCTRLA = 0x01 << 1  //+ One Shot Mode A
-	ONESHOTA_0   SM1CAPTCTRLA = 0x00 << 1  //  Free running mode is selected. If both capture circuits are enabled, then capture circuit 0 is armed first after CAPTCTRLA[ARMA] is set. Once a capture occurs, capture circuit 0 is disarmed and capture circuit 1 is armed. After capture circuit 1 performs a capture, it is disarmed and capture circuit 0 is re-armed. The process continues indefinitely.If only one of the capture circuits is enabled, then captures continue indefinitely on the enabled capture circuit.
-	ONESHOTA_1   SM1CAPTCTRLA = 0x01 << 1  //  One shot mode is selected. If both capture circuits are enabled, then capture circuit 0 is armed first after CAPTCTRLA[ARMA] is set. Once a capture occurs, capture circuit 0 is disarmed and capture circuit 1 is armed. After capture circuit 1 performs a capture, it is disarmed and CAPTCTRLA[ARMA] is cleared. No further captures will be performed until CAPTCTRLA[ARMA] is set again.If only one of the capture circuits is enabled, then a single capture will occur on the enabled capture circuit and CAPTCTRLA[ARMA] is then cleared.
-	EDGA0        SM1CAPTCTRLA = 0x03 << 2  //+ Edge A 0
-	EDGA0_0      SM1CAPTCTRLA = 0x00 << 2  //  Disabled
-	EDGA0_1      SM1CAPTCTRLA = 0x01 << 2  //  Capture falling edges
-	EDGA0_2      SM1CAPTCTRLA = 0x02 << 2  //  Capture rising edges
-	EDGA0_3      SM1CAPTCTRLA = 0x03 << 2  //  Capture any edge
-	EDGA1        SM1CAPTCTRLA = 0x03 << 4  //+ Edge A 1
-	EDGA1_0      SM1CAPTCTRLA = 0x00 << 4  //  Disabled
-	EDGA1_1      SM1CAPTCTRLA = 0x01 << 4  //  Capture falling edges
-	EDGA1_2      SM1CAPTCTRLA = 0x02 << 4  //  Capture rising edges
-	EDGA1_3      SM1CAPTCTRLA = 0x03 << 4  //  Capture any edge
-	INP_SELA     SM1CAPTCTRLA = 0x01 << 6  //+ Input Select A
-	INP_SELA_0   SM1CAPTCTRLA = 0x00 << 6  //  Raw PWM_A input signal selected as source.
-	INP_SELA_1   SM1CAPTCTRLA = 0x01 << 6  //  Output of edge counter/compare selected as source. Note that when this bitfield is set to 1, the internal edge counter is enabled and the rising and/or falling edges specified by the CAPTCTRLA[EDGA0] and CAPTCTRLA[EDGA1] fields are ignored. The software must still place a value other than 00 in either or both of the CAPTCTLRA[EDGA0] and/or CAPTCTRLA[EDGA1] fields in order to enable one or both of the capture registers.
-	EDGCNTA_EN   SM1CAPTCTRLA = 0x01 << 7  //+ Edge Counter A Enable
-	EDGCNTA_EN_0 SM1CAPTCTRLA = 0x00 << 7  //  Edge counter disabled and held in reset
-	EDGCNTA_EN_1 SM1CAPTCTRLA = 0x01 << 7  //  Edge counter enabled
-	CFAWM        SM1CAPTCTRLA = 0x03 << 8  //+ Capture A FIFOs Water Mark
-	CA0CNT       SM1CAPTCTRLA = 0x07 << 10 //+ Capture A0 FIFO Word Count
-	CA1CNT       SM1CAPTCTRLA = 0x07 << 13 //+ Capture A1 FIFO Word Count
+	ARMA       SM1CAPTCTRLA = 0x01 << 0  //+ Arm A
+	ONESHOTA   SM1CAPTCTRLA = 0x01 << 1  //+ One Shot Mode A
+	EDGA0      SM1CAPTCTRLA = 0x03 << 2  //+ Edge A 0
+	EDGA0_0    SM1CAPTCTRLA = 0x00 << 2  //  Disabled
+	EDGA0_1    SM1CAPTCTRLA = 0x01 << 2  //  Capture falling edges
+	EDGA0_2    SM1CAPTCTRLA = 0x02 << 2  //  Capture rising edges
+	EDGA0_3    SM1CAPTCTRLA = 0x03 << 2  //  Capture any edge
+	EDGA1      SM1CAPTCTRLA = 0x03 << 4  //+ Edge A 1
+	EDGA1_0    SM1CAPTCTRLA = 0x00 << 4  //  Disabled
+	EDGA1_1    SM1CAPTCTRLA = 0x01 << 4  //  Capture falling edges
+	EDGA1_2    SM1CAPTCTRLA = 0x02 << 4  //  Capture rising edges
+	EDGA1_3    SM1CAPTCTRLA = 0x03 << 4  //  Capture any edge
+	INP_SELA   SM1CAPTCTRLA = 0x01 << 6  //+ Input Select A
+	EDGCNTA_EN SM1CAPTCTRLA = 0x01 << 7  //+ Edge Counter A Enable
+	CFAWM      SM1CAPTCTRLA = 0x03 << 8  //+ Capture A FIFOs Water Mark
+	CA0CNT     SM1CAPTCTRLA = 0x07 << 10 //+ Capture A0 FIFO Word Count
+	CA1CNT     SM1CAPTCTRLA = 0x07 << 13 //+ Capture A1 FIFO Word Count
 )
 
 const (
@@ -1404,31 +1240,23 @@ const (
 )
 
 const (
-	ARMB         SM1CAPTCTRLB = 0x01 << 0  //+ Arm B
-	ARMB_0       SM1CAPTCTRLB = 0x00 << 0  //  Input capture operation is disabled.
-	ARMB_1       SM1CAPTCTRLB = 0x01 << 0  //  Input capture operation as specified by CAPTCTRLB[EDGBx] is enabled.
-	ONESHOTB     SM1CAPTCTRLB = 0x01 << 1  //+ One Shot Mode B
-	ONESHOTB_0   SM1CAPTCTRLB = 0x00 << 1  //  Free running mode is selected. If both capture circuits are enabled, then capture circuit 0 is armed first after CAPTCTRLB[ARMB] is set. Once a capture occurs, capture circuit 0 is disarmed and capture circuit 1 is armed. After capture circuit 1 performs a capture, it is disarmed and capture circuit 0 is re-armed. The process continues indefinitely.If only one of the capture circuits is enabled, then captures continue indefinitely on the enabled capture circuit.
-	ONESHOTB_1   SM1CAPTCTRLB = 0x01 << 1  //  One shot mode is selected. If both capture circuits are enabled, then capture circuit 0 is armed first after CAPTCTRLB[ARMB] is set. Once a capture occurs, capture circuit 0 is disarmed and capture circuit 1 is armed. After capture circuit 1 performs a capture, it is disarmed and CAPTCTRLB[ARMB] is cleared. No further captures will be performed until CAPTCTRLB[ARMB] is set again.If only one of the capture circuits is enabled, then a single capture will occur on the enabled capture circuit and CAPTCTRLB[ARMB] is then cleared.
-	EDGB0        SM1CAPTCTRLB = 0x03 << 2  //+ Edge B 0
-	EDGB0_0      SM1CAPTCTRLB = 0x00 << 2  //  Disabled
-	EDGB0_1      SM1CAPTCTRLB = 0x01 << 2  //  Capture falling edges
-	EDGB0_2      SM1CAPTCTRLB = 0x02 << 2  //  Capture rising edges
-	EDGB0_3      SM1CAPTCTRLB = 0x03 << 2  //  Capture any edge
-	EDGB1        SM1CAPTCTRLB = 0x03 << 4  //+ Edge B 1
-	EDGB1_0      SM1CAPTCTRLB = 0x00 << 4  //  Disabled
-	EDGB1_1      SM1CAPTCTRLB = 0x01 << 4  //  Capture falling edges
-	EDGB1_2      SM1CAPTCTRLB = 0x02 << 4  //  Capture rising edges
-	EDGB1_3      SM1CAPTCTRLB = 0x03 << 4  //  Capture any edge
-	INP_SELB     SM1CAPTCTRLB = 0x01 << 6  //+ Input Select B
-	INP_SELB_0   SM1CAPTCTRLB = 0x00 << 6  //  Raw PWM_B input signal selected as source.
-	INP_SELB_1   SM1CAPTCTRLB = 0x01 << 6  //  Output of edge counter/compare selected as source. Note that when this bitfield is set to 1, the internal edge counter is enabled and the rising and/or falling edges specified by the CAPTCTRLB[EDGB0] and CAPTCTRLB[EDGB1] fields are ignored. The software must still place a value other than 00 in either or both of the CAPTCTLRB[EDGB0] and/or CAPTCTRLB[EDGB1] fields in order to enable one or both of the capture registers.
-	EDGCNTB_EN   SM1CAPTCTRLB = 0x01 << 7  //+ Edge Counter B Enable
-	EDGCNTB_EN_0 SM1CAPTCTRLB = 0x00 << 7  //  Edge counter disabled and held in reset
-	EDGCNTB_EN_1 SM1CAPTCTRLB = 0x01 << 7  //  Edge counter enabled
-	CFBWM        SM1CAPTCTRLB = 0x03 << 8  //+ Capture B FIFOs Water Mark
-	CB0CNT       SM1CAPTCTRLB = 0x07 << 10 //+ Capture B0 FIFO Word Count
-	CB1CNT       SM1CAPTCTRLB = 0x07 << 13 //+ Capture B1 FIFO Word Count
+	ARMB       SM1CAPTCTRLB = 0x01 << 0  //+ Arm B
+	ONESHOTB   SM1CAPTCTRLB = 0x01 << 1  //+ One Shot Mode B
+	EDGB0      SM1CAPTCTRLB = 0x03 << 2  //+ Edge B 0
+	EDGB0_0    SM1CAPTCTRLB = 0x00 << 2  //  Disabled
+	EDGB0_1    SM1CAPTCTRLB = 0x01 << 2  //  Capture falling edges
+	EDGB0_2    SM1CAPTCTRLB = 0x02 << 2  //  Capture rising edges
+	EDGB0_3    SM1CAPTCTRLB = 0x03 << 2  //  Capture any edge
+	EDGB1      SM1CAPTCTRLB = 0x03 << 4  //+ Edge B 1
+	EDGB1_0    SM1CAPTCTRLB = 0x00 << 4  //  Disabled
+	EDGB1_1    SM1CAPTCTRLB = 0x01 << 4  //  Capture falling edges
+	EDGB1_2    SM1CAPTCTRLB = 0x02 << 4  //  Capture rising edges
+	EDGB1_3    SM1CAPTCTRLB = 0x03 << 4  //  Capture any edge
+	INP_SELB   SM1CAPTCTRLB = 0x01 << 6  //+ Input Select B
+	EDGCNTB_EN SM1CAPTCTRLB = 0x01 << 7  //+ Edge Counter B Enable
+	CFBWM      SM1CAPTCTRLB = 0x03 << 8  //+ Capture B FIFOs Water Mark
+	CB0CNT     SM1CAPTCTRLB = 0x07 << 10 //+ Capture B0 FIFO Word Count
+	CB1CNT     SM1CAPTCTRLB = 0x07 << 13 //+ Capture B1 FIFO Word Count
 )
 
 const (
@@ -1454,31 +1282,23 @@ const (
 )
 
 const (
-	ARMX         SM1CAPTCTRLX = 0x01 << 0  //+ Arm X
-	ARMX_0       SM1CAPTCTRLX = 0x00 << 0  //  Input capture operation is disabled.
-	ARMX_1       SM1CAPTCTRLX = 0x01 << 0  //  Input capture operation as specified by CAPTCTRLX[EDGXx] is enabled.
-	ONESHOTX     SM1CAPTCTRLX = 0x01 << 1  //+ One Shot Mode Aux
-	ONESHOTX_0   SM1CAPTCTRLX = 0x00 << 1  //  Free running mode is selected. If both capture circuits are enabled, then capture circuit 0 is armed first after the ARMX bit is set. Once a capture occurs, capture circuit 0 is disarmed and capture circuit 1 is armed. After capture circuit 1 performs a capture, it is disarmed and capture circuit 0 is re-armed. The process continues indefinitely.If only one of the capture circuits is enabled, then captures continue indefinitely on the enabled capture circuit.
-	ONESHOTX_1   SM1CAPTCTRLX = 0x01 << 1  //  One shot mode is selected. If both capture circuits are enabled, then capture circuit 0 is armed first after the ARMX bit is set. Once a capture occurs, capture circuit 0 is disarmed and capture circuit 1 is armed. After capture circuit 1 performs a capture, it is disarmed and the ARMX bit is cleared. No further captures will be performed until the ARMX bit is set again.If only one of the capture circuits is enabled, then a single capture will occur on the enabled capture circuit and the ARMX bit is then cleared.
-	EDGX0        SM1CAPTCTRLX = 0x03 << 2  //+ Edge X 0
-	EDGX0_0      SM1CAPTCTRLX = 0x00 << 2  //  Disabled
-	EDGX0_1      SM1CAPTCTRLX = 0x01 << 2  //  Capture falling edges
-	EDGX0_2      SM1CAPTCTRLX = 0x02 << 2  //  Capture rising edges
-	EDGX0_3      SM1CAPTCTRLX = 0x03 << 2  //  Capture any edge
-	EDGX1        SM1CAPTCTRLX = 0x03 << 4  //+ Edge X 1
-	EDGX1_0      SM1CAPTCTRLX = 0x00 << 4  //  Disabled
-	EDGX1_1      SM1CAPTCTRLX = 0x01 << 4  //  Capture falling edges
-	EDGX1_2      SM1CAPTCTRLX = 0x02 << 4  //  Capture rising edges
-	EDGX1_3      SM1CAPTCTRLX = 0x03 << 4  //  Capture any edge
-	INP_SELX     SM1CAPTCTRLX = 0x01 << 6  //+ Input Select X
-	INP_SELX_0   SM1CAPTCTRLX = 0x00 << 6  //  Raw PWM_X input signal selected as source.
-	INP_SELX_1   SM1CAPTCTRLX = 0x01 << 6  //  Output of edge counter/compare selected as source. Note that when this bitfield is set to 1, the internal edge counter is enabled and the rising and/or falling edges specified by the CAPTCTRLX[EDGX0] and CAPTCTRLX[EDGX1] fields are ignored. The software must still place a value other than 00 in either or both of the CAPTCTLRX[EDGX0] and/or CAPTCTRLX[EDGX1] fields in order to enable one or both of the capture registers.
-	EDGCNTX_EN   SM1CAPTCTRLX = 0x01 << 7  //+ Edge Counter X Enable
-	EDGCNTX_EN_0 SM1CAPTCTRLX = 0x00 << 7  //  Edge counter disabled and held in reset
-	EDGCNTX_EN_1 SM1CAPTCTRLX = 0x01 << 7  //  Edge counter enabled
-	CFXWM        SM1CAPTCTRLX = 0x03 << 8  //+ Capture X FIFOs Water Mark
-	CX0CNT       SM1CAPTCTRLX = 0x07 << 10 //+ Capture X0 FIFO Word Count
-	CX1CNT       SM1CAPTCTRLX = 0x07 << 13 //+ Capture X1 FIFO Word Count
+	ARMX       SM1CAPTCTRLX = 0x01 << 0  //+ Arm X
+	ONESHOTX   SM1CAPTCTRLX = 0x01 << 1  //+ One Shot Mode Aux
+	EDGX0      SM1CAPTCTRLX = 0x03 << 2  //+ Edge X 0
+	EDGX0_0    SM1CAPTCTRLX = 0x00 << 2  //  Disabled
+	EDGX0_1    SM1CAPTCTRLX = 0x01 << 2  //  Capture falling edges
+	EDGX0_2    SM1CAPTCTRLX = 0x02 << 2  //  Capture rising edges
+	EDGX0_3    SM1CAPTCTRLX = 0x03 << 2  //  Capture any edge
+	EDGX1      SM1CAPTCTRLX = 0x03 << 4  //+ Edge X 1
+	EDGX1_0    SM1CAPTCTRLX = 0x00 << 4  //  Disabled
+	EDGX1_1    SM1CAPTCTRLX = 0x01 << 4  //  Capture falling edges
+	EDGX1_2    SM1CAPTCTRLX = 0x02 << 4  //  Capture rising edges
+	EDGX1_3    SM1CAPTCTRLX = 0x03 << 4  //  Capture any edge
+	INP_SELX   SM1CAPTCTRLX = 0x01 << 6  //+ Input Select X
+	EDGCNTX_EN SM1CAPTCTRLX = 0x01 << 7  //+ Edge Counter X Enable
+	CFXWM      SM1CAPTCTRLX = 0x03 << 8  //+ Capture X FIFOs Water Mark
+	CX0CNT     SM1CAPTCTRLX = 0x07 << 10 //+ Capture X0 FIFO Word Count
+	CX1CNT     SM1CAPTCTRLX = 0x07 << 13 //+ Capture X1 FIFO Word Count
 )
 
 const (
@@ -1616,39 +1436,33 @@ const (
 )
 
 const (
-	CLK_SEL      SM2CTRL2 = 0x03 << 0  //+ Clock Source Select
-	CLK_SEL_0    SM2CTRL2 = 0x00 << 0  //  The IPBus clock is used as the clock for the local prescaler and counter.
-	CLK_SEL_1    SM2CTRL2 = 0x01 << 0  //  EXT_CLK is used as the clock for the local prescaler and counter.
-	CLK_SEL_2    SM2CTRL2 = 0x02 << 0  //  Submodule 0's clock (AUX_CLK) is used as the source clock for the local prescaler and counter. This setting should not be used in submodule 0 as it will force the clock to logic 0.
-	RELOAD_SEL   SM2CTRL2 = 0x01 << 2  //+ Reload Source Select
-	RELOAD_SEL_0 SM2CTRL2 = 0x00 << 2  //  The local RELOAD signal is used to reload registers.
-	RELOAD_SEL_1 SM2CTRL2 = 0x01 << 2  //  The master RELOAD signal (from submodule 0) is used to reload registers. This setting should not be used in submodule 0 as it will force the RELOAD signal to logic 0.
-	FORCE_SEL    SM2CTRL2 = 0x07 << 3  //+ This read/write bit determines the source of the FORCE OUTPUT signal for this submodule.
-	FORCE_SEL_0  SM2CTRL2 = 0x00 << 3  //  The local force signal, CTRL2[FORCE], from this submodule is used to force updates.
-	FORCE_SEL_1  SM2CTRL2 = 0x01 << 3  //  The master force signal from submodule 0 is used to force updates. This setting should not be used in submodule 0 as it will hold the FORCE OUTPUT signal to logic 0.
-	FORCE_SEL_2  SM2CTRL2 = 0x02 << 3  //  The local reload signal from this submodule is used to force updates without regard to the state of LDOK.
-	FORCE_SEL_3  SM2CTRL2 = 0x03 << 3  //  The master reload signal from submodule0 is used to force updates if LDOK is set. This setting should not be used in submodule0 as it will hold the FORCE OUTPUT signal to logic 0.
-	FORCE_SEL_4  SM2CTRL2 = 0x04 << 3  //  The local sync signal from this submodule is used to force updates.
-	FORCE_SEL_5  SM2CTRL2 = 0x05 << 3  //  The master sync signal from submodule0 is used to force updates. This setting should not be used in submodule0 as it will hold the FORCE OUTPUT signal to logic 0.
-	FORCE_SEL_6  SM2CTRL2 = 0x06 << 3  //  The external force signal, EXT_FORCE, from outside the PWM module causes updates.
-	FORCE_SEL_7  SM2CTRL2 = 0x07 << 3  //  The external sync signal, EXT_SYNC, from outside the PWM module causes updates.
-	FORCE        SM2CTRL2 = 0x01 << 6  //+ Force Initialization
-	FRCEN        SM2CTRL2 = 0x01 << 7  //+ FRCEN
-	FRCEN_0      SM2CTRL2 = 0x00 << 7  //  Initialization from a FORCE_OUT is disabled.
-	FRCEN_1      SM2CTRL2 = 0x01 << 7  //  Initialization from a FORCE_OUT is enabled.
-	INIT_SEL     SM2CTRL2 = 0x03 << 8  //+ Initialization Control Select
-	INIT_SEL_0   SM2CTRL2 = 0x00 << 8  //  Local sync (PWM_X) causes initialization.
-	INIT_SEL_1   SM2CTRL2 = 0x01 << 8  //  Master reload from submodule 0 causes initialization. This setting should not be used in submodule 0 as it will force the INIT signal to logic 0. The submodule counter will only reinitialize when a master reload occurs.
-	INIT_SEL_2   SM2CTRL2 = 0x02 << 8  //  Master sync from submodule 0 causes initialization. This setting should not be used in submodule 0 as it will force the INIT signal to logic 0.
-	INIT_SEL_3   SM2CTRL2 = 0x03 << 8  //  EXT_SYNC causes initialization.
-	PWMX_INIT    SM2CTRL2 = 0x01 << 10 //+ PWM_X Initial Value
-	PWM45_INIT   SM2CTRL2 = 0x01 << 11 //+ PWM45 Initial Value
-	PWM23_INIT   SM2CTRL2 = 0x01 << 12 //+ PWM23 Initial Value
-	INDEP        SM2CTRL2 = 0x01 << 13 //+ Independent or Complementary Pair Operation
-	INDEP_0      SM2CTRL2 = 0x00 << 13 //  PWM_A and PWM_B form a complementary PWM pair.
-	INDEP_1      SM2CTRL2 = 0x01 << 13 //  PWM_A and PWM_B outputs are independent PWMs.
-	WAITEN       SM2CTRL2 = 0x01 << 14 //+ WAIT Enable
-	DBGEN        SM2CTRL2 = 0x01 << 15 //+ Debug Enable
+	CLK_SEL     SM2CTRL2 = 0x03 << 0  //+ Clock Source Select
+	CLK_SEL_0   SM2CTRL2 = 0x00 << 0  //  The IPBus clock is used as the clock for the local prescaler and counter.
+	CLK_SEL_1   SM2CTRL2 = 0x01 << 0  //  EXT_CLK is used as the clock for the local prescaler and counter.
+	CLK_SEL_2   SM2CTRL2 = 0x02 << 0  //  Submodule 0's clock (AUX_CLK) is used as the source clock for the local prescaler and counter. This setting should not be used in submodule 0 as it will force the clock to logic 0.
+	RELOAD_SEL  SM2CTRL2 = 0x01 << 2  //+ Reload Source Select
+	FORCE_SEL   SM2CTRL2 = 0x07 << 3  //+ This read/write bit determines the source of the FORCE OUTPUT signal for this submodule.
+	FORCE_SEL_0 SM2CTRL2 = 0x00 << 3  //  The local force signal, CTRL2[FORCE], from this submodule is used to force updates.
+	FORCE_SEL_1 SM2CTRL2 = 0x01 << 3  //  The master force signal from submodule 0 is used to force updates. This setting should not be used in submodule 0 as it will hold the FORCE OUTPUT signal to logic 0.
+	FORCE_SEL_2 SM2CTRL2 = 0x02 << 3  //  The local reload signal from this submodule is used to force updates without regard to the state of LDOK.
+	FORCE_SEL_3 SM2CTRL2 = 0x03 << 3  //  The master reload signal from submodule0 is used to force updates if LDOK is set. This setting should not be used in submodule0 as it will hold the FORCE OUTPUT signal to logic 0.
+	FORCE_SEL_4 SM2CTRL2 = 0x04 << 3  //  The local sync signal from this submodule is used to force updates.
+	FORCE_SEL_5 SM2CTRL2 = 0x05 << 3  //  The master sync signal from submodule0 is used to force updates. This setting should not be used in submodule0 as it will hold the FORCE OUTPUT signal to logic 0.
+	FORCE_SEL_6 SM2CTRL2 = 0x06 << 3  //  The external force signal, EXT_FORCE, from outside the PWM module causes updates.
+	FORCE_SEL_7 SM2CTRL2 = 0x07 << 3  //  The external sync signal, EXT_SYNC, from outside the PWM module causes updates.
+	FORCE       SM2CTRL2 = 0x01 << 6  //+ Force Initialization
+	FRCEN       SM2CTRL2 = 0x01 << 7  //+ FRCEN
+	INIT_SEL    SM2CTRL2 = 0x03 << 8  //+ Initialization Control Select
+	INIT_SEL_0  SM2CTRL2 = 0x00 << 8  //  Local sync (PWM_X) causes initialization.
+	INIT_SEL_1  SM2CTRL2 = 0x01 << 8  //  Master reload from submodule 0 causes initialization. This setting should not be used in submodule 0 as it will force the INIT signal to logic 0. The submodule counter will only reinitialize when a master reload occurs.
+	INIT_SEL_2  SM2CTRL2 = 0x02 << 8  //  Master sync from submodule 0 causes initialization. This setting should not be used in submodule 0 as it will force the INIT signal to logic 0.
+	INIT_SEL_3  SM2CTRL2 = 0x03 << 8  //  EXT_SYNC causes initialization.
+	PWMX_INIT   SM2CTRL2 = 0x01 << 10 //+ PWM_X Initial Value
+	PWM45_INIT  SM2CTRL2 = 0x01 << 11 //+ PWM45 Initial Value
+	PWM23_INIT  SM2CTRL2 = 0x01 << 12 //+ PWM23 Initial Value
+	INDEP       SM2CTRL2 = 0x01 << 13 //+ Independent or Complementary Pair Operation
+	WAITEN      SM2CTRL2 = 0x01 << 14 //+ WAIT Enable
+	DBGEN       SM2CTRL2 = 0x01 << 15 //+ Debug Enable
 )
 
 const (
@@ -1667,54 +1481,40 @@ const (
 )
 
 const (
-	DBLEN      SM2CTRL = 0x01 << 0  //+ Double Switching Enable
-	DBLEN_0    SM2CTRL = 0x00 << 0  //  Double switching disabled.
-	DBLEN_1    SM2CTRL = 0x01 << 0  //  Double switching enabled.
-	DBLX       SM2CTRL = 0x01 << 1  //+ PWMX Double Switching Enable
-	DBLX_0     SM2CTRL = 0x00 << 1  //  PWMX double pulse disabled.
-	DBLX_1     SM2CTRL = 0x01 << 1  //  PWMX double pulse enabled.
-	LDMOD      SM2CTRL = 0x01 << 2  //+ Load Mode Select
-	LDMOD_0    SM2CTRL = 0x00 << 2  //  Buffered registers of this submodule are loaded and take effect at the next PWM reload if MCTRL[LDOK] is set.
-	LDMOD_1    SM2CTRL = 0x01 << 2  //  Buffered registers of this submodule are loaded and take effect immediately upon MCTRL[LDOK] being set. In this case it is not necessary to set CTRL[FULL] or CTRL[HALF].
-	SPLIT      SM2CTRL = 0x01 << 3  //+ Split the DBLPWM signal to PWMA and PWMB
-	SPLIT_0    SM2CTRL = 0x00 << 3  //  DBLPWM is not split. PWMA and PWMB each have double pulses.
-	SPLIT_1    SM2CTRL = 0x01 << 3  //  DBLPWM is split to PWMA and PWMB.
-	PRSC       SM2CTRL = 0x07 << 4  //+ Prescaler
-	PRSC_0     SM2CTRL = 0x00 << 4  //  PWM clock frequency = fclk
-	PRSC_1     SM2CTRL = 0x01 << 4  //  PWM clock frequency = fclk/2
-	PRSC_2     SM2CTRL = 0x02 << 4  //  PWM clock frequency = fclk/4
-	PRSC_3     SM2CTRL = 0x03 << 4  //  PWM clock frequency = fclk/8
-	PRSC_4     SM2CTRL = 0x04 << 4  //  PWM clock frequency = fclk/16
-	PRSC_5     SM2CTRL = 0x05 << 4  //  PWM clock frequency = fclk/32
-	PRSC_6     SM2CTRL = 0x06 << 4  //  PWM clock frequency = fclk/64
-	PRSC_7     SM2CTRL = 0x07 << 4  //  PWM clock frequency = fclk/128
-	COMPMODE   SM2CTRL = 0x01 << 7  //+ Compare Mode
-	COMPMODE_0 SM2CTRL = 0x00 << 7  //  The VAL* registers and the PWM counter are compared using an "equal to" method. This means that PWM edges are only produced when the counter is equal to one of the VAL* register values. This implies that a PWMA output that is high at the end of a period will maintain this state until a match with VAL3 clears the output in the following period.
-	COMPMODE_1 SM2CTRL = 0x01 << 7  //  The VAL* registers and the PWM counter are compared using an "equal to or greater than" method. This means that PWM edges are produced when the counter is equal to or greater than one of the VAL* register values. This implies that a PWMA output that is high at the end of a period could go low at the start of the next period if the starting counter value is greater than (but not necessarily equal to) the new VAL3 value.
-	DT         SM2CTRL = 0x03 << 8  //+ Deadtime
-	FULL       SM2CTRL = 0x01 << 10 //+ Full Cycle Reload
-	FULL_0     SM2CTRL = 0x00 << 10 //  Full-cycle reloads disabled.
-	FULL_1     SM2CTRL = 0x01 << 10 //  Full-cycle reloads enabled.
-	HALF       SM2CTRL = 0x01 << 11 //+ Half Cycle Reload
-	HALF_0     SM2CTRL = 0x00 << 11 //  Half-cycle reloads disabled.
-	HALF_1     SM2CTRL = 0x01 << 11 //  Half-cycle reloads enabled.
-	LDFQ       SM2CTRL = 0x0F << 12 //+ Load Frequency
-	LDFQ_0     SM2CTRL = 0x00 << 12 //  Every PWM opportunity
-	LDFQ_1     SM2CTRL = 0x01 << 12 //  Every 2 PWM opportunities
-	LDFQ_2     SM2CTRL = 0x02 << 12 //  Every 3 PWM opportunities
-	LDFQ_3     SM2CTRL = 0x03 << 12 //  Every 4 PWM opportunities
-	LDFQ_4     SM2CTRL = 0x04 << 12 //  Every 5 PWM opportunities
-	LDFQ_5     SM2CTRL = 0x05 << 12 //  Every 6 PWM opportunities
-	LDFQ_6     SM2CTRL = 0x06 << 12 //  Every 7 PWM opportunities
-	LDFQ_7     SM2CTRL = 0x07 << 12 //  Every 8 PWM opportunities
-	LDFQ_8     SM2CTRL = 0x08 << 12 //  Every 9 PWM opportunities
-	LDFQ_9     SM2CTRL = 0x09 << 12 //  Every 10 PWM opportunities
-	LDFQ_10    SM2CTRL = 0x0A << 12 //  Every 11 PWM opportunities
-	LDFQ_11    SM2CTRL = 0x0B << 12 //  Every 12 PWM opportunities
-	LDFQ_12    SM2CTRL = 0x0C << 12 //  Every 13 PWM opportunities
-	LDFQ_13    SM2CTRL = 0x0D << 12 //  Every 14 PWM opportunities
-	LDFQ_14    SM2CTRL = 0x0E << 12 //  Every 15 PWM opportunities
-	LDFQ_15    SM2CTRL = 0x0F << 12 //  Every 16 PWM opportunities
+	DBLEN    SM2CTRL = 0x01 << 0  //+ Double Switching Enable
+	DBLX     SM2CTRL = 0x01 << 1  //+ PWMX Double Switching Enable
+	LDMOD    SM2CTRL = 0x01 << 2  //+ Load Mode Select
+	SPLIT    SM2CTRL = 0x01 << 3  //+ Split the DBLPWM signal to PWMA and PWMB
+	PRSC     SM2CTRL = 0x07 << 4  //+ Prescaler
+	PRSC_0   SM2CTRL = 0x00 << 4  //  PWM clock frequency = fclk
+	PRSC_1   SM2CTRL = 0x01 << 4  //  PWM clock frequency = fclk/2
+	PRSC_2   SM2CTRL = 0x02 << 4  //  PWM clock frequency = fclk/4
+	PRSC_3   SM2CTRL = 0x03 << 4  //  PWM clock frequency = fclk/8
+	PRSC_4   SM2CTRL = 0x04 << 4  //  PWM clock frequency = fclk/16
+	PRSC_5   SM2CTRL = 0x05 << 4  //  PWM clock frequency = fclk/32
+	PRSC_6   SM2CTRL = 0x06 << 4  //  PWM clock frequency = fclk/64
+	PRSC_7   SM2CTRL = 0x07 << 4  //  PWM clock frequency = fclk/128
+	COMPMODE SM2CTRL = 0x01 << 7  //+ Compare Mode
+	DT       SM2CTRL = 0x03 << 8  //+ Deadtime
+	FULL     SM2CTRL = 0x01 << 10 //+ Full Cycle Reload
+	HALF     SM2CTRL = 0x01 << 11 //+ Half Cycle Reload
+	LDFQ     SM2CTRL = 0x0F << 12 //+ Load Frequency
+	LDFQ_0   SM2CTRL = 0x00 << 12 //  Every PWM opportunity
+	LDFQ_1   SM2CTRL = 0x01 << 12 //  Every 2 PWM opportunities
+	LDFQ_2   SM2CTRL = 0x02 << 12 //  Every 3 PWM opportunities
+	LDFQ_3   SM2CTRL = 0x03 << 12 //  Every 4 PWM opportunities
+	LDFQ_4   SM2CTRL = 0x04 << 12 //  Every 5 PWM opportunities
+	LDFQ_5   SM2CTRL = 0x05 << 12 //  Every 6 PWM opportunities
+	LDFQ_6   SM2CTRL = 0x06 << 12 //  Every 7 PWM opportunities
+	LDFQ_7   SM2CTRL = 0x07 << 12 //  Every 8 PWM opportunities
+	LDFQ_8   SM2CTRL = 0x08 << 12 //  Every 9 PWM opportunities
+	LDFQ_9   SM2CTRL = 0x09 << 12 //  Every 10 PWM opportunities
+	LDFQ_10  SM2CTRL = 0x0A << 12 //  Every 11 PWM opportunities
+	LDFQ_11  SM2CTRL = 0x0B << 12 //  Every 12 PWM opportunities
+	LDFQ_12  SM2CTRL = 0x0C << 12 //  Every 13 PWM opportunities
+	LDFQ_13  SM2CTRL = 0x0D << 12 //  Every 14 PWM opportunities
+	LDFQ_14  SM2CTRL = 0x0E << 12 //  Every 15 PWM opportunities
+	LDFQ_15  SM2CTRL = 0x0F << 12 //  Every 16 PWM opportunities
 )
 
 const (
@@ -1819,19 +1619,11 @@ const (
 )
 
 const (
-	FRAC1_EN    SM2FRCTRL = 0x01 << 1  //+ Fractional Cycle PWM Period Enable
-	FRAC1_EN_0  SM2FRCTRL = 0x00 << 1  //  Disable fractional cycle length for the PWM period.
-	FRAC1_EN_1  SM2FRCTRL = 0x01 << 1  //  Enable fractional cycle length for the PWM period.
-	FRAC23_EN   SM2FRCTRL = 0x01 << 2  //+ Fractional Cycle Placement Enable for PWM_A
-	FRAC23_EN_0 SM2FRCTRL = 0x00 << 2  //  Disable fractional cycle placement for PWM_A.
-	FRAC23_EN_1 SM2FRCTRL = 0x01 << 2  //  Enable fractional cycle placement for PWM_A.
-	FRAC45_EN   SM2FRCTRL = 0x01 << 4  //+ Fractional Cycle Placement Enable for PWM_B
-	FRAC45_EN_0 SM2FRCTRL = 0x00 << 4  //  Disable fractional cycle placement for PWM_B.
-	FRAC45_EN_1 SM2FRCTRL = 0x01 << 4  //  Enable fractional cycle placement for PWM_B.
-	FRAC_PU     SM2FRCTRL = 0x01 << 8  //+ Fractional Delay Circuit Power Up
-	FRAC_PU_0   SM2FRCTRL = 0x00 << 8  //  Turn off fractional delay logic.
-	FRAC_PU_1   SM2FRCTRL = 0x01 << 8  //  Power up fractional delay logic.
-	TEST        SM2FRCTRL = 0x01 << 15 //+ Test Status Bit
+	FRAC1_EN  SM2FRCTRL = 0x01 << 1  //+ Fractional Cycle PWM Period Enable
+	FRAC23_EN SM2FRCTRL = 0x01 << 2  //+ Fractional Cycle Placement Enable for PWM_A
+	FRAC45_EN SM2FRCTRL = 0x01 << 4  //+ Fractional Cycle Placement Enable for PWM_B
+	FRAC_PU   SM2FRCTRL = 0x01 << 8  //+ Fractional Delay Circuit Power Up
+	TEST      SM2FRCTRL = 0x01 << 15 //+ Test Status Bit
 )
 
 const (
@@ -1859,14 +1651,8 @@ const (
 	PWMAFS_2 SM2OCTRL = 0x02 << 4  //  Output is tristated.
 	PWMAFS_3 SM2OCTRL = 0x03 << 4  //  Output is tristated.
 	POLX     SM2OCTRL = 0x01 << 8  //+ PWM_X Output Polarity
-	POLX_0   SM2OCTRL = 0x00 << 8  //  PWM_X output not inverted. A high level on the PWM_X pin represents the "on" or "active" state.
-	POLX_1   SM2OCTRL = 0x01 << 8  //  PWM_X output inverted. A low level on the PWM_X pin represents the "on" or "active" state.
 	POLB     SM2OCTRL = 0x01 << 9  //+ PWM_B Output Polarity
-	POLB_0   SM2OCTRL = 0x00 << 9  //  PWM_B output not inverted. A high level on the PWM_B pin represents the "on" or "active" state.
-	POLB_1   SM2OCTRL = 0x01 << 9  //  PWM_B output inverted. A low level on the PWM_B pin represents the "on" or "active" state.
 	POLA     SM2OCTRL = 0x01 << 10 //+ PWM_A Output Polarity
-	POLA_0   SM2OCTRL = 0x00 << 10 //  PWM_A output not inverted. A high level on the PWM_A pin represents the "on" or "active" state.
-	POLA_1   SM2OCTRL = 0x01 << 10 //  PWM_A output inverted. A low level on the PWM_A pin represents the "on" or "active" state.
 	PWMX_IN  SM2OCTRL = 0x01 << 13 //+ PWM_X Input
 	PWMB_IN  SM2OCTRL = 0x01 << 14 //+ PWM_B Input
 	PWMA_IN  SM2OCTRL = 0x01 << 15 //+ PWM_A Input
@@ -1895,14 +1681,8 @@ const (
 	CFA0   SM2STS = 0x01 << 10 //+ Capture Flag A0
 	CFA1   SM2STS = 0x01 << 11 //+ Capture Flag A1
 	RF     SM2STS = 0x01 << 12 //+ Reload Flag
-	RF_0   SM2STS = 0x00 << 12 //  No new reload cycle since last STS[RF] clearing
-	RF_1   SM2STS = 0x01 << 12 //  New reload cycle since last STS[RF] clearing
 	REF    SM2STS = 0x01 << 13 //+ Reload Error Flag
-	REF_0  SM2STS = 0x00 << 13 //  No reload error occurred.
-	REF_1  SM2STS = 0x01 << 13 //  Reload signal occurred with non-coherent data and MCTRL[LDOK] = 0.
 	RUF    SM2STS = 0x01 << 14 //+ Registers Updated Flag
-	RUF_0  SM2STS = 0x00 << 14 //  No register update has occurred since last reload.
-	RUF_1  SM2STS = 0x01 << 14 //  At least one of the double buffered registers has been updated since the last reload.
 )
 
 const (
@@ -1923,29 +1703,13 @@ const (
 	CMPIE_0 SM2INTEN = 0x00 << 0  //  The corresponding STS[CMPF] bit will not cause an interrupt request.
 	CMPIE_1 SM2INTEN = 0x01 << 0  //  The corresponding STS[CMPF] bit will cause an interrupt request.
 	CX0IE   SM2INTEN = 0x01 << 6  //+ Capture X 0 Interrupt Enable
-	CX0IE_0 SM2INTEN = 0x00 << 6  //  Interrupt request disabled for STS[CFX0].
-	CX0IE_1 SM2INTEN = 0x01 << 6  //  Interrupt request enabled for STS[CFX0].
 	CX1IE   SM2INTEN = 0x01 << 7  //+ Capture X 1 Interrupt Enable
-	CX1IE_0 SM2INTEN = 0x00 << 7  //  Interrupt request disabled for STS[CFX1].
-	CX1IE_1 SM2INTEN = 0x01 << 7  //  Interrupt request enabled for STS[CFX1].
 	CB0IE   SM2INTEN = 0x01 << 8  //+ Capture B 0 Interrupt Enable
-	CB0IE_0 SM2INTEN = 0x00 << 8  //  Interrupt request disabled for STS[CFB0].
-	CB0IE_1 SM2INTEN = 0x01 << 8  //  Interrupt request enabled for STS[CFB0].
 	CB1IE   SM2INTEN = 0x01 << 9  //+ Capture B 1 Interrupt Enable
-	CB1IE_0 SM2INTEN = 0x00 << 9  //  Interrupt request disabled for STS[CFB1].
-	CB1IE_1 SM2INTEN = 0x01 << 9  //  Interrupt request enabled for STS[CFB1].
 	CA0IE   SM2INTEN = 0x01 << 10 //+ Capture A 0 Interrupt Enable
-	CA0IE_0 SM2INTEN = 0x00 << 10 //  Interrupt request disabled for STS[CFA0].
-	CA0IE_1 SM2INTEN = 0x01 << 10 //  Interrupt request enabled for STS[CFA0].
 	CA1IE   SM2INTEN = 0x01 << 11 //+ Capture A 1 Interrupt Enable
-	CA1IE_0 SM2INTEN = 0x00 << 11 //  Interrupt request disabled for STS[CFA1].
-	CA1IE_1 SM2INTEN = 0x01 << 11 //  Interrupt request enabled for STS[CFA1].
 	RIE     SM2INTEN = 0x01 << 12 //+ Reload Interrupt Enable
-	RIE_0   SM2INTEN = 0x00 << 12 //  STS[RF] CPU interrupt requests disabled
-	RIE_1   SM2INTEN = 0x01 << 12 //  STS[RF] CPU interrupt requests enabled
 	REIE    SM2INTEN = 0x01 << 13 //+ Reload Error Interrupt Enable
-	REIE_0  SM2INTEN = 0x00 << 13 //  STS[REF] CPU interrupt requests disabled
-	REIE_1  SM2INTEN = 0x01 << 13 //  STS[REF] CPU interrupt requests enabled
 )
 
 const (
@@ -1973,11 +1737,7 @@ const (
 	CAPTDE_2 SM2DMAEN = 0x02 << 6 //  A local sync (VAL1 matches counter) sets the read DMA request.
 	CAPTDE_3 SM2DMAEN = 0x03 << 6 //  A local reload (STS[RF] being set) sets the read DMA request.
 	FAND     SM2DMAEN = 0x01 << 8 //+ FIFO Watermark AND Control
-	FAND_0   SM2DMAEN = 0x00 << 8 //  Selected FIFO watermarks are OR'ed together.
-	FAND_1   SM2DMAEN = 0x01 << 8 //  Selected FIFO watermarks are AND'ed together.
 	VALDE    SM2DMAEN = 0x01 << 9 //+ Value Registers DMA Enable
-	VALDE_0  SM2DMAEN = 0x00 << 9 //  DMA write requests disabled
-	VALDE_1  SM2DMAEN = 0x01 << 9 //  DMA write requests for the VALx and FRACVALx registers enabled
 )
 
 const (
@@ -1997,14 +1757,8 @@ const (
 	OUT_TRIG_EN_0 SM2TCTRL = 0x00 << 0  //  PWM_OUT_TRIGx will not set when the counter value matches the VALx value.
 	OUT_TRIG_EN_1 SM2TCTRL = 0x01 << 0  //  PWM_OUT_TRIGx will set when the counter value matches the VALx value.
 	TRGFRQ        SM2TCTRL = 0x01 << 12 //+ Trigger frequency
-	TRGFRQ_0      SM2TCTRL = 0x00 << 12 //  Trigger outputs are generated during every PWM period even if the PWM is not reloaded every period due to CTRL[LDFQ] being non-zero.
-	TRGFRQ_1      SM2TCTRL = 0x01 << 12 //  Trigger outputs are generated only during the final PWM period prior to a reload opportunity when the PWM is not reloaded every period due to CTRL[LDFQ] being non-zero.
 	PWBOT1        SM2TCTRL = 0x01 << 14 //+ Output Trigger 1 Source Select
-	PWBOT1_0      SM2TCTRL = 0x00 << 14 //  Route the PWM_OUT_TRIG1 signal to PWM_OUT_TRIG1 port.
-	PWBOT1_1      SM2TCTRL = 0x01 << 14 //  Route the PWMB output to the PWM_OUT_TRIG1 port.
 	PWAOT0        SM2TCTRL = 0x01 << 15 //+ Output Trigger 0 Source Select
-	PWAOT0_0      SM2TCTRL = 0x00 << 15 //  Route the PWM_OUT_TRIG0 signal to PWM_OUT_TRIG0 port.
-	PWAOT0_1      SM2TCTRL = 0x01 << 15 //  Route the PWMA output to the PWM_OUT_TRIG0 port.
 )
 
 const (
@@ -2055,31 +1809,23 @@ const (
 )
 
 const (
-	ARMA         SM2CAPTCTRLA = 0x01 << 0  //+ Arm A
-	ARMA_0       SM2CAPTCTRLA = 0x00 << 0  //  Input capture operation is disabled.
-	ARMA_1       SM2CAPTCTRLA = 0x01 << 0  //  Input capture operation as specified by CAPTCTRLA[EDGAx] is enabled.
-	ONESHOTA     SM2CAPTCTRLA = 0x01 << 1  //+ One Shot Mode A
-	ONESHOTA_0   SM2CAPTCTRLA = 0x00 << 1  //  Free running mode is selected. If both capture circuits are enabled, then capture circuit 0 is armed first after CAPTCTRLA[ARMA] is set. Once a capture occurs, capture circuit 0 is disarmed and capture circuit 1 is armed. After capture circuit 1 performs a capture, it is disarmed and capture circuit 0 is re-armed. The process continues indefinitely.If only one of the capture circuits is enabled, then captures continue indefinitely on the enabled capture circuit.
-	ONESHOTA_1   SM2CAPTCTRLA = 0x01 << 1  //  One shot mode is selected. If both capture circuits are enabled, then capture circuit 0 is armed first after CAPTCTRLA[ARMA] is set. Once a capture occurs, capture circuit 0 is disarmed and capture circuit 1 is armed. After capture circuit 1 performs a capture, it is disarmed and CAPTCTRLA[ARMA] is cleared. No further captures will be performed until CAPTCTRLA[ARMA] is set again.If only one of the capture circuits is enabled, then a single capture will occur on the enabled capture circuit and CAPTCTRLA[ARMA] is then cleared.
-	EDGA0        SM2CAPTCTRLA = 0x03 << 2  //+ Edge A 0
-	EDGA0_0      SM2CAPTCTRLA = 0x00 << 2  //  Disabled
-	EDGA0_1      SM2CAPTCTRLA = 0x01 << 2  //  Capture falling edges
-	EDGA0_2      SM2CAPTCTRLA = 0x02 << 2  //  Capture rising edges
-	EDGA0_3      SM2CAPTCTRLA = 0x03 << 2  //  Capture any edge
-	EDGA1        SM2CAPTCTRLA = 0x03 << 4  //+ Edge A 1
-	EDGA1_0      SM2CAPTCTRLA = 0x00 << 4  //  Disabled
-	EDGA1_1      SM2CAPTCTRLA = 0x01 << 4  //  Capture falling edges
-	EDGA1_2      SM2CAPTCTRLA = 0x02 << 4  //  Capture rising edges
-	EDGA1_3      SM2CAPTCTRLA = 0x03 << 4  //  Capture any edge
-	INP_SELA     SM2CAPTCTRLA = 0x01 << 6  //+ Input Select A
-	INP_SELA_0   SM2CAPTCTRLA = 0x00 << 6  //  Raw PWM_A input signal selected as source.
-	INP_SELA_1   SM2CAPTCTRLA = 0x01 << 6  //  Output of edge counter/compare selected as source. Note that when this bitfield is set to 1, the internal edge counter is enabled and the rising and/or falling edges specified by the CAPTCTRLA[EDGA0] and CAPTCTRLA[EDGA1] fields are ignored. The software must still place a value other than 00 in either or both of the CAPTCTLRA[EDGA0] and/or CAPTCTRLA[EDGA1] fields in order to enable one or both of the capture registers.
-	EDGCNTA_EN   SM2CAPTCTRLA = 0x01 << 7  //+ Edge Counter A Enable
-	EDGCNTA_EN_0 SM2CAPTCTRLA = 0x00 << 7  //  Edge counter disabled and held in reset
-	EDGCNTA_EN_1 SM2CAPTCTRLA = 0x01 << 7  //  Edge counter enabled
-	CFAWM        SM2CAPTCTRLA = 0x03 << 8  //+ Capture A FIFOs Water Mark
-	CA0CNT       SM2CAPTCTRLA = 0x07 << 10 //+ Capture A0 FIFO Word Count
-	CA1CNT       SM2CAPTCTRLA = 0x07 << 13 //+ Capture A1 FIFO Word Count
+	ARMA       SM2CAPTCTRLA = 0x01 << 0  //+ Arm A
+	ONESHOTA   SM2CAPTCTRLA = 0x01 << 1  //+ One Shot Mode A
+	EDGA0      SM2CAPTCTRLA = 0x03 << 2  //+ Edge A 0
+	EDGA0_0    SM2CAPTCTRLA = 0x00 << 2  //  Disabled
+	EDGA0_1    SM2CAPTCTRLA = 0x01 << 2  //  Capture falling edges
+	EDGA0_2    SM2CAPTCTRLA = 0x02 << 2  //  Capture rising edges
+	EDGA0_3    SM2CAPTCTRLA = 0x03 << 2  //  Capture any edge
+	EDGA1      SM2CAPTCTRLA = 0x03 << 4  //+ Edge A 1
+	EDGA1_0    SM2CAPTCTRLA = 0x00 << 4  //  Disabled
+	EDGA1_1    SM2CAPTCTRLA = 0x01 << 4  //  Capture falling edges
+	EDGA1_2    SM2CAPTCTRLA = 0x02 << 4  //  Capture rising edges
+	EDGA1_3    SM2CAPTCTRLA = 0x03 << 4  //  Capture any edge
+	INP_SELA   SM2CAPTCTRLA = 0x01 << 6  //+ Input Select A
+	EDGCNTA_EN SM2CAPTCTRLA = 0x01 << 7  //+ Edge Counter A Enable
+	CFAWM      SM2CAPTCTRLA = 0x03 << 8  //+ Capture A FIFOs Water Mark
+	CA0CNT     SM2CAPTCTRLA = 0x07 << 10 //+ Capture A0 FIFO Word Count
+	CA1CNT     SM2CAPTCTRLA = 0x07 << 13 //+ Capture A1 FIFO Word Count
 )
 
 const (
@@ -2105,31 +1851,23 @@ const (
 )
 
 const (
-	ARMB         SM2CAPTCTRLB = 0x01 << 0  //+ Arm B
-	ARMB_0       SM2CAPTCTRLB = 0x00 << 0  //  Input capture operation is disabled.
-	ARMB_1       SM2CAPTCTRLB = 0x01 << 0  //  Input capture operation as specified by CAPTCTRLB[EDGBx] is enabled.
-	ONESHOTB     SM2CAPTCTRLB = 0x01 << 1  //+ One Shot Mode B
-	ONESHOTB_0   SM2CAPTCTRLB = 0x00 << 1  //  Free running mode is selected. If both capture circuits are enabled, then capture circuit 0 is armed first after CAPTCTRLB[ARMB] is set. Once a capture occurs, capture circuit 0 is disarmed and capture circuit 1 is armed. After capture circuit 1 performs a capture, it is disarmed and capture circuit 0 is re-armed. The process continues indefinitely.If only one of the capture circuits is enabled, then captures continue indefinitely on the enabled capture circuit.
-	ONESHOTB_1   SM2CAPTCTRLB = 0x01 << 1  //  One shot mode is selected. If both capture circuits are enabled, then capture circuit 0 is armed first after CAPTCTRLB[ARMB] is set. Once a capture occurs, capture circuit 0 is disarmed and capture circuit 1 is armed. After capture circuit 1 performs a capture, it is disarmed and CAPTCTRLB[ARMB] is cleared. No further captures will be performed until CAPTCTRLB[ARMB] is set again.If only one of the capture circuits is enabled, then a single capture will occur on the enabled capture circuit and CAPTCTRLB[ARMB] is then cleared.
-	EDGB0        SM2CAPTCTRLB = 0x03 << 2  //+ Edge B 0
-	EDGB0_0      SM2CAPTCTRLB = 0x00 << 2  //  Disabled
-	EDGB0_1      SM2CAPTCTRLB = 0x01 << 2  //  Capture falling edges
-	EDGB0_2      SM2CAPTCTRLB = 0x02 << 2  //  Capture rising edges
-	EDGB0_3      SM2CAPTCTRLB = 0x03 << 2  //  Capture any edge
-	EDGB1        SM2CAPTCTRLB = 0x03 << 4  //+ Edge B 1
-	EDGB1_0      SM2CAPTCTRLB = 0x00 << 4  //  Disabled
-	EDGB1_1      SM2CAPTCTRLB = 0x01 << 4  //  Capture falling edges
-	EDGB1_2      SM2CAPTCTRLB = 0x02 << 4  //  Capture rising edges
-	EDGB1_3      SM2CAPTCTRLB = 0x03 << 4  //  Capture any edge
-	INP_SELB     SM2CAPTCTRLB = 0x01 << 6  //+ Input Select B
-	INP_SELB_0   SM2CAPTCTRLB = 0x00 << 6  //  Raw PWM_B input signal selected as source.
-	INP_SELB_1   SM2CAPTCTRLB = 0x01 << 6  //  Output of edge counter/compare selected as source. Note that when this bitfield is set to 1, the internal edge counter is enabled and the rising and/or falling edges specified by the CAPTCTRLB[EDGB0] and CAPTCTRLB[EDGB1] fields are ignored. The software must still place a value other than 00 in either or both of the CAPTCTLRB[EDGB0] and/or CAPTCTRLB[EDGB1] fields in order to enable one or both of the capture registers.
-	EDGCNTB_EN   SM2CAPTCTRLB = 0x01 << 7  //+ Edge Counter B Enable
-	EDGCNTB_EN_0 SM2CAPTCTRLB = 0x00 << 7  //  Edge counter disabled and held in reset
-	EDGCNTB_EN_1 SM2CAPTCTRLB = 0x01 << 7  //  Edge counter enabled
-	CFBWM        SM2CAPTCTRLB = 0x03 << 8  //+ Capture B FIFOs Water Mark
-	CB0CNT       SM2CAPTCTRLB = 0x07 << 10 //+ Capture B0 FIFO Word Count
-	CB1CNT       SM2CAPTCTRLB = 0x07 << 13 //+ Capture B1 FIFO Word Count
+	ARMB       SM2CAPTCTRLB = 0x01 << 0  //+ Arm B
+	ONESHOTB   SM2CAPTCTRLB = 0x01 << 1  //+ One Shot Mode B
+	EDGB0      SM2CAPTCTRLB = 0x03 << 2  //+ Edge B 0
+	EDGB0_0    SM2CAPTCTRLB = 0x00 << 2  //  Disabled
+	EDGB0_1    SM2CAPTCTRLB = 0x01 << 2  //  Capture falling edges
+	EDGB0_2    SM2CAPTCTRLB = 0x02 << 2  //  Capture rising edges
+	EDGB0_3    SM2CAPTCTRLB = 0x03 << 2  //  Capture any edge
+	EDGB1      SM2CAPTCTRLB = 0x03 << 4  //+ Edge B 1
+	EDGB1_0    SM2CAPTCTRLB = 0x00 << 4  //  Disabled
+	EDGB1_1    SM2CAPTCTRLB = 0x01 << 4  //  Capture falling edges
+	EDGB1_2    SM2CAPTCTRLB = 0x02 << 4  //  Capture rising edges
+	EDGB1_3    SM2CAPTCTRLB = 0x03 << 4  //  Capture any edge
+	INP_SELB   SM2CAPTCTRLB = 0x01 << 6  //+ Input Select B
+	EDGCNTB_EN SM2CAPTCTRLB = 0x01 << 7  //+ Edge Counter B Enable
+	CFBWM      SM2CAPTCTRLB = 0x03 << 8  //+ Capture B FIFOs Water Mark
+	CB0CNT     SM2CAPTCTRLB = 0x07 << 10 //+ Capture B0 FIFO Word Count
+	CB1CNT     SM2CAPTCTRLB = 0x07 << 13 //+ Capture B1 FIFO Word Count
 )
 
 const (
@@ -2155,31 +1893,23 @@ const (
 )
 
 const (
-	ARMX         SM2CAPTCTRLX = 0x01 << 0  //+ Arm X
-	ARMX_0       SM2CAPTCTRLX = 0x00 << 0  //  Input capture operation is disabled.
-	ARMX_1       SM2CAPTCTRLX = 0x01 << 0  //  Input capture operation as specified by CAPTCTRLX[EDGXx] is enabled.
-	ONESHOTX     SM2CAPTCTRLX = 0x01 << 1  //+ One Shot Mode Aux
-	ONESHOTX_0   SM2CAPTCTRLX = 0x00 << 1  //  Free running mode is selected. If both capture circuits are enabled, then capture circuit 0 is armed first after the ARMX bit is set. Once a capture occurs, capture circuit 0 is disarmed and capture circuit 1 is armed. After capture circuit 1 performs a capture, it is disarmed and capture circuit 0 is re-armed. The process continues indefinitely.If only one of the capture circuits is enabled, then captures continue indefinitely on the enabled capture circuit.
-	ONESHOTX_1   SM2CAPTCTRLX = 0x01 << 1  //  One shot mode is selected. If both capture circuits are enabled, then capture circuit 0 is armed first after the ARMX bit is set. Once a capture occurs, capture circuit 0 is disarmed and capture circuit 1 is armed. After capture circuit 1 performs a capture, it is disarmed and the ARMX bit is cleared. No further captures will be performed until the ARMX bit is set again.If only one of the capture circuits is enabled, then a single capture will occur on the enabled capture circuit and the ARMX bit is then cleared.
-	EDGX0        SM2CAPTCTRLX = 0x03 << 2  //+ Edge X 0
-	EDGX0_0      SM2CAPTCTRLX = 0x00 << 2  //  Disabled
-	EDGX0_1      SM2CAPTCTRLX = 0x01 << 2  //  Capture falling edges
-	EDGX0_2      SM2CAPTCTRLX = 0x02 << 2  //  Capture rising edges
-	EDGX0_3      SM2CAPTCTRLX = 0x03 << 2  //  Capture any edge
-	EDGX1        SM2CAPTCTRLX = 0x03 << 4  //+ Edge X 1
-	EDGX1_0      SM2CAPTCTRLX = 0x00 << 4  //  Disabled
-	EDGX1_1      SM2CAPTCTRLX = 0x01 << 4  //  Capture falling edges
-	EDGX1_2      SM2CAPTCTRLX = 0x02 << 4  //  Capture rising edges
-	EDGX1_3      SM2CAPTCTRLX = 0x03 << 4  //  Capture any edge
-	INP_SELX     SM2CAPTCTRLX = 0x01 << 6  //+ Input Select X
-	INP_SELX_0   SM2CAPTCTRLX = 0x00 << 6  //  Raw PWM_X input signal selected as source.
-	INP_SELX_1   SM2CAPTCTRLX = 0x01 << 6  //  Output of edge counter/compare selected as source. Note that when this bitfield is set to 1, the internal edge counter is enabled and the rising and/or falling edges specified by the CAPTCTRLX[EDGX0] and CAPTCTRLX[EDGX1] fields are ignored. The software must still place a value other than 00 in either or both of the CAPTCTLRX[EDGX0] and/or CAPTCTRLX[EDGX1] fields in order to enable one or both of the capture registers.
-	EDGCNTX_EN   SM2CAPTCTRLX = 0x01 << 7  //+ Edge Counter X Enable
-	EDGCNTX_EN_0 SM2CAPTCTRLX = 0x00 << 7  //  Edge counter disabled and held in reset
-	EDGCNTX_EN_1 SM2CAPTCTRLX = 0x01 << 7  //  Edge counter enabled
-	CFXWM        SM2CAPTCTRLX = 0x03 << 8  //+ Capture X FIFOs Water Mark
-	CX0CNT       SM2CAPTCTRLX = 0x07 << 10 //+ Capture X0 FIFO Word Count
-	CX1CNT       SM2CAPTCTRLX = 0x07 << 13 //+ Capture X1 FIFO Word Count
+	ARMX       SM2CAPTCTRLX = 0x01 << 0  //+ Arm X
+	ONESHOTX   SM2CAPTCTRLX = 0x01 << 1  //+ One Shot Mode Aux
+	EDGX0      SM2CAPTCTRLX = 0x03 << 2  //+ Edge X 0
+	EDGX0_0    SM2CAPTCTRLX = 0x00 << 2  //  Disabled
+	EDGX0_1    SM2CAPTCTRLX = 0x01 << 2  //  Capture falling edges
+	EDGX0_2    SM2CAPTCTRLX = 0x02 << 2  //  Capture rising edges
+	EDGX0_3    SM2CAPTCTRLX = 0x03 << 2  //  Capture any edge
+	EDGX1      SM2CAPTCTRLX = 0x03 << 4  //+ Edge X 1
+	EDGX1_0    SM2CAPTCTRLX = 0x00 << 4  //  Disabled
+	EDGX1_1    SM2CAPTCTRLX = 0x01 << 4  //  Capture falling edges
+	EDGX1_2    SM2CAPTCTRLX = 0x02 << 4  //  Capture rising edges
+	EDGX1_3    SM2CAPTCTRLX = 0x03 << 4  //  Capture any edge
+	INP_SELX   SM2CAPTCTRLX = 0x01 << 6  //+ Input Select X
+	EDGCNTX_EN SM2CAPTCTRLX = 0x01 << 7  //+ Edge Counter X Enable
+	CFXWM      SM2CAPTCTRLX = 0x03 << 8  //+ Capture X FIFOs Water Mark
+	CX0CNT     SM2CAPTCTRLX = 0x07 << 10 //+ Capture X0 FIFO Word Count
+	CX1CNT     SM2CAPTCTRLX = 0x07 << 13 //+ Capture X1 FIFO Word Count
 )
 
 const (
@@ -2317,39 +2047,33 @@ const (
 )
 
 const (
-	CLK_SEL      SM3CTRL2 = 0x03 << 0  //+ Clock Source Select
-	CLK_SEL_0    SM3CTRL2 = 0x00 << 0  //  The IPBus clock is used as the clock for the local prescaler and counter.
-	CLK_SEL_1    SM3CTRL2 = 0x01 << 0  //  EXT_CLK is used as the clock for the local prescaler and counter.
-	CLK_SEL_2    SM3CTRL2 = 0x02 << 0  //  Submodule 0's clock (AUX_CLK) is used as the source clock for the local prescaler and counter. This setting should not be used in submodule 0 as it will force the clock to logic 0.
-	RELOAD_SEL   SM3CTRL2 = 0x01 << 2  //+ Reload Source Select
-	RELOAD_SEL_0 SM3CTRL2 = 0x00 << 2  //  The local RELOAD signal is used to reload registers.
-	RELOAD_SEL_1 SM3CTRL2 = 0x01 << 2  //  The master RELOAD signal (from submodule 0) is used to reload registers. This setting should not be used in submodule 0 as it will force the RELOAD signal to logic 0.
-	FORCE_SEL    SM3CTRL2 = 0x07 << 3  //+ This read/write bit determines the source of the FORCE OUTPUT signal for this submodule.
-	FORCE_SEL_0  SM3CTRL2 = 0x00 << 3  //  The local force signal, CTRL2[FORCE], from this submodule is used to force updates.
-	FORCE_SEL_1  SM3CTRL2 = 0x01 << 3  //  The master force signal from submodule 0 is used to force updates. This setting should not be used in submodule 0 as it will hold the FORCE OUTPUT signal to logic 0.
-	FORCE_SEL_2  SM3CTRL2 = 0x02 << 3  //  The local reload signal from this submodule is used to force updates without regard to the state of LDOK.
-	FORCE_SEL_3  SM3CTRL2 = 0x03 << 3  //  The master reload signal from submodule0 is used to force updates if LDOK is set. This setting should not be used in submodule0 as it will hold the FORCE OUTPUT signal to logic 0.
-	FORCE_SEL_4  SM3CTRL2 = 0x04 << 3  //  The local sync signal from this submodule is used to force updates.
-	FORCE_SEL_5  SM3CTRL2 = 0x05 << 3  //  The master sync signal from submodule0 is used to force updates. This setting should not be used in submodule0 as it will hold the FORCE OUTPUT signal to logic 0.
-	FORCE_SEL_6  SM3CTRL2 = 0x06 << 3  //  The external force signal, EXT_FORCE, from outside the PWM module causes updates.
-	FORCE_SEL_7  SM3CTRL2 = 0x07 << 3  //  The external sync signal, EXT_SYNC, from outside the PWM module causes updates.
-	FORCE        SM3CTRL2 = 0x01 << 6  //+ Force Initialization
-	FRCEN        SM3CTRL2 = 0x01 << 7  //+ FRCEN
-	FRCEN_0      SM3CTRL2 = 0x00 << 7  //  Initialization from a FORCE_OUT is disabled.
-	FRCEN_1      SM3CTRL2 = 0x01 << 7  //  Initialization from a FORCE_OUT is enabled.
-	INIT_SEL     SM3CTRL2 = 0x03 << 8  //+ Initialization Control Select
-	INIT_SEL_0   SM3CTRL2 = 0x00 << 8  //  Local sync (PWM_X) causes initialization.
-	INIT_SEL_1   SM3CTRL2 = 0x01 << 8  //  Master reload from submodule 0 causes initialization. This setting should not be used in submodule 0 as it will force the INIT signal to logic 0. The submodule counter will only reinitialize when a master reload occurs.
-	INIT_SEL_2   SM3CTRL2 = 0x02 << 8  //  Master sync from submodule 0 causes initialization. This setting should not be used in submodule 0 as it will force the INIT signal to logic 0.
-	INIT_SEL_3   SM3CTRL2 = 0x03 << 8  //  EXT_SYNC causes initialization.
-	PWMX_INIT    SM3CTRL2 = 0x01 << 10 //+ PWM_X Initial Value
-	PWM45_INIT   SM3CTRL2 = 0x01 << 11 //+ PWM45 Initial Value
-	PWM23_INIT   SM3CTRL2 = 0x01 << 12 //+ PWM23 Initial Value
-	INDEP        SM3CTRL2 = 0x01 << 13 //+ Independent or Complementary Pair Operation
-	INDEP_0      SM3CTRL2 = 0x00 << 13 //  PWM_A and PWM_B form a complementary PWM pair.
-	INDEP_1      SM3CTRL2 = 0x01 << 13 //  PWM_A and PWM_B outputs are independent PWMs.
-	WAITEN       SM3CTRL2 = 0x01 << 14 //+ WAIT Enable
-	DBGEN        SM3CTRL2 = 0x01 << 15 //+ Debug Enable
+	CLK_SEL     SM3CTRL2 = 0x03 << 0  //+ Clock Source Select
+	CLK_SEL_0   SM3CTRL2 = 0x00 << 0  //  The IPBus clock is used as the clock for the local prescaler and counter.
+	CLK_SEL_1   SM3CTRL2 = 0x01 << 0  //  EXT_CLK is used as the clock for the local prescaler and counter.
+	CLK_SEL_2   SM3CTRL2 = 0x02 << 0  //  Submodule 0's clock (AUX_CLK) is used as the source clock for the local prescaler and counter. This setting should not be used in submodule 0 as it will force the clock to logic 0.
+	RELOAD_SEL  SM3CTRL2 = 0x01 << 2  //+ Reload Source Select
+	FORCE_SEL   SM3CTRL2 = 0x07 << 3  //+ This read/write bit determines the source of the FORCE OUTPUT signal for this submodule.
+	FORCE_SEL_0 SM3CTRL2 = 0x00 << 3  //  The local force signal, CTRL2[FORCE], from this submodule is used to force updates.
+	FORCE_SEL_1 SM3CTRL2 = 0x01 << 3  //  The master force signal from submodule 0 is used to force updates. This setting should not be used in submodule 0 as it will hold the FORCE OUTPUT signal to logic 0.
+	FORCE_SEL_2 SM3CTRL2 = 0x02 << 3  //  The local reload signal from this submodule is used to force updates without regard to the state of LDOK.
+	FORCE_SEL_3 SM3CTRL2 = 0x03 << 3  //  The master reload signal from submodule0 is used to force updates if LDOK is set. This setting should not be used in submodule0 as it will hold the FORCE OUTPUT signal to logic 0.
+	FORCE_SEL_4 SM3CTRL2 = 0x04 << 3  //  The local sync signal from this submodule is used to force updates.
+	FORCE_SEL_5 SM3CTRL2 = 0x05 << 3  //  The master sync signal from submodule0 is used to force updates. This setting should not be used in submodule0 as it will hold the FORCE OUTPUT signal to logic 0.
+	FORCE_SEL_6 SM3CTRL2 = 0x06 << 3  //  The external force signal, EXT_FORCE, from outside the PWM module causes updates.
+	FORCE_SEL_7 SM3CTRL2 = 0x07 << 3  //  The external sync signal, EXT_SYNC, from outside the PWM module causes updates.
+	FORCE       SM3CTRL2 = 0x01 << 6  //+ Force Initialization
+	FRCEN       SM3CTRL2 = 0x01 << 7  //+ FRCEN
+	INIT_SEL    SM3CTRL2 = 0x03 << 8  //+ Initialization Control Select
+	INIT_SEL_0  SM3CTRL2 = 0x00 << 8  //  Local sync (PWM_X) causes initialization.
+	INIT_SEL_1  SM3CTRL2 = 0x01 << 8  //  Master reload from submodule 0 causes initialization. This setting should not be used in submodule 0 as it will force the INIT signal to logic 0. The submodule counter will only reinitialize when a master reload occurs.
+	INIT_SEL_2  SM3CTRL2 = 0x02 << 8  //  Master sync from submodule 0 causes initialization. This setting should not be used in submodule 0 as it will force the INIT signal to logic 0.
+	INIT_SEL_3  SM3CTRL2 = 0x03 << 8  //  EXT_SYNC causes initialization.
+	PWMX_INIT   SM3CTRL2 = 0x01 << 10 //+ PWM_X Initial Value
+	PWM45_INIT  SM3CTRL2 = 0x01 << 11 //+ PWM45 Initial Value
+	PWM23_INIT  SM3CTRL2 = 0x01 << 12 //+ PWM23 Initial Value
+	INDEP       SM3CTRL2 = 0x01 << 13 //+ Independent or Complementary Pair Operation
+	WAITEN      SM3CTRL2 = 0x01 << 14 //+ WAIT Enable
+	DBGEN       SM3CTRL2 = 0x01 << 15 //+ Debug Enable
 )
 
 const (
@@ -2368,54 +2092,40 @@ const (
 )
 
 const (
-	DBLEN      SM3CTRL = 0x01 << 0  //+ Double Switching Enable
-	DBLEN_0    SM3CTRL = 0x00 << 0  //  Double switching disabled.
-	DBLEN_1    SM3CTRL = 0x01 << 0  //  Double switching enabled.
-	DBLX       SM3CTRL = 0x01 << 1  //+ PWMX Double Switching Enable
-	DBLX_0     SM3CTRL = 0x00 << 1  //  PWMX double pulse disabled.
-	DBLX_1     SM3CTRL = 0x01 << 1  //  PWMX double pulse enabled.
-	LDMOD      SM3CTRL = 0x01 << 2  //+ Load Mode Select
-	LDMOD_0    SM3CTRL = 0x00 << 2  //  Buffered registers of this submodule are loaded and take effect at the next PWM reload if MCTRL[LDOK] is set.
-	LDMOD_1    SM3CTRL = 0x01 << 2  //  Buffered registers of this submodule are loaded and take effect immediately upon MCTRL[LDOK] being set. In this case it is not necessary to set CTRL[FULL] or CTRL[HALF].
-	SPLIT      SM3CTRL = 0x01 << 3  //+ Split the DBLPWM signal to PWMA and PWMB
-	SPLIT_0    SM3CTRL = 0x00 << 3  //  DBLPWM is not split. PWMA and PWMB each have double pulses.
-	SPLIT_1    SM3CTRL = 0x01 << 3  //  DBLPWM is split to PWMA and PWMB.
-	PRSC       SM3CTRL = 0x07 << 4  //+ Prescaler
-	PRSC_0     SM3CTRL = 0x00 << 4  //  PWM clock frequency = fclk
-	PRSC_1     SM3CTRL = 0x01 << 4  //  PWM clock frequency = fclk/2
-	PRSC_2     SM3CTRL = 0x02 << 4  //  PWM clock frequency = fclk/4
-	PRSC_3     SM3CTRL = 0x03 << 4  //  PWM clock frequency = fclk/8
-	PRSC_4     SM3CTRL = 0x04 << 4  //  PWM clock frequency = fclk/16
-	PRSC_5     SM3CTRL = 0x05 << 4  //  PWM clock frequency = fclk/32
-	PRSC_6     SM3CTRL = 0x06 << 4  //  PWM clock frequency = fclk/64
-	PRSC_7     SM3CTRL = 0x07 << 4  //  PWM clock frequency = fclk/128
-	COMPMODE   SM3CTRL = 0x01 << 7  //+ Compare Mode
-	COMPMODE_0 SM3CTRL = 0x00 << 7  //  The VAL* registers and the PWM counter are compared using an "equal to" method. This means that PWM edges are only produced when the counter is equal to one of the VAL* register values. This implies that a PWMA output that is high at the end of a period will maintain this state until a match with VAL3 clears the output in the following period.
-	COMPMODE_1 SM3CTRL = 0x01 << 7  //  The VAL* registers and the PWM counter are compared using an "equal to or greater than" method. This means that PWM edges are produced when the counter is equal to or greater than one of the VAL* register values. This implies that a PWMA output that is high at the end of a period could go low at the start of the next period if the starting counter value is greater than (but not necessarily equal to) the new VAL3 value.
-	DT         SM3CTRL = 0x03 << 8  //+ Deadtime
-	FULL       SM3CTRL = 0x01 << 10 //+ Full Cycle Reload
-	FULL_0     SM3CTRL = 0x00 << 10 //  Full-cycle reloads disabled.
-	FULL_1     SM3CTRL = 0x01 << 10 //  Full-cycle reloads enabled.
-	HALF       SM3CTRL = 0x01 << 11 //+ Half Cycle Reload
-	HALF_0     SM3CTRL = 0x00 << 11 //  Half-cycle reloads disabled.
-	HALF_1     SM3CTRL = 0x01 << 11 //  Half-cycle reloads enabled.
-	LDFQ       SM3CTRL = 0x0F << 12 //+ Load Frequency
-	LDFQ_0     SM3CTRL = 0x00 << 12 //  Every PWM opportunity
-	LDFQ_1     SM3CTRL = 0x01 << 12 //  Every 2 PWM opportunities
-	LDFQ_2     SM3CTRL = 0x02 << 12 //  Every 3 PWM opportunities
-	LDFQ_3     SM3CTRL = 0x03 << 12 //  Every 4 PWM opportunities
-	LDFQ_4     SM3CTRL = 0x04 << 12 //  Every 5 PWM opportunities
-	LDFQ_5     SM3CTRL = 0x05 << 12 //  Every 6 PWM opportunities
-	LDFQ_6     SM3CTRL = 0x06 << 12 //  Every 7 PWM opportunities
-	LDFQ_7     SM3CTRL = 0x07 << 12 //  Every 8 PWM opportunities
-	LDFQ_8     SM3CTRL = 0x08 << 12 //  Every 9 PWM opportunities
-	LDFQ_9     SM3CTRL = 0x09 << 12 //  Every 10 PWM opportunities
-	LDFQ_10    SM3CTRL = 0x0A << 12 //  Every 11 PWM opportunities
-	LDFQ_11    SM3CTRL = 0x0B << 12 //  Every 12 PWM opportunities
-	LDFQ_12    SM3CTRL = 0x0C << 12 //  Every 13 PWM opportunities
-	LDFQ_13    SM3CTRL = 0x0D << 12 //  Every 14 PWM opportunities
-	LDFQ_14    SM3CTRL = 0x0E << 12 //  Every 15 PWM opportunities
-	LDFQ_15    SM3CTRL = 0x0F << 12 //  Every 16 PWM opportunities
+	DBLEN    SM3CTRL = 0x01 << 0  //+ Double Switching Enable
+	DBLX     SM3CTRL = 0x01 << 1  //+ PWMX Double Switching Enable
+	LDMOD    SM3CTRL = 0x01 << 2  //+ Load Mode Select
+	SPLIT    SM3CTRL = 0x01 << 3  //+ Split the DBLPWM signal to PWMA and PWMB
+	PRSC     SM3CTRL = 0x07 << 4  //+ Prescaler
+	PRSC_0   SM3CTRL = 0x00 << 4  //  PWM clock frequency = fclk
+	PRSC_1   SM3CTRL = 0x01 << 4  //  PWM clock frequency = fclk/2
+	PRSC_2   SM3CTRL = 0x02 << 4  //  PWM clock frequency = fclk/4
+	PRSC_3   SM3CTRL = 0x03 << 4  //  PWM clock frequency = fclk/8
+	PRSC_4   SM3CTRL = 0x04 << 4  //  PWM clock frequency = fclk/16
+	PRSC_5   SM3CTRL = 0x05 << 4  //  PWM clock frequency = fclk/32
+	PRSC_6   SM3CTRL = 0x06 << 4  //  PWM clock frequency = fclk/64
+	PRSC_7   SM3CTRL = 0x07 << 4  //  PWM clock frequency = fclk/128
+	COMPMODE SM3CTRL = 0x01 << 7  //+ Compare Mode
+	DT       SM3CTRL = 0x03 << 8  //+ Deadtime
+	FULL     SM3CTRL = 0x01 << 10 //+ Full Cycle Reload
+	HALF     SM3CTRL = 0x01 << 11 //+ Half Cycle Reload
+	LDFQ     SM3CTRL = 0x0F << 12 //+ Load Frequency
+	LDFQ_0   SM3CTRL = 0x00 << 12 //  Every PWM opportunity
+	LDFQ_1   SM3CTRL = 0x01 << 12 //  Every 2 PWM opportunities
+	LDFQ_2   SM3CTRL = 0x02 << 12 //  Every 3 PWM opportunities
+	LDFQ_3   SM3CTRL = 0x03 << 12 //  Every 4 PWM opportunities
+	LDFQ_4   SM3CTRL = 0x04 << 12 //  Every 5 PWM opportunities
+	LDFQ_5   SM3CTRL = 0x05 << 12 //  Every 6 PWM opportunities
+	LDFQ_6   SM3CTRL = 0x06 << 12 //  Every 7 PWM opportunities
+	LDFQ_7   SM3CTRL = 0x07 << 12 //  Every 8 PWM opportunities
+	LDFQ_8   SM3CTRL = 0x08 << 12 //  Every 9 PWM opportunities
+	LDFQ_9   SM3CTRL = 0x09 << 12 //  Every 10 PWM opportunities
+	LDFQ_10  SM3CTRL = 0x0A << 12 //  Every 11 PWM opportunities
+	LDFQ_11  SM3CTRL = 0x0B << 12 //  Every 12 PWM opportunities
+	LDFQ_12  SM3CTRL = 0x0C << 12 //  Every 13 PWM opportunities
+	LDFQ_13  SM3CTRL = 0x0D << 12 //  Every 14 PWM opportunities
+	LDFQ_14  SM3CTRL = 0x0E << 12 //  Every 15 PWM opportunities
+	LDFQ_15  SM3CTRL = 0x0F << 12 //  Every 16 PWM opportunities
 )
 
 const (
@@ -2520,19 +2230,11 @@ const (
 )
 
 const (
-	FRAC1_EN    SM3FRCTRL = 0x01 << 1  //+ Fractional Cycle PWM Period Enable
-	FRAC1_EN_0  SM3FRCTRL = 0x00 << 1  //  Disable fractional cycle length for the PWM period.
-	FRAC1_EN_1  SM3FRCTRL = 0x01 << 1  //  Enable fractional cycle length for the PWM period.
-	FRAC23_EN   SM3FRCTRL = 0x01 << 2  //+ Fractional Cycle Placement Enable for PWM_A
-	FRAC23_EN_0 SM3FRCTRL = 0x00 << 2  //  Disable fractional cycle placement for PWM_A.
-	FRAC23_EN_1 SM3FRCTRL = 0x01 << 2  //  Enable fractional cycle placement for PWM_A.
-	FRAC45_EN   SM3FRCTRL = 0x01 << 4  //+ Fractional Cycle Placement Enable for PWM_B
-	FRAC45_EN_0 SM3FRCTRL = 0x00 << 4  //  Disable fractional cycle placement for PWM_B.
-	FRAC45_EN_1 SM3FRCTRL = 0x01 << 4  //  Enable fractional cycle placement for PWM_B.
-	FRAC_PU     SM3FRCTRL = 0x01 << 8  //+ Fractional Delay Circuit Power Up
-	FRAC_PU_0   SM3FRCTRL = 0x00 << 8  //  Turn off fractional delay logic.
-	FRAC_PU_1   SM3FRCTRL = 0x01 << 8  //  Power up fractional delay logic.
-	TEST        SM3FRCTRL = 0x01 << 15 //+ Test Status Bit
+	FRAC1_EN  SM3FRCTRL = 0x01 << 1  //+ Fractional Cycle PWM Period Enable
+	FRAC23_EN SM3FRCTRL = 0x01 << 2  //+ Fractional Cycle Placement Enable for PWM_A
+	FRAC45_EN SM3FRCTRL = 0x01 << 4  //+ Fractional Cycle Placement Enable for PWM_B
+	FRAC_PU   SM3FRCTRL = 0x01 << 8  //+ Fractional Delay Circuit Power Up
+	TEST      SM3FRCTRL = 0x01 << 15 //+ Test Status Bit
 )
 
 const (
@@ -2560,14 +2262,8 @@ const (
 	PWMAFS_2 SM3OCTRL = 0x02 << 4  //  Output is tristated.
 	PWMAFS_3 SM3OCTRL = 0x03 << 4  //  Output is tristated.
 	POLX     SM3OCTRL = 0x01 << 8  //+ PWM_X Output Polarity
-	POLX_0   SM3OCTRL = 0x00 << 8  //  PWM_X output not inverted. A high level on the PWM_X pin represents the "on" or "active" state.
-	POLX_1   SM3OCTRL = 0x01 << 8  //  PWM_X output inverted. A low level on the PWM_X pin represents the "on" or "active" state.
 	POLB     SM3OCTRL = 0x01 << 9  //+ PWM_B Output Polarity
-	POLB_0   SM3OCTRL = 0x00 << 9  //  PWM_B output not inverted. A high level on the PWM_B pin represents the "on" or "active" state.
-	POLB_1   SM3OCTRL = 0x01 << 9  //  PWM_B output inverted. A low level on the PWM_B pin represents the "on" or "active" state.
 	POLA     SM3OCTRL = 0x01 << 10 //+ PWM_A Output Polarity
-	POLA_0   SM3OCTRL = 0x00 << 10 //  PWM_A output not inverted. A high level on the PWM_A pin represents the "on" or "active" state.
-	POLA_1   SM3OCTRL = 0x01 << 10 //  PWM_A output inverted. A low level on the PWM_A pin represents the "on" or "active" state.
 	PWMX_IN  SM3OCTRL = 0x01 << 13 //+ PWM_X Input
 	PWMB_IN  SM3OCTRL = 0x01 << 14 //+ PWM_B Input
 	PWMA_IN  SM3OCTRL = 0x01 << 15 //+ PWM_A Input
@@ -2596,14 +2292,8 @@ const (
 	CFA0   SM3STS = 0x01 << 10 //+ Capture Flag A0
 	CFA1   SM3STS = 0x01 << 11 //+ Capture Flag A1
 	RF     SM3STS = 0x01 << 12 //+ Reload Flag
-	RF_0   SM3STS = 0x00 << 12 //  No new reload cycle since last STS[RF] clearing
-	RF_1   SM3STS = 0x01 << 12 //  New reload cycle since last STS[RF] clearing
 	REF    SM3STS = 0x01 << 13 //+ Reload Error Flag
-	REF_0  SM3STS = 0x00 << 13 //  No reload error occurred.
-	REF_1  SM3STS = 0x01 << 13 //  Reload signal occurred with non-coherent data and MCTRL[LDOK] = 0.
 	RUF    SM3STS = 0x01 << 14 //+ Registers Updated Flag
-	RUF_0  SM3STS = 0x00 << 14 //  No register update has occurred since last reload.
-	RUF_1  SM3STS = 0x01 << 14 //  At least one of the double buffered registers has been updated since the last reload.
 )
 
 const (
@@ -2624,29 +2314,13 @@ const (
 	CMPIE_0 SM3INTEN = 0x00 << 0  //  The corresponding STS[CMPF] bit will not cause an interrupt request.
 	CMPIE_1 SM3INTEN = 0x01 << 0  //  The corresponding STS[CMPF] bit will cause an interrupt request.
 	CX0IE   SM3INTEN = 0x01 << 6  //+ Capture X 0 Interrupt Enable
-	CX0IE_0 SM3INTEN = 0x00 << 6  //  Interrupt request disabled for STS[CFX0].
-	CX0IE_1 SM3INTEN = 0x01 << 6  //  Interrupt request enabled for STS[CFX0].
 	CX1IE   SM3INTEN = 0x01 << 7  //+ Capture X 1 Interrupt Enable
-	CX1IE_0 SM3INTEN = 0x00 << 7  //  Interrupt request disabled for STS[CFX1].
-	CX1IE_1 SM3INTEN = 0x01 << 7  //  Interrupt request enabled for STS[CFX1].
 	CB0IE   SM3INTEN = 0x01 << 8  //+ Capture B 0 Interrupt Enable
-	CB0IE_0 SM3INTEN = 0x00 << 8  //  Interrupt request disabled for STS[CFB0].
-	CB0IE_1 SM3INTEN = 0x01 << 8  //  Interrupt request enabled for STS[CFB0].
 	CB1IE   SM3INTEN = 0x01 << 9  //+ Capture B 1 Interrupt Enable
-	CB1IE_0 SM3INTEN = 0x00 << 9  //  Interrupt request disabled for STS[CFB1].
-	CB1IE_1 SM3INTEN = 0x01 << 9  //  Interrupt request enabled for STS[CFB1].
 	CA0IE   SM3INTEN = 0x01 << 10 //+ Capture A 0 Interrupt Enable
-	CA0IE_0 SM3INTEN = 0x00 << 10 //  Interrupt request disabled for STS[CFA0].
-	CA0IE_1 SM3INTEN = 0x01 << 10 //  Interrupt request enabled for STS[CFA0].
 	CA1IE   SM3INTEN = 0x01 << 11 //+ Capture A 1 Interrupt Enable
-	CA1IE_0 SM3INTEN = 0x00 << 11 //  Interrupt request disabled for STS[CFA1].
-	CA1IE_1 SM3INTEN = 0x01 << 11 //  Interrupt request enabled for STS[CFA1].
 	RIE     SM3INTEN = 0x01 << 12 //+ Reload Interrupt Enable
-	RIE_0   SM3INTEN = 0x00 << 12 //  STS[RF] CPU interrupt requests disabled
-	RIE_1   SM3INTEN = 0x01 << 12 //  STS[RF] CPU interrupt requests enabled
 	REIE    SM3INTEN = 0x01 << 13 //+ Reload Error Interrupt Enable
-	REIE_0  SM3INTEN = 0x00 << 13 //  STS[REF] CPU interrupt requests disabled
-	REIE_1  SM3INTEN = 0x01 << 13 //  STS[REF] CPU interrupt requests enabled
 )
 
 const (
@@ -2674,11 +2348,7 @@ const (
 	CAPTDE_2 SM3DMAEN = 0x02 << 6 //  A local sync (VAL1 matches counter) sets the read DMA request.
 	CAPTDE_3 SM3DMAEN = 0x03 << 6 //  A local reload (STS[RF] being set) sets the read DMA request.
 	FAND     SM3DMAEN = 0x01 << 8 //+ FIFO Watermark AND Control
-	FAND_0   SM3DMAEN = 0x00 << 8 //  Selected FIFO watermarks are OR'ed together.
-	FAND_1   SM3DMAEN = 0x01 << 8 //  Selected FIFO watermarks are AND'ed together.
 	VALDE    SM3DMAEN = 0x01 << 9 //+ Value Registers DMA Enable
-	VALDE_0  SM3DMAEN = 0x00 << 9 //  DMA write requests disabled
-	VALDE_1  SM3DMAEN = 0x01 << 9 //  DMA write requests for the VALx and FRACVALx registers enabled
 )
 
 const (
@@ -2698,14 +2368,8 @@ const (
 	OUT_TRIG_EN_0 SM3TCTRL = 0x00 << 0  //  PWM_OUT_TRIGx will not set when the counter value matches the VALx value.
 	OUT_TRIG_EN_1 SM3TCTRL = 0x01 << 0  //  PWM_OUT_TRIGx will set when the counter value matches the VALx value.
 	TRGFRQ        SM3TCTRL = 0x01 << 12 //+ Trigger frequency
-	TRGFRQ_0      SM3TCTRL = 0x00 << 12 //  Trigger outputs are generated during every PWM period even if the PWM is not reloaded every period due to CTRL[LDFQ] being non-zero.
-	TRGFRQ_1      SM3TCTRL = 0x01 << 12 //  Trigger outputs are generated only during the final PWM period prior to a reload opportunity when the PWM is not reloaded every period due to CTRL[LDFQ] being non-zero.
 	PWBOT1        SM3TCTRL = 0x01 << 14 //+ Output Trigger 1 Source Select
-	PWBOT1_0      SM3TCTRL = 0x00 << 14 //  Route the PWM_OUT_TRIG1 signal to PWM_OUT_TRIG1 port.
-	PWBOT1_1      SM3TCTRL = 0x01 << 14 //  Route the PWMB output to the PWM_OUT_TRIG1 port.
 	PWAOT0        SM3TCTRL = 0x01 << 15 //+ Output Trigger 0 Source Select
-	PWAOT0_0      SM3TCTRL = 0x00 << 15 //  Route the PWM_OUT_TRIG0 signal to PWM_OUT_TRIG0 port.
-	PWAOT0_1      SM3TCTRL = 0x01 << 15 //  Route the PWMA output to the PWM_OUT_TRIG0 port.
 )
 
 const (
@@ -2756,31 +2420,23 @@ const (
 )
 
 const (
-	ARMA         SM3CAPTCTRLA = 0x01 << 0  //+ Arm A
-	ARMA_0       SM3CAPTCTRLA = 0x00 << 0  //  Input capture operation is disabled.
-	ARMA_1       SM3CAPTCTRLA = 0x01 << 0  //  Input capture operation as specified by CAPTCTRLA[EDGAx] is enabled.
-	ONESHOTA     SM3CAPTCTRLA = 0x01 << 1  //+ One Shot Mode A
-	ONESHOTA_0   SM3CAPTCTRLA = 0x00 << 1  //  Free running mode is selected. If both capture circuits are enabled, then capture circuit 0 is armed first after CAPTCTRLA[ARMA] is set. Once a capture occurs, capture circuit 0 is disarmed and capture circuit 1 is armed. After capture circuit 1 performs a capture, it is disarmed and capture circuit 0 is re-armed. The process continues indefinitely.If only one of the capture circuits is enabled, then captures continue indefinitely on the enabled capture circuit.
-	ONESHOTA_1   SM3CAPTCTRLA = 0x01 << 1  //  One shot mode is selected. If both capture circuits are enabled, then capture circuit 0 is armed first after CAPTCTRLA[ARMA] is set. Once a capture occurs, capture circuit 0 is disarmed and capture circuit 1 is armed. After capture circuit 1 performs a capture, it is disarmed and CAPTCTRLA[ARMA] is cleared. No further captures will be performed until CAPTCTRLA[ARMA] is set again.If only one of the capture circuits is enabled, then a single capture will occur on the enabled capture circuit and CAPTCTRLA[ARMA] is then cleared.
-	EDGA0        SM3CAPTCTRLA = 0x03 << 2  //+ Edge A 0
-	EDGA0_0      SM3CAPTCTRLA = 0x00 << 2  //  Disabled
-	EDGA0_1      SM3CAPTCTRLA = 0x01 << 2  //  Capture falling edges
-	EDGA0_2      SM3CAPTCTRLA = 0x02 << 2  //  Capture rising edges
-	EDGA0_3      SM3CAPTCTRLA = 0x03 << 2  //  Capture any edge
-	EDGA1        SM3CAPTCTRLA = 0x03 << 4  //+ Edge A 1
-	EDGA1_0      SM3CAPTCTRLA = 0x00 << 4  //  Disabled
-	EDGA1_1      SM3CAPTCTRLA = 0x01 << 4  //  Capture falling edges
-	EDGA1_2      SM3CAPTCTRLA = 0x02 << 4  //  Capture rising edges
-	EDGA1_3      SM3CAPTCTRLA = 0x03 << 4  //  Capture any edge
-	INP_SELA     SM3CAPTCTRLA = 0x01 << 6  //+ Input Select A
-	INP_SELA_0   SM3CAPTCTRLA = 0x00 << 6  //  Raw PWM_A input signal selected as source.
-	INP_SELA_1   SM3CAPTCTRLA = 0x01 << 6  //  Output of edge counter/compare selected as source. Note that when this bitfield is set to 1, the internal edge counter is enabled and the rising and/or falling edges specified by the CAPTCTRLA[EDGA0] and CAPTCTRLA[EDGA1] fields are ignored. The software must still place a value other than 00 in either or both of the CAPTCTLRA[EDGA0] and/or CAPTCTRLA[EDGA1] fields in order to enable one or both of the capture registers.
-	EDGCNTA_EN   SM3CAPTCTRLA = 0x01 << 7  //+ Edge Counter A Enable
-	EDGCNTA_EN_0 SM3CAPTCTRLA = 0x00 << 7  //  Edge counter disabled and held in reset
-	EDGCNTA_EN_1 SM3CAPTCTRLA = 0x01 << 7  //  Edge counter enabled
-	CFAWM        SM3CAPTCTRLA = 0x03 << 8  //+ Capture A FIFOs Water Mark
-	CA0CNT       SM3CAPTCTRLA = 0x07 << 10 //+ Capture A0 FIFO Word Count
-	CA1CNT       SM3CAPTCTRLA = 0x07 << 13 //+ Capture A1 FIFO Word Count
+	ARMA       SM3CAPTCTRLA = 0x01 << 0  //+ Arm A
+	ONESHOTA   SM3CAPTCTRLA = 0x01 << 1  //+ One Shot Mode A
+	EDGA0      SM3CAPTCTRLA = 0x03 << 2  //+ Edge A 0
+	EDGA0_0    SM3CAPTCTRLA = 0x00 << 2  //  Disabled
+	EDGA0_1    SM3CAPTCTRLA = 0x01 << 2  //  Capture falling edges
+	EDGA0_2    SM3CAPTCTRLA = 0x02 << 2  //  Capture rising edges
+	EDGA0_3    SM3CAPTCTRLA = 0x03 << 2  //  Capture any edge
+	EDGA1      SM3CAPTCTRLA = 0x03 << 4  //+ Edge A 1
+	EDGA1_0    SM3CAPTCTRLA = 0x00 << 4  //  Disabled
+	EDGA1_1    SM3CAPTCTRLA = 0x01 << 4  //  Capture falling edges
+	EDGA1_2    SM3CAPTCTRLA = 0x02 << 4  //  Capture rising edges
+	EDGA1_3    SM3CAPTCTRLA = 0x03 << 4  //  Capture any edge
+	INP_SELA   SM3CAPTCTRLA = 0x01 << 6  //+ Input Select A
+	EDGCNTA_EN SM3CAPTCTRLA = 0x01 << 7  //+ Edge Counter A Enable
+	CFAWM      SM3CAPTCTRLA = 0x03 << 8  //+ Capture A FIFOs Water Mark
+	CA0CNT     SM3CAPTCTRLA = 0x07 << 10 //+ Capture A0 FIFO Word Count
+	CA1CNT     SM3CAPTCTRLA = 0x07 << 13 //+ Capture A1 FIFO Word Count
 )
 
 const (
@@ -2806,31 +2462,23 @@ const (
 )
 
 const (
-	ARMB         SM3CAPTCTRLB = 0x01 << 0  //+ Arm B
-	ARMB_0       SM3CAPTCTRLB = 0x00 << 0  //  Input capture operation is disabled.
-	ARMB_1       SM3CAPTCTRLB = 0x01 << 0  //  Input capture operation as specified by CAPTCTRLB[EDGBx] is enabled.
-	ONESHOTB     SM3CAPTCTRLB = 0x01 << 1  //+ One Shot Mode B
-	ONESHOTB_0   SM3CAPTCTRLB = 0x00 << 1  //  Free running mode is selected. If both capture circuits are enabled, then capture circuit 0 is armed first after CAPTCTRLB[ARMB] is set. Once a capture occurs, capture circuit 0 is disarmed and capture circuit 1 is armed. After capture circuit 1 performs a capture, it is disarmed and capture circuit 0 is re-armed. The process continues indefinitely.If only one of the capture circuits is enabled, then captures continue indefinitely on the enabled capture circuit.
-	ONESHOTB_1   SM3CAPTCTRLB = 0x01 << 1  //  One shot mode is selected. If both capture circuits are enabled, then capture circuit 0 is armed first after CAPTCTRLB[ARMB] is set. Once a capture occurs, capture circuit 0 is disarmed and capture circuit 1 is armed. After capture circuit 1 performs a capture, it is disarmed and CAPTCTRLB[ARMB] is cleared. No further captures will be performed until CAPTCTRLB[ARMB] is set again.If only one of the capture circuits is enabled, then a single capture will occur on the enabled capture circuit and CAPTCTRLB[ARMB] is then cleared.
-	EDGB0        SM3CAPTCTRLB = 0x03 << 2  //+ Edge B 0
-	EDGB0_0      SM3CAPTCTRLB = 0x00 << 2  //  Disabled
-	EDGB0_1      SM3CAPTCTRLB = 0x01 << 2  //  Capture falling edges
-	EDGB0_2      SM3CAPTCTRLB = 0x02 << 2  //  Capture rising edges
-	EDGB0_3      SM3CAPTCTRLB = 0x03 << 2  //  Capture any edge
-	EDGB1        SM3CAPTCTRLB = 0x03 << 4  //+ Edge B 1
-	EDGB1_0      SM3CAPTCTRLB = 0x00 << 4  //  Disabled
-	EDGB1_1      SM3CAPTCTRLB = 0x01 << 4  //  Capture falling edges
-	EDGB1_2      SM3CAPTCTRLB = 0x02 << 4  //  Capture rising edges
-	EDGB1_3      SM3CAPTCTRLB = 0x03 << 4  //  Capture any edge
-	INP_SELB     SM3CAPTCTRLB = 0x01 << 6  //+ Input Select B
-	INP_SELB_0   SM3CAPTCTRLB = 0x00 << 6  //  Raw PWM_B input signal selected as source.
-	INP_SELB_1   SM3CAPTCTRLB = 0x01 << 6  //  Output of edge counter/compare selected as source. Note that when this bitfield is set to 1, the internal edge counter is enabled and the rising and/or falling edges specified by the CAPTCTRLB[EDGB0] and CAPTCTRLB[EDGB1] fields are ignored. The software must still place a value other than 00 in either or both of the CAPTCTLRB[EDGB0] and/or CAPTCTRLB[EDGB1] fields in order to enable one or both of the capture registers.
-	EDGCNTB_EN   SM3CAPTCTRLB = 0x01 << 7  //+ Edge Counter B Enable
-	EDGCNTB_EN_0 SM3CAPTCTRLB = 0x00 << 7  //  Edge counter disabled and held in reset
-	EDGCNTB_EN_1 SM3CAPTCTRLB = 0x01 << 7  //  Edge counter enabled
-	CFBWM        SM3CAPTCTRLB = 0x03 << 8  //+ Capture B FIFOs Water Mark
-	CB0CNT       SM3CAPTCTRLB = 0x07 << 10 //+ Capture B0 FIFO Word Count
-	CB1CNT       SM3CAPTCTRLB = 0x07 << 13 //+ Capture B1 FIFO Word Count
+	ARMB       SM3CAPTCTRLB = 0x01 << 0  //+ Arm B
+	ONESHOTB   SM3CAPTCTRLB = 0x01 << 1  //+ One Shot Mode B
+	EDGB0      SM3CAPTCTRLB = 0x03 << 2  //+ Edge B 0
+	EDGB0_0    SM3CAPTCTRLB = 0x00 << 2  //  Disabled
+	EDGB0_1    SM3CAPTCTRLB = 0x01 << 2  //  Capture falling edges
+	EDGB0_2    SM3CAPTCTRLB = 0x02 << 2  //  Capture rising edges
+	EDGB0_3    SM3CAPTCTRLB = 0x03 << 2  //  Capture any edge
+	EDGB1      SM3CAPTCTRLB = 0x03 << 4  //+ Edge B 1
+	EDGB1_0    SM3CAPTCTRLB = 0x00 << 4  //  Disabled
+	EDGB1_1    SM3CAPTCTRLB = 0x01 << 4  //  Capture falling edges
+	EDGB1_2    SM3CAPTCTRLB = 0x02 << 4  //  Capture rising edges
+	EDGB1_3    SM3CAPTCTRLB = 0x03 << 4  //  Capture any edge
+	INP_SELB   SM3CAPTCTRLB = 0x01 << 6  //+ Input Select B
+	EDGCNTB_EN SM3CAPTCTRLB = 0x01 << 7  //+ Edge Counter B Enable
+	CFBWM      SM3CAPTCTRLB = 0x03 << 8  //+ Capture B FIFOs Water Mark
+	CB0CNT     SM3CAPTCTRLB = 0x07 << 10 //+ Capture B0 FIFO Word Count
+	CB1CNT     SM3CAPTCTRLB = 0x07 << 13 //+ Capture B1 FIFO Word Count
 )
 
 const (
@@ -2856,31 +2504,23 @@ const (
 )
 
 const (
-	ARMX         SM3CAPTCTRLX = 0x01 << 0  //+ Arm X
-	ARMX_0       SM3CAPTCTRLX = 0x00 << 0  //  Input capture operation is disabled.
-	ARMX_1       SM3CAPTCTRLX = 0x01 << 0  //  Input capture operation as specified by CAPTCTRLX[EDGXx] is enabled.
-	ONESHOTX     SM3CAPTCTRLX = 0x01 << 1  //+ One Shot Mode Aux
-	ONESHOTX_0   SM3CAPTCTRLX = 0x00 << 1  //  Free running mode is selected. If both capture circuits are enabled, then capture circuit 0 is armed first after the ARMX bit is set. Once a capture occurs, capture circuit 0 is disarmed and capture circuit 1 is armed. After capture circuit 1 performs a capture, it is disarmed and capture circuit 0 is re-armed. The process continues indefinitely.If only one of the capture circuits is enabled, then captures continue indefinitely on the enabled capture circuit.
-	ONESHOTX_1   SM3CAPTCTRLX = 0x01 << 1  //  One shot mode is selected. If both capture circuits are enabled, then capture circuit 0 is armed first after the ARMX bit is set. Once a capture occurs, capture circuit 0 is disarmed and capture circuit 1 is armed. After capture circuit 1 performs a capture, it is disarmed and the ARMX bit is cleared. No further captures will be performed until the ARMX bit is set again.If only one of the capture circuits is enabled, then a single capture will occur on the enabled capture circuit and the ARMX bit is then cleared.
-	EDGX0        SM3CAPTCTRLX = 0x03 << 2  //+ Edge X 0
-	EDGX0_0      SM3CAPTCTRLX = 0x00 << 2  //  Disabled
-	EDGX0_1      SM3CAPTCTRLX = 0x01 << 2  //  Capture falling edges
-	EDGX0_2      SM3CAPTCTRLX = 0x02 << 2  //  Capture rising edges
-	EDGX0_3      SM3CAPTCTRLX = 0x03 << 2  //  Capture any edge
-	EDGX1        SM3CAPTCTRLX = 0x03 << 4  //+ Edge X 1
-	EDGX1_0      SM3CAPTCTRLX = 0x00 << 4  //  Disabled
-	EDGX1_1      SM3CAPTCTRLX = 0x01 << 4  //  Capture falling edges
-	EDGX1_2      SM3CAPTCTRLX = 0x02 << 4  //  Capture rising edges
-	EDGX1_3      SM3CAPTCTRLX = 0x03 << 4  //  Capture any edge
-	INP_SELX     SM3CAPTCTRLX = 0x01 << 6  //+ Input Select X
-	INP_SELX_0   SM3CAPTCTRLX = 0x00 << 6  //  Raw PWM_X input signal selected as source.
-	INP_SELX_1   SM3CAPTCTRLX = 0x01 << 6  //  Output of edge counter/compare selected as source. Note that when this bitfield is set to 1, the internal edge counter is enabled and the rising and/or falling edges specified by the CAPTCTRLX[EDGX0] and CAPTCTRLX[EDGX1] fields are ignored. The software must still place a value other than 00 in either or both of the CAPTCTLRX[EDGX0] and/or CAPTCTRLX[EDGX1] fields in order to enable one or both of the capture registers.
-	EDGCNTX_EN   SM3CAPTCTRLX = 0x01 << 7  //+ Edge Counter X Enable
-	EDGCNTX_EN_0 SM3CAPTCTRLX = 0x00 << 7  //  Edge counter disabled and held in reset
-	EDGCNTX_EN_1 SM3CAPTCTRLX = 0x01 << 7  //  Edge counter enabled
-	CFXWM        SM3CAPTCTRLX = 0x03 << 8  //+ Capture X FIFOs Water Mark
-	CX0CNT       SM3CAPTCTRLX = 0x07 << 10 //+ Capture X0 FIFO Word Count
-	CX1CNT       SM3CAPTCTRLX = 0x07 << 13 //+ Capture X1 FIFO Word Count
+	ARMX       SM3CAPTCTRLX = 0x01 << 0  //+ Arm X
+	ONESHOTX   SM3CAPTCTRLX = 0x01 << 1  //+ One Shot Mode Aux
+	EDGX0      SM3CAPTCTRLX = 0x03 << 2  //+ Edge X 0
+	EDGX0_0    SM3CAPTCTRLX = 0x00 << 2  //  Disabled
+	EDGX0_1    SM3CAPTCTRLX = 0x01 << 2  //  Capture falling edges
+	EDGX0_2    SM3CAPTCTRLX = 0x02 << 2  //  Capture rising edges
+	EDGX0_3    SM3CAPTCTRLX = 0x03 << 2  //  Capture any edge
+	EDGX1      SM3CAPTCTRLX = 0x03 << 4  //+ Edge X 1
+	EDGX1_0    SM3CAPTCTRLX = 0x00 << 4  //  Disabled
+	EDGX1_1    SM3CAPTCTRLX = 0x01 << 4  //  Capture falling edges
+	EDGX1_2    SM3CAPTCTRLX = 0x02 << 4  //  Capture rising edges
+	EDGX1_3    SM3CAPTCTRLX = 0x03 << 4  //  Capture any edge
+	INP_SELX   SM3CAPTCTRLX = 0x01 << 6  //+ Input Select X
+	EDGCNTX_EN SM3CAPTCTRLX = 0x01 << 7  //+ Edge Counter X Enable
+	CFXWM      SM3CAPTCTRLX = 0x03 << 8  //+ Capture X FIFOs Water Mark
+	CX0CNT     SM3CAPTCTRLX = 0x07 << 10 //+ Capture X0 FIFO Word Count
+	CX1CNT     SM3CAPTCTRLX = 0x07 << 13 //+ Capture X1 FIFO Word Count
 )
 
 const (
@@ -3042,30 +2682,14 @@ const (
 )
 
 const (
-	SM0OUT45   SWCOUT = 0x01 << 0 //+ Submodule 0 Software Controlled Output 45
-	SM0OUT45_0 SWCOUT = 0x00 << 0 //  A logic 0 is supplied to the deadtime generator of submodule 0 instead of PWM45.
-	SM0OUT45_1 SWCOUT = 0x01 << 0 //  A logic 1 is supplied to the deadtime generator of submodule 0 instead of PWM45.
-	SM0OUT23   SWCOUT = 0x01 << 1 //+ Submodule 0 Software Controlled Output 23
-	SM0OUT23_0 SWCOUT = 0x00 << 1 //  A logic 0 is supplied to the deadtime generator of submodule 0 instead of PWM23.
-	SM0OUT23_1 SWCOUT = 0x01 << 1 //  A logic 1 is supplied to the deadtime generator of submodule 0 instead of PWM23.
-	SM1OUT45   SWCOUT = 0x01 << 2 //+ Submodule 1 Software Controlled Output 45
-	SM1OUT45_0 SWCOUT = 0x00 << 2 //  A logic 0 is supplied to the deadtime generator of submodule 1 instead of PWM45.
-	SM1OUT45_1 SWCOUT = 0x01 << 2 //  A logic 1 is supplied to the deadtime generator of submodule 1 instead of PWM45.
-	SM1OUT23   SWCOUT = 0x01 << 3 //+ Submodule 1 Software Controlled Output 23
-	SM1OUT23_0 SWCOUT = 0x00 << 3 //  A logic 0 is supplied to the deadtime generator of submodule 1 instead of PWM23.
-	SM1OUT23_1 SWCOUT = 0x01 << 3 //  A logic 1 is supplied to the deadtime generator of submodule 1 instead of PWM23.
-	SM2OUT45   SWCOUT = 0x01 << 4 //+ Submodule 2 Software Controlled Output 45
-	SM2OUT45_0 SWCOUT = 0x00 << 4 //  A logic 0 is supplied to the deadtime generator of submodule 2 instead of PWM45.
-	SM2OUT45_1 SWCOUT = 0x01 << 4 //  A logic 1 is supplied to the deadtime generator of submodule 2 instead of PWM45.
-	SM2OUT23   SWCOUT = 0x01 << 5 //+ Submodule 2 Software Controlled Output 23
-	SM2OUT23_0 SWCOUT = 0x00 << 5 //  A logic 0 is supplied to the deadtime generator of submodule 2 instead of PWM23.
-	SM2OUT23_1 SWCOUT = 0x01 << 5 //  A logic 1 is supplied to the deadtime generator of submodule 2 instead of PWM23.
-	SM3OUT45   SWCOUT = 0x01 << 6 //+ Submodule 3 Software Controlled Output 45
-	SM3OUT45_0 SWCOUT = 0x00 << 6 //  A logic 0 is supplied to the deadtime generator of submodule 3 instead of PWM45.
-	SM3OUT45_1 SWCOUT = 0x01 << 6 //  A logic 1 is supplied to the deadtime generator of submodule 3 instead of PWM45.
-	SM3OUT23   SWCOUT = 0x01 << 7 //+ Submodule 3 Software Controlled Output 23
-	SM3OUT23_0 SWCOUT = 0x00 << 7 //  A logic 0 is supplied to the deadtime generator of submodule 3 instead of PWM23.
-	SM3OUT23_1 SWCOUT = 0x01 << 7 //  A logic 1 is supplied to the deadtime generator of submodule 3 instead of PWM23.
+	SM0OUT45 SWCOUT = 0x01 << 0 //+ Submodule 0 Software Controlled Output 45
+	SM0OUT23 SWCOUT = 0x01 << 1 //+ Submodule 0 Software Controlled Output 23
+	SM1OUT45 SWCOUT = 0x01 << 2 //+ Submodule 1 Software Controlled Output 45
+	SM1OUT23 SWCOUT = 0x01 << 3 //+ Submodule 1 Software Controlled Output 23
+	SM2OUT45 SWCOUT = 0x01 << 4 //+ Submodule 2 Software Controlled Output 45
+	SM2OUT23 SWCOUT = 0x01 << 5 //+ Submodule 2 Software Controlled Output 23
+	SM3OUT45 SWCOUT = 0x01 << 6 //+ Submodule 3 Software Controlled Output 45
+	SM3OUT23 SWCOUT = 0x01 << 7 //+ Submodule 3 Software Controlled Output 23
 )
 
 const (
@@ -3211,8 +2835,6 @@ const (
 	FILT_PER FFILT0 = 0xFF << 0  //+ Fault Filter Period
 	FILT_CNT FFILT0 = 0x07 << 8  //+ Fault Filter Count
 	GSTR     FFILT0 = 0x01 << 15 //+ Fault Glitch Stretch Enable
-	GSTR_0   FFILT0 = 0x00 << 15 //  Fault input glitch stretching is disabled.
-	GSTR_1   FFILT0 = 0x01 << 15 //  Input fault signals will be stretched to at least 2 IPBus clock cycles.
 )
 
 const (
@@ -3222,9 +2844,7 @@ const (
 )
 
 const (
-	FTEST   FTST0 = 0x01 << 0 //+ Fault Test
-	FTEST_0 FTST0 = 0x00 << 0 //  No fault
-	FTEST_1 FTST0 = 0x01 << 0 //  Cause a simulated fault
+	FTEST FTST0 = 0x01 << 0 //+ Fault Test
 )
 
 const (

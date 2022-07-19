@@ -100,8 +100,6 @@ const (
 
 const (
 	HC    HWHOST = 0x01 << 0 //+ Host Capable. Indicating whether host operation mode is supported or not.
-	HC_0  HWHOST = 0x00 << 0 //  Not supported
-	HC_1  HWHOST = 0x01 << 0 //  Supported
 	NPORT HWHOST = 0x07 << 1 //+ The Nmber of downstream ports supported by the host controller is (NPORT+1)
 )
 
@@ -112,8 +110,6 @@ const (
 
 const (
 	DC    HWDEVICE = 0x01 << 0 //+ Device Capable. Indicating whether device operation mode is supported or not.
-	DC_0  HWDEVICE = 0x00 << 0 //  Not supported
-	DC_1  HWDEVICE = 0x01 << 0 //  Supported
 	DEVEP HWDEVICE = 0x1F << 1 //+ Device Endpoint Number
 )
 
@@ -151,16 +147,10 @@ const (
 )
 
 const (
-	GPTCNT    GPTIMER0CTRL = 0xFFFFFF << 0 //+ General Purpose Timer Counter. This field is the count value of the countdown timer.
-	GPTMODE   GPTIMER0CTRL = 0x01 << 24    //+ General Purpose Timer Mode In one shot mode, the timer will count down to zero, generate an interrupt, and stop until the counter is reset by software; In repeat mode, the timer will count down to zero, generate an interrupt and automatically reload the counter value from GPTLD bits to start again
-	GPTMODE_0 GPTIMER0CTRL = 0x00 << 24    //  One Shot Mode
-	GPTMODE_1 GPTIMER0CTRL = 0x01 << 24    //  Repeat Mode
-	GPTRST    GPTIMER0CTRL = 0x01 << 30    //+ General Purpose Timer Reset
-	GPTRST_0  GPTIMER0CTRL = 0x00 << 30    //  No action
-	GPTRST_1  GPTIMER0CTRL = 0x01 << 30    //  Load counter value from GPTLD bits in n_GPTIMER0LD
-	GPTRUN    GPTIMER0CTRL = 0x01 << 31    //+ General Purpose Timer Run GPTCNT bits are not effected when setting or clearing this bit.
-	GPTRUN_0  GPTIMER0CTRL = 0x00 << 31    //  Stop counting
-	GPTRUN_1  GPTIMER0CTRL = 0x01 << 31    //  Run
+	GPTCNT  GPTIMER0CTRL = 0xFFFFFF << 0 //+ General Purpose Timer Counter. This field is the count value of the countdown timer.
+	GPTMODE GPTIMER0CTRL = 0x01 << 24    //+ General Purpose Timer Mode In one shot mode, the timer will count down to zero, generate an interrupt, and stop until the counter is reset by software; In repeat mode, the timer will count down to zero, generate an interrupt and automatically reload the counter value from GPTLD bits to start again
+	GPTRST  GPTIMER0CTRL = 0x01 << 30    //+ General Purpose Timer Reset
+	GPTRUN  GPTIMER0CTRL = 0x01 << 31    //+ General Purpose Timer Run GPTCNT bits are not effected when setting or clearing this bit.
 )
 
 const (
@@ -179,16 +169,10 @@ const (
 )
 
 const (
-	GPTCNT    GPTIMER1CTRL = 0xFFFFFF << 0 //+ General Purpose Timer Counter. This field is the count value of the countdown timer.
-	GPTMODE   GPTIMER1CTRL = 0x01 << 24    //+ General Purpose Timer Mode In one shot mode, the timer will count down to zero, generate an interrupt, and stop until the counter is reset by software
-	GPTMODE_0 GPTIMER1CTRL = 0x00 << 24    //  One Shot Mode
-	GPTMODE_1 GPTIMER1CTRL = 0x01 << 24    //  Repeat Mode
-	GPTRST    GPTIMER1CTRL = 0x01 << 30    //+ General Purpose Timer Reset
-	GPTRST_0  GPTIMER1CTRL = 0x00 << 30    //  No action
-	GPTRST_1  GPTIMER1CTRL = 0x01 << 30    //  Load counter value from GPTLD bits in USB_n_GPTIMER0LD
-	GPTRUN    GPTIMER1CTRL = 0x01 << 31    //+ General Purpose Timer Run GPTCNT bits are not effected when setting or clearing this bit.
-	GPTRUN_0  GPTIMER1CTRL = 0x00 << 31    //  Stop counting
-	GPTRUN_1  GPTIMER1CTRL = 0x01 << 31    //  Run
+	GPTCNT  GPTIMER1CTRL = 0xFFFFFF << 0 //+ General Purpose Timer Counter. This field is the count value of the countdown timer.
+	GPTMODE GPTIMER1CTRL = 0x01 << 24    //+ General Purpose Timer Mode In one shot mode, the timer will count down to zero, generate an interrupt, and stop until the counter is reset by software
+	GPTRST  GPTIMER1CTRL = 0x01 << 30    //+ General Purpose Timer Reset
+	GPTRUN  GPTIMER1CTRL = 0x01 << 31    //+ General Purpose Timer Run GPTCNT bits are not effected when setting or clearing this bit.
 )
 
 const (
@@ -292,19 +276,13 @@ const (
 	RST    USBCMD = 0x01 << 1  //+ Controller Reset (RESET) - Read/Write
 	FS_1   USBCMD = 0x03 << 2  //+ See description at bit 15
 	PSE    USBCMD = 0x01 << 4  //+ Periodic Schedule Enable- Read/Write
-	PSE_0  USBCMD = 0x00 << 4  //  Do not process the Periodic Schedule
-	PSE_1  USBCMD = 0x01 << 4  //  Use the PERIODICLISTBASE register to access the Periodic Schedule.
 	ASE    USBCMD = 0x01 << 5  //+ Asynchronous Schedule Enable - Read/Write
-	ASE_0  USBCMD = 0x00 << 5  //  Do not process the Asynchronous Schedule.
-	ASE_1  USBCMD = 0x01 << 5  //  Use the ASYNCLISTADDR register to access the Asynchronous Schedule.
 	IAA    USBCMD = 0x01 << 6  //+ Interrupt on Async Advance Doorbell - Read/Write
 	ASP    USBCMD = 0x03 << 8  //+ Asynchronous Schedule Park Mode Count - Read/Write
 	ASPE   USBCMD = 0x01 << 11 //+ Asynchronous Schedule Park Mode Enable - Read/Write
 	ATDTW  USBCMD = 0x01 << 12 //+ Add dTD TripWire - Read/Write
 	SUTW   USBCMD = 0x01 << 13 //+ Setup TripWire - Read/Write
 	FS_2   USBCMD = 0x01 << 15 //+ See also bits 3-2 Frame List Size - (Read/Write or Read Only)
-	FS_2_0 USBCMD = 0x00 << 15 //  1024 elements (4096 bytes) Default value
-	FS_2_1 USBCMD = 0x01 << 15 //  512 elements (2048 bytes)
 	ITC    USBCMD = 0xFF << 16 //+ Interrupt Threshold Control -Read/Write
 	ITC_0  USBCMD = 0x00 << 16 //  Immediate (no threshold)
 	ITC_1  USBCMD = 0x01 << 16 //  1 micro-frame
@@ -500,9 +478,7 @@ const (
 )
 
 const (
-	CF   CONFIGFLAG = 0x01 << 0 //+ Configure Flag Host software sets this bit as the last action in its process of configuring the Host Controller
-	CF_0 CONFIGFLAG = 0x00 << 0 //  Port routing control logic default-routes each port to an implementation dependent classic host controller.
-	CF_1 CONFIGFLAG = 0x01 << 0 //  Port routing control logic default-routes all ports to this host controller.
+	CF CONFIGFLAG = 0x01 << 0 //+ Configure Flag Host software sets this bit as the last action in its process of configuring the Host Controller
 )
 
 const (
@@ -515,8 +491,6 @@ const (
 	PE     PORTSC1 = 0x01 << 2  //+ Port Enabled/Disabled-Read/Write
 	PEC    PORTSC1 = 0x01 << 3  //+ Port Enable/Disable Change-R/WC
 	OCA    PORTSC1 = 0x01 << 4  //+ Over-current Active-Read Only
-	OCA_0  PORTSC1 = 0x00 << 4  //  This port does not have an over-current condition.
-	OCA_1  PORTSC1 = 0x01 << 4  //  This port currently has an over-current condition
 	OCC    PORTSC1 = 0x01 << 5  //+ Over-current Change-R/WC
 	FPR    PORTSC1 = 0x01 << 6  //+ Force Port Resume -Read/Write
 	SUSP   PORTSC1 = 0x01 << 7  //+ Suspend - Read/Write or Read Only
@@ -547,11 +521,7 @@ const (
 	WKDC   PORTSC1 = 0x01 << 21 //+ Wake on Disconnect Enable (WKDSCNNT_E) - Read/Write
 	WKOC   PORTSC1 = 0x01 << 22 //+ Wake on Over-current Enable (WKOC_E) - Read/Write
 	PHCD   PORTSC1 = 0x01 << 23 //+ PHY Low Power Suspend - Clock Disable (PLPSCD) - Read/Write
-	PHCD_0 PORTSC1 = 0x00 << 23 //  Enable PHY clock
-	PHCD_1 PORTSC1 = 0x01 << 23 //  Disable PHY clock
 	PFSC   PORTSC1 = 0x01 << 24 //+ Port Force Full Speed Connect - Read/Write
-	PFSC_0 PORTSC1 = 0x00 << 24 //  Normal operation
-	PFSC_1 PORTSC1 = 0x01 << 24 //  Forced to full speed
 	PTS_2  PORTSC1 = 0x01 << 25 //+ See description at bits 31-30
 	PSPD   PORTSC1 = 0x03 << 26 //+ Port Speed - Read Only. This register field indicates the speed at which the port is operating.
 	PSPD_0 PORTSC1 = 0x00 << 26 //  Full Speed
@@ -559,8 +529,6 @@ const (
 	PSPD_2 PORTSC1 = 0x02 << 26 //  High Speed
 	PSPD_3 PORTSC1 = 0x03 << 26 //  Undefined
 	PTW    PORTSC1 = 0x01 << 28 //+ Parallel Transceiver Width This bit has no effect if serial interface engine is used
-	PTW_0  PORTSC1 = 0x00 << 28 //  Select the 8-bit UTMI interface [60MHz]
-	PTW_1  PORTSC1 = 0x01 << 28 //  Select the 16-bit UTMI interface [30MHz]
 	STS    PORTSC1 = 0x01 << 29 //+ Serial Transceiver Select 1 Serial Interface Engine is selected 0 Parallel Interface signals is selected Serial Interface Engine can be used in combination with UTMI+/ULPI physical interface to provide FS/LS signaling instead of the parallel interface signals
 	PTS_1  PORTSC1 = 0x03 << 30 //+ All USB port interface modes are listed in this field description, but not all are supported
 )
@@ -652,17 +620,13 @@ const (
 )
 
 const (
-	CM     USBMODE = 0x03 << 0 //+ Controller Mode - R/WO
-	CM_0   USBMODE = 0x00 << 0 //  Idle [Default for combination host/device]
-	CM_2   USBMODE = 0x02 << 0 //  Device Controller [Default for device only controller]
-	CM_3   USBMODE = 0x03 << 0 //  Host Controller [Default for host only controller]
-	ES     USBMODE = 0x01 << 2 //+ Endian Select - Read/Write
-	ES_0   USBMODE = 0x00 << 2 //  Little Endian [Default]
-	ES_1   USBMODE = 0x01 << 2 //  Big Endian
-	SLOM   USBMODE = 0x01 << 3 //+ Setup Lockout Mode
-	SLOM_0 USBMODE = 0x00 << 3 //  Setup Lockouts On (default);
-	SLOM_1 USBMODE = 0x01 << 3 //  Setup Lockouts Off (DCD requires use of Setup Data Buffer Tripwire in USBCMDUSB Command Register .
-	SDIS   USBMODE = 0x01 << 4 //+ Stream Disable Mode
+	CM   USBMODE = 0x03 << 0 //+ Controller Mode - R/WO
+	CM_0 USBMODE = 0x00 << 0 //  Idle [Default for combination host/device]
+	CM_2 USBMODE = 0x02 << 0 //  Device Controller [Default for device only controller]
+	CM_3 USBMODE = 0x03 << 0 //  Host Controller [Default for host only controller]
+	ES   USBMODE = 0x01 << 2 //+ Endian Select - Read/Write
+	SLOM USBMODE = 0x01 << 3 //+ Setup Lockout Mode
+	SDIS USBMODE = 0x01 << 4 //+ Stream Disable Mode
 )
 
 const (

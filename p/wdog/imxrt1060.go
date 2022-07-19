@@ -18,36 +18,20 @@
 package wdog
 
 const (
-	WDZST   WCR = 0x01 << 0 //+ WDZST
-	WDZST_0 WCR = 0x00 << 0 //  Continue timer operation (Default).
-	WDZST_1 WCR = 0x01 << 0 //  Suspend the watchdog timer.
-	WDBG    WCR = 0x01 << 1 //+ WDBG
-	WDBG_0  WCR = 0x00 << 1 //  Continue WDOG timer operation (Default).
-	WDBG_1  WCR = 0x01 << 1 //  Suspend the watchdog timer.
-	WDE     WCR = 0x01 << 2 //+ WDE
-	WDE_0   WCR = 0x00 << 2 //  Disable the Watchdog (Default).
-	WDE_1   WCR = 0x01 << 2 //  Enable the Watchdog.
-	WDT     WCR = 0x01 << 3 //+ WDT
-	WDT_0   WCR = 0x00 << 3 //  No effect on WDOG_B (Default).
-	WDT_1   WCR = 0x01 << 3 //  Assert WDOG_B upon a Watchdog Time-out event.
-	SRS     WCR = 0x01 << 4 //+ SRS
-	SRS_0   WCR = 0x00 << 4 //  Assert system reset signal.
-	SRS_1   WCR = 0x01 << 4 //  No effect on the system (Default).
-	WDA     WCR = 0x01 << 5 //+ WDA
-	WDA_0   WCR = 0x00 << 5 //  Assert WDOG_B output.
-	WDA_1   WCR = 0x01 << 5 //  No effect on system (Default).
-	SRE     WCR = 0x01 << 6 //+ software reset extension, an option way to generate software reset
-	SRE_0   WCR = 0x00 << 6 //  using original way to generate software reset (default)
-	SRE_1   WCR = 0x01 << 6 //  using new way to generate software reset.
-	WDW     WCR = 0x01 << 7 //+ WDW
-	WDW_0   WCR = 0x00 << 7 //  Continue WDOG timer operation (Default).
-	WDW_1   WCR = 0x01 << 7 //  Suspend WDOG timer operation.
-	WT      WCR = 0xFF << 8 //+ WT
-	WT_0    WCR = 0x00 << 8 //  - 0.5 Seconds (Default).
-	WT_1    WCR = 0x01 << 8 //  - 1.0 Seconds.
-	WT_2    WCR = 0x02 << 8 //  - 1.5 Seconds.
-	WT_3    WCR = 0x03 << 8 //  - 2.0 Seconds.
-	WT_255  WCR = 0xFF << 8 //  - 128 Seconds.
+	WDZST  WCR = 0x01 << 0 //+ WDZST
+	WDBG   WCR = 0x01 << 1 //+ WDBG
+	WDE    WCR = 0x01 << 2 //+ WDE
+	WDT    WCR = 0x01 << 3 //+ WDT
+	SRS    WCR = 0x01 << 4 //+ SRS
+	WDA    WCR = 0x01 << 5 //+ WDA
+	SRE    WCR = 0x01 << 6 //+ software reset extension, an option way to generate software reset
+	WDW    WCR = 0x01 << 7 //+ WDW
+	WT     WCR = 0xFF << 8 //+ WT
+	WT_0   WCR = 0x00 << 8 //  - 0.5 Seconds (Default).
+	WT_1   WCR = 0x01 << 8 //  - 1.0 Seconds.
+	WT_2   WCR = 0x02 << 8 //  - 1.5 Seconds.
+	WT_3   WCR = 0x03 << 8 //  - 2.0 Seconds.
+	WT_255 WCR = 0xFF << 8 //  - 128 Seconds.
 )
 
 const (
@@ -73,15 +57,9 @@ const (
 )
 
 const (
-	SFTW   WRSR = 0x01 << 0 //+ SFTW
-	SFTW_0 WRSR = 0x00 << 0 //  Reset is not the result of a software reset.
-	SFTW_1 WRSR = 0x01 << 0 //  Reset is the result of a software reset.
-	TOUT   WRSR = 0x01 << 1 //+ TOUT
-	TOUT_0 WRSR = 0x00 << 1 //  Reset is not the result of a WDOG timeout.
-	TOUT_1 WRSR = 0x01 << 1 //  Reset is the result of a WDOG timeout.
-	POR    WRSR = 0x01 << 4 //+ POR
-	POR_0  WRSR = 0x00 << 4 //  Reset is not the result of a power on reset.
-	POR_1  WRSR = 0x01 << 4 //  Reset is the result of a power on reset.
+	SFTW WRSR = 0x01 << 0 //+ SFTW
+	TOUT WRSR = 0x01 << 1 //+ TOUT
+	POR  WRSR = 0x01 << 4 //+ POR
 )
 
 const (
@@ -97,11 +75,7 @@ const (
 	WICT_4   WICR = 0x04 << 0  //  WICT[7:0] = Time duration between interrupt and time-out is 2 seconds (Default).
 	WICT_255 WICR = 0xFF << 0  //  WICT[7:0] = Time duration between interrupt and time-out is 127.5 seconds.
 	WTIS     WICR = 0x01 << 14 //+ WTIS
-	WTIS_0   WICR = 0x00 << 14 //  No interrupt has occurred (Default).
-	WTIS_1   WICR = 0x01 << 14 //  Interrupt has occurred
 	WIE      WICR = 0x01 << 15 //+ WIE
-	WIE_0    WICR = 0x00 << 15 //  Disable Interrupt (Default).
-	WIE_1    WICR = 0x01 << 15 //  Enable Interrupt.
 )
 
 const (
@@ -111,9 +85,7 @@ const (
 )
 
 const (
-	PDE   WMCR = 0x01 << 0 //+ PDE
-	PDE_0 WMCR = 0x00 << 0 //  Power Down Counter of WDOG is disabled.
-	PDE_1 WMCR = 0x01 << 0 //  Power Down Counter of WDOG is enabled (Default).
+	PDE WMCR = 0x01 << 0 //+ PDE
 )
 
 const (

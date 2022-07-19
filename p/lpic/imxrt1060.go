@@ -67,24 +67,12 @@ const (
 )
 
 const (
-	MEN     MCR = 0x01 << 0 //+ Master Enable
-	MEN_0   MCR = 0x00 << 0 //  Master logic is disabled
-	MEN_1   MCR = 0x01 << 0 //  Master logic is enabled
-	RST     MCR = 0x01 << 1 //+ Software Reset
-	RST_0   MCR = 0x00 << 1 //  Master logic is not reset
-	RST_1   MCR = 0x01 << 1 //  Master logic is reset
-	DOZEN   MCR = 0x01 << 2 //+ Doze mode enable
-	DOZEN_0 MCR = 0x00 << 2 //  Master is enabled in Doze mode
-	DOZEN_1 MCR = 0x01 << 2 //  Master is disabled in Doze mode
-	DBGEN   MCR = 0x01 << 3 //+ Debug Enable
-	DBGEN_0 MCR = 0x00 << 3 //  Master is disabled in debug mode
-	DBGEN_1 MCR = 0x01 << 3 //  Master is enabled in debug mode
-	RTF     MCR = 0x01 << 8 //+ Reset Transmit FIFO
-	RTF_0   MCR = 0x00 << 8 //  No effect
-	RTF_1   MCR = 0x01 << 8 //  Transmit FIFO is reset
-	RRF     MCR = 0x01 << 9 //+ Reset Receive FIFO
-	RRF_0   MCR = 0x00 << 9 //  No effect
-	RRF_1   MCR = 0x01 << 9 //  Receive FIFO is reset
+	MEN   MCR = 0x01 << 0 //+ Master Enable
+	RST   MCR = 0x01 << 1 //+ Software Reset
+	DOZEN MCR = 0x01 << 2 //+ Doze mode enable
+	DBGEN MCR = 0x01 << 3 //+ Debug Enable
+	RTF   MCR = 0x01 << 8 //+ Reset Transmit FIFO
+	RRF   MCR = 0x01 << 9 //+ Reset Receive FIFO
 )
 
 const (
@@ -97,39 +85,17 @@ const (
 )
 
 const (
-	TDF    MSR = 0x01 << 0  //+ Transmit Data Flag
-	TDF_0  MSR = 0x00 << 0  //  Transmit data is not requested
-	TDF_1  MSR = 0x01 << 0  //  Transmit data is requested
-	RDF    MSR = 0x01 << 1  //+ Receive Data Flag
-	RDF_0  MSR = 0x00 << 1  //  Receive Data is not ready
-	RDF_1  MSR = 0x01 << 1  //  Receive data is ready
-	EPF    MSR = 0x01 << 8  //+ End Packet Flag
-	EPF_0  MSR = 0x00 << 8  //  Master has not generated a STOP or Repeated START condition
-	EPF_1  MSR = 0x01 << 8  //  Master has generated a STOP or Repeated START condition
-	SDF    MSR = 0x01 << 9  //+ STOP Detect Flag
-	SDF_0  MSR = 0x00 << 9  //  Master has not generated a STOP condition
-	SDF_1  MSR = 0x01 << 9  //  Master has generated a STOP condition
-	NDF    MSR = 0x01 << 10 //+ NACK Detect Flag
-	NDF_0  MSR = 0x00 << 10 //  Unexpected NACK was not detected
-	NDF_1  MSR = 0x01 << 10 //  Unexpected NACK was detected
-	ALF    MSR = 0x01 << 11 //+ Arbitration Lost Flag
-	ALF_0  MSR = 0x00 << 11 //  Master has not lost arbitration
-	ALF_1  MSR = 0x01 << 11 //  Master has lost arbitration
-	FEF    MSR = 0x01 << 12 //+ FIFO Error Flag
-	FEF_0  MSR = 0x00 << 12 //  No error
-	FEF_1  MSR = 0x01 << 12 //  Master sending or receiving data without a START condition
-	PLTF   MSR = 0x01 << 13 //+ Pin Low Timeout Flag
-	PLTF_0 MSR = 0x00 << 13 //  Pin low timeout has not occurred or is disabled
-	PLTF_1 MSR = 0x01 << 13 //  Pin low timeout has occurred
-	DMF    MSR = 0x01 << 14 //+ Data Match Flag
-	DMF_0  MSR = 0x00 << 14 //  Have not received matching data
-	DMF_1  MSR = 0x01 << 14 //  Have received matching data
-	MBF    MSR = 0x01 << 24 //+ Master Busy Flag
-	MBF_0  MSR = 0x00 << 24 //  I2C Master is idle
-	MBF_1  MSR = 0x01 << 24 //  I2C Master is busy
-	BBF    MSR = 0x01 << 25 //+ Bus Busy Flag
-	BBF_0  MSR = 0x00 << 25 //  I2C Bus is idle
-	BBF_1  MSR = 0x01 << 25 //  I2C Bus is busy
+	TDF  MSR = 0x01 << 0  //+ Transmit Data Flag
+	RDF  MSR = 0x01 << 1  //+ Receive Data Flag
+	EPF  MSR = 0x01 << 8  //+ End Packet Flag
+	SDF  MSR = 0x01 << 9  //+ STOP Detect Flag
+	NDF  MSR = 0x01 << 10 //+ NACK Detect Flag
+	ALF  MSR = 0x01 << 11 //+ Arbitration Lost Flag
+	FEF  MSR = 0x01 << 12 //+ FIFO Error Flag
+	PLTF MSR = 0x01 << 13 //+ Pin Low Timeout Flag
+	DMF  MSR = 0x01 << 14 //+ Data Match Flag
+	MBF  MSR = 0x01 << 24 //+ Master Busy Flag
+	BBF  MSR = 0x01 << 25 //+ Bus Busy Flag
 )
 
 const (
@@ -147,33 +113,15 @@ const (
 )
 
 const (
-	TDIE    MIER = 0x01 << 0  //+ Transmit Data Interrupt Enable
-	TDIE_0  MIER = 0x00 << 0  //  Disabled
-	TDIE_1  MIER = 0x01 << 0  //  Enabled
-	RDIE    MIER = 0x01 << 1  //+ Receive Data Interrupt Enable
-	RDIE_0  MIER = 0x00 << 1  //  Disabled
-	RDIE_1  MIER = 0x01 << 1  //  Enabled
-	EPIE    MIER = 0x01 << 8  //+ End Packet Interrupt Enable
-	EPIE_0  MIER = 0x00 << 8  //  Disabled
-	EPIE_1  MIER = 0x01 << 8  //  Enabled
-	SDIE    MIER = 0x01 << 9  //+ STOP Detect Interrupt Enable
-	SDIE_0  MIER = 0x00 << 9  //  Disabled
-	SDIE_1  MIER = 0x01 << 9  //  Enabled
-	NDIE    MIER = 0x01 << 10 //+ NACK Detect Interrupt Enable
-	NDIE_0  MIER = 0x00 << 10 //  Disabled
-	NDIE_1  MIER = 0x01 << 10 //  Enabled
-	ALIE    MIER = 0x01 << 11 //+ Arbitration Lost Interrupt Enable
-	ALIE_0  MIER = 0x00 << 11 //  Disabled
-	ALIE_1  MIER = 0x01 << 11 //  Enabled
-	FEIE    MIER = 0x01 << 12 //+ FIFO Error Interrupt Enable
-	FEIE_0  MIER = 0x00 << 12 //  Enabled
-	FEIE_1  MIER = 0x01 << 12 //  Disabled
-	PLTIE   MIER = 0x01 << 13 //+ Pin Low Timeout Interrupt Enable
-	PLTIE_0 MIER = 0x00 << 13 //  Disabled
-	PLTIE_1 MIER = 0x01 << 13 //  Enabled
-	DMIE    MIER = 0x01 << 14 //+ Data Match Interrupt Enable
-	DMIE_0  MIER = 0x00 << 14 //  Disabled
-	DMIE_1  MIER = 0x01 << 14 //  Enabled
+	TDIE  MIER = 0x01 << 0  //+ Transmit Data Interrupt Enable
+	RDIE  MIER = 0x01 << 1  //+ Receive Data Interrupt Enable
+	EPIE  MIER = 0x01 << 8  //+ End Packet Interrupt Enable
+	SDIE  MIER = 0x01 << 9  //+ STOP Detect Interrupt Enable
+	NDIE  MIER = 0x01 << 10 //+ NACK Detect Interrupt Enable
+	ALIE  MIER = 0x01 << 11 //+ Arbitration Lost Interrupt Enable
+	FEIE  MIER = 0x01 << 12 //+ FIFO Error Interrupt Enable
+	PLTIE MIER = 0x01 << 13 //+ Pin Low Timeout Interrupt Enable
+	DMIE  MIER = 0x01 << 14 //+ Data Match Interrupt Enable
 )
 
 const (
@@ -189,12 +137,8 @@ const (
 )
 
 const (
-	TDDE   MDER = 0x01 << 0 //+ Transmit Data DMA Enable
-	TDDE_0 MDER = 0x00 << 0 //  DMA request is disabled
-	TDDE_1 MDER = 0x01 << 0 //  DMA request is enabled
-	RDDE   MDER = 0x01 << 1 //+ Receive Data DMA Enable
-	RDDE_0 MDER = 0x00 << 1 //  DMA request is disabled
-	RDDE_1 MDER = 0x01 << 1 //  DMA request is enabled
+	TDDE MDER = 0x01 << 0 //+ Transmit Data DMA Enable
+	RDDE MDER = 0x01 << 1 //+ Receive Data DMA Enable
 )
 
 const (
@@ -203,21 +147,11 @@ const (
 )
 
 const (
-	HREN      MCFGR0 = 0x01 << 0 //+ Host Request Enable
-	HREN_0    MCFGR0 = 0x00 << 0 //  Host request input is disabled
-	HREN_1    MCFGR0 = 0x01 << 0 //  Host request input is enabled
-	HRPOL     MCFGR0 = 0x01 << 1 //+ Host Request Polarity
-	HRPOL_0   MCFGR0 = 0x00 << 1 //  Active low
-	HRPOL_1   MCFGR0 = 0x01 << 1 //  Active high
-	HRSEL     MCFGR0 = 0x01 << 2 //+ Host Request Select
-	HRSEL_0   MCFGR0 = 0x00 << 2 //  Host request input is pin HREQ
-	HRSEL_1   MCFGR0 = 0x01 << 2 //  Host request input is input trigger
-	CIRFIFO   MCFGR0 = 0x01 << 8 //+ Circular FIFO Enable
-	CIRFIFO_0 MCFGR0 = 0x00 << 8 //  Circular FIFO is disabled
-	CIRFIFO_1 MCFGR0 = 0x01 << 8 //  Circular FIFO is enabled
-	RDMO      MCFGR0 = 0x01 << 9 //+ Receive Data Match Only
-	RDMO_0    MCFGR0 = 0x00 << 9 //  Received data is stored in the receive FIFO
-	RDMO_1    MCFGR0 = 0x01 << 9 //  Received data is discarded unless the the Data Match Flag (MSR[DMF]) is set
+	HREN    MCFGR0 = 0x01 << 0 //+ Host Request Enable
+	HRPOL   MCFGR0 = 0x01 << 1 //+ Host Request Polarity
+	HRSEL   MCFGR0 = 0x01 << 2 //+ Host Request Select
+	CIRFIFO MCFGR0 = 0x01 << 8 //+ Circular FIFO Enable
+	RDMO    MCFGR0 = 0x01 << 9 //+ Receive Data Match Only
 )
 
 const (
@@ -239,14 +173,8 @@ const (
 	PRESCALE_6 MCFGR1 = 0x06 << 0  //  Divide by 64
 	PRESCALE_7 MCFGR1 = 0x07 << 0  //  Divide by 128
 	AUTOSTOP   MCFGR1 = 0x01 << 8  //+ Automatic STOP Generation
-	AUTOSTOP_0 MCFGR1 = 0x00 << 8  //  No effect
-	AUTOSTOP_1 MCFGR1 = 0x01 << 8  //  STOP condition is automatically generated whenever the transmit FIFO is empty and the LPI2C master is busy
 	IGNACK     MCFGR1 = 0x01 << 9  //+ IGNACK
-	IGNACK_0   MCFGR1 = 0x00 << 9  //  LPI2C Master will receive ACK and NACK normally
-	IGNACK_1   MCFGR1 = 0x01 << 9  //  LPI2C Master will treat a received NACK as if it (NACK) was an ACK
 	TIMECFG    MCFGR1 = 0x01 << 10 //+ Timeout Configuration
-	TIMECFG_0  MCFGR1 = 0x00 << 10 //  Pin Low Timeout Flag will set if SCL is low for longer than the configured timeout
-	TIMECFG_1  MCFGR1 = 0x01 << 10 //  Pin Low Timeout Flag will set if either SCL or SDA is low for longer than the configured timeout
 	MATCFG     MCFGR1 = 0x07 << 16 //+ Match Configuration
 	MATCFG_0   MCFGR1 = 0x00 << 16 //  Match is disabled
 	MATCFG_2   MCFGR1 = 0x02 << 16 //  Match is enabled (1st data word equals MATCH0 OR MATCH1)
@@ -372,10 +300,8 @@ const (
 )
 
 const (
-	DATA      MRDR = 0xFF << 0  //+ Receive Data
-	RXEMPTY   MRDR = 0x01 << 14 //+ RX Empty
-	RXEMPTY_0 MRDR = 0x00 << 14 //  Receive FIFO is not empty
-	RXEMPTY_1 MRDR = 0x01 << 14 //  Receive FIFO is empty
+	DATA    MRDR = 0xFF << 0  //+ Receive Data
+	RXEMPTY MRDR = 0x01 << 14 //+ RX Empty
 )
 
 const (
@@ -384,24 +310,12 @@ const (
 )
 
 const (
-	SEN      SCR = 0x01 << 0 //+ Slave Enable
-	SEN_0    SCR = 0x00 << 0 //  I2C Slave mode is disabled
-	SEN_1    SCR = 0x01 << 0 //  I2C Slave mode is enabled
-	RST      SCR = 0x01 << 1 //+ Software Reset
-	RST_0    SCR = 0x00 << 1 //  Slave mode logic is not reset
-	RST_1    SCR = 0x01 << 1 //  Slave mode logic is reset
-	FILTEN   SCR = 0x01 << 4 //+ Filter Enable
-	FILTEN_0 SCR = 0x00 << 4 //  Disable digital filter and output delay counter for slave mode
-	FILTEN_1 SCR = 0x01 << 4 //  Enable digital filter and output delay counter for slave mode
-	FILTDZ   SCR = 0x01 << 5 //+ Filter Doze Enable
-	FILTDZ_0 SCR = 0x00 << 5 //  Filter remains enabled in Doze mode
-	FILTDZ_1 SCR = 0x01 << 5 //  Filter is disabled in Doze mode
-	RTF      SCR = 0x01 << 8 //+ Reset Transmit FIFO
-	RTF_0    SCR = 0x00 << 8 //  No effect
-	RTF_1    SCR = 0x01 << 8 //  Transmit Data Register is now empty
-	RRF      SCR = 0x01 << 9 //+ Reset Receive FIFO
-	RRF_0    SCR = 0x00 << 9 //  No effect
-	RRF_1    SCR = 0x01 << 9 //  Receive Data Register is now empty
+	SEN    SCR = 0x01 << 0 //+ Slave Enable
+	RST    SCR = 0x01 << 1 //+ Software Reset
+	FILTEN SCR = 0x01 << 4 //+ Filter Enable
+	FILTDZ SCR = 0x01 << 5 //+ Filter Doze Enable
+	RTF    SCR = 0x01 << 8 //+ Reset Transmit FIFO
+	RRF    SCR = 0x01 << 9 //+ Reset Receive FIFO
 )
 
 const (
@@ -414,48 +328,20 @@ const (
 )
 
 const (
-	TDF    SSR = 0x01 << 0  //+ Transmit Data Flag
-	TDF_0  SSR = 0x00 << 0  //  Transmit data not requested
-	TDF_1  SSR = 0x01 << 0  //  Transmit data is requested
-	RDF    SSR = 0x01 << 1  //+ Receive Data Flag
-	RDF_0  SSR = 0x00 << 1  //  Receive data is not ready
-	RDF_1  SSR = 0x01 << 1  //  Receive data is ready
-	AVF    SSR = 0x01 << 2  //+ Address Valid Flag
-	AVF_0  SSR = 0x00 << 2  //  Address Status Register is not valid
-	AVF_1  SSR = 0x01 << 2  //  Address Status Register is valid
-	TAF    SSR = 0x01 << 3  //+ Transmit ACK Flag
-	TAF_0  SSR = 0x00 << 3  //  Transmit ACK/NACK is not required
-	TAF_1  SSR = 0x01 << 3  //  Transmit ACK/NACK is required
-	RSF    SSR = 0x01 << 8  //+ Repeated Start Flag
-	RSF_0  SSR = 0x00 << 8  //  Slave has not detected a Repeated START condition
-	RSF_1  SSR = 0x01 << 8  //  Slave has detected a Repeated START condition
-	SDF    SSR = 0x01 << 9  //+ STOP Detect Flag
-	SDF_0  SSR = 0x00 << 9  //  Slave has not detected a STOP condition
-	SDF_1  SSR = 0x01 << 9  //  Slave has detected a STOP condition
-	BEF    SSR = 0x01 << 10 //+ Bit Error Flag
-	BEF_0  SSR = 0x00 << 10 //  Slave has not detected a bit error
-	BEF_1  SSR = 0x01 << 10 //  Slave has detected a bit error
-	FEF    SSR = 0x01 << 11 //+ FIFO Error Flag
-	FEF_0  SSR = 0x00 << 11 //  FIFO underflow or overflow was not detected
-	FEF_1  SSR = 0x01 << 11 //  FIFO underflow or overflow was detected
-	AM0F   SSR = 0x01 << 12 //+ Address Match 0 Flag
-	AM0F_0 SSR = 0x00 << 12 //  Have not received an ADDR0 matching address
-	AM0F_1 SSR = 0x01 << 12 //  Have received an ADDR0 matching address
-	AM1F   SSR = 0x01 << 13 //+ Address Match 1 Flag
-	AM1F_0 SSR = 0x00 << 13 //  Have not received an ADDR1 or ADDR0/ADDR1 range matching address
-	AM1F_1 SSR = 0x01 << 13 //  Have received an ADDR1 or ADDR0/ADDR1 range matching address
-	GCF    SSR = 0x01 << 14 //+ General Call Flag
-	GCF_0  SSR = 0x00 << 14 //  Slave has not detected the General Call Address or the General Call Address is disabled
-	GCF_1  SSR = 0x01 << 14 //  Slave has detected the General Call Address
-	SARF   SSR = 0x01 << 15 //+ SMBus Alert Response Flag
-	SARF_0 SSR = 0x00 << 15 //  SMBus Alert Response is disabled or not detected
-	SARF_1 SSR = 0x01 << 15 //  SMBus Alert Response is enabled and detected
-	SBF    SSR = 0x01 << 24 //+ Slave Busy Flag
-	SBF_0  SSR = 0x00 << 24 //  I2C Slave is idle
-	SBF_1  SSR = 0x01 << 24 //  I2C Slave is busy
-	BBF    SSR = 0x01 << 25 //+ Bus Busy Flag
-	BBF_0  SSR = 0x00 << 25 //  I2C Bus is idle
-	BBF_1  SSR = 0x01 << 25 //  I2C Bus is busy
+	TDF  SSR = 0x01 << 0  //+ Transmit Data Flag
+	RDF  SSR = 0x01 << 1  //+ Receive Data Flag
+	AVF  SSR = 0x01 << 2  //+ Address Valid Flag
+	TAF  SSR = 0x01 << 3  //+ Transmit ACK Flag
+	RSF  SSR = 0x01 << 8  //+ Repeated Start Flag
+	SDF  SSR = 0x01 << 9  //+ STOP Detect Flag
+	BEF  SSR = 0x01 << 10 //+ Bit Error Flag
+	FEF  SSR = 0x01 << 11 //+ FIFO Error Flag
+	AM0F SSR = 0x01 << 12 //+ Address Match 0 Flag
+	AM1F SSR = 0x01 << 13 //+ Address Match 1 Flag
+	GCF  SSR = 0x01 << 14 //+ General Call Flag
+	SARF SSR = 0x01 << 15 //+ SMBus Alert Response Flag
+	SBF  SSR = 0x01 << 24 //+ Slave Busy Flag
+	BBF  SSR = 0x01 << 25 //+ Bus Busy Flag
 )
 
 const (
@@ -476,42 +362,18 @@ const (
 )
 
 const (
-	TDIE    SIER = 0x01 << 0  //+ Transmit Data Interrupt Enable
-	TDIE_0  SIER = 0x00 << 0  //  Disabled
-	TDIE_1  SIER = 0x01 << 0  //  Enabled
-	RDIE    SIER = 0x01 << 1  //+ Receive Data Interrupt Enable
-	RDIE_0  SIER = 0x00 << 1  //  Disabled
-	RDIE_1  SIER = 0x01 << 1  //  Enabled
-	AVIE    SIER = 0x01 << 2  //+ Address Valid Interrupt Enable
-	AVIE_0  SIER = 0x00 << 2  //  Disabled
-	AVIE_1  SIER = 0x01 << 2  //  Enabled
-	TAIE    SIER = 0x01 << 3  //+ Transmit ACK Interrupt Enable
-	TAIE_0  SIER = 0x00 << 3  //  Disabled
-	TAIE_1  SIER = 0x01 << 3  //  Enabled
-	RSIE    SIER = 0x01 << 8  //+ Repeated Start Interrupt Enable
-	RSIE_0  SIER = 0x00 << 8  //  Disabled
-	RSIE_1  SIER = 0x01 << 8  //  Enabled
-	SDIE    SIER = 0x01 << 9  //+ STOP Detect Interrupt Enable
-	SDIE_0  SIER = 0x00 << 9  //  Disabled
-	SDIE_1  SIER = 0x01 << 9  //  Enabled
-	BEIE    SIER = 0x01 << 10 //+ Bit Error Interrupt Enable
-	BEIE_0  SIER = 0x00 << 10 //  Disabled
-	BEIE_1  SIER = 0x01 << 10 //  Enabled
-	FEIE    SIER = 0x01 << 11 //+ FIFO Error Interrupt Enable
-	FEIE_0  SIER = 0x00 << 11 //  Disabled
-	FEIE_1  SIER = 0x01 << 11 //  Enabled
-	AM0IE   SIER = 0x01 << 12 //+ Address Match 0 Interrupt Enable
-	AM0IE_0 SIER = 0x00 << 12 //  Enabled
-	AM0IE_1 SIER = 0x01 << 12 //  Disabled
-	AM1F    SIER = 0x01 << 13 //+ Address Match 1 Interrupt Enable
-	AM1F_0  SIER = 0x00 << 13 //  Disabled
-	AM1F_1  SIER = 0x01 << 13 //  Enabled
-	GCIE    SIER = 0x01 << 14 //+ General Call Interrupt Enable
-	GCIE_0  SIER = 0x00 << 14 //  Disabled
-	GCIE_1  SIER = 0x01 << 14 //  Enabled
-	SARIE   SIER = 0x01 << 15 //+ SMBus Alert Response Interrupt Enable
-	SARIE_0 SIER = 0x00 << 15 //  Disabled
-	SARIE_1 SIER = 0x01 << 15 //  Enabled
+	TDIE  SIER = 0x01 << 0  //+ Transmit Data Interrupt Enable
+	RDIE  SIER = 0x01 << 1  //+ Receive Data Interrupt Enable
+	AVIE  SIER = 0x01 << 2  //+ Address Valid Interrupt Enable
+	TAIE  SIER = 0x01 << 3  //+ Transmit ACK Interrupt Enable
+	RSIE  SIER = 0x01 << 8  //+ Repeated Start Interrupt Enable
+	SDIE  SIER = 0x01 << 9  //+ STOP Detect Interrupt Enable
+	BEIE  SIER = 0x01 << 10 //+ Bit Error Interrupt Enable
+	FEIE  SIER = 0x01 << 11 //+ FIFO Error Interrupt Enable
+	AM0IE SIER = 0x01 << 12 //+ Address Match 0 Interrupt Enable
+	AM1F  SIER = 0x01 << 13 //+ Address Match 1 Interrupt Enable
+	GCIE  SIER = 0x01 << 14 //+ General Call Interrupt Enable
+	SARIE SIER = 0x01 << 15 //+ SMBus Alert Response Interrupt Enable
 )
 
 const (
@@ -530,15 +392,9 @@ const (
 )
 
 const (
-	TDDE   SDER = 0x01 << 0 //+ Transmit Data DMA Enable
-	TDDE_0 SDER = 0x00 << 0 //  DMA request is disabled
-	TDDE_1 SDER = 0x01 << 0 //  DMA request is enabled
-	RDDE   SDER = 0x01 << 1 //+ Receive Data DMA Enable
-	RDDE_0 SDER = 0x00 << 1 //  DMA request is disabled
-	RDDE_1 SDER = 0x01 << 1 //  DMA request is enabled
-	AVDE   SDER = 0x01 << 2 //+ Address Valid DMA Enable
-	AVDE_0 SDER = 0x00 << 2 //  DMA request is disabled
-	AVDE_1 SDER = 0x01 << 2 //  DMA request is enabled
+	TDDE SDER = 0x01 << 0 //+ Transmit Data DMA Enable
+	RDDE SDER = 0x01 << 1 //+ Receive Data DMA Enable
+	AVDE SDER = 0x01 << 2 //+ Address Valid DMA Enable
 )
 
 const (
@@ -548,45 +404,25 @@ const (
 )
 
 const (
-	ADRSTALL   SCFGR1 = 0x01 << 0  //+ Address SCL Stall
-	ADRSTALL_0 SCFGR1 = 0x00 << 0  //  Clock stretching is disabled
-	ADRSTALL_1 SCFGR1 = 0x01 << 0  //  Clock stretching is enabled
-	RXSTALL    SCFGR1 = 0x01 << 1  //+ RX SCL Stall
-	RXSTALL_0  SCFGR1 = 0x00 << 1  //  Clock stretching is disabled
-	RXSTALL_1  SCFGR1 = 0x01 << 1  //  Clock stretching is enabled
-	TXDSTALL   SCFGR1 = 0x01 << 2  //+ TX Data SCL Stall
-	TXDSTALL_0 SCFGR1 = 0x00 << 2  //  Clock stretching is disabled
-	TXDSTALL_1 SCFGR1 = 0x01 << 2  //  Clock stretching is enabled
-	ACKSTALL   SCFGR1 = 0x01 << 3  //+ ACK SCL Stall
-	ACKSTALL_0 SCFGR1 = 0x00 << 3  //  Clock stretching is disabled
-	ACKSTALL_1 SCFGR1 = 0x01 << 3  //  Clock stretching is enabled
-	GCEN       SCFGR1 = 0x01 << 8  //+ General Call Enable
-	GCEN_0     SCFGR1 = 0x00 << 8  //  General Call address is disabled
-	GCEN_1     SCFGR1 = 0x01 << 8  //  General Call address is enabled
-	SAEN       SCFGR1 = 0x01 << 9  //+ SMBus Alert Enable
-	SAEN_0     SCFGR1 = 0x00 << 9  //  Disables match on SMBus Alert
-	SAEN_1     SCFGR1 = 0x01 << 9  //  Enables match on SMBus Alert
-	TXCFG      SCFGR1 = 0x01 << 10 //+ Transmit Flag Configuration
-	TXCFG_0    SCFGR1 = 0x00 << 10 //  Transmit Data Flag will only assert during a slave-transmit transfer when the Transmit Data register is empty
-	TXCFG_1    SCFGR1 = 0x01 << 10 //  Transmit Data Flag will assert whenever the Transmit Data register is empty
-	RXCFG      SCFGR1 = 0x01 << 11 //+ Receive Data Configuration
-	RXCFG_0    SCFGR1 = 0x00 << 11 //  Reading the Receive Data register will return received data and clear the Receive Data flag (MSR[RDF]).
-	RXCFG_1    SCFGR1 = 0x01 << 11 //  Reading the Receive Data register when the Address Valid flag (SSR[AVF])is set, will return the Address Status register and clear the Address Valid flag. Reading the Receive Data register when the Address Valid flag is clear, will return received data and clear the Receive Data flag (MSR[RDF]).
-	IGNACK     SCFGR1 = 0x01 << 12 //+ Ignore NACK
-	IGNACK_0   SCFGR1 = 0x00 << 12 //  Slave will end transfer when NACK is detected
-	IGNACK_1   SCFGR1 = 0x01 << 12 //  Slave will not end transfer when NACK detected
-	HSMEN      SCFGR1 = 0x01 << 13 //+ High Speed Mode Enable
-	HSMEN_0    SCFGR1 = 0x00 << 13 //  Disables detection of HS-mode master code
-	HSMEN_1    SCFGR1 = 0x01 << 13 //  Enables detection of HS-mode master code
-	ADDRCFG    SCFGR1 = 0x07 << 16 //+ Address Configuration
-	ADDRCFG_0  SCFGR1 = 0x00 << 16 //  Address match 0 (7-bit)
-	ADDRCFG_1  SCFGR1 = 0x01 << 16 //  Address match 0 (10-bit)
-	ADDRCFG_2  SCFGR1 = 0x02 << 16 //  Address match 0 (7-bit) or Address match 1 (7-bit)
-	ADDRCFG_3  SCFGR1 = 0x03 << 16 //  Address match 0 (10-bit) or Address match 1 (10-bit)
-	ADDRCFG_4  SCFGR1 = 0x04 << 16 //  Address match 0 (7-bit) or Address match 1 (10-bit)
-	ADDRCFG_5  SCFGR1 = 0x05 << 16 //  Address match 0 (10-bit) or Address match 1 (7-bit)
-	ADDRCFG_6  SCFGR1 = 0x06 << 16 //  From Address match 0 (7-bit) to Address match 1 (7-bit)
-	ADDRCFG_7  SCFGR1 = 0x07 << 16 //  From Address match 0 (10-bit) to Address match 1 (10-bit)
+	ADRSTALL  SCFGR1 = 0x01 << 0  //+ Address SCL Stall
+	RXSTALL   SCFGR1 = 0x01 << 1  //+ RX SCL Stall
+	TXDSTALL  SCFGR1 = 0x01 << 2  //+ TX Data SCL Stall
+	ACKSTALL  SCFGR1 = 0x01 << 3  //+ ACK SCL Stall
+	GCEN      SCFGR1 = 0x01 << 8  //+ General Call Enable
+	SAEN      SCFGR1 = 0x01 << 9  //+ SMBus Alert Enable
+	TXCFG     SCFGR1 = 0x01 << 10 //+ Transmit Flag Configuration
+	RXCFG     SCFGR1 = 0x01 << 11 //+ Receive Data Configuration
+	IGNACK    SCFGR1 = 0x01 << 12 //+ Ignore NACK
+	HSMEN     SCFGR1 = 0x01 << 13 //+ High Speed Mode Enable
+	ADDRCFG   SCFGR1 = 0x07 << 16 //+ Address Configuration
+	ADDRCFG_0 SCFGR1 = 0x00 << 16 //  Address match 0 (7-bit)
+	ADDRCFG_1 SCFGR1 = 0x01 << 16 //  Address match 0 (10-bit)
+	ADDRCFG_2 SCFGR1 = 0x02 << 16 //  Address match 0 (7-bit) or Address match 1 (7-bit)
+	ADDRCFG_3 SCFGR1 = 0x03 << 16 //  Address match 0 (10-bit) or Address match 1 (10-bit)
+	ADDRCFG_4 SCFGR1 = 0x04 << 16 //  Address match 0 (7-bit) or Address match 1 (10-bit)
+	ADDRCFG_5 SCFGR1 = 0x05 << 16 //  Address match 0 (10-bit) or Address match 1 (7-bit)
+	ADDRCFG_6 SCFGR1 = 0x06 << 16 //  From Address match 0 (7-bit) to Address match 1 (7-bit)
+	ADDRCFG_7 SCFGR1 = 0x07 << 16 //  From Address match 0 (10-bit) to Address match 1 (10-bit)
 )
 
 const (
@@ -630,8 +466,6 @@ const (
 const (
 	RADDR SASR = 0x7FF << 0 //+ Received Address
 	ANV   SASR = 0x01 << 14 //+ Address Not Valid
-	ANV_0 SASR = 0x00 << 14 //  Received Address (RADDR) is valid
-	ANV_1 SASR = 0x01 << 14 //  Received Address (RADDR) is not valid
 )
 
 const (
@@ -640,9 +474,7 @@ const (
 )
 
 const (
-	TXNACK   STAR = 0x01 << 0 //+ Transmit NACK
-	TXNACK_0 STAR = 0x00 << 0 //  Write a Transmit ACK for each received word
-	TXNACK_1 STAR = 0x01 << 0 //  Write a Transmit NACK for each received word
+	TXNACK STAR = 0x01 << 0 //+ Transmit NACK
 )
 
 const (
@@ -658,13 +490,9 @@ const (
 )
 
 const (
-	DATA      SRDR = 0xFF << 0  //+ Receive Data
-	RXEMPTY   SRDR = 0x01 << 14 //+ RX Empty
-	RXEMPTY_0 SRDR = 0x00 << 14 //  The Receive Data Register is not empty
-	RXEMPTY_1 SRDR = 0x01 << 14 //  The Receive Data Register is empty
-	SOF       SRDR = 0x01 << 15 //+ Start Of Frame
-	SOF_0     SRDR = 0x00 << 15 //  Indicates this is not the first data word since a (repeated) START or STOP condition
-	SOF_1     SRDR = 0x01 << 15 //  Indicates this is the first data word since a (repeated) START or STOP condition
+	DATA    SRDR = 0xFF << 0  //+ Receive Data
+	RXEMPTY SRDR = 0x01 << 14 //+ RX Empty
+	SOF     SRDR = 0x01 << 15 //+ Start Of Frame
 )
 
 const (

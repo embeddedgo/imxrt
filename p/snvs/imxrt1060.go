@@ -43,42 +43,18 @@
 package snvs
 
 const (
-	ZMK_WSL     HPLR = 0x01 << 0  //+ Zeroizable Master Key Write Soft Lock When set, prevents any writes (software and hardware) to the ZMK registers and the ZMK_HWP, ZMK_VAL, and ZMK_ECC_EN fields of the LPMKCR
-	ZMK_WSL_0   HPLR = 0x00 << 0  //  Write access is allowed
-	ZMK_WSL_1   HPLR = 0x01 << 0  //  Write access is not allowed
-	ZMK_RSL     HPLR = 0x01 << 1  //+ Zeroizable Master Key Read Soft Lock When set, prevents any software reads to the ZMK Registers and ZMK_ECC_VALUE field of the LPMKCR
-	ZMK_RSL_0   HPLR = 0x00 << 1  //  Read access is allowed (only in software Programming mode)
-	ZMK_RSL_1   HPLR = 0x01 << 1  //  Read access is not allowed
-	SRTC_SL     HPLR = 0x01 << 2  //+ Secure Real Time Counter Soft Lock When set, prevents any writes to the SRTC Registers, SRTC_ENV, and SRTC_INV_EN bits
-	SRTC_SL_0   HPLR = 0x00 << 2  //  Write access is allowed
-	SRTC_SL_1   HPLR = 0x01 << 2  //  Write access is not allowed
-	LPCALB_SL   HPLR = 0x01 << 3  //+ LP Calibration Soft Lock When set, prevents any writes to the LP Calibration Value (LPCALB_VAL) and LP Calibration Enable (LPCALB_EN)
-	LPCALB_SL_0 HPLR = 0x00 << 3  //  Write access is allowed
-	LPCALB_SL_1 HPLR = 0x01 << 3  //  Write access is not allowed
-	MC_SL       HPLR = 0x01 << 4  //+ Monotonic Counter Soft Lock When set, prevents any writes (increments) to the MC Registers and MC_ENV bit
-	MC_SL_0     HPLR = 0x00 << 4  //  Write access (increment) is allowed
-	MC_SL_1     HPLR = 0x01 << 4  //  Write access (increment) is not allowed
-	GPR_SL      HPLR = 0x01 << 5  //+ General Purpose Register Soft Lock When set, prevents any writes to the GPR
-	GPR_SL_0    HPLR = 0x00 << 5  //  Write access is allowed
-	GPR_SL_1    HPLR = 0x01 << 5  //  Write access is not allowed
-	LPSVCR_SL   HPLR = 0x01 << 6  //+ LP Security Violation Control Register Soft Lock When set, prevents any writes to the LPSVCR
-	LPSVCR_SL_0 HPLR = 0x00 << 6  //  Write access is allowed
-	LPSVCR_SL_1 HPLR = 0x01 << 6  //  Write access is not allowed
-	LPTDCR_SL   HPLR = 0x01 << 8  //+ LP Tamper Detectors Configuration Register Soft Lock When set, prevents any writes to the LPTDCR
-	LPTDCR_SL_0 HPLR = 0x00 << 8  //  Write access is allowed
-	LPTDCR_SL_1 HPLR = 0x01 << 8  //  Write access is not allowed
-	MKS_SL      HPLR = 0x01 << 9  //+ Master Key Select Soft Lock When set, prevents any writes to the MASTER_KEY_SEL field of the LPMKCR
-	MKS_SL_0    HPLR = 0x00 << 9  //  Write access is allowed
-	MKS_SL_1    HPLR = 0x01 << 9  //  Write access is not allowed
-	HPSVCR_L    HPLR = 0x01 << 16 //+ HP Security Violation Control Register Lock When set, prevents any writes to the HPSVCR
-	HPSVCR_L_0  HPLR = 0x00 << 16 //  Write access is allowed
-	HPSVCR_L_1  HPLR = 0x01 << 16 //  Write access is not allowed
-	HPSICR_L    HPLR = 0x01 << 17 //+ HP Security Interrupt Control Register Lock When set, prevents any writes to the HPSICR
-	HPSICR_L_0  HPLR = 0x00 << 17 //  Write access is allowed
-	HPSICR_L_1  HPLR = 0x01 << 17 //  Write access is not allowed
-	HAC_L       HPLR = 0x01 << 18 //+ High Assurance Counter Lock When set, prevents any writes to HPHACIVR, HPHACR, and HAC_EN bit of HPCOMR
-	HAC_L_0     HPLR = 0x00 << 18 //  Write access is allowed
-	HAC_L_1     HPLR = 0x01 << 18 //  Write access is not allowed
+	ZMK_WSL   HPLR = 0x01 << 0  //+ Zeroizable Master Key Write Soft Lock When set, prevents any writes (software and hardware) to the ZMK registers and the ZMK_HWP, ZMK_VAL, and ZMK_ECC_EN fields of the LPMKCR
+	ZMK_RSL   HPLR = 0x01 << 1  //+ Zeroizable Master Key Read Soft Lock When set, prevents any software reads to the ZMK Registers and ZMK_ECC_VALUE field of the LPMKCR
+	SRTC_SL   HPLR = 0x01 << 2  //+ Secure Real Time Counter Soft Lock When set, prevents any writes to the SRTC Registers, SRTC_ENV, and SRTC_INV_EN bits
+	LPCALB_SL HPLR = 0x01 << 3  //+ LP Calibration Soft Lock When set, prevents any writes to the LP Calibration Value (LPCALB_VAL) and LP Calibration Enable (LPCALB_EN)
+	MC_SL     HPLR = 0x01 << 4  //+ Monotonic Counter Soft Lock When set, prevents any writes (increments) to the MC Registers and MC_ENV bit
+	GPR_SL    HPLR = 0x01 << 5  //+ General Purpose Register Soft Lock When set, prevents any writes to the GPR
+	LPSVCR_SL HPLR = 0x01 << 6  //+ LP Security Violation Control Register Soft Lock When set, prevents any writes to the LPSVCR
+	LPTDCR_SL HPLR = 0x01 << 8  //+ LP Tamper Detectors Configuration Register Soft Lock When set, prevents any writes to the LPTDCR
+	MKS_SL    HPLR = 0x01 << 9  //+ Master Key Select Soft Lock When set, prevents any writes to the MASTER_KEY_SEL field of the LPMKCR
+	HPSVCR_L  HPLR = 0x01 << 16 //+ HP Security Violation Control Register Lock When set, prevents any writes to the HPSVCR
+	HPSICR_L  HPLR = 0x01 << 17 //+ HP Security Interrupt Control Register Lock When set, prevents any writes to the HPSICR
+	HAC_L     HPLR = 0x01 << 18 //+ High Assurance Counter Lock When set, prevents any writes to HPHACIVR, HPHACR, and HAC_EN bit of HPCOMR
 )
 
 const (
@@ -97,39 +73,21 @@ const (
 )
 
 const (
-	SSM_ST         HPCOMR = 0x01 << 0  //+ SSM State Transition Transition state of the system security monitor
-	SSM_ST_DIS     HPCOMR = 0x01 << 1  //+ SSM Secure to Trusted State Transition Disable When set, disables the SSM transition from secure to trusted state
-	SSM_ST_DIS_0   HPCOMR = 0x00 << 1  //  Secure to Trusted State transition is enabled
-	SSM_ST_DIS_1   HPCOMR = 0x01 << 1  //  Secure to Trusted State transition is disabled
-	SSM_SFNS_DIS   HPCOMR = 0x01 << 2  //+ SSM Soft Fail to Non-Secure State Transition Disable When set, it disables the SSM transition from soft fail to non-secure state
-	SSM_SFNS_DIS_0 HPCOMR = 0x00 << 2  //  Soft Fail to Non-Secure State transition is enabled
-	SSM_SFNS_DIS_1 HPCOMR = 0x01 << 2  //  Soft Fail to Non-Secure State transition is disabled
-	LP_SWR         HPCOMR = 0x01 << 4  //+ LP Software Reset When set to 1, most registers in the SNVS_LP section are reset, but the following registers are not reset by an LP software reset: Secure Real Time Counter Time Alarm Register This bit cannot be set when the LP_SWR_DIS bit is set
-	LP_SWR_0       HPCOMR = 0x00 << 4  //  No Action
-	LP_SWR_1       HPCOMR = 0x01 << 4  //  Reset LP section
-	LP_SWR_DIS     HPCOMR = 0x01 << 5  //+ LP Software Reset Disable When set, disables the LP software reset
-	LP_SWR_DIS_0   HPCOMR = 0x00 << 5  //  LP software reset is enabled
-	LP_SWR_DIS_1   HPCOMR = 0x01 << 5  //  LP software reset is disabled
-	SW_SV          HPCOMR = 0x01 << 8  //+ Software Security Violation When set, the system security monitor treats this bit as a non-fatal security violation
-	SW_FSV         HPCOMR = 0x01 << 9  //+ Software Fatal Security Violation When set, the system security monitor treats this bit as a fatal security violation
-	SW_LPSV        HPCOMR = 0x01 << 10 //+ LP Software Security Violation When set, SNVS_LP treats this bit as a security violation
-	PROG_ZMK       HPCOMR = 0x01 << 12 //+ Program Zeroizable Master Key This bit activates ZMK hardware programming mechanism
-	PROG_ZMK_0     HPCOMR = 0x00 << 12 //  No Action
-	PROG_ZMK_1     HPCOMR = 0x01 << 12 //  Activate hardware key programming mechanism
-	MKS_EN         HPCOMR = 0x01 << 13 //+ Master Key Select Enable When not set, the one time programmable (OTP) master key is selected by default
-	MKS_EN_0       HPCOMR = 0x00 << 13 //  OTP master key is selected as an SNVS master key
-	MKS_EN_1       HPCOMR = 0x01 << 13 //  SNVS master key is selected according to the setting of the MASTER_KEY_SEL field of LPMKCR
-	HAC_EN         HPCOMR = 0x01 << 16 //+ High Assurance Counter Enable This bit controls the SSM transition from the soft fail to the hard fail state
-	HAC_EN_0       HPCOMR = 0x00 << 16 //  High Assurance Counter is disabled
-	HAC_EN_1       HPCOMR = 0x01 << 16 //  High Assurance Counter is enabled
-	HAC_LOAD       HPCOMR = 0x01 << 17 //+ High Assurance Counter Load When set, it loads the High Assurance Counter Register with the value of the High Assurance Counter Load Register
-	HAC_LOAD_0     HPCOMR = 0x00 << 17 //  No Action
-	HAC_LOAD_1     HPCOMR = 0x01 << 17 //  Load the HAC
-	HAC_CLEAR      HPCOMR = 0x01 << 18 //+ High Assurance Counter Clear When set, it clears the High Assurance Counter Register
-	HAC_CLEAR_0    HPCOMR = 0x00 << 18 //  No Action
-	HAC_CLEAR_1    HPCOMR = 0x01 << 18 //  Clear the HAC
-	HAC_STOP       HPCOMR = 0x01 << 19 //+ High Assurance Counter Stop This bit can be set only when SSM is in soft fail state
-	NPSWA_EN       HPCOMR = 0x01 << 31 //+ Non-Privileged Software Access Enable When set, allows non-privileged software to access all SNVS registers, including those that are privileged software read/write access only
+	SSM_ST       HPCOMR = 0x01 << 0  //+ SSM State Transition Transition state of the system security monitor
+	SSM_ST_DIS   HPCOMR = 0x01 << 1  //+ SSM Secure to Trusted State Transition Disable When set, disables the SSM transition from secure to trusted state
+	SSM_SFNS_DIS HPCOMR = 0x01 << 2  //+ SSM Soft Fail to Non-Secure State Transition Disable When set, it disables the SSM transition from soft fail to non-secure state
+	LP_SWR       HPCOMR = 0x01 << 4  //+ LP Software Reset When set to 1, most registers in the SNVS_LP section are reset, but the following registers are not reset by an LP software reset: Secure Real Time Counter Time Alarm Register This bit cannot be set when the LP_SWR_DIS bit is set
+	LP_SWR_DIS   HPCOMR = 0x01 << 5  //+ LP Software Reset Disable When set, disables the LP software reset
+	SW_SV        HPCOMR = 0x01 << 8  //+ Software Security Violation When set, the system security monitor treats this bit as a non-fatal security violation
+	SW_FSV       HPCOMR = 0x01 << 9  //+ Software Fatal Security Violation When set, the system security monitor treats this bit as a fatal security violation
+	SW_LPSV      HPCOMR = 0x01 << 10 //+ LP Software Security Violation When set, SNVS_LP treats this bit as a security violation
+	PROG_ZMK     HPCOMR = 0x01 << 12 //+ Program Zeroizable Master Key This bit activates ZMK hardware programming mechanism
+	MKS_EN       HPCOMR = 0x01 << 13 //+ Master Key Select Enable When not set, the one time programmable (OTP) master key is selected by default
+	HAC_EN       HPCOMR = 0x01 << 16 //+ High Assurance Counter Enable This bit controls the SSM transition from the soft fail to the hard fail state
+	HAC_LOAD     HPCOMR = 0x01 << 17 //+ High Assurance Counter Load When set, it loads the High Assurance Counter Register with the value of the High Assurance Counter Load Register
+	HAC_CLEAR    HPCOMR = 0x01 << 18 //+ High Assurance Counter Clear When set, it clears the High Assurance Counter Register
+	HAC_STOP     HPCOMR = 0x01 << 19 //+ High Assurance Counter Stop This bit can be set only when SSM is in soft fail state
+	NPSWA_EN     HPCOMR = 0x01 << 31 //+ Non-Privileged Software Access Enable When set, allows non-privileged software to access all SNVS registers, including those that are privileged software read/write access only
 )
 
 const (
@@ -152,17 +110,9 @@ const (
 
 const (
 	RTC_EN        HPCR = 0x01 << 0  //+ HP Real Time Counter Enable
-	RTC_EN_0      HPCR = 0x00 << 0  //  RTC is disabled
-	RTC_EN_1      HPCR = 0x01 << 0  //  RTC is enabled
 	HPTA_EN       HPCR = 0x01 << 1  //+ HP Time Alarm Enable When set, the time alarm interrupt is generated if the value in the HP Time Alarm Registers is equal to the value of the HP Real Time Counter
-	HPTA_EN_0     HPCR = 0x00 << 1  //  HP Time Alarm Interrupt is disabled
-	HPTA_EN_1     HPCR = 0x01 << 1  //  HP Time Alarm Interrupt is enabled
 	DIS_PI        HPCR = 0x01 << 2  //+ Disable periodic interrupt in the functional interrupt
-	DIS_PI_0      HPCR = 0x00 << 2  //  Periodic interrupt will trigger a functional interrupt
-	DIS_PI_1      HPCR = 0x01 << 2  //  Disable periodic interrupt in the function interrupt
 	PI_EN         HPCR = 0x01 << 3  //+ HP Periodic Interrupt Enable The periodic interrupt can be generated only if the HP Real Time Counter is enabled
-	PI_EN_0       HPCR = 0x00 << 3  //  HP Periodic Interrupt is disabled
-	PI_EN_1       HPCR = 0x01 << 3  //  HP Periodic Interrupt is enabled
 	PI_FREQ       HPCR = 0x0F << 4  //+ Periodic Interrupt Frequency Defines frequency of the periodic interrupt
 	PI_FREQ_0     HPCR = 0x00 << 4  //  - bit 0 of the HPRTCLR is selected as a source of the periodic interrupt
 	PI_FREQ_1     HPCR = 0x01 << 4  //  - bit 1 of the HPRTCLR is selected as a source of the periodic interrupt
@@ -181,8 +131,6 @@ const (
 	PI_FREQ_14    HPCR = 0x0E << 4  //  - bit 14 of the HPRTCLR is selected as a source of the periodic interrupt
 	PI_FREQ_15    HPCR = 0x0F << 4  //  - bit 15 of the HPRTCLR is selected as a source of the periodic interrupt
 	HPCALB_EN     HPCR = 0x01 << 8  //+ HP Real Time Counter Calibration Enabled Indicates that the time calibration mechanism is enabled.
-	HPCALB_EN_0   HPCR = 0x00 << 8  //  HP Timer calibration disabled
-	HPCALB_EN_1   HPCR = 0x01 << 8  //  HP Timer calibration enabled
 	HPCALB_VAL    HPCR = 0x1F << 10 //+ HP Calibration Value Defines signed calibration value for the HP Real Time Counter
 	HPCALB_VAL_0  HPCR = 0x00 << 10 //  +0 counts per each 32768 ticks of the counter
 	HPCALB_VAL_1  HPCR = 0x01 << 10 //  +1 counts per each 32768 ticks of the counter
@@ -193,8 +141,6 @@ const (
 	HPCALB_VAL_30 HPCR = 0x1E << 10 //  -2 counts per each 32768 ticks of the counter
 	HPCALB_VAL_31 HPCR = 0x1F << 10 //  -1 counts per each 32768 ticks of the counter
 	HP_TS         HPCR = 0x01 << 16 //+ HP Time Synchronize
-	HP_TS_0       HPCR = 0x00 << 16 //  No Action
-	HP_TS_1       HPCR = 0x01 << 16 //  Synchronize the HP Time Counter to the LP Time Counter
 	BTN_CONFIG    HPCR = 0x07 << 24 //+ Button Configuration
 	BTN_MASK      HPCR = 0x01 << 27 //+ Button interrupt mask
 )
@@ -213,27 +159,13 @@ const (
 )
 
 const (
-	SV0_EN     HPSICR = 0x01 << 0  //+ Security Violation 0 Interrupt Enable Setting this bit to 1 enables generation of the security interrupt to the host processor upon detection of the Security Violation 0 security violation
-	SV0_EN_0   HPSICR = 0x00 << 0  //  Security Violation 0 Interrupt is Disabled
-	SV0_EN_1   HPSICR = 0x01 << 0  //  Security Violation 0 Interrupt is Enabled
-	SV1_EN     HPSICR = 0x01 << 1  //+ Security Violation 1 Interrupt Enable Setting this bit to 1 enables generation of the security interrupt to the host processor upon detection of the Security Violation 1 security violation
-	SV1_EN_0   HPSICR = 0x00 << 1  //  Security Violation 1 Interrupt is Disabled
-	SV1_EN_1   HPSICR = 0x01 << 1  //  Security Violation 1 Interrupt is Enabled
-	SV2_EN     HPSICR = 0x01 << 2  //+ Security Violation 2 Interrupt Enable Setting this bit to 1 enables generation of the security interrupt to the host processor upon detection of the Security Violation 2 security violation
-	SV2_EN_0   HPSICR = 0x00 << 2  //  Security Violation 2 Interrupt is Disabled
-	SV2_EN_1   HPSICR = 0x01 << 2  //  Security Violation 2 Interrupt is Enabled
-	SV3_EN     HPSICR = 0x01 << 3  //+ Security Violation 3 Interrupt Enable Setting this bit to 1 enables generation of the security interrupt to the host processor upon detection of the Security Violation 3 security violation
-	SV3_EN_0   HPSICR = 0x00 << 3  //  Security Violation 3 Interrupt is Disabled
-	SV3_EN_1   HPSICR = 0x01 << 3  //  Security Violation 3 Interrupt is Enabled
-	SV4_EN     HPSICR = 0x01 << 4  //+ Security Violation 4 Interrupt Enable Setting this bit to 1 enables generation of the security interrupt to the host processor upon detection of the Security Violation 4 security violation
-	SV4_EN_0   HPSICR = 0x00 << 4  //  Security Violation 4 Interrupt is Disabled
-	SV4_EN_1   HPSICR = 0x01 << 4  //  Security Violation 4 Interrupt is Enabled
-	SV5_EN     HPSICR = 0x01 << 5  //+ Security Violation 5 Interrupt Enable Setting this bit to 1 enables generation of the security interrupt to the host processor upon detection of the Security Violation 5 security violation
-	SV5_EN_0   HPSICR = 0x00 << 5  //  Security Violation 5 Interrupt is Disabled
-	SV5_EN_1   HPSICR = 0x01 << 5  //  Security Violation 5 Interrupt is Enabled
-	LPSVI_EN   HPSICR = 0x01 << 31 //+ LP Security Violation Interrupt Enable This bit enables generating of the security interrupt to the host processor upon security violation signal from the LP section
-	LPSVI_EN_0 HPSICR = 0x00 << 31 //  LP Security Violation Interrupt is Disabled
-	LPSVI_EN_1 HPSICR = 0x01 << 31 //  LP Security Violation Interrupt is Enabled
+	SV0_EN   HPSICR = 0x01 << 0  //+ Security Violation 0 Interrupt Enable Setting this bit to 1 enables generation of the security interrupt to the host processor upon detection of the Security Violation 0 security violation
+	SV1_EN   HPSICR = 0x01 << 1  //+ Security Violation 1 Interrupt Enable Setting this bit to 1 enables generation of the security interrupt to the host processor upon detection of the Security Violation 1 security violation
+	SV2_EN   HPSICR = 0x01 << 2  //+ Security Violation 2 Interrupt Enable Setting this bit to 1 enables generation of the security interrupt to the host processor upon detection of the Security Violation 2 security violation
+	SV3_EN   HPSICR = 0x01 << 3  //+ Security Violation 3 Interrupt Enable Setting this bit to 1 enables generation of the security interrupt to the host processor upon detection of the Security Violation 3 security violation
+	SV4_EN   HPSICR = 0x01 << 4  //+ Security Violation 4 Interrupt Enable Setting this bit to 1 enables generation of the security interrupt to the host processor upon detection of the Security Violation 4 security violation
+	SV5_EN   HPSICR = 0x01 << 5  //+ Security Violation 5 Interrupt Enable Setting this bit to 1 enables generation of the security interrupt to the host processor upon detection of the Security Violation 5 security violation
+	LPSVI_EN HPSICR = 0x01 << 31 //+ LP Security Violation Interrupt Enable This bit enables generating of the security interrupt to the host processor upon security violation signal from the LP section
 )
 
 const (
@@ -248,20 +180,10 @@ const (
 
 const (
 	SV0_CFG    HPSVCR = 0x01 << 0  //+ Security Violation 0 Security Violation Configuration This field configures the Security Violation 0 Security Violation Input
-	SV0_CFG_0  HPSVCR = 0x00 << 0  //  Security Violation 0 is a non-fatal violation
-	SV0_CFG_1  HPSVCR = 0x01 << 0  //  Security Violation 0 is a fatal violation
 	SV1_CFG    HPSVCR = 0x01 << 1  //+ Security Violation 1 Security Violation Configuration This field configures the Security Violation 1 Security Violation Input
-	SV1_CFG_0  HPSVCR = 0x00 << 1  //  Security Violation 1 is a non-fatal violation
-	SV1_CFG_1  HPSVCR = 0x01 << 1  //  Security Violation 1 is a fatal violation
 	SV2_CFG    HPSVCR = 0x01 << 2  //+ Security Violation 2 Security Violation Configuration This field configures the Security Violation 2 Security Violation Input
-	SV2_CFG_0  HPSVCR = 0x00 << 2  //  Security Violation 2 is a non-fatal violation
-	SV2_CFG_1  HPSVCR = 0x01 << 2  //  Security Violation 2 is a fatal violation
 	SV3_CFG    HPSVCR = 0x01 << 3  //+ Security Violation 3 Security Violation Configuration This field configures the Security Violation 3 Security Violation Input
-	SV3_CFG_0  HPSVCR = 0x00 << 3  //  Security Violation 3 is a non-fatal violation
-	SV3_CFG_1  HPSVCR = 0x01 << 3  //  Security Violation 3 is a fatal violation
 	SV4_CFG    HPSVCR = 0x01 << 4  //+ Security Violation 4 Security Violation Configuration This field configures the Security Violation 4 Security Violation Input
-	SV4_CFG_0  HPSVCR = 0x00 << 4  //  Security Violation 4 is a non-fatal violation
-	SV4_CFG_1  HPSVCR = 0x01 << 4  //  Security Violation 4 is a fatal violation
 	SV5_CFG    HPSVCR = 0x03 << 5  //+ Security Violation 5 Security Violation Configuration This field configures the Security Violation 5 Security Violation Input
 	SV5_CFG_0  HPSVCR = 0x00 << 5  //  Security Violation 5 is disabled
 	SV5_CFG_1  HPSVCR = 0x01 << 5  //  Security Violation 5 is a non-fatal violation
@@ -284,11 +206,7 @@ const (
 
 const (
 	HPTA                HPSR = 0x01 << 0   //+ HP Time Alarm Indicates that the HP Time Alarm has occurred since this bit was last cleared.
-	HPTA_0              HPSR = 0x00 << 0   //  No time alarm interrupt occurred.
-	HPTA_1              HPSR = 0x01 << 0   //  A time alarm interrupt occurred.
 	PI                  HPSR = 0x01 << 1   //+ Periodic Interrupt Indicates that periodic interrupt has occurred since this bit was last cleared.
-	PI_0                HPSR = 0x00 << 1   //  No periodic interrupt occurred.
-	PI_1                HPSR = 0x01 << 1   //  A periodic interrupt occurred.
 	LPDIS               HPSR = 0x01 << 4   //+ Low Power Disable If 1, the low power section has been disabled by means of an input signal to SNVS
 	BTN                 HPSR = 0x01 << 6   //+ Button Value of the BTN input
 	BI                  HPSR = 0x01 << 7   //+ Button Interrupt Signal ipi_snvs_btn_int_b was asserted.
@@ -313,11 +231,7 @@ const (
 	CLOSED_CONFIG       HPSR = 0x0B << 12  //  CLOSED configuration
 	OTPMK_SYNDROME      HPSR = 0x1FF << 16 //+ One Time Programmable Master Key Syndrome In the case of a single-bit error, the eight lower bits of this value indicate the bit number of error location
 	OTPMK_ZERO          HPSR = 0x01 << 27  //+ One Time Programmable Master Key is Equal to Zero
-	OTPMK_ZERO_0        HPSR = 0x00 << 27  //  The OTPMK is not zero.
-	OTPMK_ZERO_1        HPSR = 0x01 << 27  //  The OTPMK is zero.
 	ZMK_ZERO            HPSR = 0x01 << 31  //+ Zeroizable Master Key is Equal to Zero
-	ZMK_ZERO_0          HPSR = 0x00 << 31  //  The ZMK is not zero.
-	ZMK_ZERO_1          HPSR = 0x01 << 31  //  The ZMK is zero.
 )
 
 const (
@@ -334,32 +248,18 @@ const (
 )
 
 const (
-	SV0            HPSVSR = 0x01 << 0   //+ Security Violation 0 security violation was detected.
-	SV0_0          HPSVSR = 0x00 << 0   //  No Security Violation 0 security violation was detected.
-	SV0_1          HPSVSR = 0x01 << 0   //  Security Violation 0 security violation was detected.
-	SV1            HPSVSR = 0x01 << 1   //+ Security Violation 1 security violation was detected.
-	SV1_0          HPSVSR = 0x00 << 1   //  No Security Violation 1 security violation was detected.
-	SV1_1          HPSVSR = 0x01 << 1   //  Security Violation 1 security violation was detected.
-	SV2            HPSVSR = 0x01 << 2   //+ Security Violation 2 security violation was detected.
-	SV2_0          HPSVSR = 0x00 << 2   //  No Security Violation 2 security violation was detected.
-	SV2_1          HPSVSR = 0x01 << 2   //  Security Violation 2 security violation was detected.
-	SV3            HPSVSR = 0x01 << 3   //+ Security Violation 3 security violation was detected.
-	SV3_0          HPSVSR = 0x00 << 3   //  No Security Violation 3 security violation was detected.
-	SV3_1          HPSVSR = 0x01 << 3   //  Security Violation 3 security violation was detected.
-	SV4            HPSVSR = 0x01 << 4   //+ Security Violation 4 security violation was detected.
-	SV4_0          HPSVSR = 0x00 << 4   //  No Security Violation 4 security violation was detected.
-	SV4_1          HPSVSR = 0x01 << 4   //  Security Violation 4 security violation was detected.
-	SV5            HPSVSR = 0x01 << 5   //+ Security Violation 5 security violation was detected.
-	SV5_0          HPSVSR = 0x00 << 5   //  No Security Violation 5 security violation was detected.
-	SV5_1          HPSVSR = 0x01 << 5   //  Security Violation 5 security violation was detected.
-	SW_SV          HPSVSR = 0x01 << 13  //+ Software Security Violation This bit is a read-only copy of the SW_SV bit in the HP Command Register
-	SW_FSV         HPSVSR = 0x01 << 14  //+ Software Fatal Security Violation This bit is a read-only copy of the SW_FSV bit in the HP Command Register
-	SW_LPSV        HPSVSR = 0x01 << 15  //+ LP Software Security Violation This bit is a read-only copy of the SW_LPSV bit in the HP Command Register
-	ZMK_SYNDROME   HPSVSR = 0x1FF << 16 //+ Zeroizable Master Key Syndrome The ZMK syndrome indicates the single-bit error location and parity for the ZMK register
-	ZMK_ECC_FAIL   HPSVSR = 0x01 << 27  //+ Zeroizable Master Key Error Correcting Code Check Failure When set, this bit triggers a bad key violation to the SSM and a security violation to the SNVS_LP section, which clears security sensitive data
-	ZMK_ECC_FAIL_0 HPSVSR = 0x00 << 27  //  ZMK ECC Failure was not detected.
-	ZMK_ECC_FAIL_1 HPSVSR = 0x01 << 27  //  ZMK ECC Failure was detected.
-	LP_SEC_VIO     HPSVSR = 0x01 << 31  //+ LP Security Violation A security volation was detected in the SNVS low power section.
+	SV0          HPSVSR = 0x01 << 0   //+ Security Violation 0 security violation was detected.
+	SV1          HPSVSR = 0x01 << 1   //+ Security Violation 1 security violation was detected.
+	SV2          HPSVSR = 0x01 << 2   //+ Security Violation 2 security violation was detected.
+	SV3          HPSVSR = 0x01 << 3   //+ Security Violation 3 security violation was detected.
+	SV4          HPSVSR = 0x01 << 4   //+ Security Violation 4 security violation was detected.
+	SV5          HPSVSR = 0x01 << 5   //+ Security Violation 5 security violation was detected.
+	SW_SV        HPSVSR = 0x01 << 13  //+ Software Security Violation This bit is a read-only copy of the SW_SV bit in the HP Command Register
+	SW_FSV       HPSVSR = 0x01 << 14  //+ Software Fatal Security Violation This bit is a read-only copy of the SW_FSV bit in the HP Command Register
+	SW_LPSV      HPSVSR = 0x01 << 15  //+ LP Software Security Violation This bit is a read-only copy of the SW_LPSV bit in the HP Command Register
+	ZMK_SYNDROME HPSVSR = 0x1FF << 16 //+ Zeroizable Master Key Syndrome The ZMK syndrome indicates the single-bit error location and parity for the ZMK register
+	ZMK_ECC_FAIL HPSVSR = 0x01 << 27  //+ Zeroizable Master Key Error Correcting Code Check Failure When set, this bit triggers a bad key violation to the SSM and a security violation to the SNVS_LP section, which clears security sensitive data
+	LP_SEC_VIO   HPSVSR = 0x01 << 31  //+ LP Security Violation A security volation was detected in the SNVS low power section.
 )
 
 const (
@@ -426,33 +326,15 @@ const (
 )
 
 const (
-	ZMK_WHL     LPLR = 0x01 << 0 //+ Zeroizable Master Key Write Hard Lock When set, prevents any writes (software and hardware) to the ZMK registers and ZMK_HWP, ZMK_VAL, and ZMK_ECC_EN fields of the LPMKCR
-	ZMK_WHL_0   LPLR = 0x00 << 0 //  Write access is allowed.
-	ZMK_WHL_1   LPLR = 0x01 << 0 //  Write access is not allowed.
-	ZMK_RHL     LPLR = 0x01 << 1 //+ Zeroizable Master Key Read Hard Lock When set, prevents any software reads to the ZMK registers and ZMK_ECC_VALUE field of the LPMKCR
-	ZMK_RHL_0   LPLR = 0x00 << 1 //  Read access is allowed (only in software programming mode).
-	ZMK_RHL_1   LPLR = 0x01 << 1 //  Read access is not allowed.
-	SRTC_HL     LPLR = 0x01 << 2 //+ Secure Real Time Counter Hard Lock When set, prevents any writes to the SRTC registers, SRTC_ENV, and SRTC_INV_EN bits
-	SRTC_HL_0   LPLR = 0x00 << 2 //  Write access is allowed.
-	SRTC_HL_1   LPLR = 0x01 << 2 //  Write access is not allowed.
-	LPCALB_HL   LPLR = 0x01 << 3 //+ LP Calibration Hard Lock When set, prevents any writes to the LP Calibration Value (LPCALB_VAL) and LP Calibration Enable (LPCALB_EN)
-	LPCALB_HL_0 LPLR = 0x00 << 3 //  Write access is allowed.
-	LPCALB_HL_1 LPLR = 0x01 << 3 //  Write access is not allowed.
-	MC_HL       LPLR = 0x01 << 4 //+ Monotonic Counter Hard Lock When set, prevents any writes (increments) to the MC Registers and MC_ENV bit
-	MC_HL_0     LPLR = 0x00 << 4 //  Write access (increment) is allowed.
-	MC_HL_1     LPLR = 0x01 << 4 //  Write access (increment) is not allowed.
-	GPR_HL      LPLR = 0x01 << 5 //+ General Purpose Register Hard Lock When set, prevents any writes to the GPR
-	GPR_HL_0    LPLR = 0x00 << 5 //  Write access is allowed.
-	GPR_HL_1    LPLR = 0x01 << 5 //  Write access is not allowed.
-	LPSVCR_HL   LPLR = 0x01 << 6 //+ LP Security Violation Control Register Hard Lock When set, prevents any writes to the LPSVCR
-	LPSVCR_HL_0 LPLR = 0x00 << 6 //  Write access is allowed.
-	LPSVCR_HL_1 LPLR = 0x01 << 6 //  Write access is not allowed.
-	LPTDCR_HL   LPLR = 0x01 << 8 //+ LP Tamper Detectors Configuration Register Hard Lock When set, prevents any writes to the LPTDCR
-	LPTDCR_HL_0 LPLR = 0x00 << 8 //  Write access is allowed.
-	LPTDCR_HL_1 LPLR = 0x01 << 8 //  Write access is not allowed.
-	MKS_HL      LPLR = 0x01 << 9 //+ Master Key Select Hard Lock When set, prevents any writes to the MASTER_KEY_SEL field of the LP Master Key Control Register
-	MKS_HL_0    LPLR = 0x00 << 9 //  Write access is allowed.
-	MKS_HL_1    LPLR = 0x01 << 9 //  Write access is not allowed.
+	ZMK_WHL   LPLR = 0x01 << 0 //+ Zeroizable Master Key Write Hard Lock When set, prevents any writes (software and hardware) to the ZMK registers and ZMK_HWP, ZMK_VAL, and ZMK_ECC_EN fields of the LPMKCR
+	ZMK_RHL   LPLR = 0x01 << 1 //+ Zeroizable Master Key Read Hard Lock When set, prevents any software reads to the ZMK registers and ZMK_ECC_VALUE field of the LPMKCR
+	SRTC_HL   LPLR = 0x01 << 2 //+ Secure Real Time Counter Hard Lock When set, prevents any writes to the SRTC registers, SRTC_ENV, and SRTC_INV_EN bits
+	LPCALB_HL LPLR = 0x01 << 3 //+ LP Calibration Hard Lock When set, prevents any writes to the LP Calibration Value (LPCALB_VAL) and LP Calibration Enable (LPCALB_EN)
+	MC_HL     LPLR = 0x01 << 4 //+ Monotonic Counter Hard Lock When set, prevents any writes (increments) to the MC Registers and MC_ENV bit
+	GPR_HL    LPLR = 0x01 << 5 //+ General Purpose Register Hard Lock When set, prevents any writes to the GPR
+	LPSVCR_HL LPLR = 0x01 << 6 //+ LP Security Violation Control Register Hard Lock When set, prevents any writes to the LPSVCR
+	LPTDCR_HL LPLR = 0x01 << 8 //+ LP Tamper Detectors Configuration Register Hard Lock When set, prevents any writes to the LPTDCR
+	MKS_HL    LPLR = 0x01 << 9 //+ Master Key Select Hard Lock When set, prevents any writes to the MASTER_KEY_SEL field of the LP Master Key Control Register
 )
 
 const (
@@ -469,28 +351,14 @@ const (
 
 const (
 	SRTC_ENV       LPCR = 0x01 << 0  //+ Secure Real Time Counter Enabled and Valid When set, the SRTC becomes operational
-	SRTC_ENV_0     LPCR = 0x00 << 0  //  SRTC is disabled or invalid.
-	SRTC_ENV_1     LPCR = 0x01 << 0  //  SRTC is enabled and valid.
 	LPTA_EN        LPCR = 0x01 << 1  //+ LP Time Alarm Enable When set, the SNVS functional interrupt is asserted if the LP Time Alarm Register is equal to the 32 MSBs of the secure real time counter
-	LPTA_EN_0      LPCR = 0x00 << 1  //  LP time alarm interrupt is disabled.
-	LPTA_EN_1      LPCR = 0x01 << 1  //  LP time alarm interrupt is enabled.
 	MC_ENV         LPCR = 0x01 << 2  //+ Monotonic Counter Enabled and Valid When set, the MC can be incremented (by write transaction to the LPSMCMR or LPSMCLR)
-	MC_ENV_0       LPCR = 0x00 << 2  //  MC is disabled or invalid.
-	MC_ENV_1       LPCR = 0x01 << 2  //  MC is enabled and valid.
 	LPWUI_EN       LPCR = 0x01 << 3  //+ LP Wake-Up Interrupt Enable This interrupt line should be connected to the external pin and is intended to inform the external chip about an SNVS_LP event (tamper event, MC rollover, SRTC rollover, or time alarm )
 	SRTC_INV_EN    LPCR = 0x01 << 4  //+ If this bit is 1, in the case of a security violation the SRTC stops counting and the SRTC is invalidated (SRTC_ENV bit is cleared)
-	SRTC_INV_EN_0  LPCR = 0x00 << 4  //  SRTC stays valid in the case of security violation.
-	SRTC_INV_EN_1  LPCR = 0x01 << 4  //  SRTC is invalidated in the case of security violation.
 	DP_EN          LPCR = 0x01 << 5  //+ Dumb PMIC Enabled When set, software can control the system power
-	DP_EN_0        LPCR = 0x00 << 5  //  Smart PMIC enabled.
-	DP_EN_1        LPCR = 0x01 << 5  //  Dumb PMIC enabled.
 	TOP            LPCR = 0x01 << 6  //+ Turn off System Power Asserting this bit causes a signal to be sent to the Power Management IC to turn off the system power
-	TOP_0          LPCR = 0x00 << 6  //  Leave system power on.
-	TOP_1          LPCR = 0x01 << 6  //  Turn off system power.
 	PWR_GLITCH_EN  LPCR = 0x01 << 7  //+ Power Glitch Enable By default the detection of a power glitch does not cause the pmic_en_b signal to be asserted
 	LPCALB_EN      LPCR = 0x01 << 8  //+ LP Calibration Enable When set, enables the SRTC calibration mechanism
-	LPCALB_EN_0    LPCR = 0x00 << 8  //  SRTC Time calibration is disabled.
-	LPCALB_EN_1    LPCR = 0x01 << 8  //  SRTC Time calibration is enabled.
 	LPCALB_VAL     LPCR = 0x1F << 10 //+ LP Calibration Value Defines signed calibration value for SRTC
 	LPCALB_VAL_0   LPCR = 0x00 << 10 //  +0 counts per each 32768 ticks of the counter clock
 	LPCALB_VAL_1   LPCR = 0x01 << 10 //  +1 counts per each 32768 ticks of the counter clock
@@ -533,14 +401,8 @@ const (
 	MASTER_KEY_SEL_2 LPMKCR = 0x02 << 0  //  Select zeroizable master key when MKS_EN bit is set .
 	MASTER_KEY_SEL_3 LPMKCR = 0x03 << 0  //  Select combined master key when MKS_EN bit is set .
 	ZMK_HWP          LPMKCR = 0x01 << 2  //+ Zeroizable Master Key hardware Programming mode When set, only the hardware key programming mechanism can set the ZMK and software cannot read it
-	ZMK_HWP_0        LPMKCR = 0x00 << 2  //  ZMK is in the software programming mode.
-	ZMK_HWP_1        LPMKCR = 0x01 << 2  //  ZMK is in the hardware programming mode.
 	ZMK_VAL          LPMKCR = 0x01 << 3  //+ Zeroizable Master Key Valid When set, the ZMK value can be selected by the master key control block for use by cryptographic modules
-	ZMK_VAL_0        LPMKCR = 0x00 << 3  //  ZMK is not valid.
-	ZMK_VAL_1        LPMKCR = 0x01 << 3  //  ZMK is valid.
 	ZMK_ECC_EN       LPMKCR = 0x01 << 4  //+ Zeroizable Master Key Error Correcting Code Check Enable Writing one to this field automatically calculates and sets the ZMK ECC value in the ZMK_ECC_VALUE field of this register
-	ZMK_ECC_EN_0     LPMKCR = 0x00 << 4  //  ZMK ECC check is disabled.
-	ZMK_ECC_EN_1     LPMKCR = 0x01 << 4  //  ZMK ECC check is enabled.
 	ZMK_ECC_VALUE    LPMKCR = 0x1FF << 7 //+ Zeroizable Master Key Error Correcting Code Value This field is automatically calculated and set when one is written into ZMK_ECC_EN bit of this register
 )
 
@@ -553,24 +415,12 @@ const (
 )
 
 const (
-	SV0_EN   LPSVCR = 0x01 << 0 //+ Security Violation 0 Enable This bit enables Security Violation 0 Input
-	SV0_EN_0 LPSVCR = 0x00 << 0 //  Security Violation 0 is disabled in the LP domain.
-	SV0_EN_1 LPSVCR = 0x01 << 0 //  Security Violation 0 is enabled in the LP domain.
-	SV1_EN   LPSVCR = 0x01 << 1 //+ Security Violation 1 Enable This bit enables Security Violation 1 Input
-	SV1_EN_0 LPSVCR = 0x00 << 1 //  Security Violation 1 is disabled in the LP domain.
-	SV1_EN_1 LPSVCR = 0x01 << 1 //  Security Violation 1 is enabled in the LP domain.
-	SV2_EN   LPSVCR = 0x01 << 2 //+ Security Violation 2 Enable This bit enables Security Violation 2 Input
-	SV2_EN_0 LPSVCR = 0x00 << 2 //  Security Violation 2 is disabled in the LP domain.
-	SV2_EN_1 LPSVCR = 0x01 << 2 //  Security Violation 2 is enabled in the LP domain.
-	SV3_EN   LPSVCR = 0x01 << 3 //+ Security Violation 3 Enable This bit enables Security Violation 3 Input
-	SV3_EN_0 LPSVCR = 0x00 << 3 //  Security Violation 3 is disabled in the LP domain.
-	SV3_EN_1 LPSVCR = 0x01 << 3 //  Security Violation 3 is enabled in the LP domain.
-	SV4_EN   LPSVCR = 0x01 << 4 //+ Security Violation 4 Enable This bit enables Security Violation 4 Input
-	SV4_EN_0 LPSVCR = 0x00 << 4 //  Security Violation 4 is disabled in the LP domain.
-	SV4_EN_1 LPSVCR = 0x01 << 4 //  Security Violation 4 is enabled in the LP domain.
-	SV5_EN   LPSVCR = 0x01 << 5 //+ Security Violation 5 Enable This bit enables Security Violation 5 Input
-	SV5_EN_0 LPSVCR = 0x00 << 5 //  Security Violation 5 is disabled in the LP domain.
-	SV5_EN_1 LPSVCR = 0x01 << 5 //  Security Violation 5 is enabled in the LP domain.
+	SV0_EN LPSVCR = 0x01 << 0 //+ Security Violation 0 Enable This bit enables Security Violation 0 Input
+	SV1_EN LPSVCR = 0x01 << 1 //+ Security Violation 1 Enable This bit enables Security Violation 1 Input
+	SV2_EN LPSVCR = 0x01 << 2 //+ Security Violation 2 Enable This bit enables Security Violation 2 Input
+	SV3_EN LPSVCR = 0x01 << 3 //+ Security Violation 3 Enable This bit enables Security Violation 3 Input
+	SV4_EN LPSVCR = 0x01 << 4 //+ Security Violation 4 Enable This bit enables Security Violation 4 Input
+	SV5_EN LPSVCR = 0x01 << 5 //+ Security Violation 5 Enable This bit enables Security Violation 5 Input
 )
 
 const (
@@ -584,22 +434,12 @@ const (
 
 const (
 	SRTCR_EN   LPTDCR = 0x01 << 1  //+ SRTC Rollover Enable When set, an SRTC rollover event generates an LP security violation.
-	SRTCR_EN_0 LPTDCR = 0x00 << 1  //  SRTC rollover is disabled.
-	SRTCR_EN_1 LPTDCR = 0x01 << 1  //  SRTC rollover is enabled.
 	MCR_EN     LPTDCR = 0x01 << 2  //+ MC Rollover Enable When set, an MC Rollover event generates an LP security violation.
-	MCR_EN_0   LPTDCR = 0x00 << 2  //  MC rollover is disabled.
-	MCR_EN_1   LPTDCR = 0x01 << 2  //  MC rollover is enabled.
 	ET1_EN     LPTDCR = 0x01 << 9  //+ External Tampering 1 Enable When set, external tampering 1 detection generates an LP security violation
-	ET1_EN_0   LPTDCR = 0x00 << 9  //  External tamper 1 is disabled.
-	ET1_EN_1   LPTDCR = 0x01 << 9  //  External tamper 1 is enabled.
 	ET1P       LPTDCR = 0x01 << 11 //+ External Tampering 1 Polarity This bit is used to determine the polarity of external tamper 1.
-	ET1P_0     LPTDCR = 0x00 << 11 //  External tamper 1 is active low.
-	ET1P_1     LPTDCR = 0x01 << 11 //  External tamper 1 is active high.
 	PFD_OBSERV LPTDCR = 0x01 << 14 //+ System Power Fail Detector (PFD) Observability Flop The asynchronous reset input of this flop is connected directly to the inverted output of the PFD analog circuitry (external to the SNVS block)
 	POR_OBSERV LPTDCR = 0x01 << 15 //+ Power On Reset (POR) Observability Flop The asynchronous reset input of this flop is connected directly to the output of the POR analog circuitry (external to the SNVS
 	OSCB       LPTDCR = 0x01 << 28 //+ Oscillator Bypass When OSCB=1 the osc_bypass signal is asserted
-	OSCB_0     LPTDCR = 0x00 << 28 //  Normal SRTC clock oscillator not bypassed.
-	OSCB_1     LPTDCR = 0x01 << 28 //  Normal SRTC clock oscillator bypassed. Alternate clock can drive the SRTC clock source.
 )
 
 const (
@@ -613,37 +453,17 @@ const (
 )
 
 const (
-	LPTA    LPSR = 0x01 << 0  //+ LP Time Alarm
-	LPTA_0  LPSR = 0x00 << 0  //  No time alarm interrupt occurred.
-	LPTA_1  LPSR = 0x01 << 0  //  A time alarm interrupt occurred.
-	SRTCR   LPSR = 0x01 << 1  //+ Secure Real Time Counter Rollover
-	SRTCR_0 LPSR = 0x00 << 1  //  SRTC has not reached its maximum value.
-	SRTCR_1 LPSR = 0x01 << 1  //  SRTC has reached its maximum value.
-	MCR     LPSR = 0x01 << 2  //+ Monotonic Counter Rollover
-	MCR_0   LPSR = 0x00 << 2  //  MC has not reached its maximum value.
-	MCR_1   LPSR = 0x01 << 2  //  MC has reached its maximum value.
-	PGD     LPSR = 0x01 << 3  //+ Power Supply Glitch Detected 0 No power supply glitch. 1 Power supply glitch is detected.
-	ET1D    LPSR = 0x01 << 9  //+ External Tampering 1 Detected
-	ET1D_0  LPSR = 0x00 << 9  //  External tampering 1 not detected.
-	ET1D_1  LPSR = 0x01 << 9  //  External tampering 1 detected.
-	ESVD    LPSR = 0x01 << 16 //+ External Security Violation Detected Indicates that a security violation is detected on one of the HP security violation ports
-	ESVD_0  LPSR = 0x00 << 16 //  No external security violation.
-	ESVD_1  LPSR = 0x01 << 16 //  External security violation is detected.
-	EO      LPSR = 0x01 << 17 //+ Emergency Off This bit is set when a power off is requested.
-	EO_0    LPSR = 0x00 << 17 //  Emergency off was not detected.
-	EO_1    LPSR = 0x01 << 17 //  Emergency off was detected.
-	SPO     LPSR = 0x01 << 18 //+ Set Power Off The SPO bit is set when the power button is pressed longer than the configured debounce time
-	SPO_0   LPSR = 0x00 << 18 //  Set Power Off was not detected.
-	SPO_1   LPSR = 0x01 << 18 //  Set Power Off was detected.
-	SED     LPSR = 0x01 << 20 //+ Scan Exit Detected
-	SED_0   LPSR = 0x00 << 20 //  Scan exit was not detected.
-	SED_1   LPSR = 0x01 << 20 //  Scan exit was detected.
-	LPNS    LPSR = 0x01 << 30 //+ LP Section is Non-Secured Indicates that LP section was provisioned/programmed in the non-secure state
-	LPNS_0  LPSR = 0x00 << 30 //  LP section was not programmed in the non-secure state.
-	LPNS_1  LPSR = 0x01 << 30 //  LP section was programmed in the non-secure state.
-	LPS     LPSR = 0x01 << 31 //+ LP Section is Secured Indicates that the LP section is provisioned/programmed in the secure or trusted state
-	LPS_0   LPSR = 0x00 << 31 //  LP section was not programmed in secure or trusted state.
-	LPS_1   LPSR = 0x01 << 31 //  LP section was programmed in secure or trusted state.
+	LPTA  LPSR = 0x01 << 0  //+ LP Time Alarm
+	SRTCR LPSR = 0x01 << 1  //+ Secure Real Time Counter Rollover
+	MCR   LPSR = 0x01 << 2  //+ Monotonic Counter Rollover
+	PGD   LPSR = 0x01 << 3  //+ Power Supply Glitch Detected 0 No power supply glitch. 1 Power supply glitch is detected.
+	ET1D  LPSR = 0x01 << 9  //+ External Tampering 1 Detected
+	ESVD  LPSR = 0x01 << 16 //+ External Security Violation Detected Indicates that a security violation is detected on one of the HP security violation ports
+	EO    LPSR = 0x01 << 17 //+ Emergency Off This bit is set when a power off is requested.
+	SPO   LPSR = 0x01 << 18 //+ Set Power Off The SPO bit is set when the power button is pressed longer than the configured debounce time
+	SED   LPSR = 0x01 << 20 //+ Scan Exit Detected
+	LPNS  LPSR = 0x01 << 30 //+ LP Section is Non-Secured Indicates that LP section was provisioned/programmed in the non-secure state
+	LPS   LPSR = 0x01 << 31 //+ LP Section is Secured Indicates that the LP section is provisioned/programmed in the secure or trusted state
 )
 
 const (

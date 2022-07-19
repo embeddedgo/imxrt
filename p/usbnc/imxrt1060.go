@@ -15,36 +15,16 @@
 package usbnc
 
 const (
-	OVER_CUR_DIS   USB_OTG1_CTRL = 0x01 << 7  //+ Disable OTG1 Overcurrent Detection
-	OVER_CUR_DIS_0 USB_OTG1_CTRL = 0x00 << 7  //  Enables overcurrent detection
-	OVER_CUR_DIS_1 USB_OTG1_CTRL = 0x01 << 7  //  Disables overcurrent detection
-	OVER_CUR_POL   USB_OTG1_CTRL = 0x01 << 8  //+ OTG1 Polarity of Overcurrent The polarity of OTG1 port overcurrent event
-	OVER_CUR_POL_0 USB_OTG1_CTRL = 0x00 << 8  //  High active (high on this signal represents an overcurrent condition)
-	OVER_CUR_POL_1 USB_OTG1_CTRL = 0x01 << 8  //  Low active (low on this signal represents an overcurrent condition)
-	PWR_POL        USB_OTG1_CTRL = 0x01 << 9  //+ OTG1 Power Polarity This bit should be set according to PMIC Power Pin polarity.
-	PWR_POL_0      USB_OTG1_CTRL = 0x00 << 9  //  PMIC Power Pin is Low active.
-	PWR_POL_1      USB_OTG1_CTRL = 0x01 << 9  //  PMIC Power Pin is High active.
-	WIE            USB_OTG1_CTRL = 0x01 << 10 //+ OTG1 Wake-up Interrupt Enable This bit enables or disables the OTG1 wake-up interrupt
-	WIE_0          USB_OTG1_CTRL = 0x00 << 10 //  Interrupt Disabled
-	WIE_1          USB_OTG1_CTRL = 0x01 << 10 //  Interrupt Enabled
-	WKUP_SW_EN     USB_OTG1_CTRL = 0x01 << 14 //+ OTG1 Software Wake-up Enable
-	WKUP_SW_EN_0   USB_OTG1_CTRL = 0x00 << 14 //  Disable
-	WKUP_SW_EN_1   USB_OTG1_CTRL = 0x01 << 14 //  Enable
-	WKUP_SW        USB_OTG1_CTRL = 0x01 << 15 //+ OTG1 Software Wake-up
-	WKUP_SW_0      USB_OTG1_CTRL = 0x00 << 15 //  Inactive
-	WKUP_SW_1      USB_OTG1_CTRL = 0x01 << 15 //  Force wake-up
-	WKUP_ID_EN     USB_OTG1_CTRL = 0x01 << 16 //+ OTG1 Wake-up on ID change enable
-	WKUP_ID_EN_0   USB_OTG1_CTRL = 0x00 << 16 //  Disable
-	WKUP_ID_EN_1   USB_OTG1_CTRL = 0x01 << 16 //  Enable
-	WKUP_VBUS_EN   USB_OTG1_CTRL = 0x01 << 17 //+ OTG1 wake-up on VBUS change enable
-	WKUP_VBUS_EN_0 USB_OTG1_CTRL = 0x00 << 17 //  Disable
-	WKUP_VBUS_EN_1 USB_OTG1_CTRL = 0x01 << 17 //  Enable
-	WKUP_DPDM_EN   USB_OTG1_CTRL = 0x01 << 29 //+ Wake-up on DPDM change enable
-	WKUP_DPDM_EN_0 USB_OTG1_CTRL = 0x00 << 29 //  DPDM changes wake-up to be disabled only when VBUS is 0.
-	WKUP_DPDM_EN_1 USB_OTG1_CTRL = 0x01 << 29 //  (Default) DPDM changes wake-up to be enabled, it is for device only.
-	WIR            USB_OTG1_CTRL = 0x01 << 31 //+ OTG1 Wake-up Interrupt Request This bit indicates that a wake-up interrupt request is received on the OTG1 port
-	WIR_0          USB_OTG1_CTRL = 0x00 << 31 //  No wake-up interrupt request received
-	WIR_1          USB_OTG1_CTRL = 0x01 << 31 //  Wake-up Interrupt Request received
+	OVER_CUR_DIS USB_OTG1_CTRL = 0x01 << 7  //+ Disable OTG1 Overcurrent Detection
+	OVER_CUR_POL USB_OTG1_CTRL = 0x01 << 8  //+ OTG1 Polarity of Overcurrent The polarity of OTG1 port overcurrent event
+	PWR_POL      USB_OTG1_CTRL = 0x01 << 9  //+ OTG1 Power Polarity This bit should be set according to PMIC Power Pin polarity.
+	WIE          USB_OTG1_CTRL = 0x01 << 10 //+ OTG1 Wake-up Interrupt Enable This bit enables or disables the OTG1 wake-up interrupt
+	WKUP_SW_EN   USB_OTG1_CTRL = 0x01 << 14 //+ OTG1 Software Wake-up Enable
+	WKUP_SW      USB_OTG1_CTRL = 0x01 << 15 //+ OTG1 Software Wake-up
+	WKUP_ID_EN   USB_OTG1_CTRL = 0x01 << 16 //+ OTG1 Wake-up on ID change enable
+	WKUP_VBUS_EN USB_OTG1_CTRL = 0x01 << 17 //+ OTG1 wake-up on VBUS change enable
+	WKUP_DPDM_EN USB_OTG1_CTRL = 0x01 << 29 //+ Wake-up on DPDM change enable
+	WIR          USB_OTG1_CTRL = 0x01 << 31 //+ OTG1 Wake-up Interrupt Request This bit indicates that a wake-up interrupt request is received on the OTG1 port
 )
 
 const (
@@ -61,9 +41,7 @@ const (
 )
 
 const (
-	UTMI_CLK_VLD   USB_OTG1_PHY_CTRL_0 = 0x01 << 31 //+ Indicating whether OTG1 UTMI PHY clock is valid
-	UTMI_CLK_VLD_0 USB_OTG1_PHY_CTRL_0 = 0x00 << 31 //  Invalid
-	UTMI_CLK_VLD_1 USB_OTG1_PHY_CTRL_0 = 0x01 << 31 //  Valid
+	UTMI_CLK_VLD USB_OTG1_PHY_CTRL_0 = 0x01 << 31 //+ Indicating whether OTG1 UTMI PHY clock is valid
 )
 
 const (

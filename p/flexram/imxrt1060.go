@@ -16,13 +16,9 @@
 package flexram
 
 const (
-	TCM_WWAIT_EN   TCM_CTRL = 0x01 << 0 //+ TCM Write Wait Mode Enable
-	TCM_WWAIT_EN_0 TCM_CTRL = 0x00 << 0 //  TCM write fast mode: Write RAM accesses are expected to be finished in 1-cycle.
-	TCM_WWAIT_EN_1 TCM_CTRL = 0x01 << 0 //  TCM write wait mode: Write RAM accesses are expected to be finished in 2-cycles.
-	TCM_RWAIT_EN   TCM_CTRL = 0x01 << 1 //+ TCM Read Wait Mode Enable
-	TCM_RWAIT_EN_0 TCM_CTRL = 0x00 << 1 //  TCM read fast mode: Read RAM accesses are expected to be finished in 1-cycle.
-	TCM_RWAIT_EN_1 TCM_CTRL = 0x01 << 1 //  TCM read wait mode: Read RAM accesses are expected to be finished in 2-cycles.
-	FORCE_CLK_ON   TCM_CTRL = 0x01 << 2 //+ Force RAM Clock Always On
+	TCM_WWAIT_EN TCM_CTRL = 0x01 << 0 //+ TCM Write Wait Mode Enable
+	TCM_RWAIT_EN TCM_CTRL = 0x01 << 1 //+ TCM Read Wait Mode Enable
+	FORCE_CLK_ON TCM_CTRL = 0x01 << 2 //+ Force RAM Clock Always On
 )
 
 const (
@@ -32,15 +28,9 @@ const (
 )
 
 const (
-	ITCM_ERR_STATUS    INT_STATUS = 0x01 << 3 //+ ITCM Access Error Status
-	ITCM_ERR_STATUS_0  INT_STATUS = 0x00 << 3 //  ITCM access error does not happen
-	ITCM_ERR_STATUS_1  INT_STATUS = 0x01 << 3 //  ITCM access error happens.
-	DTCM_ERR_STATUS    INT_STATUS = 0x01 << 4 //+ DTCM Access Error Status
-	DTCM_ERR_STATUS_0  INT_STATUS = 0x00 << 4 //  DTCM access error does not happen
-	DTCM_ERR_STATUS_1  INT_STATUS = 0x01 << 4 //  DTCM access error happens.
-	OCRAM_ERR_STATUS   INT_STATUS = 0x01 << 5 //+ OCRAM Access Error Status
-	OCRAM_ERR_STATUS_0 INT_STATUS = 0x00 << 5 //  OCRAM access error does not happen
-	OCRAM_ERR_STATUS_1 INT_STATUS = 0x01 << 5 //  OCRAM access error happens.
+	ITCM_ERR_STATUS  INT_STATUS = 0x01 << 3 //+ ITCM Access Error Status
+	DTCM_ERR_STATUS  INT_STATUS = 0x01 << 4 //+ DTCM Access Error Status
+	OCRAM_ERR_STATUS INT_STATUS = 0x01 << 5 //+ OCRAM Access Error Status
 )
 
 const (
@@ -50,15 +40,9 @@ const (
 )
 
 const (
-	ITCM_ERR_STAT_EN    INT_STAT_EN = 0x01 << 3 //+ ITCM Access Error Status Enable
-	ITCM_ERR_STAT_EN_0  INT_STAT_EN = 0x00 << 3 //  Masked
-	ITCM_ERR_STAT_EN_1  INT_STAT_EN = 0x01 << 3 //  Enabled
-	DTCM_ERR_STAT_EN    INT_STAT_EN = 0x01 << 4 //+ DTCM Access Error Status Enable
-	DTCM_ERR_STAT_EN_0  INT_STAT_EN = 0x00 << 4 //  Masked
-	DTCM_ERR_STAT_EN_1  INT_STAT_EN = 0x01 << 4 //  Enabled
-	OCRAM_ERR_STAT_EN   INT_STAT_EN = 0x01 << 5 //+ OCRAM Access Error Status Enable
-	OCRAM_ERR_STAT_EN_0 INT_STAT_EN = 0x00 << 5 //  Masked
-	OCRAM_ERR_STAT_EN_1 INT_STAT_EN = 0x01 << 5 //  Enabled
+	ITCM_ERR_STAT_EN  INT_STAT_EN = 0x01 << 3 //+ ITCM Access Error Status Enable
+	DTCM_ERR_STAT_EN  INT_STAT_EN = 0x01 << 4 //+ DTCM Access Error Status Enable
+	OCRAM_ERR_STAT_EN INT_STAT_EN = 0x01 << 5 //+ OCRAM Access Error Status Enable
 )
 
 const (
@@ -68,15 +52,9 @@ const (
 )
 
 const (
-	ITCM_ERR_SIG_EN    INT_SIG_EN = 0x01 << 3 //+ ITCM Access Error Interrupt Enable
-	ITCM_ERR_SIG_EN_0  INT_SIG_EN = 0x00 << 3 //  Masked
-	ITCM_ERR_SIG_EN_1  INT_SIG_EN = 0x01 << 3 //  Enabled
-	DTCM_ERR_SIG_EN    INT_SIG_EN = 0x01 << 4 //+ DTCM Access Error Interrupt Enable
-	DTCM_ERR_SIG_EN_0  INT_SIG_EN = 0x00 << 4 //  Masked
-	DTCM_ERR_SIG_EN_1  INT_SIG_EN = 0x01 << 4 //  Enabled
-	OCRAM_ERR_SIG_EN   INT_SIG_EN = 0x01 << 5 //+ OCRAM Access Error Interrupt Enable
-	OCRAM_ERR_SIG_EN_0 INT_SIG_EN = 0x00 << 5 //  Masked
-	OCRAM_ERR_SIG_EN_1 INT_SIG_EN = 0x01 << 5 //  Enabled
+	ITCM_ERR_SIG_EN  INT_SIG_EN = 0x01 << 3 //+ ITCM Access Error Interrupt Enable
+	DTCM_ERR_SIG_EN  INT_SIG_EN = 0x01 << 4 //+ DTCM Access Error Interrupt Enable
+	OCRAM_ERR_SIG_EN INT_SIG_EN = 0x01 << 5 //+ OCRAM Access Error Interrupt Enable
 )
 
 const (

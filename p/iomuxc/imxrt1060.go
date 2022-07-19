@@ -499,8 +499,6 @@ const (
 	ALT4     SW_MUX_CTL = 0x04 << 0 //  Select mux mode: ALT4 mux port: FLEXIO1_FLEXIO00 of instance: flexio1
 	ALT5     SW_MUX_CTL = 0x05 << 0 //  Select mux mode: ALT5 mux port: GPIO4_IO00 of instance: gpio4
 	SION     SW_MUX_CTL = 0x01 << 4 //+ Software Input On Field.
-	DISABLED SW_MUX_CTL = 0x00 << 4 //  Input Path is determined by functionality
-	ENABLED  SW_MUX_CTL = 0x01 << 4 //  Force input path of pad GPIO_EMC_00
 )
 
 const (
@@ -510,8 +508,6 @@ const (
 
 const (
 	SRE                                SW_PAD_CTL = 0x01 << 0  //+ Slew Rate Field
-	SRE_0_Slow_Slew_Rate               SW_PAD_CTL = 0x00 << 0  //  Slow Slew Rate
-	SRE_1_Fast_Slew_Rate               SW_PAD_CTL = 0x01 << 0  //  Fast Slew Rate
 	DSE                                SW_PAD_CTL = 0x07 << 3  //+ Drive Strength Field
 	DSE_0_output_driver_disabled       SW_PAD_CTL = 0x00 << 3  //  output driver disabled;
 	DSE_1_R0_150_Ohm_3_3V_260_Ohm_1_8V SW_PAD_CTL = 0x01 << 3  //  R0(150 Ohm @ 3.3V, 260 Ohm@1.8V)
@@ -527,22 +523,14 @@ const (
 	SPEED_2_medium_100MHz              SW_PAD_CTL = 0x02 << 6  //  medium(100MHz)
 	SPEED_3_max_200MHz                 SW_PAD_CTL = 0x03 << 6  //  max(200MHz)
 	ODE                                SW_PAD_CTL = 0x01 << 11 //+ Open Drain Enable Field
-	ODE_0_Open_Drain_Disabled          SW_PAD_CTL = 0x00 << 11 //  Open Drain Disabled
-	ODE_1_Open_Drain_Enabled           SW_PAD_CTL = 0x01 << 11 //  Open Drain Enabled
 	PKE                                SW_PAD_CTL = 0x01 << 12 //+ Pull / Keep Enable Field
-	PKE_0_Pull_Keeper_Disabled         SW_PAD_CTL = 0x00 << 12 //  Pull/Keeper Disabled
-	PKE_1_Pull_Keeper_Enabled          SW_PAD_CTL = 0x01 << 12 //  Pull/Keeper Enabled
 	PUE                                SW_PAD_CTL = 0x01 << 13 //+ Pull / Keep Select Field
-	PUE_0_Keeper                       SW_PAD_CTL = 0x00 << 13 //  Keeper
-	PUE_1_Pull                         SW_PAD_CTL = 0x01 << 13 //  Pull
 	PUS                                SW_PAD_CTL = 0x03 << 14 //+ Pull Up / Down Config. Field
 	PUS_0_100K_Ohm_Pull_Down           SW_PAD_CTL = 0x00 << 14 //  100K Ohm Pull Down
 	PUS_1_47K_Ohm_Pull_Up              SW_PAD_CTL = 0x01 << 14 //  47K Ohm Pull Up
 	PUS_2_100K_Ohm_Pull_Up             SW_PAD_CTL = 0x02 << 14 //  100K Ohm Pull Up
 	PUS_3_22K_Ohm_Pull_Up              SW_PAD_CTL = 0x03 << 14 //  22K Ohm Pull Up
 	HYS                                SW_PAD_CTL = 0x01 << 16 //+ Hyst. Enable Field
-	HYS_0_Hysteresis_Disabled          SW_PAD_CTL = 0x00 << 16 //  Hysteresis Disabled
-	HYS_1_Hysteresis_Enabled           SW_PAD_CTL = 0x01 << 16 //  Hysteresis Enabled
 )
 
 const (
@@ -558,8 +546,6 @@ const (
 
 const (
 	ANATOP_USB_OTG1_ID_DAISY ANATOP_USB_OTG1_ID_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
-	GPIO_AD_B0_01_ALT3       ANATOP_USB_OTG1_ID_SELECT_INPUT = 0x00 << 0 //  Selecting Pad: GPIO_AD_B0_01 for Mode: ALT3
-	GPIO_AD_B1_02_ALT0       ANATOP_USB_OTG1_ID_SELECT_INPUT = 0x01 << 0 //  Selecting Pad: GPIO_AD_B1_02 for Mode: ALT0
 )
 
 const (
@@ -568,8 +554,6 @@ const (
 
 const (
 	ANATOP_USB_OTG2_ID_DAISY ANATOP_USB_OTG2_ID_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
-	GPIO_AD_B0_00_ALT3       ANATOP_USB_OTG2_ID_SELECT_INPUT = 0x00 << 0 //  Selecting Pad: GPIO_AD_B0_00 for Mode: ALT3
-	GPIO_AD_B1_00_ALT0       ANATOP_USB_OTG2_ID_SELECT_INPUT = 0x01 << 0 //  Selecting Pad: GPIO_AD_B1_00 for Mode: ALT0
 )
 
 const (
@@ -590,9 +574,7 @@ const (
 )
 
 const (
-	CSI_DATA02_DAISY   CSI_DATA02_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
-	GPIO_AD_B1_15_ALT4 CSI_DATA02_SELECT_INPUT = 0x00 << 0 //  Selecting Pad: GPIO_AD_B1_15 for Mode: ALT4
-	GPIO_AD_B0_11_ALT4 CSI_DATA02_SELECT_INPUT = 0x01 << 0 //  Selecting Pad: GPIO_AD_B0_11 for Mode: ALT4
+	CSI_DATA02_DAISY CSI_DATA02_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
 )
 
 const (
@@ -600,9 +582,7 @@ const (
 )
 
 const (
-	CSI_DATA03_DAISY   CSI_DATA03_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
-	GPIO_AD_B1_14_ALT4 CSI_DATA03_SELECT_INPUT = 0x00 << 0 //  Selecting Pad: GPIO_AD_B1_14 for Mode: ALT4
-	GPIO_AD_B0_10_ALT4 CSI_DATA03_SELECT_INPUT = 0x01 << 0 //  Selecting Pad: GPIO_AD_B0_10 for Mode: ALT4
+	CSI_DATA03_DAISY CSI_DATA03_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
 )
 
 const (
@@ -610,9 +590,7 @@ const (
 )
 
 const (
-	CSI_DATA04_DAISY   CSI_DATA04_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
-	GPIO_AD_B1_13_ALT4 CSI_DATA04_SELECT_INPUT = 0x00 << 0 //  Selecting Pad: GPIO_AD_B1_13 for Mode: ALT4
-	GPIO_AD_B0_09_ALT4 CSI_DATA04_SELECT_INPUT = 0x01 << 0 //  Selecting Pad: GPIO_AD_B0_09 for Mode: ALT4
+	CSI_DATA04_DAISY CSI_DATA04_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
 )
 
 const (
@@ -620,9 +598,7 @@ const (
 )
 
 const (
-	CSI_DATA05_DAISY   CSI_DATA05_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
-	GPIO_AD_B1_12_ALT4 CSI_DATA05_SELECT_INPUT = 0x00 << 0 //  Selecting Pad: GPIO_AD_B1_12 for Mode: ALT4
-	GPIO_AD_B0_08_ALT4 CSI_DATA05_SELECT_INPUT = 0x01 << 0 //  Selecting Pad: GPIO_AD_B0_08 for Mode: ALT4
+	CSI_DATA05_DAISY CSI_DATA05_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
 )
 
 const (
@@ -630,9 +606,7 @@ const (
 )
 
 const (
-	CSI_DATA06_DAISY   CSI_DATA06_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
-	GPIO_AD_B1_11_ALT4 CSI_DATA06_SELECT_INPUT = 0x00 << 0 //  Selecting Pad: GPIO_AD_B1_11 for Mode: ALT4
-	GPIO_AD_B0_07_ALT4 CSI_DATA06_SELECT_INPUT = 0x01 << 0 //  Selecting Pad: GPIO_AD_B0_07 for Mode: ALT4
+	CSI_DATA06_DAISY CSI_DATA06_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
 )
 
 const (
@@ -640,9 +614,7 @@ const (
 )
 
 const (
-	CSI_DATA07_DAISY   CSI_DATA07_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
-	GPIO_AD_B1_10_ALT4 CSI_DATA07_SELECT_INPUT = 0x00 << 0 //  Selecting Pad: GPIO_AD_B1_10 for Mode: ALT4
-	GPIO_AD_B0_06_ALT4 CSI_DATA07_SELECT_INPUT = 0x01 << 0 //  Selecting Pad: GPIO_AD_B0_06 for Mode: ALT4
+	CSI_DATA07_DAISY CSI_DATA07_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
 )
 
 const (
@@ -650,9 +622,7 @@ const (
 )
 
 const (
-	CSI_DATA08_DAISY   CSI_DATA08_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
-	GPIO_AD_B1_09_ALT4 CSI_DATA08_SELECT_INPUT = 0x00 << 0 //  Selecting Pad: GPIO_AD_B1_09 for Mode: ALT4
-	GPIO_AD_B0_05_ALT4 CSI_DATA08_SELECT_INPUT = 0x01 << 0 //  Selecting Pad: GPIO_AD_B0_05 for Mode: ALT4
+	CSI_DATA08_DAISY CSI_DATA08_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
 )
 
 const (
@@ -660,9 +630,7 @@ const (
 )
 
 const (
-	CSI_DATA09_DAISY   CSI_DATA09_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
-	GPIO_AD_B1_08_ALT4 CSI_DATA09_SELECT_INPUT = 0x00 << 0 //  Selecting Pad: GPIO_AD_B1_08 for Mode: ALT4
-	GPIO_AD_B0_04_ALT4 CSI_DATA09_SELECT_INPUT = 0x01 << 0 //  Selecting Pad: GPIO_AD_B0_04 for Mode: ALT4
+	CSI_DATA09_DAISY CSI_DATA09_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
 )
 
 const (
@@ -681,9 +649,7 @@ const (
 )
 
 const (
-	CSI_PIXCLK_DAISY   CSI_PIXCLK_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
-	GPIO_AD_B1_04_ALT4 CSI_PIXCLK_SELECT_INPUT = 0x00 << 0 //  Selecting Pad: GPIO_AD_B1_04 for Mode: ALT4
-	GPIO_B1_12_ALT2    CSI_PIXCLK_SELECT_INPUT = 0x01 << 0 //  Selecting Pad: GPIO_B1_12 for Mode: ALT2
+	CSI_PIXCLK_DAISY CSI_PIXCLK_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
 )
 
 const (
@@ -703,8 +669,6 @@ const (
 
 const (
 	ENET_IPG_CLK_RMII_DAISY ENET_IPG_CLK_RMII_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
-	GPIO_EMC_25_ALT4        ENET_IPG_CLK_RMII_SELECT_INPUT = 0x00 << 0 //  Selecting Pad: GPIO_EMC_25 for Mode: ALT4
-	GPIO_B1_10_ALT6         ENET_IPG_CLK_RMII_SELECT_INPUT = 0x01 << 0 //  Selecting Pad: GPIO_B1_10 for Mode: ALT6
 )
 
 const (
@@ -724,8 +688,6 @@ const (
 
 const (
 	ENET0_RXDATA_DAISY ENET0_RXDATA_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
-	GPIO_EMC_20_ALT3   ENET0_RXDATA_SELECT_INPUT = 0x00 << 0 //  Selecting Pad: GPIO_EMC_20 for Mode: ALT3
-	GPIO_B1_04_ALT3    ENET0_RXDATA_SELECT_INPUT = 0x01 << 0 //  Selecting Pad: GPIO_B1_04 for Mode: ALT3
 )
 
 const (
@@ -734,8 +696,6 @@ const (
 
 const (
 	ENET1_RXDATA_DAISY ENET1_RXDATA_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
-	GPIO_EMC_19_ALT3   ENET1_RXDATA_SELECT_INPUT = 0x00 << 0 //  Selecting Pad: GPIO_EMC_19 for Mode: ALT3
-	GPIO_B1_05_ALT3    ENET1_RXDATA_SELECT_INPUT = 0x01 << 0 //  Selecting Pad: GPIO_B1_05 for Mode: ALT3
 )
 
 const (
@@ -743,9 +703,7 @@ const (
 )
 
 const (
-	ENET_RXEN_DAISY  ENET_RXEN_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
-	GPIO_EMC_23_ALT3 ENET_RXEN_SELECT_INPUT = 0x00 << 0 //  Selecting Pad: GPIO_EMC_23 for Mode: ALT3
-	GPIO_B1_06_ALT3  ENET_RXEN_SELECT_INPUT = 0x01 << 0 //  Selecting Pad: GPIO_B1_06 for Mode: ALT3
+	ENET_RXEN_DAISY ENET_RXEN_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
 )
 
 const (
@@ -754,8 +712,6 @@ const (
 
 const (
 	ENET_RXERR_DAISY ENET_RXERR_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
-	GPIO_EMC_26_ALT3 ENET_RXERR_SELECT_INPUT = 0x00 << 0 //  Selecting Pad: GPIO_EMC_26 for Mode: ALT3
-	GPIO_B1_11_ALT3  ENET_RXERR_SELECT_INPUT = 0x01 << 0 //  Selecting Pad: GPIO_B1_11 for Mode: ALT3
 )
 
 const (
@@ -775,8 +731,6 @@ const (
 
 const (
 	ENET_TXCLK_DAISY ENET_TXCLK_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
-	GPIO_EMC_25_ALT3 ENET_TXCLK_SELECT_INPUT = 0x00 << 0 //  Selecting Pad: GPIO_EMC_25 for Mode: ALT3
-	GPIO_B1_10_ALT3  ENET_TXCLK_SELECT_INPUT = 0x01 << 0 //  Selecting Pad: GPIO_B1_10 for Mode: ALT3
 )
 
 const (
@@ -822,8 +776,6 @@ const (
 
 const (
 	FLEXPWM1_PWMA0_DAISY FLEXPWM1_PWMA0_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
-	GPIO_EMC_23_ALT1     FLEXPWM1_PWMA0_SELECT_INPUT = 0x00 << 0 //  Selecting Pad: GPIO_EMC_23 for Mode: ALT1
-	GPIO_SD_B0_00_ALT1   FLEXPWM1_PWMA0_SELECT_INPUT = 0x01 << 0 //  Selecting Pad: GPIO_SD_B0_00 for Mode: ALT1
 )
 
 const (
@@ -832,8 +784,6 @@ const (
 
 const (
 	FLEXPWM1_PWMA1_DAISY FLEXPWM1_PWMA1_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
-	GPIO_EMC_25_ALT1     FLEXPWM1_PWMA1_SELECT_INPUT = 0x00 << 0 //  Selecting Pad: GPIO_EMC_25 for Mode: ALT1
-	GPIO_SD_B0_02_ALT1   FLEXPWM1_PWMA1_SELECT_INPUT = 0x01 << 0 //  Selecting Pad: GPIO_SD_B0_02 for Mode: ALT1
 )
 
 const (
@@ -842,8 +792,6 @@ const (
 
 const (
 	FLEXPWM1_PWMA2_DAISY FLEXPWM1_PWMA2_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
-	GPIO_EMC_27_ALT1     FLEXPWM1_PWMA2_SELECT_INPUT = 0x00 << 0 //  Selecting Pad: GPIO_EMC_27 for Mode: ALT1
-	GPIO_SD_B0_04_ALT1   FLEXPWM1_PWMA2_SELECT_INPUT = 0x01 << 0 //  Selecting Pad: GPIO_SD_B0_04 for Mode: ALT1
 )
 
 const (
@@ -865,8 +813,6 @@ const (
 
 const (
 	FLEXPWM1_PWMB0_DAISY FLEXPWM1_PWMB0_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
-	GPIO_EMC_24_ALT1     FLEXPWM1_PWMB0_SELECT_INPUT = 0x00 << 0 //  Selecting Pad: GPIO_EMC_24 for Mode: ALT1
-	GPIO_SD_B0_01_ALT1   FLEXPWM1_PWMB0_SELECT_INPUT = 0x01 << 0 //  Selecting Pad: GPIO_SD_B0_01 for Mode: ALT1
 )
 
 const (
@@ -875,8 +821,6 @@ const (
 
 const (
 	FLEXPWM1_PWMB1_DAISY FLEXPWM1_PWMB1_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
-	GPIO_EMC_26_ALT1     FLEXPWM1_PWMB1_SELECT_INPUT = 0x00 << 0 //  Selecting Pad: GPIO_EMC_26 for Mode: ALT1
-	GPIO_SD_B0_03_ALT1   FLEXPWM1_PWMB1_SELECT_INPUT = 0x01 << 0 //  Selecting Pad: GPIO_SD_B0_03 for Mode: ALT1
 )
 
 const (
@@ -885,8 +829,6 @@ const (
 
 const (
 	FLEXPWM1_PWMB2_DAISY FLEXPWM1_PWMB2_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
-	GPIO_EMC_28_ALT1     FLEXPWM1_PWMB2_SELECT_INPUT = 0x00 << 0 //  Selecting Pad: GPIO_EMC_28 for Mode: ALT1
-	GPIO_SD_B0_05_ALT1   FLEXPWM1_PWMB2_SELECT_INPUT = 0x01 << 0 //  Selecting Pad: GPIO_SD_B0_05 for Mode: ALT1
 )
 
 const (
@@ -908,8 +850,6 @@ const (
 
 const (
 	FLEXPWM2_PWMA0_DAISY FLEXPWM2_PWMA0_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
-	GPIO_EMC_06_ALT1     FLEXPWM2_PWMA0_SELECT_INPUT = 0x00 << 0 //  Selecting Pad: GPIO_EMC_06 for Mode: ALT1
-	GPIO_B0_06_ALT2      FLEXPWM2_PWMA0_SELECT_INPUT = 0x01 << 0 //  Selecting Pad: GPIO_B0_06 for Mode: ALT2
 )
 
 const (
@@ -918,8 +858,6 @@ const (
 
 const (
 	FLEXPWM2_PWMA1_DAISY FLEXPWM2_PWMA1_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
-	GPIO_EMC_08_ALT1     FLEXPWM2_PWMA1_SELECT_INPUT = 0x00 << 0 //  Selecting Pad: GPIO_EMC_08 for Mode: ALT1
-	GPIO_B0_08_ALT2      FLEXPWM2_PWMA1_SELECT_INPUT = 0x01 << 0 //  Selecting Pad: GPIO_B0_08 for Mode: ALT2
 )
 
 const (
@@ -928,8 +866,6 @@ const (
 
 const (
 	FLEXPWM2_PWMA2_DAISY FLEXPWM2_PWMA2_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
-	GPIO_EMC_10_ALT1     FLEXPWM2_PWMA2_SELECT_INPUT = 0x00 << 0 //  Selecting Pad: GPIO_EMC_10 for Mode: ALT1
-	GPIO_B0_10_ALT2      FLEXPWM2_PWMA2_SELECT_INPUT = 0x01 << 0 //  Selecting Pad: GPIO_B0_10 for Mode: ALT2
 )
 
 const (
@@ -950,8 +886,6 @@ const (
 
 const (
 	FLEXPWM2_PWMB0_DAISY FLEXPWM2_PWMB0_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
-	GPIO_EMC_07_ALT1     FLEXPWM2_PWMB0_SELECT_INPUT = 0x00 << 0 //  Selecting Pad: GPIO_EMC_07 for Mode: ALT1
-	GPIO_B0_07_ALT2      FLEXPWM2_PWMB0_SELECT_INPUT = 0x01 << 0 //  Selecting Pad: GPIO_B0_07 for Mode: ALT2
 )
 
 const (
@@ -960,8 +894,6 @@ const (
 
 const (
 	FLEXPWM2_PWMB1_DAISY FLEXPWM2_PWMB1_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
-	GPIO_EMC_09_ALT1     FLEXPWM2_PWMB1_SELECT_INPUT = 0x00 << 0 //  Selecting Pad: GPIO_EMC_09 for Mode: ALT1
-	GPIO_B0_09_ALT2      FLEXPWM2_PWMB1_SELECT_INPUT = 0x01 << 0 //  Selecting Pad: GPIO_B0_09 for Mode: ALT2
 )
 
 const (
@@ -970,8 +902,6 @@ const (
 
 const (
 	FLEXPWM2_PWMB2_DAISY FLEXPWM2_PWMB2_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
-	GPIO_EMC_11_ALT1     FLEXPWM2_PWMB2_SELECT_INPUT = 0x00 << 0 //  Selecting Pad: GPIO_EMC_11 for Mode: ALT1
-	GPIO_B0_11_ALT2      FLEXPWM2_PWMB2_SELECT_INPUT = 0x01 << 0 //  Selecting Pad: GPIO_B0_11 for Mode: ALT2
 )
 
 const (
@@ -980,8 +910,6 @@ const (
 
 const (
 	FLEXPWM4_PWMA0_DAISY FLEXPWM4_PWMA0_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
-	GPIO_EMC_00_ALT1     FLEXPWM4_PWMA0_SELECT_INPUT = 0x00 << 0 //  Selecting Pad: GPIO_EMC_00 for Mode: ALT1
-	GPIO_AD_B1_08_ALT1   FLEXPWM4_PWMA0_SELECT_INPUT = 0x01 << 0 //  Selecting Pad: GPIO_AD_B1_08 for Mode: ALT1
 )
 
 const (
@@ -990,8 +918,6 @@ const (
 
 const (
 	FLEXPWM4_PWMA1_DAISY FLEXPWM4_PWMA1_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
-	GPIO_EMC_02_ALT1     FLEXPWM4_PWMA1_SELECT_INPUT = 0x00 << 0 //  Selecting Pad: GPIO_EMC_02 for Mode: ALT1
-	GPIO_AD_B1_09_ALT1   FLEXPWM4_PWMA1_SELECT_INPUT = 0x01 << 0 //  Selecting Pad: GPIO_AD_B1_09 for Mode: ALT1
 )
 
 const (
@@ -1000,8 +926,6 @@ const (
 
 const (
 	FLEXPWM4_PWMA2_DAISY FLEXPWM4_PWMA2_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
-	GPIO_EMC_04_ALT1     FLEXPWM4_PWMA2_SELECT_INPUT = 0x00 << 0 //  Selecting Pad: GPIO_EMC_04 for Mode: ALT1
-	GPIO_B1_14_ALT1      FLEXPWM4_PWMA2_SELECT_INPUT = 0x01 << 0 //  Selecting Pad: GPIO_B1_14 for Mode: ALT1
 )
 
 const (
@@ -1010,8 +934,6 @@ const (
 
 const (
 	FLEXPWM4_PWMA3_DAISY FLEXPWM4_PWMA3_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
-	GPIO_EMC_17_ALT1     FLEXPWM4_PWMA3_SELECT_INPUT = 0x00 << 0 //  Selecting Pad: GPIO_EMC_17 for Mode: ALT1
-	GPIO_B1_15_ALT1      FLEXPWM4_PWMA3_SELECT_INPUT = 0x01 << 0 //  Selecting Pad: GPIO_B1_15 for Mode: ALT1
 )
 
 const (
@@ -1020,8 +942,6 @@ const (
 
 const (
 	FLEXSPIA_DQS_DAISY FLEXSPIA_DQS_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
-	GPIO_SD_B1_05_ALT1 FLEXSPIA_DQS_SELECT_INPUT = 0x00 << 0 //  Selecting Pad: GPIO_SD_B1_05 for Mode: ALT1
-	GPIO_AD_B1_09_ALT0 FLEXSPIA_DQS_SELECT_INPUT = 0x01 << 0 //  Selecting Pad: GPIO_AD_B1_09 for Mode: ALT0
 )
 
 const (
@@ -1030,8 +950,6 @@ const (
 
 const (
 	FLEXSPIA_DATA0_DAISY FLEXSPIA_DATA0_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
-	GPIO_SD_B1_08_ALT1   FLEXSPIA_DATA0_SELECT_INPUT = 0x00 << 0 //  Selecting Pad: GPIO_SD_B1_08 for Mode: ALT1
-	GPIO_AD_B1_13_ALT0   FLEXSPIA_DATA0_SELECT_INPUT = 0x01 << 0 //  Selecting Pad: GPIO_AD_B1_13 for Mode: ALT0
 )
 
 const (
@@ -1040,8 +958,6 @@ const (
 
 const (
 	FLEXSPIA_DATA1_DAISY FLEXSPIA_DATA1_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
-	GPIO_SD_B1_09_ALT1   FLEXSPIA_DATA1_SELECT_INPUT = 0x00 << 0 //  Selecting Pad: GPIO_SD_B1_09 for Mode: ALT1
-	GPIO_AD_B1_12_ALT0   FLEXSPIA_DATA1_SELECT_INPUT = 0x01 << 0 //  Selecting Pad: GPIO_AD_B1_12 for Mode: ALT0
 )
 
 const (
@@ -1050,8 +966,6 @@ const (
 
 const (
 	FLEXSPIA_DATA2_DAISY FLEXSPIA_DATA2_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
-	GPIO_SD_B1_10_ALT1   FLEXSPIA_DATA2_SELECT_INPUT = 0x00 << 0 //  Selecting Pad: GPIO_SD_B1_10 for Mode: ALT1
-	GPIO_AD_B1_11_ALT0   FLEXSPIA_DATA2_SELECT_INPUT = 0x01 << 0 //  Selecting Pad: GPIO_AD_B1_11 for Mode: ALT0
 )
 
 const (
@@ -1060,8 +974,6 @@ const (
 
 const (
 	FLEXSPIA_DATA3_DAISY FLEXSPIA_DATA3_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
-	GPIO_SD_B1_11_ALT1   FLEXSPIA_DATA3_SELECT_INPUT = 0x00 << 0 //  Selecting Pad: GPIO_SD_B1_11 for Mode: ALT1
-	GPIO_AD_B1_10_ALT0   FLEXSPIA_DATA3_SELECT_INPUT = 0x01 << 0 //  Selecting Pad: GPIO_AD_B1_10 for Mode: ALT0
 )
 
 const (
@@ -1070,8 +982,6 @@ const (
 
 const (
 	FLEXSPIB_DATA0_DAISY FLEXSPIB_DATA0_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
-	GPIO_SD_B1_03_ALT1   FLEXSPIB_DATA0_SELECT_INPUT = 0x00 << 0 //  Selecting Pad: GPIO_SD_B1_03 for Mode: ALT1
-	GPIO_AD_B1_07_ALT0   FLEXSPIB_DATA0_SELECT_INPUT = 0x01 << 0 //  Selecting Pad: GPIO_AD_B1_07 for Mode: ALT0
 )
 
 const (
@@ -1080,8 +990,6 @@ const (
 
 const (
 	FLEXSPIB_DATA1_DAISY FLEXSPIB_DATA1_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
-	GPIO_SD_B1_02_ALT1   FLEXSPIB_DATA1_SELECT_INPUT = 0x00 << 0 //  Selecting Pad: GPIO_SD_B1_02 for Mode: ALT1
-	GPIO_AD_B1_06_ALT0   FLEXSPIB_DATA1_SELECT_INPUT = 0x01 << 0 //  Selecting Pad: GPIO_AD_B1_06 for Mode: ALT0
 )
 
 const (
@@ -1090,8 +998,6 @@ const (
 
 const (
 	FLEXSPIB_DATA2_DAISY FLEXSPIB_DATA2_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
-	GPIO_SD_B1_01_ALT1   FLEXSPIB_DATA2_SELECT_INPUT = 0x00 << 0 //  Selecting Pad: GPIO_SD_B1_01 for Mode: ALT1
-	GPIO_AD_B1_05_ALT0   FLEXSPIB_DATA2_SELECT_INPUT = 0x01 << 0 //  Selecting Pad: GPIO_AD_B1_05 for Mode: ALT0
 )
 
 const (
@@ -1100,8 +1006,6 @@ const (
 
 const (
 	FLEXSPIB_DATA3_DAISY FLEXSPIB_DATA3_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
-	GPIO_SD_B1_00_ALT1   FLEXSPIB_DATA3_SELECT_INPUT = 0x00 << 0 //  Selecting Pad: GPIO_SD_B1_00 for Mode: ALT1
-	GPIO_AD_B1_04_ALT0   FLEXSPIB_DATA3_SELECT_INPUT = 0x01 << 0 //  Selecting Pad: GPIO_AD_B1_04 for Mode: ALT0
 )
 
 const (
@@ -1110,8 +1014,6 @@ const (
 
 const (
 	FLEXSPIA_SCK_DAISY FLEXSPIA_SCK_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
-	GPIO_SD_B1_07_ALT1 FLEXSPIA_SCK_SELECT_INPUT = 0x00 << 0 //  Selecting Pad: GPIO_SD_B1_07 for Mode: ALT1
-	GPIO_AD_B1_14_ALT0 FLEXSPIA_SCK_SELECT_INPUT = 0x01 << 0 //  Selecting Pad: GPIO_AD_B1_14 for Mode: ALT0
 )
 
 const (
@@ -1119,9 +1021,7 @@ const (
 )
 
 const (
-	LPI2C1_SCL_DAISY   LPI2C1_SCL_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
-	GPIO_SD_B1_04_ALT2 LPI2C1_SCL_SELECT_INPUT = 0x00 << 0 //  Selecting Pad: GPIO_SD_B1_04 for Mode: ALT2
-	GPIO_AD_B1_00_ALT3 LPI2C1_SCL_SELECT_INPUT = 0x01 << 0 //  Selecting Pad: GPIO_AD_B1_00 for Mode: ALT3
+	LPI2C1_SCL_DAISY LPI2C1_SCL_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
 )
 
 const (
@@ -1129,9 +1029,7 @@ const (
 )
 
 const (
-	LPI2C1_SDA_DAISY   LPI2C1_SDA_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
-	GPIO_SD_B1_05_ALT2 LPI2C1_SDA_SELECT_INPUT = 0x00 << 0 //  Selecting Pad: GPIO_SD_B1_05 for Mode: ALT2
-	GPIO_AD_B1_01_ALT3 LPI2C1_SDA_SELECT_INPUT = 0x01 << 0 //  Selecting Pad: GPIO_AD_B1_01 for Mode: ALT3
+	LPI2C1_SDA_DAISY LPI2C1_SDA_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
 )
 
 const (
@@ -1139,9 +1037,7 @@ const (
 )
 
 const (
-	LPI2C2_SCL_DAISY   LPI2C2_SCL_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
-	GPIO_SD_B1_11_ALT3 LPI2C2_SCL_SELECT_INPUT = 0x00 << 0 //  Selecting Pad: GPIO_SD_B1_11 for Mode: ALT3
-	GPIO_B0_04_ALT2    LPI2C2_SCL_SELECT_INPUT = 0x01 << 0 //  Selecting Pad: GPIO_B0_04 for Mode: ALT2
+	LPI2C2_SCL_DAISY LPI2C2_SCL_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
 )
 
 const (
@@ -1149,9 +1045,7 @@ const (
 )
 
 const (
-	LPI2C2_SDA_DAISY   LPI2C2_SDA_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
-	GPIO_SD_B1_10_ALT3 LPI2C2_SDA_SELECT_INPUT = 0x00 << 0 //  Selecting Pad: GPIO_SD_B1_10 for Mode: ALT3
-	GPIO_B0_05_ALT2    LPI2C2_SDA_SELECT_INPUT = 0x01 << 0 //  Selecting Pad: GPIO_B0_05 for Mode: ALT2
+	LPI2C2_SDA_DAISY LPI2C2_SDA_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
 )
 
 const (
@@ -1181,9 +1075,7 @@ const (
 )
 
 const (
-	LPI2C4_SCL_DAISY   LPI2C4_SCL_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
-	GPIO_EMC_12_ALT2   LPI2C4_SCL_SELECT_INPUT = 0x00 << 0 //  Selecting Pad: GPIO_EMC_12 for Mode: ALT2
-	GPIO_AD_B0_12_ALT0 LPI2C4_SCL_SELECT_INPUT = 0x01 << 0 //  Selecting Pad: GPIO_AD_B0_12 for Mode: ALT0
+	LPI2C4_SCL_DAISY LPI2C4_SCL_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
 )
 
 const (
@@ -1191,9 +1083,7 @@ const (
 )
 
 const (
-	LPI2C4_SDA_DAISY   LPI2C4_SDA_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
-	GPIO_EMC_11_ALT2   LPI2C4_SDA_SELECT_INPUT = 0x00 << 0 //  Selecting Pad: GPIO_EMC_11 for Mode: ALT2
-	GPIO_AD_B0_13_ALT0 LPI2C4_SDA_SELECT_INPUT = 0x01 << 0 //  Selecting Pad: GPIO_AD_B0_13 for Mode: ALT0
+	LPI2C4_SDA_DAISY LPI2C4_SDA_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
 )
 
 const (
@@ -1201,9 +1091,7 @@ const (
 )
 
 const (
-	LPSPI1_PCS0_DAISY  LPSPI1_PCS0_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
-	GPIO_SD_B0_01_ALT4 LPSPI1_PCS0_SELECT_INPUT = 0x00 << 0 //  Selecting Pad: GPIO_SD_B0_01 for Mode: ALT4
-	GPIO_EMC_30_ALT3   LPSPI1_PCS0_SELECT_INPUT = 0x01 << 0 //  Selecting Pad: GPIO_EMC_30 for Mode: ALT3
+	LPSPI1_PCS0_DAISY LPSPI1_PCS0_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
 )
 
 const (
@@ -1211,9 +1099,7 @@ const (
 )
 
 const (
-	LPSPI1_SCK_DAISY   LPSPI1_SCK_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
-	GPIO_EMC_27_ALT3   LPSPI1_SCK_SELECT_INPUT = 0x00 << 0 //  Selecting Pad: GPIO_EMC_27 for Mode: ALT3
-	GPIO_SD_B0_00_ALT4 LPSPI1_SCK_SELECT_INPUT = 0x01 << 0 //  Selecting Pad: GPIO_SD_B0_00 for Mode: ALT4
+	LPSPI1_SCK_DAISY LPSPI1_SCK_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
 )
 
 const (
@@ -1221,9 +1107,7 @@ const (
 )
 
 const (
-	LPSPI1_SDI_DAISY   LPSPI1_SDI_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
-	GPIO_EMC_29_ALT3   LPSPI1_SDI_SELECT_INPUT = 0x00 << 0 //  Selecting Pad: GPIO_EMC_29 for Mode: ALT3
-	GPIO_SD_B0_03_ALT4 LPSPI1_SDI_SELECT_INPUT = 0x01 << 0 //  Selecting Pad: GPIO_AD_B0_03 for Mode: ALT4
+	LPSPI1_SDI_DAISY LPSPI1_SDI_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
 )
 
 const (
@@ -1231,9 +1115,7 @@ const (
 )
 
 const (
-	LPSPI1_SDO_DAISY   LPSPI1_SDO_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
-	GPIO_EMC_28_ALT3   LPSPI1_SDO_SELECT_INPUT = 0x00 << 0 //  Selecting Pad: GPIO_EMC_28 for Mode: ALT3
-	GPIO_SD_B0_02_ALT4 LPSPI1_SDO_SELECT_INPUT = 0x01 << 0 //  Selecting Pad: GPIO_SD_B0_02 for Mode: ALT4
+	LPSPI1_SDO_DAISY LPSPI1_SDO_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
 )
 
 const (
@@ -1241,9 +1123,7 @@ const (
 )
 
 const (
-	LPSPI2_PCS0_DAISY  LPSPI2_PCS0_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
-	GPIO_SD_B1_06_ALT4 LPSPI2_PCS0_SELECT_INPUT = 0x00 << 0 //  Selecting Pad: GPIO_SD_B1_06 for Mode: ALT4
-	GPIO_EMC_01_ALT2   LPSPI2_PCS0_SELECT_INPUT = 0x01 << 0 //  Selecting Pad: GPIO_EMC_01 for Mode: ALT2
+	LPSPI2_PCS0_DAISY LPSPI2_PCS0_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
 )
 
 const (
@@ -1251,9 +1131,7 @@ const (
 )
 
 const (
-	LPSPI2_SCK_DAISY   LPSPI2_SCK_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
-	GPIO_SD_B1_07_ALT4 LPSPI2_SCK_SELECT_INPUT = 0x00 << 0 //  Selecting Pad: GPIO_SD_B1_07 for Mode: ALT4
-	GPIO_EMC_00_ALT2   LPSPI2_SCK_SELECT_INPUT = 0x01 << 0 //  Selecting Pad: GPIO_EMC_00 for Mode: ALT2
+	LPSPI2_SCK_DAISY LPSPI2_SCK_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
 )
 
 const (
@@ -1261,9 +1139,7 @@ const (
 )
 
 const (
-	LPSPI2_SDI_DAISY   LPSPI2_SDI_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
-	GPIO_SD_B1_09_ALT4 LPSPI2_SDI_SELECT_INPUT = 0x00 << 0 //  Selecting Pad: GPIO_SD_B1_09 for Mode: ALT4
-	GPIO_EMC_03_ALT2   LPSPI2_SDI_SELECT_INPUT = 0x01 << 0 //  Selecting Pad: GPIO_EMC_03 for Mode: ALT2
+	LPSPI2_SDI_DAISY LPSPI2_SDI_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
 )
 
 const (
@@ -1271,9 +1147,7 @@ const (
 )
 
 const (
-	LPSPI2_SDO_DAISY   LPSPI2_SDO_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
-	GPIO_SD_B1_08_ALT4 LPSPI2_SDO_SELECT_INPUT = 0x00 << 0 //  Selecting Pad: GPIO_SD_B1_08 for Mode: ALT4
-	GPIO_EMC_02_ALT2   LPSPI2_SDO_SELECT_INPUT = 0x01 << 0 //  Selecting Pad: GPIO_EMC_02 for Mode: ALT2
+	LPSPI2_SDO_DAISY LPSPI2_SDO_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
 )
 
 const (
@@ -1281,9 +1155,7 @@ const (
 )
 
 const (
-	LPSPI3_PCS0_DAISY  LPSPI3_PCS0_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
-	GPIO_AD_B0_03_ALT7 LPSPI3_PCS0_SELECT_INPUT = 0x00 << 0 //  Selecting Pad: GPIO_AD_B0_03 for Mode: ALT7
-	GPIO_AD_B1_12_ALT2 LPSPI3_PCS0_SELECT_INPUT = 0x01 << 0 //  Selecting Pad: GPIO_AD_B1_12 for Mode: ALT2
+	LPSPI3_PCS0_DAISY LPSPI3_PCS0_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
 )
 
 const (
@@ -1291,9 +1163,7 @@ const (
 )
 
 const (
-	LPSPI3_SCK_DAISY   LPSPI3_SCK_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
-	GPIO_AD_B0_00_ALT7 LPSPI3_SCK_SELECT_INPUT = 0x00 << 0 //  Selecting Pad: GPIO_AD_B0_00 for Mode: ALT7
-	GPIO_AD_B1_15      LPSPI3_SCK_SELECT_INPUT = 0x01 << 0 //  Selecting Pad: GPIO_AD_B1_15 for Mode: ALT2
+	LPSPI3_SCK_DAISY LPSPI3_SCK_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
 )
 
 const (
@@ -1301,9 +1171,7 @@ const (
 )
 
 const (
-	LPSPI3_SDI_DAISY   LPSPI3_SDI_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
-	GPIO_AD_B0_02_ALT7 LPSPI3_SDI_SELECT_INPUT = 0x00 << 0 //  Selecting Pad: GPIO_AD_B0_02 for Mode: ALT7
-	GPIO_AD_B1_13_ALT2 LPSPI3_SDI_SELECT_INPUT = 0x01 << 0 //  Selecting Pad: GPIO_AD_B1_13 for Mode: ALT2
+	LPSPI3_SDI_DAISY LPSPI3_SDI_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
 )
 
 const (
@@ -1311,9 +1179,7 @@ const (
 )
 
 const (
-	LPSPI3_SDO_DAISY   LPSPI3_SDO_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
-	GPIO_AD_B0_01_ALT7 LPSPI3_SDO_SELECT_INPUT = 0x00 << 0 //  Selecting Pad: GPIO_AD_B0_01 for Mode: ALT7
-	GPIO_AD_B1_14_ALT2 LPSPI3_SDO_SELECT_INPUT = 0x01 << 0 //  Selecting Pad: GPIO_AD_B1_14 for Mode: ALT2
+	LPSPI3_SDO_DAISY LPSPI3_SDO_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
 )
 
 const (
@@ -1322,8 +1188,6 @@ const (
 
 const (
 	LPSPI4_PCS0_DAISY LPSPI4_PCS0_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
-	GPIO_B0_00_ALT3   LPSPI4_PCS0_SELECT_INPUT = 0x00 << 0 //  Selecting Pad: GPIO_B0_00 for Mode: ALT3
-	GPIO_B1_04_ALT1   LPSPI4_PCS0_SELECT_INPUT = 0x01 << 0 //  Selecting Pad:GPIO_B1_04 for Mode: ALT1
 )
 
 const (
@@ -1332,8 +1196,6 @@ const (
 
 const (
 	LPSPI4_SCK_DAISY LPSPI4_SCK_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
-	GPIO_B0_03_ALT3  LPSPI4_SCK_SELECT_INPUT = 0x00 << 0 //  Selecting Pad: GPIO_B0_03 for Mode: ALT3
-	GPIO_B1_07_ALT1  LPSPI4_SCK_SELECT_INPUT = 0x01 << 0 //  Selecting Pad: GPIO_B1_07 for Mode: ALT1
 )
 
 const (
@@ -1342,8 +1204,6 @@ const (
 
 const (
 	LPSPI4_SDI_DAISY LPSPI4_SDI_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
-	GPIO_B0_01_ALT3  LPSPI4_SDI_SELECT_INPUT = 0x00 << 0 //  Selecting Pad: GPIO_B0_01 for Mode: ALT3
-	GPIO_B1_05_ALT1  LPSPI4_SDI_SELECT_INPUT = 0x01 << 0 //  Selecting Pad: GPIO_B1_05 for Mode: ALT1
 )
 
 const (
@@ -1352,8 +1212,6 @@ const (
 
 const (
 	LPSPI4_SDO_DAISY LPSPI4_SDO_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
-	GPIO_B0_02_ALT3  LPSPI4_SDO_SELECT_INPUT = 0x00 << 0 //  Selecting Pad: GPIO_B0_02 for Mode: ALT3
-	GPIO_B1_06_ALT1  LPSPI4_SDO_SELECT_INPUT = 0x01 << 0 //  Selecting Pad: GPIO_B1_06 for Mode: ALT1
 )
 
 const (
@@ -1361,9 +1219,7 @@ const (
 )
 
 const (
-	LPUART2_RX_DAISY   LPUART2_RX_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
-	GPIO_SD_B1_10_ALT2 LPUART2_RX_SELECT_INPUT = 0x00 << 0 //  Selecting Pad: GPIO_SD_B1_10 for Mode: ALT2
-	GPIO_AD_B1_03_ALT2 LPUART2_RX_SELECT_INPUT = 0x01 << 0 //  Selecting Pad: GPIO_AD_B1_03 for Mode: ALT2
+	LPUART2_RX_DAISY LPUART2_RX_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
 )
 
 const (
@@ -1371,9 +1227,7 @@ const (
 )
 
 const (
-	LPUART2_TX_DAISY   LPUART2_TX_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
-	GPIO_SD_B1_11_ALT2 LPUART2_TX_SELECT_INPUT = 0x00 << 0 //  Selecting Pad: GPIO_SD_B1_11 for Mode: ALT2
-	GPIO_AD_B1_02_ALT2 LPUART2_TX_SELECT_INPUT = 0x01 << 0 //  Selecting Pad: GPIO_AD_B1_02 for Mode: ALT2
+	LPUART2_TX_DAISY LPUART2_TX_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
 )
 
 const (
@@ -1382,8 +1236,6 @@ const (
 
 const (
 	LPUART3_CTS_B_DAISY LPUART3_CTS_B_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
-	GPIO_EMC_15_ALT2    LPUART3_CTS_B_SELECT_INPUT = 0x00 << 0 //  Selecting Pad: GPIO_EMC_15 for Mode: ALT2
-	GPIO_AD_B1_04_ALT2  LPUART3_CTS_B_SELECT_INPUT = 0x01 << 0 //  Selecting Pad: GPIO_AD_B1_04 for Mode: ALT2
 )
 
 const (
@@ -1436,8 +1288,6 @@ const (
 
 const (
 	LPUART5_RX_DAISY LPUART5_RX_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
-	GPIO_EMC_24_ALT2 LPUART5_RX_SELECT_INPUT = 0x00 << 0 //  Selecting Pad: GPIO_EMC_24 for Mode: ALT2
-	GPIO_B1_13_ALT1  LPUART5_RX_SELECT_INPUT = 0x01 << 0 //  Selecting Pad: GPIO_B1_13 for Mode: ALT1
 )
 
 const (
@@ -1446,8 +1296,6 @@ const (
 
 const (
 	LPUART5_TX_DAISY LPUART5_TX_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
-	GPIO_EMC_23_ALT2 LPUART5_TX_SELECT_INPUT = 0x00 << 0 //  Selecting Pad: GPIO_EMC_23 for Mode: ALT2
-	GPIO_B1_12_ALT1  LPUART5_TX_SELECT_INPUT = 0x01 << 0 //  Selecting Pad: GPIO_B1_12 for Mode: ALT1
 )
 
 const (
@@ -1455,9 +1303,7 @@ const (
 )
 
 const (
-	LPUART6_RX_DAISY   LPUART6_RX_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
-	GPIO_EMC_26_ALT2   LPUART6_RX_SELECT_INPUT = 0x00 << 0 //  Selecting Pad: GPIO_EMC_26 for Mode: ALT2
-	GPIO_AD_B0_03_ALT2 LPUART6_RX_SELECT_INPUT = 0x01 << 0 //  Selecting Pad: GPIO_AD_B0_03 for Mode: ALT2
+	LPUART6_RX_DAISY LPUART6_RX_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
 )
 
 const (
@@ -1465,9 +1311,7 @@ const (
 )
 
 const (
-	LPUART6_TX_DAISY   LPUART6_TX_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
-	GPIO_EMC_25_ALT2   LPUART6_TX_SELECT_INPUT = 0x00 << 0 //  Selecting Pad: GPIO_EMC_25 for Mode: ALT2
-	GPIO_AD_B0_02_ALT2 LPUART6_TX_SELECT_INPUT = 0x01 << 0 //  Selecting Pad: GPIO_AD_B0_02 for Mode: ALT2
+	LPUART6_TX_DAISY LPUART6_TX_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
 )
 
 const (
@@ -1475,9 +1319,7 @@ const (
 )
 
 const (
-	LPUART7_RX_DAISY   LPUART7_RX_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
-	GPIO_SD_B1_09_ALT2 LPUART7_RX_SELECT_INPUT = 0x00 << 0 //  Selecting Pad: GPIO_SD_B1_09 for Mode: ALT2
-	GPIO_EMC_32_ALT2   LPUART7_RX_SELECT_INPUT = 0x01 << 0 //  Selecting Pad: GPIO_EMC_32 for Mode: ALT2
+	LPUART7_RX_DAISY LPUART7_RX_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
 )
 
 const (
@@ -1485,9 +1327,7 @@ const (
 )
 
 const (
-	LPUART7_TX_DAISY   LPUART7_TX_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
-	GPIO_SD_B1_08_ALT2 LPUART7_TX_SELECT_INPUT = 0x00 << 0 //  Selecting Pad: GPIO_SD_B1_08 for Mode: ALT2
-	GPIO_EMC_31_ALT2   LPUART7_TX_SELECT_INPUT = 0x01 << 0 //  Selecting Pad:GPIO_EMC_31 for Mode: ALT2
+	LPUART7_TX_DAISY LPUART7_TX_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
 )
 
 const (
@@ -1517,9 +1357,7 @@ const (
 )
 
 const (
-	NMI_DAISY          NMI_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
-	GPIO_AD_B0_12_ALT7 NMI_SELECT_INPUT = 0x00 << 0 //  Selecting Pad: GPIO_AD_B0_12 for Mode: ALT7
-	WAKEUP_ALT7        NMI_SELECT_INPUT = 0x01 << 0 //  Selecting Pad: WAKEUP for Mode: ALT7
+	NMI_DAISY NMI_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
 )
 
 const (
@@ -1528,8 +1366,6 @@ const (
 
 const (
 	QTIMER2_TIMER0_DAISY QTIMER2_TIMER0_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
-	GPIO_EMC_19_ALT4     QTIMER2_TIMER0_SELECT_INPUT = 0x00 << 0 //  Selecting Pad: GPIO_EMC_19 for Mode: ALT4
-	GPIO_B0_03_ALT1      QTIMER2_TIMER0_SELECT_INPUT = 0x01 << 0 //  Selecting Pad: GPIO_B0_03 for Mode: ALT1
 )
 
 const (
@@ -1538,8 +1374,6 @@ const (
 
 const (
 	QTIMER2_TIMER1_DAISY QTIMER2_TIMER1_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
-	GPIO_EMC_20_ALT4     QTIMER2_TIMER1_SELECT_INPUT = 0x00 << 0 //  Selecting Pad: GPIO_EMC_20 for Mode: ALT4
-	GPIO_B0_04_ALT1      QTIMER2_TIMER1_SELECT_INPUT = 0x01 << 0 //  Selecting Pad: GPIO_B0_04 for Mode: ALT1
 )
 
 const (
@@ -1548,8 +1382,6 @@ const (
 
 const (
 	QTIMER2_TIMER2_DAISY QTIMER2_TIMER2_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
-	GPIO_EMC_21_ALT4     QTIMER2_TIMER2_SELECT_INPUT = 0x00 << 0 //  Selecting Pad: GPIO_EMC_21 for Mode: ALT4
-	GPIO_B0_05_ALT1      QTIMER2_TIMER2_SELECT_INPUT = 0x01 << 0 //  Selecting Pad: GPIO_B0_05 for Mode: ALT1
 )
 
 const (
@@ -1558,8 +1390,6 @@ const (
 
 const (
 	QTIMER2_TIMER3_DAISY QTIMER2_TIMER3_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
-	GPIO_EMC_22_ALT4     QTIMER2_TIMER3_SELECT_INPUT = 0x00 << 0 //  Selecting Pad: GPIO_EMC_22 for Mode: ALT4
-	GPIO_B1_09_ALT1      QTIMER2_TIMER3_SELECT_INPUT = 0x01 << 0 //  Selecting Pad: GPIO_B1_09 for Mode: ALT1
 )
 
 const (
@@ -1645,8 +1475,6 @@ const (
 
 const (
 	SAI1_RX_DATA1_DAISY SAI1_RX_DATA1_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
-	GPIO_SD_B1_00_ALT3  SAI1_RX_DATA1_SELECT_INPUT = 0x00 << 0 //  Selecting Pad: GPIO_SD_B1_00 for Mode: ALT3
-	GPIO_B0_10_ALT3     SAI1_RX_DATA1_SELECT_INPUT = 0x01 << 0 //  Selecting Pad: GPIO_B0_10 for Mode: ALT3
 )
 
 const (
@@ -1655,8 +1483,6 @@ const (
 
 const (
 	SAI1_RX_DATA2_DAISY SAI1_RX_DATA2_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
-	GPIO_SD_B1_01_ALT3  SAI1_RX_DATA2_SELECT_INPUT = 0x00 << 0 //  Selecting Pad: GPIO_SD_B1_01 for Mode: ALT3
-	GPIO_B0_11_ALT3     SAI1_RX_DATA2_SELECT_INPUT = 0x01 << 0 //  Selecting Pad: GPIO_B0_11 for Mode: ALT3
 )
 
 const (
@@ -1665,8 +1491,6 @@ const (
 
 const (
 	SAI1_RX_DATA3_DAISY SAI1_RX_DATA3_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
-	GPIO_SD_B1_02_ALT3  SAI1_RX_DATA3_SELECT_INPUT = 0x00 << 0 //  Selecting Pad: GPIO_SD_B1_02 for Mode: ALT3
-	GPIO_B0_12_ALT3     SAI1_RX_DATA3_SELECT_INPUT = 0x01 << 0 //  Selecting Pad: GPIO_B0_12 for Mode: ALT3
 )
 
 const (
@@ -1707,9 +1531,7 @@ const (
 )
 
 const (
-	SAI2_MCLK2_DAISY   SAI2_MCLK2_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
-	GPIO_EMC_07_ALT2   SAI2_MCLK2_SELECT_INPUT = 0x00 << 0 //  Selecting Pad: GPIO_EMC_07 for Mode: ALT2
-	GPIO_AD_B0_10_ALT3 SAI2_MCLK2_SELECT_INPUT = 0x01 << 0 //  Selecting Pad: GPIO_AD_B0_10 for Mode: ALT3
+	SAI2_MCLK2_DAISY SAI2_MCLK2_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
 )
 
 const (
@@ -1718,8 +1540,6 @@ const (
 
 const (
 	SAI2_RX_BCLK_DAISY SAI2_RX_BCLK_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
-	GPIO_EMC_10_ALT2   SAI2_RX_BCLK_SELECT_INPUT = 0x00 << 0 //  Selecting Pad: GPIO_EMC_10 for Mode: ALT2
-	GPIO_AD_B0_06_ALT3 SAI2_RX_BCLK_SELECT_INPUT = 0x01 << 0 //  Selecting Pad: GPIO_AD_B0_06 for Mode: ALT3
 )
 
 const (
@@ -1728,8 +1548,6 @@ const (
 
 const (
 	SAI2_RX_DATA0_DAISY SAI2_RX_DATA0_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
-	GPIO_EMC_08_ALT2    SAI2_RX_DATA0_SELECT_INPUT = 0x00 << 0 //  Selecting Pad: GPIO_EMC_08 for Mode: ALT2
-	GPIO_AD_B0_08_ALT3  SAI2_RX_DATA0_SELECT_INPUT = 0x01 << 0 //  Selecting Pad: GPIO_AD_B0_08 for Mode: ALT3
 )
 
 const (
@@ -1738,8 +1556,6 @@ const (
 
 const (
 	SAI2_RX_SYNC_DAISY SAI2_RX_SYNC_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
-	GPIO_EMC_09_ALT2   SAI2_RX_SYNC_SELECT_INPUT = 0x00 << 0 //  Selecting Pad: GPIO_EMC_09 for Mode: ALT2
-	GPIO_AD_B0_07_ALT3 SAI2_RX_SYNC_SELECT_INPUT = 0x01 << 0 //  Selecting Pad: GPIO_AD_B0_07 for Mode: ALT3
 )
 
 const (
@@ -1748,8 +1564,6 @@ const (
 
 const (
 	SAI2_TX_BCLK_DAISY SAI2_TX_BCLK_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
-	GPIO_EMC_06_ALT2   SAI2_TX_BCLK_SELECT_INPUT = 0x00 << 0 //  Selecting Pad: GPIO_EMC_06 for Mode: ALT2
-	GPIO_AD_B0_05_ALT3 SAI2_TX_BCLK_SELECT_INPUT = 0x01 << 0 //  Selecting Pad: GPIO_AD_B0_05 for Mode: ALT3
 )
 
 const (
@@ -1758,8 +1572,6 @@ const (
 
 const (
 	SAI2_TX_SYNC_DAISY SAI2_TX_SYNC_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
-	GPIO_EMC_05_ALT2   SAI2_TX_SYNC_SELECT_INPUT = 0x00 << 0 //  Selecting Pad: GPIO_EMC_05 for Mode: ALT2
-	GPIO_AD_B0_04_ALT3 SAI2_TX_SYNC_SELECT_INPUT = 0x01 << 0 //  Selecting Pad: GPIO_AD_B0_04 for Mode: ALT3
 )
 
 const (
@@ -1767,9 +1579,7 @@ const (
 )
 
 const (
-	SPDIF_IN_DAISY     SPDIF_IN_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
-	GPIO_AD_B1_03_ALT3 SPDIF_IN_SELECT_INPUT = 0x00 << 0 //  Selecting Pad: GPIO_AD_B1_03 for Mode: ALT3
-	GPIO_EMC_16_ALT3   SPDIF_IN_SELECT_INPUT = 0x01 << 0 //  Selecting Pad: GPIO_EMC_16 for Mode: ALT3
+	SPDIF_IN_DAISY SPDIF_IN_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
 )
 
 const (
@@ -1777,9 +1587,7 @@ const (
 )
 
 const (
-	USB_OTG2_OC_DAISY  USB_OTG2_OC_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
-	GPIO_AD_B0_14_ALT0 USB_OTG2_OC_SELECT_INPUT = 0x00 << 0 //  Selecting Pad: GPIO_AD_B0_14 for Mode: ALT0
-	GPIO_EMC_40_ALT3   USB_OTG2_OC_SELECT_INPUT = 0x01 << 0 //  Selecting Pad: GPIO_EMC_40 for Mode: ALT3
+	USB_OTG2_OC_DAISY USB_OTG2_OC_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
 )
 
 const (
@@ -1787,9 +1595,7 @@ const (
 )
 
 const (
-	USB_OTG1_OC_DAISY  USB_OTG1_OC_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
-	GPIO_AD_B0_03_ALT3 USB_OTG1_OC_SELECT_INPUT = 0x00 << 0 //  Selecting Pad: GPIO_AD_B0_03 for Mode: ALT3
-	GPIO_AD_B1_03_ALT0 USB_OTG1_OC_SELECT_INPUT = 0x01 << 0 //  Selecting Pad: GPIO_AD_B1_03 for Mode: ALT0
+	USB_OTG1_OC_DAISY USB_OTG1_OC_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
 )
 
 const (
@@ -1820,9 +1626,7 @@ const (
 )
 
 const (
-	USDHC2_CLK_DAISY   USDHC2_CLK_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
-	GPIO_SD_B1_04_ALT0 USDHC2_CLK_SELECT_INPUT = 0x00 << 0 //  Selecting Pad: GPIO_SD_B1_04 for Mode: ALT0
-	GPIO_AD_B1_09_ALT6 USDHC2_CLK_SELECT_INPUT = 0x01 << 0 //  Selecting Pad: GPIO_AD_B1_09 for Mode: ALT6
+	USDHC2_CLK_DAISY USDHC2_CLK_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
 )
 
 const (
@@ -1830,9 +1634,7 @@ const (
 )
 
 const (
-	USDHC2_CD_B_DAISY  USDHC2_CD_B_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
-	GPIO_AD_B1_03_ALT6 USDHC2_CD_B_SELECT_INPUT = 0x00 << 0 //  Selecting Pad:GPIO_AD_B1_03 for Mode: ALT6
-	GPIO_EMC_39_ALT6   USDHC2_CD_B_SELECT_INPUT = 0x01 << 0 //  Selecting Pad: GPIO_EMC_39 for Mode: ALT6
+	USDHC2_CD_B_DAISY USDHC2_CD_B_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
 )
 
 const (
@@ -1840,9 +1642,7 @@ const (
 )
 
 const (
-	USDHC2_CMD_DAISY   USDHC2_CMD_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
-	GPIO_SD_B1_05_ALT0 USDHC2_CMD_SELECT_INPUT = 0x00 << 0 //  Selecting Pad: GPIO_SD_B1_05 for Mode: ALT0
-	GPIO_AD_B1_08_ALT6 USDHC2_CMD_SELECT_INPUT = 0x01 << 0 //  Selecting Pad: GPIO_AD_B1_08 for Mode: ALT6
+	USDHC2_CMD_DAISY USDHC2_CMD_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
 )
 
 const (
@@ -1851,8 +1651,6 @@ const (
 
 const (
 	USDHC2_DATA0_DAISY USDHC2_DATA0_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
-	GPIO_SD_B1_03_ALT0 USDHC2_DATA0_SELECT_INPUT = 0x00 << 0 //  Selecting Pad: GPIO_SD_B1_03 for Mode: ALT0
-	GPIO_AD_B1_04_ALT6 USDHC2_DATA0_SELECT_INPUT = 0x01 << 0 //  Selecting Pad:GPIO_AD_B1_04 for Mode: ALT6
 )
 
 const (
@@ -1861,8 +1659,6 @@ const (
 
 const (
 	USDHC2_DATA1_DAISY USDHC2_DATA1_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
-	GPIO_SD_B1_02_ALT0 USDHC2_DATA1_SELECT_INPUT = 0x00 << 0 //  Selecting Pad: GPIO_SD_B1_02 for Mode: ALT0
-	GPIO_AD_B1_05_ALT6 USDHC2_DATA1_SELECT_INPUT = 0x01 << 0 //  Selecting Pad: GPIO_AD_B1_05 for Mode: ALT6
 )
 
 const (
@@ -1871,8 +1667,6 @@ const (
 
 const (
 	USDHC2_DATA2_DAISY USDHC2_DATA2_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
-	GPIO_SD_B1_01_ALT0 USDHC2_DATA2_SELECT_INPUT = 0x00 << 0 //  Selecting Pad: GPIO_SD_B1_01 for Mode: ALT0
-	GPIO_AD_B1_06_ALT6 USDHC2_DATA2_SELECT_INPUT = 0x01 << 0 //  Selecting Pad: GPIO_AD_B1_06 for Mode: ALT6
 )
 
 const (
@@ -1881,8 +1675,6 @@ const (
 
 const (
 	USDHC2_DATA3_DAISY USDHC2_DATA3_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
-	GPIO_SD_B1_00_ALT0 USDHC2_DATA3_SELECT_INPUT = 0x00 << 0 //  Selecting Pad: GPIO_SD_B1_00 for Mode: ALT0
-	GPIO_AD_B1_07_ALT6 USDHC2_DATA3_SELECT_INPUT = 0x01 << 0 //  Selecting Pad: GPIO_AD_B1_07 for Mode: ALT6
 )
 
 const (
@@ -1891,8 +1683,6 @@ const (
 
 const (
 	USDHC2_DATA4_DAISY USDHC2_DATA4_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
-	GPIO_SD_B1_08_ALT0 USDHC2_DATA4_SELECT_INPUT = 0x00 << 0 //  Selecting Pad: GPIO_SD_B1_08 for Mode: ALT0
-	GPIO_AD_B1_12_ALT6 USDHC2_DATA4_SELECT_INPUT = 0x01 << 0 //  Selecting Pad: GPIO_AD_B1_12 for Mode: ALT6
 )
 
 const (
@@ -1901,8 +1691,6 @@ const (
 
 const (
 	USDHC2_DATA5_DAISY USDHC2_DATA5_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
-	GPIO_SD_B1_09_ALT0 USDHC2_DATA5_SELECT_INPUT = 0x00 << 0 //  Selecting Pad: GPIO_SD_B1_09 for Mode: ALT0
-	GPIO_AD_B1_13_ALT6 USDHC2_DATA5_SELECT_INPUT = 0x01 << 0 //  Selecting Pad: GPIO_AD_B1_13 for Mode: ALT6
 )
 
 const (
@@ -1911,8 +1699,6 @@ const (
 
 const (
 	USDHC2_DATA6_DAISY USDHC2_DATA6_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
-	GPIO_SD_B1_10_ALT0 USDHC2_DATA6_SELECT_INPUT = 0x00 << 0 //  Selecting Pad: GPIO_SD_B1_10 for Mode: ALT0
-	GPIO_AD_B1_14_ALT6 USDHC2_DATA6_SELECT_INPUT = 0x01 << 0 //  Selecting Pad: GPIO_AD_B1_14 for Mode: ALT6
 )
 
 const (
@@ -1921,8 +1707,6 @@ const (
 
 const (
 	USDHC2_DATA7_DAISY USDHC2_DATA7_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
-	GPIO_SD_B1_11_ALT0 USDHC2_DATA7_SELECT_INPUT = 0x00 << 0 //  Selecting Pad: GPIO_SD_B1_11 for Mode: ALT0
-	GPIO_AD_B1_15_ALT6 USDHC2_DATA7_SELECT_INPUT = 0x01 << 0 //  Selecting Pad: GPIO_AD_B1_15 for Mode: ALT6
 )
 
 const (
@@ -1930,9 +1714,7 @@ const (
 )
 
 const (
-	USDHC2_WP_DAISY    USDHC2_WP_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
-	GPIO_EMC_37_ALT6   USDHC2_WP_SELECT_INPUT = 0x00 << 0 //  Selecting Pad: GPIO_EMC_37 for Mode: ALT6
-	GPIO_AD_B1_10_ALT6 USDHC2_WP_SELECT_INPUT = 0x01 << 0 //  Selecting Pad: GPIO_AD_B1_10 for Mode: ALT6
+	USDHC2_WP_DAISY USDHC2_WP_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
 )
 
 const (
@@ -1941,8 +1723,6 @@ const (
 
 const (
 	XBAR1_IN02_DAISY XBAR1_IN02_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
-	GPIO_EMC_00_ALT3 XBAR1_IN02_SELECT_INPUT = 0x00 << 0 //  Selecting Pad: GPIO_EMC_00 for Mode: ALT3
-	GPIO_B1_14_ALT3  XBAR1_IN02_SELECT_INPUT = 0x01 << 0 //  Selecting Pad: GPIO_B1_14 for Mode: ALT3
 )
 
 const (
@@ -1951,8 +1731,6 @@ const (
 
 const (
 	XBAR1_IN03_DAISY XBAR1_IN03_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
-	GPIO_EMC_01_ALT3 XBAR1_IN03_SELECT_INPUT = 0x00 << 0 //  Selecting Pad: GPIO_EMC_01 for Mode: ALT3
-	GPIO_B1_15_ALT3  XBAR1_IN03_SELECT_INPUT = 0x01 << 0 //  Selecting Pad: GPIO_B1_15 for Mode: ALT3
 )
 
 const (
@@ -1960,9 +1738,7 @@ const (
 )
 
 const (
-	XBAR1_IN04_DAISY   XBAR1_IN04_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
-	GPIO_EMC_02_ALT3   XBAR1_IN04_SELECT_INPUT = 0x00 << 0 //  Selecting Pad: GPIO_EMC_02 for Mode: ALT3
-	GPIO_SD_B0_00_ALT3 XBAR1_IN04_SELECT_INPUT = 0x01 << 0 //  Selecting Pad: GPIO_SD_B0_00 for Mode: ALT3
+	XBAR1_IN04_DAISY XBAR1_IN04_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
 )
 
 const (
@@ -1970,9 +1746,7 @@ const (
 )
 
 const (
-	XBAR1_IN05_DAISY   XBAR1_IN05_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
-	GPIO_EMC_03_ALT3   XBAR1_IN05_SELECT_INPUT = 0x00 << 0 //  Selecting Pad: GPIO_EMC_03 for Mode: ALT3
-	GPIO_SD_B0_01_ALT3 XBAR1_IN05_SELECT_INPUT = 0x01 << 0 //  Selecting Pad: GPIO_SD_B0_01 for Mode: ALT3
+	XBAR1_IN05_DAISY XBAR1_IN05_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
 )
 
 const (
@@ -1980,9 +1754,7 @@ const (
 )
 
 const (
-	XBAR1_IN06_DAISY   XBAR1_IN06_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
-	GPIO_EMC_04_ALT3   XBAR1_IN06_SELECT_INPUT = 0x00 << 0 //  Selecting Pad: GPIO_EMC_04 for Mode: ALT3
-	GPIO_SD_B0_02_ALT3 XBAR1_IN06_SELECT_INPUT = 0x01 << 0 //  Selecting Pad: GPIO_SD_B0_02 for Mode: ALT3
+	XBAR1_IN06_DAISY XBAR1_IN06_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
 )
 
 const (
@@ -1990,9 +1762,7 @@ const (
 )
 
 const (
-	XBAR1_IN07_DAISY   XBAR1_IN07_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
-	GPIO_EMC_05_ALT3   XBAR1_IN07_SELECT_INPUT = 0x00 << 0 //  Selecting Pad: GPIO_EMC_05 for Mode: ALT3
-	GPIO_SD_B0_03_ALT3 XBAR1_IN07_SELECT_INPUT = 0x01 << 0 //  Selecting Pad: GPIO_SD_B0_03 for Mode: ALT3
+	XBAR1_IN07_DAISY XBAR1_IN07_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
 )
 
 const (
@@ -2000,9 +1770,7 @@ const (
 )
 
 const (
-	XBAR1_IN08_DAISY   XBAR1_IN08_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
-	GPIO_EMC_06_ALT3   XBAR1_IN08_SELECT_INPUT = 0x00 << 0 //  Selecting Pad: GPIO_EMC_06 for Mode: ALT3
-	GPIO_SD_B0_04_ALT3 XBAR1_IN08_SELECT_INPUT = 0x01 << 0 //  Selecting Pad: GPIO_SD_B0_04 for Mode: ALT3
+	XBAR1_IN08_DAISY XBAR1_IN08_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
 )
 
 const (
@@ -2010,9 +1778,7 @@ const (
 )
 
 const (
-	XBAR1_IN09_DAISY   XBAR1_IN09_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
-	GPIO_EMC_07_ALT3   XBAR1_IN09_SELECT_INPUT = 0x00 << 0 //  Selecting Pad: GPIO_EMC_07 for Mode: ALT3
-	GPIO_SD_B0_05_ALT3 XBAR1_IN09_SELECT_INPUT = 0x01 << 0 //  Selecting Pad: GPIO_SD_B0_05 for Mode: ALT3
+	XBAR1_IN09_DAISY XBAR1_IN09_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
 )
 
 const (
@@ -2032,9 +1798,7 @@ const (
 )
 
 const (
-	XBAR1_IN18_DAISY   XBAR1_IN18_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
-	GPIO_EMC_35_ALT1   XBAR1_IN18_SELECT_INPUT = 0x00 << 0 //  Selecting Pad: GPIO_EMC_35 for Mode: ALT1
-	GPIO_AD_B0_06_ALT6 XBAR1_IN18_SELECT_INPUT = 0x01 << 0 //  Selecting Pad: GPIO_AD_B0_06 for Mode: ALT6
+	XBAR1_IN18_DAISY XBAR1_IN18_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
 )
 
 const (
@@ -2042,9 +1806,7 @@ const (
 )
 
 const (
-	XBAR1_IN20_DAISY   XBAR1_IN20_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
-	GPIO_EMC_15_ALT1   XBAR1_IN20_SELECT_INPUT = 0x00 << 0 //  Selecting Pad: GPIO_EMC_15 for Mode: ALT1
-	GPIO_AD_B0_08_ALT6 XBAR1_IN20_SELECT_INPUT = 0x01 << 0 //  Selecting Pad: GPIO_AD_B0_08 for Mode: ALT6
+	XBAR1_IN20_DAISY XBAR1_IN20_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
 )
 
 const (
@@ -2052,9 +1814,7 @@ const (
 )
 
 const (
-	XBAR1_IN22_DAISY   XBAR1_IN22_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
-	GPIO_EMC_36_ALT1   XBAR1_IN22_SELECT_INPUT = 0x00 << 0 //  Selecting Pad: GPIO_EMC_36 for Mode: ALT1
-	GPIO_AD_B0_10_ALT6 XBAR1_IN22_SELECT_INPUT = 0x01 << 0 //  Selecting Pad: GPIO_AD_B0_10 for Mode: ALT6
+	XBAR1_IN22_DAISY XBAR1_IN22_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
 )
 
 const (
@@ -2062,9 +1822,7 @@ const (
 )
 
 const (
-	XBAR1_IN23_DAISY   XBAR1_IN23_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
-	GPIO_EMC_37_ALT1   XBAR1_IN23_SELECT_INPUT = 0x00 << 0 //  Selecting Pad: GPIO_EMC_37 for Mode: ALT1
-	GPIO_AD_B0_11_ALT6 XBAR1_IN23_SELECT_INPUT = 0x01 << 0 //  Selecting Pad: GPIO_AD_B0_11 for Mode: ALT6
+	XBAR1_IN23_DAISY XBAR1_IN23_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
 )
 
 const (
@@ -2072,9 +1830,7 @@ const (
 )
 
 const (
-	XBAR1_IN24_DAISY   XBAR1_IN24_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
-	GPIO_EMC_12_ALT1   XBAR1_IN24_SELECT_INPUT = 0x00 << 0 //  Selecting Pad: GPIO_EMC_12 for Mode: ALT1
-	GPIO_AD_B0_14_ALT1 XBAR1_IN24_SELECT_INPUT = 0x01 << 0 //  Selecting Pad: GPIO_AD_B0_14 for Mode: ALT1
+	XBAR1_IN24_DAISY XBAR1_IN24_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
 )
 
 const (
@@ -2082,9 +1838,7 @@ const (
 )
 
 const (
-	XBAR1_IN14_DAISY   XBAR1_IN14_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
-	GPIO_AD_B0_00_ALT1 XBAR1_IN14_SELECT_INPUT = 0x00 << 0 //  Selecting Pad: GPIO_AD_B0_00 for Mode: ALT1
-	GPIO_B1_00_ALT1    XBAR1_IN14_SELECT_INPUT = 0x01 << 0 //  Selecting Pad:GPIO_B1_00 for Mode: ALT1
+	XBAR1_IN14_DAISY XBAR1_IN14_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
 )
 
 const (
@@ -2092,9 +1846,7 @@ const (
 )
 
 const (
-	XBAR1_IN15_DAISY   XBAR1_IN15_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
-	GPIO_AD_B0_01_ALT1 XBAR1_IN15_SELECT_INPUT = 0x00 << 0 //  Selecting Pad: GPIO_AD_B0_01 for Mode: ALT1
-	GPIO_B1_01_ALT1    XBAR1_IN15_SELECT_INPUT = 0x01 << 0 //  Selecting Pad: GPIO_B1_01 for Mode: ALT1
+	XBAR1_IN15_DAISY XBAR1_IN15_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
 )
 
 const (
@@ -2102,9 +1854,7 @@ const (
 )
 
 const (
-	XBAR1_IN16_DAISY   XBAR1_IN16_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
-	GPIO_AD_B0_02_ALT1 XBAR1_IN16_SELECT_INPUT = 0x00 << 0 //  Selecting Pad: GPIO_AD_B0_02 for Mode: ALT1
-	GPIO_B1_02_ALT1    XBAR1_IN16_SELECT_INPUT = 0x01 << 0 //  Selecting Pad: GPIO_B1_02 for Mode: ALT1
+	XBAR1_IN16_DAISY XBAR1_IN16_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
 )
 
 const (
@@ -2112,9 +1862,7 @@ const (
 )
 
 const (
-	XBAR1_IN25_DAISY   XBAR1_IN25_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
-	GPIO_AD_B0_15_ALT1 XBAR1_IN25_SELECT_INPUT = 0x00 << 0 //  Selecting Pad: GPIO_AD_B0_15 for Mode: ALT1
-	GPIO_EMC_13_ALT1   XBAR1_IN25_SELECT_INPUT = 0x01 << 0 //  Selecting Pad: GPIO_EMC_13 for Mode: ALT1
+	XBAR1_IN25_DAISY XBAR1_IN25_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
 )
 
 const (
@@ -2122,9 +1870,7 @@ const (
 )
 
 const (
-	XBAR1_IN19_DAISY   XBAR1_IN19_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
-	GPIO_EMC_14_ALT1   XBAR1_IN19_SELECT_INPUT = 0x00 << 0 //  Selecting Pad: GPIO_EMC_14 for Mode: ALT1
-	GPIO_AD_B0_07_ALT6 XBAR1_IN19_SELECT_INPUT = 0x01 << 0 //  Selecting Pad: GPIO_AD_B0_07 for Mode: ALT6
+	XBAR1_IN19_DAISY XBAR1_IN19_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
 )
 
 const (
@@ -2132,9 +1878,7 @@ const (
 )
 
 const (
-	XBAR1_IN21_DAISY   XBAR1_IN21_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
-	GPIO_EMC_16_ALT1   XBAR1_IN21_SELECT_INPUT = 0x00 << 0 //  Selecting Pad: GPIO_EMC_16 for Mode: ALT1
-	GPIO_AD_B0_09_ALT6 XBAR1_IN21_SELECT_INPUT = 0x01 << 0 //  Selecting Pad: GPIO_AD_B0_09 for Mode: ALT6
+	XBAR1_IN21_DAISY XBAR1_IN21_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
 )
 
 const (
@@ -2154,8 +1898,6 @@ const (
 
 const (
 	ENET2_IPP_IND_MAC0_MDIO_DAISY ENET2_IPP_IND_MAC0_MDIO_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
-	GPIO_EMC_39_ALT8              ENET2_IPP_IND_MAC0_MDIO_SELECT_INPUT = 0x00 << 0 //  Selecting Pad: GPIO_EMC_39 for Mode: ALT8
-	GPIO_B0_01_ALT8               ENET2_IPP_IND_MAC0_MDIO_SELECT_INPUT = 0x01 << 0 //  Selecting Pad: GPIO_B0_01 for Mode: ALT8
 )
 
 const (
@@ -2208,8 +1950,6 @@ const (
 
 const (
 	ENET2_IPP_IND_MAC0_TIMER_DAISY_0 ENET2_IPP_IND_MAC0_TIMER_SELECT_INPUT_0 = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
-	GPIO_AD_B1_01_ALT8               ENET2_IPP_IND_MAC0_TIMER_SELECT_INPUT_0 = 0x00 << 0 //  Selecting Pad: GPIO_AD_B1_01 for Mode: ALT8
-	GPIO_B0_03_ALT8                  ENET2_IPP_IND_MAC0_TIMER_SELECT_INPUT_0 = 0x01 << 0 //  Selecting Pad: GPIO_B0_03 for Mode: ALT8
 )
 
 const (
@@ -2284,8 +2024,6 @@ const (
 
 const (
 	FLEXSPI2_IPP_IND_IO_FB_BIT0_DAISY FLEXSPI2_IPP_IND_IO_FB_BIT0_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
-	GPIO_EMC_13_ALT8                  FLEXSPI2_IPP_IND_IO_FB_BIT0_SELECT_INPUT = 0x00 << 0 //  Selecting Pad: GPIO_EMC_13 for Mode: ALT8
-	GPIO_SPI_B0_11_ALT0               FLEXSPI2_IPP_IND_IO_FB_BIT0_SELECT_INPUT = 0x01 << 0 //  Selecting Pad: GPIO_SPI_B0_11 for Mode: ALT0
 )
 
 const (
@@ -2294,8 +2032,6 @@ const (
 
 const (
 	FLEXSPI2_IPP_IND_IO_FB_BIT1_DAISY FLEXSPI2_IPP_IND_IO_FB_BIT1_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
-	GPIO_EMC_14_ALT8                  FLEXSPI2_IPP_IND_IO_FB_BIT1_SELECT_INPUT = 0x00 << 0 //  Selecting Pad: GPIO_EMC_14 for Mode: ALT8
-	GPIO_SPI_B0_07_ALT0               FLEXSPI2_IPP_IND_IO_FB_BIT1_SELECT_INPUT = 0x01 << 0 //  Selecting Pad: GPIO_SPI_B0_07 for Mode: ALT0
 )
 
 const (
@@ -2304,8 +2040,6 @@ const (
 
 const (
 	FLEXSPI2_IPP_IND_IO_FB_BIT2_DAISY FLEXSPI2_IPP_IND_IO_FB_BIT2_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
-	GPIO_EMC_15_ALT8                  FLEXSPI2_IPP_IND_IO_FB_BIT2_SELECT_INPUT = 0x00 << 0 //  Selecting Pad: GPIO_EMC_15 for Mode: ALT8
-	GPIO_SPI_B0_03_ALT0               FLEXSPI2_IPP_IND_IO_FB_BIT2_SELECT_INPUT = 0x01 << 0 //  Selecting Pad: GPIO_SPI_B0_03 for Mode: ALT0
 )
 
 const (
@@ -2314,8 +2048,6 @@ const (
 
 const (
 	FLEXSPI2_IPP_IND_IO_FB_BIT3_DAISY FLEXSPI2_IPP_IND_IO_FB_BIT3_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
-	GPIO_EMC_16_ALT8                  FLEXSPI2_IPP_IND_IO_FB_BIT3_SELECT_INPUT = 0x00 << 0 //  Selecting Pad: GPIO_EMC_16 for Mode: ALT8
-	GPIO_SPI_B0_04_ALT0               FLEXSPI2_IPP_IND_IO_FB_BIT3_SELECT_INPUT = 0x01 << 0 //  Selecting Pad: GPIO_SPI_B0_04 for Mode: ALT0
 )
 
 const (
@@ -2335,8 +2067,6 @@ const (
 
 const (
 	FLEXSPI2_IPP_IND_SCK_FB_DAISY FLEXSPI2_IPP_IND_SCK_FB_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
-	GPIO_EMC_12_ALT8              FLEXSPI2_IPP_IND_SCK_FB_SELECT_INPUT = 0x00 << 0 //  Selecting Pad: GPIO_EMC_12 for Mode: ALT8
-	GPIO_SPI_B0_01_ALT0           FLEXSPI2_IPP_IND_SCK_FB_SELECT_INPUT = 0x01 << 0 //  Selecting Pad: GPIO_SPI_B0_01 for Mode: ALT0
 )
 
 const (
@@ -2345,8 +2075,6 @@ const (
 
 const (
 	GPT1_IPP_IND_CAPIN1_DAISY GPT1_IPP_IND_CAPIN1_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
-	GPIO_EMC_24_ALT4          GPT1_IPP_IND_CAPIN1_SELECT_INPUT = 0x00 << 0 //  Selecting Pad: GPIO_EMC_24 for Mode: ALT4
-	GPIO_B1_05_ALT8           GPT1_IPP_IND_CAPIN1_SELECT_INPUT = 0x01 << 0 //  Selecting Pad: GPIO_B1_05 for Mode: ALT8
 )
 
 const (
@@ -2355,8 +2083,6 @@ const (
 
 const (
 	GPT1_IPP_IND_CAPIN2_DAISY GPT1_IPP_IND_CAPIN2_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
-	GPIO_EMC_23_ALT4          GPT1_IPP_IND_CAPIN2_SELECT_INPUT = 0x00 << 0 //  Selecting Pad: GPIO_EMC_23 for Mode: ALT4
-	GPIO_B1_06_ALT8           GPT1_IPP_IND_CAPIN2_SELECT_INPUT = 0x01 << 0 //  Selecting Pad: GPIO_B1_06 for Mode: ALT8
 )
 
 const (
@@ -2365,8 +2091,6 @@ const (
 
 const (
 	GPT1_IPP_IND_CLKIN_DAISY GPT1_IPP_IND_CLKIN_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
-	GPIO_AD_B0_13_ALT1       GPT1_IPP_IND_CLKIN_SELECT_INPUT = 0x00 << 0 //  Selecting Pad: GPIO_AD_B0_13 for Mode: ALT1
-	GPIO_B1_04_ALT8          GPT1_IPP_IND_CLKIN_SELECT_INPUT = 0x01 << 0 //  Selecting Pad: GPIO_B1_04 for Mode: ALT8
 )
 
 const (
@@ -2375,8 +2099,6 @@ const (
 
 const (
 	GPT2_IPP_IND_CAPIN1_DAISY GPT2_IPP_IND_CAPIN1_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
-	GPIO_EMC_41_ALT1          GPT2_IPP_IND_CAPIN1_SELECT_INPUT = 0x00 << 0 //  Selecting Pad: GPIO_EMC_41 for Mode: ALT1
-	GPIO_AD_B1_03_ALT8        GPT2_IPP_IND_CAPIN1_SELECT_INPUT = 0x01 << 0 //  Selecting Pad: GPIO_AD_B1_03 for Mode: ALT8
 )
 
 const (
@@ -2385,8 +2107,6 @@ const (
 
 const (
 	GPT2_IPP_IND_CAPIN2_DAISY GPT2_IPP_IND_CAPIN2_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
-	GPIO_EMC_40_ALT1          GPT2_IPP_IND_CAPIN2_SELECT_INPUT = 0x00 << 0 //  Selecting Pad: GPIO_EMC_40 for Mode: ALT1
-	GPIO_AD_B1_04_ALT8        GPT2_IPP_IND_CAPIN2_SELECT_INPUT = 0x01 << 0 //  Selecting Pad: GPIO_AD_B1_04 for Mode: ALT8
 )
 
 const (
@@ -2395,8 +2115,6 @@ const (
 
 const (
 	GPT2_IPP_IND_CLKIN_DAISY GPT2_IPP_IND_CLKIN_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
-	GPIO_AD_B0_09_ALT7       GPT2_IPP_IND_CLKIN_SELECT_INPUT = 0x00 << 0 //  Selecting Pad: GPIO_AD_B0_09 for Mode: ALT7
-	GPIO_AD_B1_02_ALT8       GPT2_IPP_IND_CLKIN_SELECT_INPUT = 0x01 << 0 //  Selecting Pad: GPIO_AD_B1_02 for Mode: ALT8
 )
 
 const (
@@ -2404,9 +2122,7 @@ const (
 )
 
 const (
-	DAISY              SAI3_IPG_CLK_SAI_MCLK_SELECT_INPUT_2 = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
-	GPIO_EMC_37_ALT3   SAI3_IPG_CLK_SAI_MCLK_SELECT_INPUT_2 = 0x00 << 0 //  Selecting Pad: GPIO_EMC_37 for Mode: ALT3
-	GPIO_SD_B1_04_ALT8 SAI3_IPG_CLK_SAI_MCLK_SELECT_INPUT_2 = 0x01 << 0 //  Selecting Pad: GPIO_SD_B1_04 for Mode: ALT8
+	DAISY SAI3_IPG_CLK_SAI_MCLK_SELECT_INPUT_2 = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
 )
 
 const (
@@ -2415,8 +2131,6 @@ const (
 
 const (
 	SAI3_IPP_IND_SAI_RXBCLK_DAISY SAI3_IPP_IND_SAI_RXBCLK_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
-	GPIO_EMC_35_ALT3              SAI3_IPP_IND_SAI_RXBCLK_SELECT_INPUT = 0x00 << 0 //  Selecting Pad: GPIO_EMC_35 for Mode: ALT3
-	GPIO_SD_B1_06_ALT8            SAI3_IPP_IND_SAI_RXBCLK_SELECT_INPUT = 0x01 << 0 //  Selecting Pad: GPIO_SD_B1_06 for Mode: ALT8
 )
 
 const (
@@ -2425,8 +2139,6 @@ const (
 
 const (
 	SAI3_IPP_IND_SAI_RXDATA_DAISY_0 SAI3_IPP_IND_SAI_RXDATA_SELECT_INPUT_0 = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
-	GPIO_EMC_33_ALT3                SAI3_IPP_IND_SAI_RXDATA_SELECT_INPUT_0 = 0x00 << 0 //  Selecting Pad: GPIO_EMC_33 for Mode: ALT3
-	GPIO_SD_B1_00_ALT8              SAI3_IPP_IND_SAI_RXDATA_SELECT_INPUT_0 = 0x01 << 0 //  Selecting Pad: GPIO_SD_B1_00 for Mode: ALT8
 )
 
 const (
@@ -2435,8 +2147,6 @@ const (
 
 const (
 	SAI3_IPP_IND_SAI_RXSYNC_DAISY SAI3_IPP_IND_SAI_RXSYNC_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
-	GPIO_EMC_34_ALT3              SAI3_IPP_IND_SAI_RXSYNC_SELECT_INPUT = 0x00 << 0 //  Selecting Pad: GPIO_EMC_34 for Mode: ALT3
-	GPIO_SD_B1_05_ALT8            SAI3_IPP_IND_SAI_RXSYNC_SELECT_INPUT = 0x01 << 0 //  Selecting Pad: GPIO_SD_B1_05 for Mode: ALT8
 )
 
 const (
@@ -2445,8 +2155,6 @@ const (
 
 const (
 	SAI3_IPP_IND_SAI_TXBCLK_DAISY SAI3_IPP_IND_SAI_TXBCLK_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
-	GPIO_EMC_38_ALT3              SAI3_IPP_IND_SAI_TXBCLK_SELECT_INPUT = 0x00 << 0 //  Selecting Pad: GPIO_EMC_38 for Mode: ALT3
-	GPIO_SD_B1_03_ALT8            SAI3_IPP_IND_SAI_TXBCLK_SELECT_INPUT = 0x01 << 0 //  Selecting Pad: GPIO_SD_B1_03 for Mode: ALT8
 )
 
 const (
@@ -2455,8 +2163,6 @@ const (
 
 const (
 	SAI3_IPP_IND_SAI_TXSYNC_DAISY SAI3_IPP_IND_SAI_TXSYNC_SELECT_INPUT = 0x01 << 0 //+ Selecting Pads Involved in Daisy Chain.
-	GPIO_EMC_39_ALT3              SAI3_IPP_IND_SAI_TXSYNC_SELECT_INPUT = 0x00 << 0 //  Selecting Pad: GPIO_EMC_39 for Mode: ALT3
-	GPIO_SD_B1_02_ALT8            SAI3_IPP_IND_SAI_TXSYNC_SELECT_INPUT = 0x01 << 0 //  Selecting Pad: GPIO_SD_B1_02 for Mode: ALT8
 )
 
 const (

@@ -32,54 +32,44 @@
 package xtaloscm
 
 const (
-	REFTOP_PWD           MISC0 = 0x01 << 0  //+ Control bit to power-down the analog bandgap reference circuitry
-	REFTOP_SELFBIASOFF   MISC0 = 0x01 << 3  //+ Control bit to disable the self-bias circuit in the analog bandgap
-	REFTOP_SELFBIASOFF_0 MISC0 = 0x00 << 3  //  Uses coarse bias currents for startup
-	REFTOP_SELFBIASOFF_1 MISC0 = 0x01 << 3  //  Uses bandgap-based bias currents for best performance.
-	REFTOP_VBGADJ        MISC0 = 0x07 << 4  //+ Not related to oscillator.
-	REFTOP_VBGADJ_0      MISC0 = 0x00 << 4  //  Nominal VBG
-	REFTOP_VBGADJ_1      MISC0 = 0x01 << 4  //  VBG+0.78%
-	REFTOP_VBGADJ_2      MISC0 = 0x02 << 4  //  VBG+1.56%
-	REFTOP_VBGADJ_3      MISC0 = 0x03 << 4  //  VBG+2.34%
-	REFTOP_VBGADJ_4      MISC0 = 0x04 << 4  //  VBG-0.78%
-	REFTOP_VBGADJ_5      MISC0 = 0x05 << 4  //  VBG-1.56%
-	REFTOP_VBGADJ_6      MISC0 = 0x06 << 4  //  VBG-2.34%
-	REFTOP_VBGADJ_7      MISC0 = 0x07 << 4  //  VBG-3.12%
-	REFTOP_VBGUP         MISC0 = 0x01 << 7  //+ Status bit that signals the analog bandgap voltage is up and stable
-	STOP_MODE_CONFIG     MISC0 = 0x03 << 10 //+ Configure the analog behavior in stop mode.Not related to oscillator.
-	STOP_MODE_CONFIG_0   MISC0 = 0x00 << 10 //  All analog except rtc powered down on stop mode assertion. XtalOsc=on, RCOsc=off;
-	STOP_MODE_CONFIG_1   MISC0 = 0x01 << 10 //  Certain analog functions such as certain regulators left up. XtalOsc=on, RCOsc=off;
-	STOP_MODE_CONFIG_2   MISC0 = 0x02 << 10 //  XtalOsc=off, RCOsc=on, Old BG=on, New BG=off.
-	STOP_MODE_CONFIG_3   MISC0 = 0x03 << 10 //  XtalOsc=off, RCOsc=on, Old BG=off, New BG=on.
-	DISCON_HIGH_SNVS     MISC0 = 0x01 << 12 //+ This bit controls a switch from VDD_HIGH_IN to VDD_SNVS_IN.
-	DISCON_HIGH_SNVS_0   MISC0 = 0x00 << 12 //  Turn on the switch
-	DISCON_HIGH_SNVS_1   MISC0 = 0x01 << 12 //  Turn off the switch
-	OSC_I                MISC0 = 0x03 << 13 //+ This field determines the bias current in the 24MHz oscillator
-	NOMINAL              MISC0 = 0x00 << 13 //  Nominal
-	MINUS_12_5_PERCENT   MISC0 = 0x01 << 13 //  Decrease current by 12.5%
-	MINUS_25_PERCENT     MISC0 = 0x02 << 13 //  Decrease current by 25.0%
-	MINUS_37_5_PERCENT   MISC0 = 0x03 << 13 //  Decrease current by 37.5%
-	OSC_XTALOK           MISC0 = 0x01 << 15 //+ Status bit that signals that the output of the 24-MHz crystal oscillator is stable
-	OSC_XTALOK_EN        MISC0 = 0x01 << 16 //+ This bit enables the detector that signals when the 24MHz crystal oscillator is stable.
-	CLKGATE_CTRL         MISC0 = 0x01 << 25 //+ This bit allows disabling the clock gate (always ungated) for the xtal 24MHz clock that clocks the digital logic in the analog block
-	ALLOW_AUTO_GATE      MISC0 = 0x00 << 25 //  Allow the logic to automatically gate the clock when the XTAL is powered down.
-	NO_AUTO_GATE         MISC0 = 0x01 << 25 //  Prevent the logic from ever gating off the clock.
-	CLKGATE_DELAY        MISC0 = 0x07 << 26 //+ This field specifies the delay between powering up the XTAL 24MHz clock and releasing the clock to the digital logic inside the analog block
-	CLKGATE_DELAY_0      MISC0 = 0x00 << 26 //  0.5ms
-	CLKGATE_DELAY_1      MISC0 = 0x01 << 26 //  1.0ms
-	CLKGATE_DELAY_2      MISC0 = 0x02 << 26 //  2.0ms
-	CLKGATE_DELAY_3      MISC0 = 0x03 << 26 //  3.0ms
-	CLKGATE_DELAY_4      MISC0 = 0x04 << 26 //  4.0ms
-	CLKGATE_DELAY_5      MISC0 = 0x05 << 26 //  5.0ms
-	CLKGATE_DELAY_6      MISC0 = 0x06 << 26 //  6.0ms
-	CLKGATE_DELAY_7      MISC0 = 0x07 << 26 //  7.0ms
-	RTC_XTAL_SOURCE      MISC0 = 0x01 << 29 //+ This field indicates which chip source is being used for the rtc clock.
-	RTC_XTAL_SOURCE_0    MISC0 = 0x00 << 29 //  Internal ring oscillator
-	RTC_XTAL_SOURCE_1    MISC0 = 0x01 << 29 //  RTC_XTAL
-	XTAL_24M_PWD         MISC0 = 0x01 << 30 //+ This field powers down the 24M crystal oscillator if set true.
-	VID_PLL_PREDIV       MISC0 = 0x01 << 31 //+ Predivider for the source clock of the PLL's. Not related to oscillator.
-	VID_PLL_PREDIV_0     MISC0 = 0x00 << 31 //  Divide by 1
-	VID_PLL_PREDIV_1     MISC0 = 0x01 << 31 //  Divide by 2
+	REFTOP_PWD         MISC0 = 0x01 << 0  //+ Control bit to power-down the analog bandgap reference circuitry
+	REFTOP_SELFBIASOFF MISC0 = 0x01 << 3  //+ Control bit to disable the self-bias circuit in the analog bandgap
+	REFTOP_VBGADJ      MISC0 = 0x07 << 4  //+ Not related to oscillator.
+	REFTOP_VBGADJ_0    MISC0 = 0x00 << 4  //  Nominal VBG
+	REFTOP_VBGADJ_1    MISC0 = 0x01 << 4  //  VBG+0.78%
+	REFTOP_VBGADJ_2    MISC0 = 0x02 << 4  //  VBG+1.56%
+	REFTOP_VBGADJ_3    MISC0 = 0x03 << 4  //  VBG+2.34%
+	REFTOP_VBGADJ_4    MISC0 = 0x04 << 4  //  VBG-0.78%
+	REFTOP_VBGADJ_5    MISC0 = 0x05 << 4  //  VBG-1.56%
+	REFTOP_VBGADJ_6    MISC0 = 0x06 << 4  //  VBG-2.34%
+	REFTOP_VBGADJ_7    MISC0 = 0x07 << 4  //  VBG-3.12%
+	REFTOP_VBGUP       MISC0 = 0x01 << 7  //+ Status bit that signals the analog bandgap voltage is up and stable
+	STOP_MODE_CONFIG   MISC0 = 0x03 << 10 //+ Configure the analog behavior in stop mode.Not related to oscillator.
+	STOP_MODE_CONFIG_0 MISC0 = 0x00 << 10 //  All analog except rtc powered down on stop mode assertion. XtalOsc=on, RCOsc=off;
+	STOP_MODE_CONFIG_1 MISC0 = 0x01 << 10 //  Certain analog functions such as certain regulators left up. XtalOsc=on, RCOsc=off;
+	STOP_MODE_CONFIG_2 MISC0 = 0x02 << 10 //  XtalOsc=off, RCOsc=on, Old BG=on, New BG=off.
+	STOP_MODE_CONFIG_3 MISC0 = 0x03 << 10 //  XtalOsc=off, RCOsc=on, Old BG=off, New BG=on.
+	DISCON_HIGH_SNVS   MISC0 = 0x01 << 12 //+ This bit controls a switch from VDD_HIGH_IN to VDD_SNVS_IN.
+	OSC_I              MISC0 = 0x03 << 13 //+ This field determines the bias current in the 24MHz oscillator
+	NOMINAL            MISC0 = 0x00 << 13 //  Nominal
+	MINUS_12_5_PERCENT MISC0 = 0x01 << 13 //  Decrease current by 12.5%
+	MINUS_25_PERCENT   MISC0 = 0x02 << 13 //  Decrease current by 25.0%
+	MINUS_37_5_PERCENT MISC0 = 0x03 << 13 //  Decrease current by 37.5%
+	OSC_XTALOK         MISC0 = 0x01 << 15 //+ Status bit that signals that the output of the 24-MHz crystal oscillator is stable
+	OSC_XTALOK_EN      MISC0 = 0x01 << 16 //+ This bit enables the detector that signals when the 24MHz crystal oscillator is stable.
+	CLKGATE_CTRL       MISC0 = 0x01 << 25 //+ This bit allows disabling the clock gate (always ungated) for the xtal 24MHz clock that clocks the digital logic in the analog block
+	CLKGATE_DELAY      MISC0 = 0x07 << 26 //+ This field specifies the delay between powering up the XTAL 24MHz clock and releasing the clock to the digital logic inside the analog block
+	CLKGATE_DELAY_0    MISC0 = 0x00 << 26 //  0.5ms
+	CLKGATE_DELAY_1    MISC0 = 0x01 << 26 //  1.0ms
+	CLKGATE_DELAY_2    MISC0 = 0x02 << 26 //  2.0ms
+	CLKGATE_DELAY_3    MISC0 = 0x03 << 26 //  3.0ms
+	CLKGATE_DELAY_4    MISC0 = 0x04 << 26 //  4.0ms
+	CLKGATE_DELAY_5    MISC0 = 0x05 << 26 //  5.0ms
+	CLKGATE_DELAY_6    MISC0 = 0x06 << 26 //  6.0ms
+	CLKGATE_DELAY_7    MISC0 = 0x07 << 26 //  7.0ms
+	RTC_XTAL_SOURCE    MISC0 = 0x01 << 29 //+ This field indicates which chip source is being used for the rtc clock.
+	XTAL_24M_PWD       MISC0 = 0x01 << 30 //+ This field powers down the 24M crystal oscillator if set true.
+	VID_PLL_PREDIV     MISC0 = 0x01 << 31 //+ Predivider for the source clock of the PLL's. Not related to oscillator.
 )
 
 const (
@@ -100,54 +90,44 @@ const (
 )
 
 const (
-	REFTOP_PWD           MISC0_SET = 0x01 << 0  //+ Control bit to power-down the analog bandgap reference circuitry
-	REFTOP_SELFBIASOFF   MISC0_SET = 0x01 << 3  //+ Control bit to disable the self-bias circuit in the analog bandgap
-	REFTOP_SELFBIASOFF_0 MISC0_SET = 0x00 << 3  //  Uses coarse bias currents for startup
-	REFTOP_SELFBIASOFF_1 MISC0_SET = 0x01 << 3  //  Uses bandgap-based bias currents for best performance.
-	REFTOP_VBGADJ        MISC0_SET = 0x07 << 4  //+ Not related to oscillator.
-	REFTOP_VBGADJ_0      MISC0_SET = 0x00 << 4  //  Nominal VBG
-	REFTOP_VBGADJ_1      MISC0_SET = 0x01 << 4  //  VBG+0.78%
-	REFTOP_VBGADJ_2      MISC0_SET = 0x02 << 4  //  VBG+1.56%
-	REFTOP_VBGADJ_3      MISC0_SET = 0x03 << 4  //  VBG+2.34%
-	REFTOP_VBGADJ_4      MISC0_SET = 0x04 << 4  //  VBG-0.78%
-	REFTOP_VBGADJ_5      MISC0_SET = 0x05 << 4  //  VBG-1.56%
-	REFTOP_VBGADJ_6      MISC0_SET = 0x06 << 4  //  VBG-2.34%
-	REFTOP_VBGADJ_7      MISC0_SET = 0x07 << 4  //  VBG-3.12%
-	REFTOP_VBGUP         MISC0_SET = 0x01 << 7  //+ Status bit that signals the analog bandgap voltage is up and stable
-	STOP_MODE_CONFIG     MISC0_SET = 0x03 << 10 //+ Configure the analog behavior in stop mode.Not related to oscillator.
-	STOP_MODE_CONFIG_0   MISC0_SET = 0x00 << 10 //  All analog except rtc powered down on stop mode assertion. XtalOsc=on, RCOsc=off;
-	STOP_MODE_CONFIG_1   MISC0_SET = 0x01 << 10 //  Certain analog functions such as certain regulators left up. XtalOsc=on, RCOsc=off;
-	STOP_MODE_CONFIG_2   MISC0_SET = 0x02 << 10 //  XtalOsc=off, RCOsc=on, Old BG=on, New BG=off.
-	STOP_MODE_CONFIG_3   MISC0_SET = 0x03 << 10 //  XtalOsc=off, RCOsc=on, Old BG=off, New BG=on.
-	DISCON_HIGH_SNVS     MISC0_SET = 0x01 << 12 //+ This bit controls a switch from VDD_HIGH_IN to VDD_SNVS_IN.
-	DISCON_HIGH_SNVS_0   MISC0_SET = 0x00 << 12 //  Turn on the switch
-	DISCON_HIGH_SNVS_1   MISC0_SET = 0x01 << 12 //  Turn off the switch
-	OSC_I                MISC0_SET = 0x03 << 13 //+ This field determines the bias current in the 24MHz oscillator
-	NOMINAL              MISC0_SET = 0x00 << 13 //  Nominal
-	MINUS_12_5_PERCENT   MISC0_SET = 0x01 << 13 //  Decrease current by 12.5%
-	MINUS_25_PERCENT     MISC0_SET = 0x02 << 13 //  Decrease current by 25.0%
-	MINUS_37_5_PERCENT   MISC0_SET = 0x03 << 13 //  Decrease current by 37.5%
-	OSC_XTALOK           MISC0_SET = 0x01 << 15 //+ Status bit that signals that the output of the 24-MHz crystal oscillator is stable
-	OSC_XTALOK_EN        MISC0_SET = 0x01 << 16 //+ This bit enables the detector that signals when the 24MHz crystal oscillator is stable.
-	CLKGATE_CTRL         MISC0_SET = 0x01 << 25 //+ This bit allows disabling the clock gate (always ungated) for the xtal 24MHz clock that clocks the digital logic in the analog block
-	ALLOW_AUTO_GATE      MISC0_SET = 0x00 << 25 //  Allow the logic to automatically gate the clock when the XTAL is powered down.
-	NO_AUTO_GATE         MISC0_SET = 0x01 << 25 //  Prevent the logic from ever gating off the clock.
-	CLKGATE_DELAY        MISC0_SET = 0x07 << 26 //+ This field specifies the delay between powering up the XTAL 24MHz clock and releasing the clock to the digital logic inside the analog block
-	CLKGATE_DELAY_0      MISC0_SET = 0x00 << 26 //  0.5ms
-	CLKGATE_DELAY_1      MISC0_SET = 0x01 << 26 //  1.0ms
-	CLKGATE_DELAY_2      MISC0_SET = 0x02 << 26 //  2.0ms
-	CLKGATE_DELAY_3      MISC0_SET = 0x03 << 26 //  3.0ms
-	CLKGATE_DELAY_4      MISC0_SET = 0x04 << 26 //  4.0ms
-	CLKGATE_DELAY_5      MISC0_SET = 0x05 << 26 //  5.0ms
-	CLKGATE_DELAY_6      MISC0_SET = 0x06 << 26 //  6.0ms
-	CLKGATE_DELAY_7      MISC0_SET = 0x07 << 26 //  7.0ms
-	RTC_XTAL_SOURCE      MISC0_SET = 0x01 << 29 //+ This field indicates which chip source is being used for the rtc clock.
-	RTC_XTAL_SOURCE_0    MISC0_SET = 0x00 << 29 //  Internal ring oscillator
-	RTC_XTAL_SOURCE_1    MISC0_SET = 0x01 << 29 //  RTC_XTAL
-	XTAL_24M_PWD         MISC0_SET = 0x01 << 30 //+ This field powers down the 24M crystal oscillator if set true.
-	VID_PLL_PREDIV       MISC0_SET = 0x01 << 31 //+ Predivider for the source clock of the PLL's. Not related to oscillator.
-	VID_PLL_PREDIV_0     MISC0_SET = 0x00 << 31 //  Divide by 1
-	VID_PLL_PREDIV_1     MISC0_SET = 0x01 << 31 //  Divide by 2
+	REFTOP_PWD         MISC0_SET = 0x01 << 0  //+ Control bit to power-down the analog bandgap reference circuitry
+	REFTOP_SELFBIASOFF MISC0_SET = 0x01 << 3  //+ Control bit to disable the self-bias circuit in the analog bandgap
+	REFTOP_VBGADJ      MISC0_SET = 0x07 << 4  //+ Not related to oscillator.
+	REFTOP_VBGADJ_0    MISC0_SET = 0x00 << 4  //  Nominal VBG
+	REFTOP_VBGADJ_1    MISC0_SET = 0x01 << 4  //  VBG+0.78%
+	REFTOP_VBGADJ_2    MISC0_SET = 0x02 << 4  //  VBG+1.56%
+	REFTOP_VBGADJ_3    MISC0_SET = 0x03 << 4  //  VBG+2.34%
+	REFTOP_VBGADJ_4    MISC0_SET = 0x04 << 4  //  VBG-0.78%
+	REFTOP_VBGADJ_5    MISC0_SET = 0x05 << 4  //  VBG-1.56%
+	REFTOP_VBGADJ_6    MISC0_SET = 0x06 << 4  //  VBG-2.34%
+	REFTOP_VBGADJ_7    MISC0_SET = 0x07 << 4  //  VBG-3.12%
+	REFTOP_VBGUP       MISC0_SET = 0x01 << 7  //+ Status bit that signals the analog bandgap voltage is up and stable
+	STOP_MODE_CONFIG   MISC0_SET = 0x03 << 10 //+ Configure the analog behavior in stop mode.Not related to oscillator.
+	STOP_MODE_CONFIG_0 MISC0_SET = 0x00 << 10 //  All analog except rtc powered down on stop mode assertion. XtalOsc=on, RCOsc=off;
+	STOP_MODE_CONFIG_1 MISC0_SET = 0x01 << 10 //  Certain analog functions such as certain regulators left up. XtalOsc=on, RCOsc=off;
+	STOP_MODE_CONFIG_2 MISC0_SET = 0x02 << 10 //  XtalOsc=off, RCOsc=on, Old BG=on, New BG=off.
+	STOP_MODE_CONFIG_3 MISC0_SET = 0x03 << 10 //  XtalOsc=off, RCOsc=on, Old BG=off, New BG=on.
+	DISCON_HIGH_SNVS   MISC0_SET = 0x01 << 12 //+ This bit controls a switch from VDD_HIGH_IN to VDD_SNVS_IN.
+	OSC_I              MISC0_SET = 0x03 << 13 //+ This field determines the bias current in the 24MHz oscillator
+	NOMINAL            MISC0_SET = 0x00 << 13 //  Nominal
+	MINUS_12_5_PERCENT MISC0_SET = 0x01 << 13 //  Decrease current by 12.5%
+	MINUS_25_PERCENT   MISC0_SET = 0x02 << 13 //  Decrease current by 25.0%
+	MINUS_37_5_PERCENT MISC0_SET = 0x03 << 13 //  Decrease current by 37.5%
+	OSC_XTALOK         MISC0_SET = 0x01 << 15 //+ Status bit that signals that the output of the 24-MHz crystal oscillator is stable
+	OSC_XTALOK_EN      MISC0_SET = 0x01 << 16 //+ This bit enables the detector that signals when the 24MHz crystal oscillator is stable.
+	CLKGATE_CTRL       MISC0_SET = 0x01 << 25 //+ This bit allows disabling the clock gate (always ungated) for the xtal 24MHz clock that clocks the digital logic in the analog block
+	CLKGATE_DELAY      MISC0_SET = 0x07 << 26 //+ This field specifies the delay between powering up the XTAL 24MHz clock and releasing the clock to the digital logic inside the analog block
+	CLKGATE_DELAY_0    MISC0_SET = 0x00 << 26 //  0.5ms
+	CLKGATE_DELAY_1    MISC0_SET = 0x01 << 26 //  1.0ms
+	CLKGATE_DELAY_2    MISC0_SET = 0x02 << 26 //  2.0ms
+	CLKGATE_DELAY_3    MISC0_SET = 0x03 << 26 //  3.0ms
+	CLKGATE_DELAY_4    MISC0_SET = 0x04 << 26 //  4.0ms
+	CLKGATE_DELAY_5    MISC0_SET = 0x05 << 26 //  5.0ms
+	CLKGATE_DELAY_6    MISC0_SET = 0x06 << 26 //  6.0ms
+	CLKGATE_DELAY_7    MISC0_SET = 0x07 << 26 //  7.0ms
+	RTC_XTAL_SOURCE    MISC0_SET = 0x01 << 29 //+ This field indicates which chip source is being used for the rtc clock.
+	XTAL_24M_PWD       MISC0_SET = 0x01 << 30 //+ This field powers down the 24M crystal oscillator if set true.
+	VID_PLL_PREDIV     MISC0_SET = 0x01 << 31 //+ Predivider for the source clock of the PLL's. Not related to oscillator.
 )
 
 const (
@@ -168,54 +148,44 @@ const (
 )
 
 const (
-	REFTOP_PWD           MISC0_CLR = 0x01 << 0  //+ Control bit to power-down the analog bandgap reference circuitry
-	REFTOP_SELFBIASOFF   MISC0_CLR = 0x01 << 3  //+ Control bit to disable the self-bias circuit in the analog bandgap
-	REFTOP_SELFBIASOFF_0 MISC0_CLR = 0x00 << 3  //  Uses coarse bias currents for startup
-	REFTOP_SELFBIASOFF_1 MISC0_CLR = 0x01 << 3  //  Uses bandgap-based bias currents for best performance.
-	REFTOP_VBGADJ        MISC0_CLR = 0x07 << 4  //+ Not related to oscillator.
-	REFTOP_VBGADJ_0      MISC0_CLR = 0x00 << 4  //  Nominal VBG
-	REFTOP_VBGADJ_1      MISC0_CLR = 0x01 << 4  //  VBG+0.78%
-	REFTOP_VBGADJ_2      MISC0_CLR = 0x02 << 4  //  VBG+1.56%
-	REFTOP_VBGADJ_3      MISC0_CLR = 0x03 << 4  //  VBG+2.34%
-	REFTOP_VBGADJ_4      MISC0_CLR = 0x04 << 4  //  VBG-0.78%
-	REFTOP_VBGADJ_5      MISC0_CLR = 0x05 << 4  //  VBG-1.56%
-	REFTOP_VBGADJ_6      MISC0_CLR = 0x06 << 4  //  VBG-2.34%
-	REFTOP_VBGADJ_7      MISC0_CLR = 0x07 << 4  //  VBG-3.12%
-	REFTOP_VBGUP         MISC0_CLR = 0x01 << 7  //+ Status bit that signals the analog bandgap voltage is up and stable
-	STOP_MODE_CONFIG     MISC0_CLR = 0x03 << 10 //+ Configure the analog behavior in stop mode.Not related to oscillator.
-	STOP_MODE_CONFIG_0   MISC0_CLR = 0x00 << 10 //  All analog except rtc powered down on stop mode assertion. XtalOsc=on, RCOsc=off;
-	STOP_MODE_CONFIG_1   MISC0_CLR = 0x01 << 10 //  Certain analog functions such as certain regulators left up. XtalOsc=on, RCOsc=off;
-	STOP_MODE_CONFIG_2   MISC0_CLR = 0x02 << 10 //  XtalOsc=off, RCOsc=on, Old BG=on, New BG=off.
-	STOP_MODE_CONFIG_3   MISC0_CLR = 0x03 << 10 //  XtalOsc=off, RCOsc=on, Old BG=off, New BG=on.
-	DISCON_HIGH_SNVS     MISC0_CLR = 0x01 << 12 //+ This bit controls a switch from VDD_HIGH_IN to VDD_SNVS_IN.
-	DISCON_HIGH_SNVS_0   MISC0_CLR = 0x00 << 12 //  Turn on the switch
-	DISCON_HIGH_SNVS_1   MISC0_CLR = 0x01 << 12 //  Turn off the switch
-	OSC_I                MISC0_CLR = 0x03 << 13 //+ This field determines the bias current in the 24MHz oscillator
-	NOMINAL              MISC0_CLR = 0x00 << 13 //  Nominal
-	MINUS_12_5_PERCENT   MISC0_CLR = 0x01 << 13 //  Decrease current by 12.5%
-	MINUS_25_PERCENT     MISC0_CLR = 0x02 << 13 //  Decrease current by 25.0%
-	MINUS_37_5_PERCENT   MISC0_CLR = 0x03 << 13 //  Decrease current by 37.5%
-	OSC_XTALOK           MISC0_CLR = 0x01 << 15 //+ Status bit that signals that the output of the 24-MHz crystal oscillator is stable
-	OSC_XTALOK_EN        MISC0_CLR = 0x01 << 16 //+ This bit enables the detector that signals when the 24MHz crystal oscillator is stable.
-	CLKGATE_CTRL         MISC0_CLR = 0x01 << 25 //+ This bit allows disabling the clock gate (always ungated) for the xtal 24MHz clock that clocks the digital logic in the analog block
-	ALLOW_AUTO_GATE      MISC0_CLR = 0x00 << 25 //  Allow the logic to automatically gate the clock when the XTAL is powered down.
-	NO_AUTO_GATE         MISC0_CLR = 0x01 << 25 //  Prevent the logic from ever gating off the clock.
-	CLKGATE_DELAY        MISC0_CLR = 0x07 << 26 //+ This field specifies the delay between powering up the XTAL 24MHz clock and releasing the clock to the digital logic inside the analog block
-	CLKGATE_DELAY_0      MISC0_CLR = 0x00 << 26 //  0.5ms
-	CLKGATE_DELAY_1      MISC0_CLR = 0x01 << 26 //  1.0ms
-	CLKGATE_DELAY_2      MISC0_CLR = 0x02 << 26 //  2.0ms
-	CLKGATE_DELAY_3      MISC0_CLR = 0x03 << 26 //  3.0ms
-	CLKGATE_DELAY_4      MISC0_CLR = 0x04 << 26 //  4.0ms
-	CLKGATE_DELAY_5      MISC0_CLR = 0x05 << 26 //  5.0ms
-	CLKGATE_DELAY_6      MISC0_CLR = 0x06 << 26 //  6.0ms
-	CLKGATE_DELAY_7      MISC0_CLR = 0x07 << 26 //  7.0ms
-	RTC_XTAL_SOURCE      MISC0_CLR = 0x01 << 29 //+ This field indicates which chip source is being used for the rtc clock.
-	RTC_XTAL_SOURCE_0    MISC0_CLR = 0x00 << 29 //  Internal ring oscillator
-	RTC_XTAL_SOURCE_1    MISC0_CLR = 0x01 << 29 //  RTC_XTAL
-	XTAL_24M_PWD         MISC0_CLR = 0x01 << 30 //+ This field powers down the 24M crystal oscillator if set true.
-	VID_PLL_PREDIV       MISC0_CLR = 0x01 << 31 //+ Predivider for the source clock of the PLL's. Not related to oscillator.
-	VID_PLL_PREDIV_0     MISC0_CLR = 0x00 << 31 //  Divide by 1
-	VID_PLL_PREDIV_1     MISC0_CLR = 0x01 << 31 //  Divide by 2
+	REFTOP_PWD         MISC0_CLR = 0x01 << 0  //+ Control bit to power-down the analog bandgap reference circuitry
+	REFTOP_SELFBIASOFF MISC0_CLR = 0x01 << 3  //+ Control bit to disable the self-bias circuit in the analog bandgap
+	REFTOP_VBGADJ      MISC0_CLR = 0x07 << 4  //+ Not related to oscillator.
+	REFTOP_VBGADJ_0    MISC0_CLR = 0x00 << 4  //  Nominal VBG
+	REFTOP_VBGADJ_1    MISC0_CLR = 0x01 << 4  //  VBG+0.78%
+	REFTOP_VBGADJ_2    MISC0_CLR = 0x02 << 4  //  VBG+1.56%
+	REFTOP_VBGADJ_3    MISC0_CLR = 0x03 << 4  //  VBG+2.34%
+	REFTOP_VBGADJ_4    MISC0_CLR = 0x04 << 4  //  VBG-0.78%
+	REFTOP_VBGADJ_5    MISC0_CLR = 0x05 << 4  //  VBG-1.56%
+	REFTOP_VBGADJ_6    MISC0_CLR = 0x06 << 4  //  VBG-2.34%
+	REFTOP_VBGADJ_7    MISC0_CLR = 0x07 << 4  //  VBG-3.12%
+	REFTOP_VBGUP       MISC0_CLR = 0x01 << 7  //+ Status bit that signals the analog bandgap voltage is up and stable
+	STOP_MODE_CONFIG   MISC0_CLR = 0x03 << 10 //+ Configure the analog behavior in stop mode.Not related to oscillator.
+	STOP_MODE_CONFIG_0 MISC0_CLR = 0x00 << 10 //  All analog except rtc powered down on stop mode assertion. XtalOsc=on, RCOsc=off;
+	STOP_MODE_CONFIG_1 MISC0_CLR = 0x01 << 10 //  Certain analog functions such as certain regulators left up. XtalOsc=on, RCOsc=off;
+	STOP_MODE_CONFIG_2 MISC0_CLR = 0x02 << 10 //  XtalOsc=off, RCOsc=on, Old BG=on, New BG=off.
+	STOP_MODE_CONFIG_3 MISC0_CLR = 0x03 << 10 //  XtalOsc=off, RCOsc=on, Old BG=off, New BG=on.
+	DISCON_HIGH_SNVS   MISC0_CLR = 0x01 << 12 //+ This bit controls a switch from VDD_HIGH_IN to VDD_SNVS_IN.
+	OSC_I              MISC0_CLR = 0x03 << 13 //+ This field determines the bias current in the 24MHz oscillator
+	NOMINAL            MISC0_CLR = 0x00 << 13 //  Nominal
+	MINUS_12_5_PERCENT MISC0_CLR = 0x01 << 13 //  Decrease current by 12.5%
+	MINUS_25_PERCENT   MISC0_CLR = 0x02 << 13 //  Decrease current by 25.0%
+	MINUS_37_5_PERCENT MISC0_CLR = 0x03 << 13 //  Decrease current by 37.5%
+	OSC_XTALOK         MISC0_CLR = 0x01 << 15 //+ Status bit that signals that the output of the 24-MHz crystal oscillator is stable
+	OSC_XTALOK_EN      MISC0_CLR = 0x01 << 16 //+ This bit enables the detector that signals when the 24MHz crystal oscillator is stable.
+	CLKGATE_CTRL       MISC0_CLR = 0x01 << 25 //+ This bit allows disabling the clock gate (always ungated) for the xtal 24MHz clock that clocks the digital logic in the analog block
+	CLKGATE_DELAY      MISC0_CLR = 0x07 << 26 //+ This field specifies the delay between powering up the XTAL 24MHz clock and releasing the clock to the digital logic inside the analog block
+	CLKGATE_DELAY_0    MISC0_CLR = 0x00 << 26 //  0.5ms
+	CLKGATE_DELAY_1    MISC0_CLR = 0x01 << 26 //  1.0ms
+	CLKGATE_DELAY_2    MISC0_CLR = 0x02 << 26 //  2.0ms
+	CLKGATE_DELAY_3    MISC0_CLR = 0x03 << 26 //  3.0ms
+	CLKGATE_DELAY_4    MISC0_CLR = 0x04 << 26 //  4.0ms
+	CLKGATE_DELAY_5    MISC0_CLR = 0x05 << 26 //  5.0ms
+	CLKGATE_DELAY_6    MISC0_CLR = 0x06 << 26 //  6.0ms
+	CLKGATE_DELAY_7    MISC0_CLR = 0x07 << 26 //  7.0ms
+	RTC_XTAL_SOURCE    MISC0_CLR = 0x01 << 29 //+ This field indicates which chip source is being used for the rtc clock.
+	XTAL_24M_PWD       MISC0_CLR = 0x01 << 30 //+ This field powers down the 24M crystal oscillator if set true.
+	VID_PLL_PREDIV     MISC0_CLR = 0x01 << 31 //+ Predivider for the source clock of the PLL's. Not related to oscillator.
 )
 
 const (
@@ -236,54 +206,44 @@ const (
 )
 
 const (
-	REFTOP_PWD           MISC0_TOG = 0x01 << 0  //+ Control bit to power-down the analog bandgap reference circuitry
-	REFTOP_SELFBIASOFF   MISC0_TOG = 0x01 << 3  //+ Control bit to disable the self-bias circuit in the analog bandgap
-	REFTOP_SELFBIASOFF_0 MISC0_TOG = 0x00 << 3  //  Uses coarse bias currents for startup
-	REFTOP_SELFBIASOFF_1 MISC0_TOG = 0x01 << 3  //  Uses bandgap-based bias currents for best performance.
-	REFTOP_VBGADJ        MISC0_TOG = 0x07 << 4  //+ Not related to oscillator.
-	REFTOP_VBGADJ_0      MISC0_TOG = 0x00 << 4  //  Nominal VBG
-	REFTOP_VBGADJ_1      MISC0_TOG = 0x01 << 4  //  VBG+0.78%
-	REFTOP_VBGADJ_2      MISC0_TOG = 0x02 << 4  //  VBG+1.56%
-	REFTOP_VBGADJ_3      MISC0_TOG = 0x03 << 4  //  VBG+2.34%
-	REFTOP_VBGADJ_4      MISC0_TOG = 0x04 << 4  //  VBG-0.78%
-	REFTOP_VBGADJ_5      MISC0_TOG = 0x05 << 4  //  VBG-1.56%
-	REFTOP_VBGADJ_6      MISC0_TOG = 0x06 << 4  //  VBG-2.34%
-	REFTOP_VBGADJ_7      MISC0_TOG = 0x07 << 4  //  VBG-3.12%
-	REFTOP_VBGUP         MISC0_TOG = 0x01 << 7  //+ Status bit that signals the analog bandgap voltage is up and stable
-	STOP_MODE_CONFIG     MISC0_TOG = 0x03 << 10 //+ Configure the analog behavior in stop mode.Not related to oscillator.
-	STOP_MODE_CONFIG_0   MISC0_TOG = 0x00 << 10 //  All analog except rtc powered down on stop mode assertion. XtalOsc=on, RCOsc=off;
-	STOP_MODE_CONFIG_1   MISC0_TOG = 0x01 << 10 //  Certain analog functions such as certain regulators left up. XtalOsc=on, RCOsc=off;
-	STOP_MODE_CONFIG_2   MISC0_TOG = 0x02 << 10 //  XtalOsc=off, RCOsc=on, Old BG=on, New BG=off.
-	STOP_MODE_CONFIG_3   MISC0_TOG = 0x03 << 10 //  XtalOsc=off, RCOsc=on, Old BG=off, New BG=on.
-	DISCON_HIGH_SNVS     MISC0_TOG = 0x01 << 12 //+ This bit controls a switch from VDD_HIGH_IN to VDD_SNVS_IN.
-	DISCON_HIGH_SNVS_0   MISC0_TOG = 0x00 << 12 //  Turn on the switch
-	DISCON_HIGH_SNVS_1   MISC0_TOG = 0x01 << 12 //  Turn off the switch
-	OSC_I                MISC0_TOG = 0x03 << 13 //+ This field determines the bias current in the 24MHz oscillator
-	NOMINAL              MISC0_TOG = 0x00 << 13 //  Nominal
-	MINUS_12_5_PERCENT   MISC0_TOG = 0x01 << 13 //  Decrease current by 12.5%
-	MINUS_25_PERCENT     MISC0_TOG = 0x02 << 13 //  Decrease current by 25.0%
-	MINUS_37_5_PERCENT   MISC0_TOG = 0x03 << 13 //  Decrease current by 37.5%
-	OSC_XTALOK           MISC0_TOG = 0x01 << 15 //+ Status bit that signals that the output of the 24-MHz crystal oscillator is stable
-	OSC_XTALOK_EN        MISC0_TOG = 0x01 << 16 //+ This bit enables the detector that signals when the 24MHz crystal oscillator is stable.
-	CLKGATE_CTRL         MISC0_TOG = 0x01 << 25 //+ This bit allows disabling the clock gate (always ungated) for the xtal 24MHz clock that clocks the digital logic in the analog block
-	ALLOW_AUTO_GATE      MISC0_TOG = 0x00 << 25 //  Allow the logic to automatically gate the clock when the XTAL is powered down.
-	NO_AUTO_GATE         MISC0_TOG = 0x01 << 25 //  Prevent the logic from ever gating off the clock.
-	CLKGATE_DELAY        MISC0_TOG = 0x07 << 26 //+ This field specifies the delay between powering up the XTAL 24MHz clock and releasing the clock to the digital logic inside the analog block
-	CLKGATE_DELAY_0      MISC0_TOG = 0x00 << 26 //  0.5ms
-	CLKGATE_DELAY_1      MISC0_TOG = 0x01 << 26 //  1.0ms
-	CLKGATE_DELAY_2      MISC0_TOG = 0x02 << 26 //  2.0ms
-	CLKGATE_DELAY_3      MISC0_TOG = 0x03 << 26 //  3.0ms
-	CLKGATE_DELAY_4      MISC0_TOG = 0x04 << 26 //  4.0ms
-	CLKGATE_DELAY_5      MISC0_TOG = 0x05 << 26 //  5.0ms
-	CLKGATE_DELAY_6      MISC0_TOG = 0x06 << 26 //  6.0ms
-	CLKGATE_DELAY_7      MISC0_TOG = 0x07 << 26 //  7.0ms
-	RTC_XTAL_SOURCE      MISC0_TOG = 0x01 << 29 //+ This field indicates which chip source is being used for the rtc clock.
-	RTC_XTAL_SOURCE_0    MISC0_TOG = 0x00 << 29 //  Internal ring oscillator
-	RTC_XTAL_SOURCE_1    MISC0_TOG = 0x01 << 29 //  RTC_XTAL
-	XTAL_24M_PWD         MISC0_TOG = 0x01 << 30 //+ This field powers down the 24M crystal oscillator if set true.
-	VID_PLL_PREDIV       MISC0_TOG = 0x01 << 31 //+ Predivider for the source clock of the PLL's. Not related to oscillator.
-	VID_PLL_PREDIV_0     MISC0_TOG = 0x00 << 31 //  Divide by 1
-	VID_PLL_PREDIV_1     MISC0_TOG = 0x01 << 31 //  Divide by 2
+	REFTOP_PWD         MISC0_TOG = 0x01 << 0  //+ Control bit to power-down the analog bandgap reference circuitry
+	REFTOP_SELFBIASOFF MISC0_TOG = 0x01 << 3  //+ Control bit to disable the self-bias circuit in the analog bandgap
+	REFTOP_VBGADJ      MISC0_TOG = 0x07 << 4  //+ Not related to oscillator.
+	REFTOP_VBGADJ_0    MISC0_TOG = 0x00 << 4  //  Nominal VBG
+	REFTOP_VBGADJ_1    MISC0_TOG = 0x01 << 4  //  VBG+0.78%
+	REFTOP_VBGADJ_2    MISC0_TOG = 0x02 << 4  //  VBG+1.56%
+	REFTOP_VBGADJ_3    MISC0_TOG = 0x03 << 4  //  VBG+2.34%
+	REFTOP_VBGADJ_4    MISC0_TOG = 0x04 << 4  //  VBG-0.78%
+	REFTOP_VBGADJ_5    MISC0_TOG = 0x05 << 4  //  VBG-1.56%
+	REFTOP_VBGADJ_6    MISC0_TOG = 0x06 << 4  //  VBG-2.34%
+	REFTOP_VBGADJ_7    MISC0_TOG = 0x07 << 4  //  VBG-3.12%
+	REFTOP_VBGUP       MISC0_TOG = 0x01 << 7  //+ Status bit that signals the analog bandgap voltage is up and stable
+	STOP_MODE_CONFIG   MISC0_TOG = 0x03 << 10 //+ Configure the analog behavior in stop mode.Not related to oscillator.
+	STOP_MODE_CONFIG_0 MISC0_TOG = 0x00 << 10 //  All analog except rtc powered down on stop mode assertion. XtalOsc=on, RCOsc=off;
+	STOP_MODE_CONFIG_1 MISC0_TOG = 0x01 << 10 //  Certain analog functions such as certain regulators left up. XtalOsc=on, RCOsc=off;
+	STOP_MODE_CONFIG_2 MISC0_TOG = 0x02 << 10 //  XtalOsc=off, RCOsc=on, Old BG=on, New BG=off.
+	STOP_MODE_CONFIG_3 MISC0_TOG = 0x03 << 10 //  XtalOsc=off, RCOsc=on, Old BG=off, New BG=on.
+	DISCON_HIGH_SNVS   MISC0_TOG = 0x01 << 12 //+ This bit controls a switch from VDD_HIGH_IN to VDD_SNVS_IN.
+	OSC_I              MISC0_TOG = 0x03 << 13 //+ This field determines the bias current in the 24MHz oscillator
+	NOMINAL            MISC0_TOG = 0x00 << 13 //  Nominal
+	MINUS_12_5_PERCENT MISC0_TOG = 0x01 << 13 //  Decrease current by 12.5%
+	MINUS_25_PERCENT   MISC0_TOG = 0x02 << 13 //  Decrease current by 25.0%
+	MINUS_37_5_PERCENT MISC0_TOG = 0x03 << 13 //  Decrease current by 37.5%
+	OSC_XTALOK         MISC0_TOG = 0x01 << 15 //+ Status bit that signals that the output of the 24-MHz crystal oscillator is stable
+	OSC_XTALOK_EN      MISC0_TOG = 0x01 << 16 //+ This bit enables the detector that signals when the 24MHz crystal oscillator is stable.
+	CLKGATE_CTRL       MISC0_TOG = 0x01 << 25 //+ This bit allows disabling the clock gate (always ungated) for the xtal 24MHz clock that clocks the digital logic in the analog block
+	CLKGATE_DELAY      MISC0_TOG = 0x07 << 26 //+ This field specifies the delay between powering up the XTAL 24MHz clock and releasing the clock to the digital logic inside the analog block
+	CLKGATE_DELAY_0    MISC0_TOG = 0x00 << 26 //  0.5ms
+	CLKGATE_DELAY_1    MISC0_TOG = 0x01 << 26 //  1.0ms
+	CLKGATE_DELAY_2    MISC0_TOG = 0x02 << 26 //  2.0ms
+	CLKGATE_DELAY_3    MISC0_TOG = 0x03 << 26 //  3.0ms
+	CLKGATE_DELAY_4    MISC0_TOG = 0x04 << 26 //  4.0ms
+	CLKGATE_DELAY_5    MISC0_TOG = 0x05 << 26 //  5.0ms
+	CLKGATE_DELAY_6    MISC0_TOG = 0x06 << 26 //  6.0ms
+	CLKGATE_DELAY_7    MISC0_TOG = 0x07 << 26 //  7.0ms
+	RTC_XTAL_SOURCE    MISC0_TOG = 0x01 << 29 //+ This field indicates which chip source is being used for the rtc clock.
+	XTAL_24M_PWD       MISC0_TOG = 0x01 << 30 //+ This field powers down the 24M crystal oscillator if set true.
+	VID_PLL_PREDIV     MISC0_TOG = 0x01 << 31 //+ Predivider for the source clock of the PLL's. Not related to oscillator.
 )
 
 const (
@@ -305,14 +265,8 @@ const (
 
 const (
 	RC_OSC_EN             LOWPWR_CTRL = 0x01 << 0  //+ RC Osc. enable control.
-	RC_OSC_EN_0           LOWPWR_CTRL = 0x00 << 0  //  Use XTAL OSC to source the 24MHz clock
-	RC_OSC_EN_1           LOWPWR_CTRL = 0x01 << 0  //  Use RC OSC
 	OSC_SEL               LOWPWR_CTRL = 0x01 << 4  //+ Select the source for the 24MHz clock.
-	OSC_SEL_0             LOWPWR_CTRL = 0x00 << 4  //  XTAL OSC
-	OSC_SEL_1             LOWPWR_CTRL = 0x01 << 4  //  RC OSC
 	LPBG_SEL              LOWPWR_CTRL = 0x01 << 5  //+ Bandgap select. Not related to oscillator.
-	LPBG_SEL_0            LOWPWR_CTRL = 0x00 << 5  //  Normal power bandgap
-	LPBG_SEL_1            LOWPWR_CTRL = 0x01 << 5  //  Low power bandgap
 	LPBG_TEST             LOWPWR_CTRL = 0x01 << 6  //+ Low power bandgap test bit. Not related to oscillator.
 	REFTOP_IBIAS_OFF      LOWPWR_CTRL = 0x01 << 7  //+ Low power reftop ibias disable. Not related to oscillator.
 	L1_PWRGATE            LOWPWR_CTRL = 0x01 << 8  //+ L1 power gate control. Used as software override. Not related to oscillator.
@@ -326,8 +280,6 @@ const (
 	XTALOSC_PWRUP_DELAY_2 LOWPWR_CTRL = 0x02 << 14 //  1ms
 	XTALOSC_PWRUP_DELAY_3 LOWPWR_CTRL = 0x03 << 14 //  2ms
 	XTALOSC_PWRUP_STAT    LOWPWR_CTRL = 0x01 << 16 //+ Status of the 24MHz xtal oscillator.
-	XTALOSC_PWRUP_STAT_0  LOWPWR_CTRL = 0x00 << 16 //  Not stable
-	XTALOSC_PWRUP_STAT_1  LOWPWR_CTRL = 0x01 << 16 //  Stable and ready to use
 	MIX_PWRGATE           LOWPWR_CTRL = 0x01 << 17 //+ Display power gate control. Used as software mask. Set to zero to force ungated.
 	GPU_PWRGATE           LOWPWR_CTRL = 0x01 << 18 //+ GPU power gate control. Used as software mask. Set to zero to force ungated.
 )
@@ -351,14 +303,8 @@ const (
 
 const (
 	RC_OSC_EN             LOWPWR_CTRL_SET = 0x01 << 0  //+ RC Osc. enable control.
-	RC_OSC_EN_0           LOWPWR_CTRL_SET = 0x00 << 0  //  Use XTAL OSC to source the 24MHz clock
-	RC_OSC_EN_1           LOWPWR_CTRL_SET = 0x01 << 0  //  Use RC OSC
 	OSC_SEL               LOWPWR_CTRL_SET = 0x01 << 4  //+ Select the source for the 24MHz clock.
-	OSC_SEL_0             LOWPWR_CTRL_SET = 0x00 << 4  //  XTAL OSC
-	OSC_SEL_1             LOWPWR_CTRL_SET = 0x01 << 4  //  RC OSC
 	LPBG_SEL              LOWPWR_CTRL_SET = 0x01 << 5  //+ Bandgap select. Not related to oscillator.
-	LPBG_SEL_0            LOWPWR_CTRL_SET = 0x00 << 5  //  Normal power bandgap
-	LPBG_SEL_1            LOWPWR_CTRL_SET = 0x01 << 5  //  Low power bandgap
 	LPBG_TEST             LOWPWR_CTRL_SET = 0x01 << 6  //+ Low power bandgap test bit. Not related to oscillator.
 	REFTOP_IBIAS_OFF      LOWPWR_CTRL_SET = 0x01 << 7  //+ Low power reftop ibias disable. Not related to oscillator.
 	L1_PWRGATE            LOWPWR_CTRL_SET = 0x01 << 8  //+ L1 power gate control. Used as software override. Not related to oscillator.
@@ -372,8 +318,6 @@ const (
 	XTALOSC_PWRUP_DELAY_2 LOWPWR_CTRL_SET = 0x02 << 14 //  1ms
 	XTALOSC_PWRUP_DELAY_3 LOWPWR_CTRL_SET = 0x03 << 14 //  2ms
 	XTALOSC_PWRUP_STAT    LOWPWR_CTRL_SET = 0x01 << 16 //+ Status of the 24MHz xtal oscillator.
-	XTALOSC_PWRUP_STAT_0  LOWPWR_CTRL_SET = 0x00 << 16 //  Not stable
-	XTALOSC_PWRUP_STAT_1  LOWPWR_CTRL_SET = 0x01 << 16 //  Stable and ready to use
 	MIX_PWRGATE           LOWPWR_CTRL_SET = 0x01 << 17 //+ Display power gate control. Used as software mask. Set to zero to force ungated.
 	GPU_PWRGATE           LOWPWR_CTRL_SET = 0x01 << 18 //+ GPU power gate control. Used as software mask. Set to zero to force ungated.
 )
@@ -397,14 +341,8 @@ const (
 
 const (
 	RC_OSC_EN             LOWPWR_CTRL_CLR = 0x01 << 0  //+ RC Osc. enable control.
-	RC_OSC_EN_0           LOWPWR_CTRL_CLR = 0x00 << 0  //  Use XTAL OSC to source the 24MHz clock
-	RC_OSC_EN_1           LOWPWR_CTRL_CLR = 0x01 << 0  //  Use RC OSC
 	OSC_SEL               LOWPWR_CTRL_CLR = 0x01 << 4  //+ Select the source for the 24MHz clock.
-	OSC_SEL_0             LOWPWR_CTRL_CLR = 0x00 << 4  //  XTAL OSC
-	OSC_SEL_1             LOWPWR_CTRL_CLR = 0x01 << 4  //  RC OSC
 	LPBG_SEL              LOWPWR_CTRL_CLR = 0x01 << 5  //+ Bandgap select. Not related to oscillator.
-	LPBG_SEL_0            LOWPWR_CTRL_CLR = 0x00 << 5  //  Normal power bandgap
-	LPBG_SEL_1            LOWPWR_CTRL_CLR = 0x01 << 5  //  Low power bandgap
 	LPBG_TEST             LOWPWR_CTRL_CLR = 0x01 << 6  //+ Low power bandgap test bit. Not related to oscillator.
 	REFTOP_IBIAS_OFF      LOWPWR_CTRL_CLR = 0x01 << 7  //+ Low power reftop ibias disable. Not related to oscillator.
 	L1_PWRGATE            LOWPWR_CTRL_CLR = 0x01 << 8  //+ L1 power gate control. Used as software override. Not related to oscillator.
@@ -418,8 +356,6 @@ const (
 	XTALOSC_PWRUP_DELAY_2 LOWPWR_CTRL_CLR = 0x02 << 14 //  1ms
 	XTALOSC_PWRUP_DELAY_3 LOWPWR_CTRL_CLR = 0x03 << 14 //  2ms
 	XTALOSC_PWRUP_STAT    LOWPWR_CTRL_CLR = 0x01 << 16 //+ Status of the 24MHz xtal oscillator.
-	XTALOSC_PWRUP_STAT_0  LOWPWR_CTRL_CLR = 0x00 << 16 //  Not stable
-	XTALOSC_PWRUP_STAT_1  LOWPWR_CTRL_CLR = 0x01 << 16 //  Stable and ready to use
 	MIX_PWRGATE           LOWPWR_CTRL_CLR = 0x01 << 17 //+ Display power gate control. Used as software mask. Set to zero to force ungated.
 	GPU_PWRGATE           LOWPWR_CTRL_CLR = 0x01 << 18 //+ GPU power gate control. Used as software mask. Set to zero to force ungated.
 )
@@ -443,14 +379,8 @@ const (
 
 const (
 	RC_OSC_EN             LOWPWR_CTRL_TOG = 0x01 << 0  //+ RC Osc. enable control.
-	RC_OSC_EN_0           LOWPWR_CTRL_TOG = 0x00 << 0  //  Use XTAL OSC to source the 24MHz clock
-	RC_OSC_EN_1           LOWPWR_CTRL_TOG = 0x01 << 0  //  Use RC OSC
 	OSC_SEL               LOWPWR_CTRL_TOG = 0x01 << 4  //+ Select the source for the 24MHz clock.
-	OSC_SEL_0             LOWPWR_CTRL_TOG = 0x00 << 4  //  XTAL OSC
-	OSC_SEL_1             LOWPWR_CTRL_TOG = 0x01 << 4  //  RC OSC
 	LPBG_SEL              LOWPWR_CTRL_TOG = 0x01 << 5  //+ Bandgap select. Not related to oscillator.
-	LPBG_SEL_0            LOWPWR_CTRL_TOG = 0x00 << 5  //  Normal power bandgap
-	LPBG_SEL_1            LOWPWR_CTRL_TOG = 0x01 << 5  //  Low power bandgap
 	LPBG_TEST             LOWPWR_CTRL_TOG = 0x01 << 6  //+ Low power bandgap test bit. Not related to oscillator.
 	REFTOP_IBIAS_OFF      LOWPWR_CTRL_TOG = 0x01 << 7  //+ Low power reftop ibias disable. Not related to oscillator.
 	L1_PWRGATE            LOWPWR_CTRL_TOG = 0x01 << 8  //+ L1 power gate control. Used as software override. Not related to oscillator.
@@ -464,8 +394,6 @@ const (
 	XTALOSC_PWRUP_DELAY_2 LOWPWR_CTRL_TOG = 0x02 << 14 //  1ms
 	XTALOSC_PWRUP_DELAY_3 LOWPWR_CTRL_TOG = 0x03 << 14 //  2ms
 	XTALOSC_PWRUP_STAT    LOWPWR_CTRL_TOG = 0x01 << 16 //+ Status of the 24MHz xtal oscillator.
-	XTALOSC_PWRUP_STAT_0  LOWPWR_CTRL_TOG = 0x00 << 16 //  Not stable
-	XTALOSC_PWRUP_STAT_1  LOWPWR_CTRL_TOG = 0x01 << 16 //  Stable and ready to use
 	MIX_PWRGATE           LOWPWR_CTRL_TOG = 0x01 << 17 //+ Display power gate control. Used as software mask. Set to zero to force ungated.
 	GPU_PWRGATE           LOWPWR_CTRL_TOG = 0x01 << 18 //+ GPU power gate control. Used as software mask. Set to zero to force ungated.
 )

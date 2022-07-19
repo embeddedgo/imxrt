@@ -35,54 +35,22 @@
 package enc
 
 const (
-	CMPIE    CTRL = 0x01 << 0  //+ Compare Interrupt Enable
-	CMPIE_0  CTRL = 0x00 << 0  //  Compare interrupt is disabled
-	CMPIE_1  CTRL = 0x01 << 0  //  Compare interrupt is enabled
-	CMPIRQ   CTRL = 0x01 << 1  //+ Compare Interrupt Request
-	CMPIRQ_0 CTRL = 0x00 << 1  //  No match has occurred
-	CMPIRQ_1 CTRL = 0x01 << 1  //  COMP match has occurred
-	WDE      CTRL = 0x01 << 2  //+ Watchdog Enable
-	WDE_0    CTRL = 0x00 << 2  //  Watchdog timer is disabled
-	WDE_1    CTRL = 0x01 << 2  //  Watchdog timer is enabled
-	DIE      CTRL = 0x01 << 3  //+ Watchdog Timeout Interrupt Enable
-	DIE_0    CTRL = 0x00 << 3  //  Watchdog timer interrupt is disabled
-	DIE_1    CTRL = 0x01 << 3  //  Watchdog timer interrupt is enabled
-	DIRQ     CTRL = 0x01 << 4  //+ Watchdog Timeout Interrupt Request
-	DIRQ_0   CTRL = 0x00 << 4  //  No interrupt has occurred
-	DIRQ_1   CTRL = 0x01 << 4  //  Watchdog timeout interrupt has occurred
-	XNE      CTRL = 0x01 << 5  //+ Use Negative Edge of INDEX Pulse
-	XNE_0    CTRL = 0x00 << 5  //  Use positive transition edge of INDEX pulse
-	XNE_1    CTRL = 0x01 << 5  //  Use negative transition edge of INDEX pulse
-	XIP      CTRL = 0x01 << 6  //+ INDEX Triggered Initialization of Position Counters UPOS and LPOS
-	XIP_0    CTRL = 0x00 << 6  //  No action
-	XIP_1    CTRL = 0x01 << 6  //  INDEX pulse initializes the position counter
-	XIE      CTRL = 0x01 << 7  //+ INDEX Pulse Interrupt Enable
-	XIE_0    CTRL = 0x00 << 7  //  INDEX pulse interrupt is disabled
-	XIE_1    CTRL = 0x01 << 7  //  INDEX pulse interrupt is enabled
-	XIRQ     CTRL = 0x01 << 8  //+ INDEX Pulse Interrupt Request
-	XIRQ_0   CTRL = 0x00 << 8  //  No interrupt has occurred
-	XIRQ_1   CTRL = 0x01 << 8  //  INDEX pulse interrupt has occurred
-	PH1      CTRL = 0x01 << 9  //+ Enable Signal Phase Count Mode
-	PH1_0    CTRL = 0x00 << 9  //  Use standard quadrature decoder where PHASEA and PHASEB represent a two phase quadrature signal.
-	PH1_1    CTRL = 0x01 << 9  //  Bypass the quadrature decoder. A positive transition of the PHASEA input generates a count signal. The PHASEB input and the REV bit control the counter direction. If CTRL[REV] = 0, PHASEB = 0, then count up If CTRL[REV] = 0, PHASEB = 1, then count down If CTRL[REV] = 1, PHASEB = 0, then count down If CTRL[REV] = 1, PHASEB = 1, then count up
-	REV      CTRL = 0x01 << 10 //+ Enable Reverse Direction Counting
-	REV_0    CTRL = 0x00 << 10 //  Count normally
-	REV_1    CTRL = 0x01 << 10 //  Count in the reverse direction
-	SWIP     CTRL = 0x01 << 11 //+ Software Triggered Initialization of Position Counters UPOS and LPOS
-	SWIP_0   CTRL = 0x00 << 11 //  No action
-	SWIP_1   CTRL = 0x01 << 11 //  Initialize position counter
-	HNE      CTRL = 0x01 << 12 //+ Use Negative Edge of HOME Input
-	HNE_0    CTRL = 0x00 << 12 //  Use positive going edge-to-trigger initialization of position counters UPOS and LPOS
-	HNE_1    CTRL = 0x01 << 12 //  Use negative going edge-to-trigger initialization of position counters UPOS and LPOS
-	HIP      CTRL = 0x01 << 13 //+ Enable HOME to Initialize Position Counters UPOS and LPOS
-	HIP_0    CTRL = 0x00 << 13 //  No action
-	HIP_1    CTRL = 0x01 << 13 //  HOME signal initializes the position counter
-	HIE      CTRL = 0x01 << 14 //+ HOME Interrupt Enable
-	HIE_0    CTRL = 0x00 << 14 //  Disable HOME interrupts
-	HIE_1    CTRL = 0x01 << 14 //  Enable HOME interrupts
-	HIRQ     CTRL = 0x01 << 15 //+ HOME Signal Transition Interrupt Request
-	HIRQ_0   CTRL = 0x00 << 15 //  No interrupt
-	HIRQ_1   CTRL = 0x01 << 15 //  HOME signal transition interrupt request
+	CMPIE  CTRL = 0x01 << 0  //+ Compare Interrupt Enable
+	CMPIRQ CTRL = 0x01 << 1  //+ Compare Interrupt Request
+	WDE    CTRL = 0x01 << 2  //+ Watchdog Enable
+	DIE    CTRL = 0x01 << 3  //+ Watchdog Timeout Interrupt Enable
+	DIRQ   CTRL = 0x01 << 4  //+ Watchdog Timeout Interrupt Request
+	XNE    CTRL = 0x01 << 5  //+ Use Negative Edge of INDEX Pulse
+	XIP    CTRL = 0x01 << 6  //+ INDEX Triggered Initialization of Position Counters UPOS and LPOS
+	XIE    CTRL = 0x01 << 7  //+ INDEX Pulse Interrupt Enable
+	XIRQ   CTRL = 0x01 << 8  //+ INDEX Pulse Interrupt Request
+	PH1    CTRL = 0x01 << 9  //+ Enable Signal Phase Count Mode
+	REV    CTRL = 0x01 << 10 //+ Enable Reverse Direction Counting
+	SWIP   CTRL = 0x01 << 11 //+ Software Triggered Initialization of Position Counters UPOS and LPOS
+	HNE    CTRL = 0x01 << 12 //+ Use Negative Edge of HOME Input
+	HIP    CTRL = 0x01 << 13 //+ Enable HOME to Initialize Position Counters UPOS and LPOS
+	HIE    CTRL = 0x01 << 14 //+ HOME Interrupt Enable
+	HIRQ   CTRL = 0x01 << 15 //+ HOME Signal Transition Interrupt Request
 )
 
 const (
@@ -228,14 +196,8 @@ const (
 	TEST_COUNT  TST = 0xFF << 0  //+ These bits hold the number of quadrature advances to generate.
 	TEST_PERIOD TST = 0x1F << 8  //+ These bits hold the period of quadrature phase in IPBus clock cycles.
 	QDN         TST = 0x01 << 13 //+ Quadrature Decoder Negative Signal
-	QDN_0       TST = 0x00 << 13 //  Leaves quadrature decoder signal in a positive direction
-	QDN_1       TST = 0x01 << 13 //  Generates a negative quadrature decoder signal
 	TCE         TST = 0x01 << 14 //+ Test Counter Enable
-	TCE_0       TST = 0x00 << 14 //  Test count is not enabled
-	TCE_1       TST = 0x01 << 14 //  Test count is enabled
 	TEN         TST = 0x01 << 15 //+ Test Mode Enable
-	TEN_0       TST = 0x00 << 15 //  Test module is not enabled
-	TEN_1       TST = 0x01 << 15 //  Test module is enabled
 )
 
 const (
@@ -247,42 +209,18 @@ const (
 )
 
 const (
-	UPDHLD   CTRL2 = 0x01 << 0  //+ Update Hold Registers
-	UPDHLD_0 CTRL2 = 0x00 << 0  //  Disable updates of hold registers on rising edge of TRIGGER
-	UPDHLD_1 CTRL2 = 0x01 << 0  //  Enable updates of hold registers on rising edge of TRIGGER
-	UPDPOS   CTRL2 = 0x01 << 1  //+ Update Position Registers
-	UPDPOS_0 CTRL2 = 0x00 << 1  //  No action for POSD, REV, UPOS and LPOS on rising edge of TRIGGER
-	UPDPOS_1 CTRL2 = 0x01 << 1  //  Clear POSD, REV, UPOS and LPOS on rising edge of TRIGGER
-	MOD      CTRL2 = 0x01 << 2  //+ Enable Modulo Counting
-	MOD_0    CTRL2 = 0x00 << 2  //  Disable modulo counting
-	MOD_1    CTRL2 = 0x01 << 2  //  Enable modulo counting
-	DIR      CTRL2 = 0x01 << 3  //+ Count Direction Flag
-	DIR_0    CTRL2 = 0x00 << 3  //  Last count was in the down direction
-	DIR_1    CTRL2 = 0x01 << 3  //  Last count was in the up direction
-	RUIE     CTRL2 = 0x01 << 4  //+ Roll-under Interrupt Enable
-	RUIE_0   CTRL2 = 0x00 << 4  //  Roll-under interrupt is disabled
-	RUIE_1   CTRL2 = 0x01 << 4  //  Roll-under interrupt is enabled
-	RUIRQ    CTRL2 = 0x01 << 5  //+ Roll-under Interrupt Request
-	RUIRQ_0  CTRL2 = 0x00 << 5  //  No roll-under has occurred
-	RUIRQ_1  CTRL2 = 0x01 << 5  //  Roll-under has occurred
-	ROIE     CTRL2 = 0x01 << 6  //+ Roll-over Interrupt Enable
-	ROIE_0   CTRL2 = 0x00 << 6  //  Roll-over interrupt is disabled
-	ROIE_1   CTRL2 = 0x01 << 6  //  Roll-over interrupt is enabled
-	ROIRQ    CTRL2 = 0x01 << 7  //+ Roll-over Interrupt Request
-	ROIRQ_0  CTRL2 = 0x00 << 7  //  No roll-over has occurred
-	ROIRQ_1  CTRL2 = 0x01 << 7  //  Roll-over has occurred
-	REVMOD   CTRL2 = 0x01 << 8  //+ Revolution Counter Modulus Enable
-	REVMOD_0 CTRL2 = 0x00 << 8  //  Use INDEX pulse to increment/decrement revolution counter (REV).
-	REVMOD_1 CTRL2 = 0x01 << 8  //  Use modulus counting roll-over/under to increment/decrement revolution counter (REV).
-	OUTCTL   CTRL2 = 0x01 << 9  //+ Output Control
-	OUTCTL_0 CTRL2 = 0x00 << 9  //  POSMATCH pulses when a match occurs between the position counters (POS) and the compare value (COMP).
-	OUTCTL_1 CTRL2 = 0x01 << 9  //  POSMATCH pulses when the UPOS, LPOS, REV, or POSD registers are read.
-	SABIE    CTRL2 = 0x01 << 10 //+ Simultaneous PHASEA and PHASEB Change Interrupt Enable
-	SABIE_0  CTRL2 = 0x00 << 10 //  Simultaneous PHASEA and PHASEB change interrupt disabled.
-	SABIE_1  CTRL2 = 0x01 << 10 //  Simultaneous PHASEA and PHASEB change interrupt enabled.
-	SABIRQ   CTRL2 = 0x01 << 11 //+ Simultaneous PHASEA and PHASEB Change Interrupt Request
-	SABIRQ_0 CTRL2 = 0x00 << 11 //  No simultaneous change of PHASEA and PHASEB has occurred.
-	SABIRQ_1 CTRL2 = 0x01 << 11 //  A simultaneous change of PHASEA and PHASEB has occurred.
+	UPDHLD CTRL2 = 0x01 << 0  //+ Update Hold Registers
+	UPDPOS CTRL2 = 0x01 << 1  //+ Update Position Registers
+	MOD    CTRL2 = 0x01 << 2  //+ Enable Modulo Counting
+	DIR    CTRL2 = 0x01 << 3  //+ Count Direction Flag
+	RUIE   CTRL2 = 0x01 << 4  //+ Roll-under Interrupt Enable
+	RUIRQ  CTRL2 = 0x01 << 5  //+ Roll-under Interrupt Request
+	ROIE   CTRL2 = 0x01 << 6  //+ Roll-over Interrupt Enable
+	ROIRQ  CTRL2 = 0x01 << 7  //+ Roll-over Interrupt Request
+	REVMOD CTRL2 = 0x01 << 8  //+ Revolution Counter Modulus Enable
+	OUTCTL CTRL2 = 0x01 << 9  //+ Output Control
+	SABIE  CTRL2 = 0x01 << 10 //+ Simultaneous PHASEA and PHASEB Change Interrupt Enable
+	SABIRQ CTRL2 = 0x01 << 11 //+ Simultaneous PHASEA and PHASEB Change Interrupt Request
 )
 
 const (

@@ -30,24 +30,12 @@ const (
 )
 
 const (
-	KPKD   KPSR = 0x01 << 0 //+ Keypad Key Depress
-	KPKD_0 KPSR = 0x00 << 0 //  No key presses detected
-	KPKD_1 KPSR = 0x01 << 0 //  A key has been depressed
-	KPKR   KPSR = 0x01 << 1 //+ Keypad Key Release
-	KPKR_0 KPSR = 0x00 << 1 //  No key release detected
-	KPKR_1 KPSR = 0x01 << 1 //  All keys have been released
-	KDSC   KPSR = 0x01 << 2 //+ Key Depress Synchronizer Clear
-	KDSC_0 KPSR = 0x00 << 2 //  No effect
-	KDSC_1 KPSR = 0x01 << 2 //  Set bits that clear the keypad depress synchronizer chain
-	KRSS   KPSR = 0x01 << 3 //+ Key Release Synchronizer Set
-	KRSS_0 KPSR = 0x00 << 3 //  No effect
-	KRSS_1 KPSR = 0x01 << 3 //  Set bits which sets keypad release synchronizer chain
-	KDIE   KPSR = 0x01 << 8 //+ Keypad Key Depress Interrupt Enable
-	KDIE_0 KPSR = 0x00 << 8 //  No interrupt request is generated when KPKD is set.
-	KDIE_1 KPSR = 0x01 << 8 //  An interrupt request is generated when KPKD is set.
-	KRIE   KPSR = 0x01 << 9 //+ Keypad Release Interrupt Enable
-	KRIE_0 KPSR = 0x00 << 9 //  No interrupt request is generated when KPKR is set.
-	KRIE_1 KPSR = 0x01 << 9 //  An interrupt request is generated when KPKR is set.
+	KPKD KPSR = 0x01 << 0 //+ Keypad Key Depress
+	KPKR KPSR = 0x01 << 1 //+ Keypad Key Release
+	KDSC KPSR = 0x01 << 2 //+ Key Depress Synchronizer Clear
+	KRSS KPSR = 0x01 << 3 //+ Key Release Synchronizer Set
+	KDIE KPSR = 0x01 << 8 //+ Keypad Key Depress Interrupt Enable
+	KRIE KPSR = 0x01 << 9 //+ Keypad Release Interrupt Enable
 )
 
 const (

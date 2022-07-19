@@ -66,21 +66,11 @@ const (
 )
 
 const (
-	FLEXEN    CTRL = 0x01 << 0  //+ FlexIO Enable
-	FLEXEN_0  CTRL = 0x00 << 0  //  FlexIO module is disabled.
-	FLEXEN_1  CTRL = 0x01 << 0  //  FlexIO module is enabled.
-	SWRST     CTRL = 0x01 << 1  //+ Software Reset
-	SWRST_0   CTRL = 0x00 << 1  //  Software reset is disabled
-	SWRST_1   CTRL = 0x01 << 1  //  Software reset is enabled, all FlexIO registers except the Control Register are reset.
-	FASTACC   CTRL = 0x01 << 2  //+ Fast Access
-	FASTACC_0 CTRL = 0x00 << 2  //  Configures for normal register accesses to FlexIO
-	FASTACC_1 CTRL = 0x01 << 2  //  Configures for fast register accesses to FlexIO
-	DBGE      CTRL = 0x01 << 30 //+ Debug Enable
-	DBGE_0    CTRL = 0x00 << 30 //  FlexIO is disabled in debug modes.
-	DBGE_1    CTRL = 0x01 << 30 //  FlexIO is enabled in debug modes
-	DOZEN     CTRL = 0x01 << 31 //+ Doze Enable
-	DOZEN_0   CTRL = 0x00 << 31 //  FlexIO enabled in Doze modes.
-	DOZEN_1   CTRL = 0x01 << 31 //  FlexIO disabled in Doze modes.
+	FLEXEN  CTRL = 0x01 << 0  //+ FlexIO Enable
+	SWRST   CTRL = 0x01 << 1  //+ Software Reset
+	FASTACC CTRL = 0x01 << 2  //+ Fast Access
+	DBGE    CTRL = 0x01 << 30 //+ Debug Enable
+	DOZEN   CTRL = 0x01 << 31 //+ Doze Enable
 )
 
 const (
@@ -173,8 +163,6 @@ const (
 	SMOD_6   SHIFTCTL = 0x06 << 0  //  State mode. SHIFTBUF contents are used for storing programmable state attributes.
 	SMOD_7   SHIFTCTL = 0x07 << 0  //  Logic mode. SHIFTBUF contents are used for implementing programmable logic look up table.
 	PINPOL   SHIFTCTL = 0x01 << 7  //+ Shifter Pin Polarity
-	PINPOL_0 SHIFTCTL = 0x00 << 7  //  Pin is active high
-	PINPOL_1 SHIFTCTL = 0x01 << 7  //  Pin is active low
 	PINSEL   SHIFTCTL = 0x0F << 8  //+ Shifter Pin Select
 	PINCFG   SHIFTCTL = 0x03 << 16 //+ Shifter Pin Configuration
 	PINCFG_0 SHIFTCTL = 0x00 << 16 //  Shifter pin output disabled
@@ -182,8 +170,6 @@ const (
 	PINCFG_2 SHIFTCTL = 0x02 << 16 //  Shifter pin bidirectional output data
 	PINCFG_3 SHIFTCTL = 0x03 << 16 //  Shifter pin output
 	TIMPOL   SHIFTCTL = 0x01 << 23 //+ Timer Polarity
-	TIMPOL_0 SHIFTCTL = 0x00 << 23 //  Shift on posedge of Shift clock
-	TIMPOL_1 SHIFTCTL = 0x01 << 23 //  Shift on negedge of Shift clock
 	TIMSEL   SHIFTCTL = 0x03 << 24 //+ Timer Select
 )
 
@@ -207,8 +193,6 @@ const (
 	SSTOP_2  SHIFTCFG = 0x02 << 4  //  Transmitter outputs stop bit value 0 on store, receiver/match store sets error flag if stop bit is not 0
 	SSTOP_3  SHIFTCFG = 0x03 << 4  //  Transmitter outputs stop bit value 1 on store, receiver/match store sets error flag if stop bit is not 1
 	INSRC    SHIFTCFG = 0x01 << 8  //+ Input Source
-	INSRC_0  SHIFTCFG = 0x00 << 8  //  Pin
-	INSRC_1  SHIFTCFG = 0x01 << 8  //  Shifter N+1 Output
 	PWIDTH   SHIFTCFG = 0x0F << 16 //+ Parallel Width
 )
 
@@ -258,8 +242,6 @@ const (
 	TIMOD_2  TIMCTL = 0x02 << 0  //  Dual 8-bit counters PWM high mode.
 	TIMOD_3  TIMCTL = 0x03 << 0  //  Single 16-bit counter mode.
 	PINPOL   TIMCTL = 0x01 << 7  //+ Timer Pin Polarity
-	PINPOL_0 TIMCTL = 0x00 << 7  //  Pin is active high
-	PINPOL_1 TIMCTL = 0x01 << 7  //  Pin is active low
 	PINSEL   TIMCTL = 0x0F << 8  //+ Timer Pin Select
 	PINCFG   TIMCTL = 0x03 << 16 //+ Timer Pin Configuration
 	PINCFG_0 TIMCTL = 0x00 << 16 //  Timer pin output disabled
@@ -267,11 +249,7 @@ const (
 	PINCFG_2 TIMCTL = 0x02 << 16 //  Timer pin bidirectional output data
 	PINCFG_3 TIMCTL = 0x03 << 16 //  Timer pin output
 	TRGSRC   TIMCTL = 0x01 << 22 //+ Trigger Source
-	TRGSRC_0 TIMCTL = 0x00 << 22 //  External trigger selected
-	TRGSRC_1 TIMCTL = 0x01 << 22 //  Internal trigger selected
 	TRGPOL   TIMCTL = 0x01 << 23 //+ Trigger Polarity
-	TRGPOL_0 TIMCTL = 0x00 << 23 //  Trigger active high
-	TRGPOL_1 TIMCTL = 0x01 << 23 //  Trigger active low
 	TRGSEL   TIMCTL = 0x1F << 24 //+ Trigger Select
 )
 
@@ -287,8 +265,6 @@ const (
 
 const (
 	TSTART   TIMCFG = 0x01 << 1  //+ Timer Start Bit
-	TSTART_0 TIMCFG = 0x00 << 1  //  Start bit disabled
-	TSTART_1 TIMCFG = 0x01 << 1  //  Start bit enabled
 	TSTOP    TIMCFG = 0x03 << 4  //+ Timer Stop Bit
 	TSTOP_0  TIMCFG = 0x00 << 4  //  Stop bit disabled
 	TSTOP_1  TIMCFG = 0x01 << 4  //  Stop bit is enabled on timer compare

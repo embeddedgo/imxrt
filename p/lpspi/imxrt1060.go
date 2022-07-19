@@ -57,24 +57,12 @@ const (
 )
 
 const (
-	MEN     CR = 0x01 << 0 //+ Module Enable
-	MEN_0   CR = 0x00 << 0 //  Module is disabled
-	MEN_1   CR = 0x01 << 0 //  Module is enabled
-	RST     CR = 0x01 << 1 //+ Software Reset
-	RST_0   CR = 0x00 << 1 //  Module is not reset
-	RST_1   CR = 0x01 << 1 //  Module is reset
-	DOZEN   CR = 0x01 << 2 //+ Doze mode enable
-	DOZEN_0 CR = 0x00 << 2 //  Module is enabled in Doze mode
-	DOZEN_1 CR = 0x01 << 2 //  Module is disabled in Doze mode
-	DBGEN   CR = 0x01 << 3 //+ Debug Enable
-	DBGEN_0 CR = 0x00 << 3 //  Module is disabled in debug mode
-	DBGEN_1 CR = 0x01 << 3 //  Module is enabled in debug mode
-	RTF     CR = 0x01 << 8 //+ Reset Transmit FIFO
-	RTF_0   CR = 0x00 << 8 //  No effect
-	RTF_1   CR = 0x01 << 8 //  Transmit FIFO is reset
-	RRF     CR = 0x01 << 9 //+ Reset Receive FIFO
-	RRF_0   CR = 0x00 << 9 //  No effect
-	RRF_1   CR = 0x01 << 9 //  Receive FIFO is reset
+	MEN   CR = 0x01 << 0 //+ Module Enable
+	RST   CR = 0x01 << 1 //+ Software Reset
+	DOZEN CR = 0x01 << 2 //+ Doze mode enable
+	DBGEN CR = 0x01 << 3 //+ Debug Enable
+	RTF   CR = 0x01 << 8 //+ Reset Transmit FIFO
+	RRF   CR = 0x01 << 9 //+ Reset Receive FIFO
 )
 
 const (
@@ -87,33 +75,15 @@ const (
 )
 
 const (
-	TDF   SR = 0x01 << 0  //+ Transmit Data Flag
-	TDF_0 SR = 0x00 << 0  //  Transmit data not requested
-	TDF_1 SR = 0x01 << 0  //  Transmit data is requested
-	RDF   SR = 0x01 << 1  //+ Receive Data Flag
-	RDF_0 SR = 0x00 << 1  //  Receive Data is not ready
-	RDF_1 SR = 0x01 << 1  //  Receive data is ready
-	WCF   SR = 0x01 << 8  //+ Word Complete Flag
-	WCF_0 SR = 0x00 << 8  //  Transfer of a received word has not yet completed
-	WCF_1 SR = 0x01 << 8  //  Transfer of a received word has completed
-	FCF   SR = 0x01 << 9  //+ Frame Complete Flag
-	FCF_0 SR = 0x00 << 9  //  Frame transfer has not completed
-	FCF_1 SR = 0x01 << 9  //  Frame transfer has completed
-	TCF   SR = 0x01 << 10 //+ Transfer Complete Flag
-	TCF_0 SR = 0x00 << 10 //  All transfers have not completed
-	TCF_1 SR = 0x01 << 10 //  All transfers have completed
-	TEF   SR = 0x01 << 11 //+ Transmit Error Flag
-	TEF_0 SR = 0x00 << 11 //  Transmit FIFO underrun has not occurred
-	TEF_1 SR = 0x01 << 11 //  Transmit FIFO underrun has occurred
-	REF   SR = 0x01 << 12 //+ Receive Error Flag
-	REF_0 SR = 0x00 << 12 //  Receive FIFO has not overflowed
-	REF_1 SR = 0x01 << 12 //  Receive FIFO has overflowed
-	DMF   SR = 0x01 << 13 //+ Data Match Flag
-	DMF_0 SR = 0x00 << 13 //  Have not received matching data
-	DMF_1 SR = 0x01 << 13 //  Have received matching data
-	MBF   SR = 0x01 << 24 //+ Module Busy Flag
-	MBF_0 SR = 0x00 << 24 //  LPSPI is idle
-	MBF_1 SR = 0x01 << 24 //  LPSPI is busy
+	TDF SR = 0x01 << 0  //+ Transmit Data Flag
+	RDF SR = 0x01 << 1  //+ Receive Data Flag
+	WCF SR = 0x01 << 8  //+ Word Complete Flag
+	FCF SR = 0x01 << 9  //+ Frame Complete Flag
+	TCF SR = 0x01 << 10 //+ Transfer Complete Flag
+	TEF SR = 0x01 << 11 //+ Transmit Error Flag
+	REF SR = 0x01 << 12 //+ Receive Error Flag
+	DMF SR = 0x01 << 13 //+ Data Match Flag
+	MBF SR = 0x01 << 24 //+ Module Busy Flag
 )
 
 const (
@@ -129,30 +99,14 @@ const (
 )
 
 const (
-	TDIE   IER = 0x01 << 0  //+ Transmit Data Interrupt Enable
-	TDIE_0 IER = 0x00 << 0  //  Disabled
-	TDIE_1 IER = 0x01 << 0  //  Enabled
-	RDIE   IER = 0x01 << 1  //+ Receive Data Interrupt Enable
-	RDIE_0 IER = 0x00 << 1  //  Disabled
-	RDIE_1 IER = 0x01 << 1  //  Enabled
-	WCIE   IER = 0x01 << 8  //+ Word Complete Interrupt Enable
-	WCIE_0 IER = 0x00 << 8  //  Disabled
-	WCIE_1 IER = 0x01 << 8  //  Enabled
-	FCIE   IER = 0x01 << 9  //+ Frame Complete Interrupt Enable
-	FCIE_0 IER = 0x00 << 9  //  Disabled
-	FCIE_1 IER = 0x01 << 9  //  Enabled
-	TCIE   IER = 0x01 << 10 //+ Transfer Complete Interrupt Enable
-	TCIE_0 IER = 0x00 << 10 //  Disabled
-	TCIE_1 IER = 0x01 << 10 //  Enabled
-	TEIE   IER = 0x01 << 11 //+ Transmit Error Interrupt Enable
-	TEIE_0 IER = 0x00 << 11 //  Disabled
-	TEIE_1 IER = 0x01 << 11 //  Enabled
-	REIE   IER = 0x01 << 12 //+ Receive Error Interrupt Enable
-	REIE_0 IER = 0x00 << 12 //  Disabled
-	REIE_1 IER = 0x01 << 12 //  Enabled
-	DMIE   IER = 0x01 << 13 //+ Data Match Interrupt Enable
-	DMIE_0 IER = 0x00 << 13 //  Disabled
-	DMIE_1 IER = 0x01 << 13 //  Enabled
+	TDIE IER = 0x01 << 0  //+ Transmit Data Interrupt Enable
+	RDIE IER = 0x01 << 1  //+ Receive Data Interrupt Enable
+	WCIE IER = 0x01 << 8  //+ Word Complete Interrupt Enable
+	FCIE IER = 0x01 << 9  //+ Frame Complete Interrupt Enable
+	TCIE IER = 0x01 << 10 //+ Transfer Complete Interrupt Enable
+	TEIE IER = 0x01 << 11 //+ Transmit Error Interrupt Enable
+	REIE IER = 0x01 << 12 //+ Receive Error Interrupt Enable
+	DMIE IER = 0x01 << 13 //+ Data Match Interrupt Enable
 )
 
 const (
@@ -167,12 +121,8 @@ const (
 )
 
 const (
-	TDDE   DER = 0x01 << 0 //+ Transmit Data DMA Enable
-	TDDE_0 DER = 0x00 << 0 //  DMA request is disabled
-	TDDE_1 DER = 0x01 << 0 //  DMA request is enabled
-	RDDE   DER = 0x01 << 1 //+ Receive Data DMA Enable
-	RDDE_0 DER = 0x00 << 1 //  DMA request is disabled
-	RDDE_1 DER = 0x01 << 1 //  DMA request is enabled
+	TDDE DER = 0x01 << 0 //+ Transmit Data DMA Enable
+	RDDE DER = 0x01 << 1 //+ Receive Data DMA Enable
 )
 
 const (
@@ -181,21 +131,11 @@ const (
 )
 
 const (
-	HREN      CFGR0 = 0x01 << 0 //+ Host Request Enable
-	HREN_0    CFGR0 = 0x00 << 0 //  Host request is disabled
-	HREN_1    CFGR0 = 0x01 << 0 //  Host request is enabled
-	HRPOL     CFGR0 = 0x01 << 1 //+ Host Request Polarity
-	HRPOL_0   CFGR0 = 0x00 << 1 //  Active low
-	HRPOL_1   CFGR0 = 0x01 << 1 //  Active high
-	HRSEL     CFGR0 = 0x01 << 2 //+ Host Request Select
-	HRSEL_0   CFGR0 = 0x00 << 2 //  Host request input is the LPSPI_HREQ pin
-	HRSEL_1   CFGR0 = 0x01 << 2 //  Host request input is the input trigger
-	CIRFIFO   CFGR0 = 0x01 << 8 //+ Circular FIFO Enable
-	CIRFIFO_0 CFGR0 = 0x00 << 8 //  Circular FIFO is disabled
-	CIRFIFO_1 CFGR0 = 0x01 << 8 //  Circular FIFO is enabled
-	RDMO      CFGR0 = 0x01 << 9 //+ Receive Data Match Only
-	RDMO_0    CFGR0 = 0x00 << 9 //  Received data is stored in the receive FIFO as in normal operations
-	RDMO_1    CFGR0 = 0x01 << 9 //  Received data is discarded unless the Data Match Flag (DMF) is set
+	HREN    CFGR0 = 0x01 << 0 //+ Host Request Enable
+	HRPOL   CFGR0 = 0x01 << 1 //+ Host Request Polarity
+	HRSEL   CFGR0 = 0x01 << 2 //+ Host Request Select
+	CIRFIFO CFGR0 = 0x01 << 8 //+ Circular FIFO Enable
+	RDMO    CFGR0 = 0x01 << 9 //+ Receive Data Match Only
 )
 
 const (
@@ -207,40 +147,28 @@ const (
 )
 
 const (
-	MASTER    CFGR1 = 0x01 << 0  //+ Master Mode
-	MASTER_0  CFGR1 = 0x00 << 0  //  Slave mode
-	MASTER_1  CFGR1 = 0x01 << 0  //  Master mode
-	SAMPLE    CFGR1 = 0x01 << 1  //+ Sample Point
-	SAMPLE_0  CFGR1 = 0x00 << 1  //  Input data is sampled on SCK edge
-	SAMPLE_1  CFGR1 = 0x01 << 1  //  Input data is sampled on delayed SCK edge
-	AUTOPCS   CFGR1 = 0x01 << 2  //+ Automatic PCS
-	AUTOPCS_0 CFGR1 = 0x00 << 2  //  Automatic PCS generation is disabled
-	AUTOPCS_1 CFGR1 = 0x01 << 2  //  Automatic PCS generation is enabled
-	NOSTALL   CFGR1 = 0x01 << 3  //+ No Stall
-	NOSTALL_0 CFGR1 = 0x00 << 3  //  Transfers will stall when the transmit FIFO is empty or the receive FIFO is full
-	NOSTALL_1 CFGR1 = 0x01 << 3  //  Transfers will not stall, allowing transmit FIFO underruns or receive FIFO overruns to occur
-	PCSPOL    CFGR1 = 0x0F << 8  //+ Peripheral Chip Select Polarity
-	PCSPOL_0  CFGR1 = 0x00 << 8  //  The Peripheral Chip Select pin PCSx is active low
-	PCSPOL_1  CFGR1 = 0x01 << 8  //  The Peripheral Chip Select pin PCSx is active high
-	MATCFG    CFGR1 = 0x07 << 16 //+ Match Configuration
-	MATCFG_0  CFGR1 = 0x00 << 16 //  Match is disabled
-	MATCFG_2  CFGR1 = 0x02 << 16 //  010b - Match is enabled, if 1st data word equals MATCH0 OR MATCH1, i.e., (1st data word = MATCH0 + MATCH1)
-	MATCFG_3  CFGR1 = 0x03 << 16 //  011b - Match is enabled, if any data word equals MATCH0 OR MATCH1, i.e., (any data word = MATCH0 + MATCH1)
-	MATCFG_4  CFGR1 = 0x04 << 16 //  100b - Match is enabled, if 1st data word equals MATCH0 AND 2nd data word equals MATCH1, i.e., [(1st data word = MATCH0) * (2nd data word = MATCH1)]
-	MATCFG_5  CFGR1 = 0x05 << 16 //  101b - Match is enabled, if any data word equals MATCH0 AND the next data word equals MATCH1, i.e., [(any data word = MATCH0) * (next data word = MATCH1)]
-	MATCFG_6  CFGR1 = 0x06 << 16 //  110b - Match is enabled, if (1st data word AND MATCH1) equals (MATCH0 AND MATCH1), i.e., [(1st data word * MATCH1) = (MATCH0 * MATCH1)]
-	MATCFG_7  CFGR1 = 0x07 << 16 //  111b - Match is enabled, if (any data word AND MATCH1) equals (MATCH0 AND MATCH1), i.e., [(any data word * MATCH1) = (MATCH0 * MATCH1)]
-	PINCFG    CFGR1 = 0x03 << 24 //+ Pin Configuration
-	PINCFG_0  CFGR1 = 0x00 << 24 //  SIN is used for input data and SOUT is used for output data
-	PINCFG_1  CFGR1 = 0x01 << 24 //  SIN is used for both input and output data
-	PINCFG_2  CFGR1 = 0x02 << 24 //  SOUT is used for both input and output data
-	PINCFG_3  CFGR1 = 0x03 << 24 //  SOUT is used for input data and SIN is used for output data
-	OUTCFG    CFGR1 = 0x01 << 26 //+ Output Config
-	OUTCFG_0  CFGR1 = 0x00 << 26 //  Output data retains last value when chip select is negated
-	OUTCFG_1  CFGR1 = 0x01 << 26 //  Output data is tristated when chip select is negated
-	PCSCFG    CFGR1 = 0x01 << 27 //+ Peripheral Chip Select Configuration
-	PCSCFG_0  CFGR1 = 0x00 << 27 //  PCS[3:2] are enabled
-	PCSCFG_1  CFGR1 = 0x01 << 27 //  PCS[3:2] are disabled
+	MASTER   CFGR1 = 0x01 << 0  //+ Master Mode
+	SAMPLE   CFGR1 = 0x01 << 1  //+ Sample Point
+	AUTOPCS  CFGR1 = 0x01 << 2  //+ Automatic PCS
+	NOSTALL  CFGR1 = 0x01 << 3  //+ No Stall
+	PCSPOL   CFGR1 = 0x0F << 8  //+ Peripheral Chip Select Polarity
+	PCSPOL_0 CFGR1 = 0x00 << 8  //  The Peripheral Chip Select pin PCSx is active low
+	PCSPOL_1 CFGR1 = 0x01 << 8  //  The Peripheral Chip Select pin PCSx is active high
+	MATCFG   CFGR1 = 0x07 << 16 //+ Match Configuration
+	MATCFG_0 CFGR1 = 0x00 << 16 //  Match is disabled
+	MATCFG_2 CFGR1 = 0x02 << 16 //  010b - Match is enabled, if 1st data word equals MATCH0 OR MATCH1, i.e., (1st data word = MATCH0 + MATCH1)
+	MATCFG_3 CFGR1 = 0x03 << 16 //  011b - Match is enabled, if any data word equals MATCH0 OR MATCH1, i.e., (any data word = MATCH0 + MATCH1)
+	MATCFG_4 CFGR1 = 0x04 << 16 //  100b - Match is enabled, if 1st data word equals MATCH0 AND 2nd data word equals MATCH1, i.e., [(1st data word = MATCH0) * (2nd data word = MATCH1)]
+	MATCFG_5 CFGR1 = 0x05 << 16 //  101b - Match is enabled, if any data word equals MATCH0 AND the next data word equals MATCH1, i.e., [(any data word = MATCH0) * (next data word = MATCH1)]
+	MATCFG_6 CFGR1 = 0x06 << 16 //  110b - Match is enabled, if (1st data word AND MATCH1) equals (MATCH0 AND MATCH1), i.e., [(1st data word * MATCH1) = (MATCH0 * MATCH1)]
+	MATCFG_7 CFGR1 = 0x07 << 16 //  111b - Match is enabled, if (any data word AND MATCH1) equals (MATCH0 AND MATCH1), i.e., [(any data word * MATCH1) = (MATCH0 * MATCH1)]
+	PINCFG   CFGR1 = 0x03 << 24 //+ Pin Configuration
+	PINCFG_0 CFGR1 = 0x00 << 24 //  SIN is used for input data and SOUT is used for output data
+	PINCFG_1 CFGR1 = 0x01 << 24 //  SIN is used for both input and output data
+	PINCFG_2 CFGR1 = 0x02 << 24 //  SOUT is used for both input and output data
+	PINCFG_3 CFGR1 = 0x03 << 24 //  SOUT is used for input data and SIN is used for output data
+	OUTCFG   CFGR1 = 0x01 << 26 //+ Output Config
+	PCSCFG   CFGR1 = 0x01 << 27 //+ Peripheral Chip Select Configuration
 )
 
 const (
@@ -312,23 +240,11 @@ const (
 	WIDTH_1    TCR = 0x01 << 16 //  2 bit transfer
 	WIDTH_2    TCR = 0x02 << 16 //  4 bit transfer
 	TXMSK      TCR = 0x01 << 18 //+ Transmit Data Mask
-	TXMSK_0    TCR = 0x00 << 18 //  Normal transfer
-	TXMSK_1    TCR = 0x01 << 18 //  Mask transmit data
 	RXMSK      TCR = 0x01 << 19 //+ Receive Data Mask
-	RXMSK_0    TCR = 0x00 << 19 //  Normal transfer
-	RXMSK_1    TCR = 0x01 << 19 //  Receive data is masked
 	CONTC      TCR = 0x01 << 20 //+ Continuing Command
-	CONTC_0    TCR = 0x00 << 20 //  Command word for start of new transfer
-	CONTC_1    TCR = 0x01 << 20 //  Command word for continuing transfer
 	CONT       TCR = 0x01 << 21 //+ Continuous Transfer
-	CONT_0     TCR = 0x00 << 21 //  Continuous transfer is disabled
-	CONT_1     TCR = 0x01 << 21 //  Continuous transfer is enabled
 	BYSW       TCR = 0x01 << 22 //+ Byte Swap
-	BYSW_0     TCR = 0x00 << 22 //  Byte swap is disabled
-	BYSW_1     TCR = 0x01 << 22 //  Byte swap is enabled
 	LSBF       TCR = 0x01 << 23 //+ LSB First
-	LSBF_0     TCR = 0x00 << 23 //  Data is transferred MSB first
-	LSBF_1     TCR = 0x01 << 23 //  Data is transferred LSB first
 	PCS        TCR = 0x03 << 24 //+ Peripheral Chip Select
 	PCS_0      TCR = 0x00 << 24 //  Transfer using LPSPI_PCS[0]
 	PCS_1      TCR = 0x01 << 24 //  Transfer using LPSPI_PCS[1]
@@ -344,11 +260,7 @@ const (
 	PRESCALE_6 TCR = 0x06 << 27 //  Divide by 64
 	PRESCALE_7 TCR = 0x07 << 27 //  Divide by 128
 	CPHA       TCR = 0x01 << 30 //+ Clock Phase
-	CPHA_0     TCR = 0x00 << 30 //  Data is captured on the leading edge of SCK and changed on the following edge of SCK
-	CPHA_1     TCR = 0x01 << 30 //  Data is changed on the leading edge of SCK and captured on the following edge of SCK
 	CPOL       TCR = 0x01 << 31 //+ Clock Polarity
-	CPOL_0     TCR = 0x00 << 31 //  The inactive state value of SCK is low
-	CPOL_1     TCR = 0x01 << 31 //  The inactive state value of SCK is high
 )
 
 const (
@@ -375,12 +287,8 @@ const (
 )
 
 const (
-	SOF       RSR = 0x01 << 0 //+ Start Of Frame
-	SOF_0     RSR = 0x00 << 0 //  Subsequent data word received after LPSPI_PCS assertion
-	SOF_1     RSR = 0x01 << 0 //  First data word received after LPSPI_PCS assertion
-	RXEMPTY   RSR = 0x01 << 1 //+ RX FIFO Empty
-	RXEMPTY_0 RSR = 0x00 << 1 //  RX FIFO is not empty
-	RXEMPTY_1 RSR = 0x01 << 1 //  RX FIFO is empty
+	SOF     RSR = 0x01 << 0 //+ Start Of Frame
+	RXEMPTY RSR = 0x01 << 1 //+ RX FIFO Empty
 )
 
 const (

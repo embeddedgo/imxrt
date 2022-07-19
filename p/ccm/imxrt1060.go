@@ -7,35 +7,35 @@
 // Instances:
 //  CCM  CCM_BASE  -  CCM_1*,CCM_2*
 // Registers:
-//  0x000 32  CCR     CCM Control Register
-//  0x008 32  CSR     CCM Status Register
-//  0x00C 32  CCSR    CCM Clock Switcher Register
-//  0x010 32  CACRR   CCM Arm Clock Root Register
-//  0x014 32  CBCDR   CCM Bus Clock Divider Register
-//  0x018 32  CBCMR   CCM Bus Clock Multiplexer Register
-//  0x01C 32  CSCMR1  CCM Serial Clock Multiplexer Register 1
-//  0x020 32  CSCMR2  CCM Serial Clock Multiplexer Register 2
-//  0x024 32  CSCDR1  CCM Serial Clock Divider Register 1
-//  0x028 32  CS1CDR  CCM Clock Divider Register
-//  0x02C 32  CS2CDR  CCM Clock Divider Register
-//  0x030 32  CDCDR   CCM D1 Clock Divider Register
-//  0x038 32  CSCDR2  CCM Serial Clock Divider Register 2
-//  0x03C 32  CSCDR3  CCM Serial Clock Divider Register 3
-//  0x048 32  CDHIPR  CCM Divider Handshake In-Process Register
-//  0x054 32  CLPCR   CCM Low Power Control Register
-//  0x058 32  CISR    CCM Interrupt Status Register
-//  0x05C 32  CIMR    CCM Interrupt Mask Register
-//  0x060 32  CCOSR   CCM Clock Output Source Register
-//  0x064 32  CGPR    CCM General Purpose Register
-//  0x068 32  CCGR0   CCM Clock Gating Register 0
-//  0x06C 32  CCGR1   CCM Clock Gating Register 1
-//  0x070 32  CCGR2   CCM Clock Gating Register 2
-//  0x074 32  CCGR3   CCM Clock Gating Register 3
-//  0x078 32  CCGR4   CCM Clock Gating Register 4
-//  0x07C 32  CCGR5   CCM Clock Gating Register 5
-//  0x080 32  CCGR6   CCM Clock Gating Register 6
-//  0x084 32  CCGR7   CCM Clock Gating Register 7
-//  0x088 32  CMEOR   CCM Module Enable Overide Register
+//  0x000 32  CCR        CCM Control Register
+//  0x008 32  CSR        CCM Status Register
+//  0x00C 32  CCSR       CCM Clock Switcher Register
+//  0x010 32  CACRR      CCM Arm Clock Root Register
+//  0x014 32  CBCDR      CCM Bus Clock Divider Register
+//  0x018 32  CBCMR      CCM Bus Clock Multiplexer Register
+//  0x01C 32  CSCMR1     CCM Serial Clock Multiplexer Register 1
+//  0x020 32  CSCMR2     CCM Serial Clock Multiplexer Register 2
+//  0x024 32  CSCDR1     CCM Serial Clock Divider Register 1
+//  0x028 32  CS1CDR     CCM Clock Divider Register
+//  0x02C 32  CS2CDR     CCM Clock Divider Register
+//  0x030 32  CDCDR      CCM D1 Clock Divider Register
+//  0x038 32  CSCDR2     CCM Serial Clock Divider Register 2
+//  0x03C 32  CSCDR3     CCM Serial Clock Divider Register 3
+//  0x048 32  CDHIPR     CCM Divider Handshake In-Process Register
+//  0x054 32  CLPCR      CCM Low Power Control Register
+//  0x058 32  CISR(CIR)  CCM Interrupt Status Register
+//  0x05C 32  CIMR(CIR)  CCM Interrupt Mask Register
+//  0x060 32  CCOSR      CCM Clock Output Source Register
+//  0x064 32  CGPR       CCM General Purpose Register
+//  0x068 32  CCGR0      CCM Clock Gating Register 0
+//  0x06C 32  CCGR1      CCM Clock Gating Register 1
+//  0x070 32  CCGR2      CCM Clock Gating Register 2
+//  0x074 32  CCGR3      CCM Clock Gating Register 3
+//  0x078 32  CCGR4      CCM Clock Gating Register 4
+//  0x07C 32  CCGR5      CCM Clock Gating Register 5
+//  0x080 32  CCGR6      CCM Clock Gating Register 6
+//  0x084 32  CCGR7      CCM Clock Gating Register 7
+//  0x088 32  CMEOR      CCM Module Enable Overide Register
 // Import:
 //  github.com/embeddedgo/imxrt/p/mmap
 package ccm
@@ -43,15 +43,11 @@ package ccm
 const (
 	OSCNT               CCR = 0xFF << 0  //+ Oscillator ready counter value. These bits define value of 32KHz counter, that serve as counter for oscillator lock time (count to n+1 ckil's). This is used for oscillator lock time. Current estimation is ~5ms. This counter will be used in ignition sequence and in wake from stop sequence if sbyos bit was defined, to notify that on chip oscillator output is ready for the dpll_ip to use and only then the gate in dpll_ip can be opened.
 	COSC_EN             CCR = 0x01 << 12 //+ On chip oscillator enable bit - this bit value is reflected on the output cosc_en
-	COSC_EN_0           CCR = 0x00 << 12 //  disable on chip oscillator
-	COSC_EN_1           CCR = 0x01 << 12 //  enable on chip oscillator
 	REG_BYPASS_COUNT    CCR = 0x3F << 21 //+ Counter for analog_reg_bypass signal assertion after standby voltage request by PMIC_STBY_REQ
 	REG_BYPASS_COUNT_0  CCR = 0x00 << 21 //  no delay
 	REG_BYPASS_COUNT_1  CCR = 0x01 << 21 //  1 CKIL clock period delay
 	REG_BYPASS_COUNT_63 CCR = 0x3F << 21 //  63 CKIL clock periods delay
 	RBC_EN              CCR = 0x01 << 27 //+ Enable for REG_BYPASS_COUNTER
-	RBC_EN_0            CCR = 0x00 << 27 //  REG_BYPASS_COUNTER disabled
-	RBC_EN_1            CCR = 0x01 << 27 //  REG_BYPASS_COUNTER enabled.
 )
 
 const (
@@ -62,15 +58,9 @@ const (
 )
 
 const (
-	REF_EN_B      CSR = 0x01 << 0 //+ Status of the value of CCM_REF_EN_B output of ccm
-	REF_EN_B_0    CSR = 0x00 << 0 //  value of CCM_REF_EN_B is '0'
-	REF_EN_B_1    CSR = 0x01 << 0 //  value of CCM_REF_EN_B is '1'
-	CAMP2_READY   CSR = 0x01 << 3 //+ Status indication of CAMP2.
-	CAMP2_READY_0 CSR = 0x00 << 3 //  CAMP2 is not ready.
-	CAMP2_READY_1 CSR = 0x01 << 3 //  CAMP2 is ready.
-	COSC_READY    CSR = 0x01 << 5 //+ Status indication of on board oscillator
-	COSC_READY_0  CSR = 0x00 << 5 //  on board oscillator is not ready.
-	COSC_READY_1  CSR = 0x01 << 5 //  on board oscillator is ready.
+	REF_EN_B    CSR = 0x01 << 0 //+ Status of the value of CCM_REF_EN_B output of ccm
+	CAMP2_READY CSR = 0x01 << 3 //+ Status indication of CAMP2.
+	COSC_READY  CSR = 0x01 << 5 //+ Status indication of on board oscillator
 )
 
 const (
@@ -80,9 +70,7 @@ const (
 )
 
 const (
-	PLL3_SW_CLK_SEL   CCSR = 0x01 << 0 //+ Selects source to generate pll3_sw_clk. This bit should only be used for testing purposes.
-	PLL3_SW_CLK_SEL_0 CCSR = 0x00 << 0 //  pll3_main_clk
-	PLL3_SW_CLK_SEL_1 CCSR = 0x01 << 0 //  pll3 bypass clock
+	PLL3_SW_CLK_SEL CCSR = 0x01 << 0 //+ Selects source to generate pll3_sw_clk. This bit should only be used for testing purposes.
 )
 
 const (
@@ -107,11 +95,7 @@ const (
 
 const (
 	SEMC_CLK_SEL       CBCDR = 0x01 << 6  //+ SEMC clock source select
-	SEMC_CLK_SEL_0     CBCDR = 0x00 << 6  //  Periph_clk output will be used as SEMC clock root
-	SEMC_CLK_SEL_1     CBCDR = 0x01 << 6  //  SEMC alternative clock will be used as SEMC clock root
 	SEMC_ALT_CLK_SEL   CBCDR = 0x01 << 7  //+ SEMC alternative clock select
-	SEMC_ALT_CLK_SEL_0 CBCDR = 0x00 << 7  //  PLL2 PFD2 will be selected as alternative clock for SEMC root clock
-	SEMC_ALT_CLK_SEL_1 CBCDR = 0x01 << 7  //  PLL3 PFD1 will be selected as alternative clock for SEMC root clock
 	IPG_PODF           CBCDR = 0x03 << 8  //+ Divider for ipg podf.
 	IPG_PODF_0         CBCDR = 0x00 << 8  //  divide by 1
 	IPG_PODF_1         CBCDR = 0x01 << 8  //  divide by 2
@@ -136,8 +120,6 @@ const (
 	SEMC_PODF_6        CBCDR = 0x06 << 16 //  divide by 7
 	SEMC_PODF_7        CBCDR = 0x07 << 16 //  divide by 8
 	PERIPH_CLK_SEL     CBCDR = 0x01 << 25 //+ Selector for peripheral main clock
-	PERIPH_CLK_SEL_0   CBCDR = 0x00 << 25 //  derive clock from pre_periph_clk_sel
-	PERIPH_CLK_SEL_1   CBCDR = 0x01 << 25 //  derive clock from periph_clk2_clk_divided
 	PERIPH_CLK2_PODF   CBCDR = 0x07 << 27 //+ Divider for periph_clk2_podf.
 	PERIPH_CLK2_PODF_0 CBCDR = 0x00 << 27 //  divide by 1
 	PERIPH_CLK2_PODF_1 CBCDR = 0x01 << 27 //  divide by 2
@@ -226,73 +208,71 @@ const (
 
 const (
 	PERCLK_PODF       CSCMR1 = 0x3F << 0  //+ Divider for perclk podf.
-	DIVIDE_1          CSCMR1 = 0x00 << 0  //  Divide by 1
-	DIVIDE_2          CSCMR1 = 0x01 << 0  //  Divide by 2
-	DIVIDE_3          CSCMR1 = 0x02 << 0  //  Divide by 3
-	DIVIDE_4          CSCMR1 = 0x03 << 0  //  Divide by 4
-	DIVIDE_5          CSCMR1 = 0x04 << 0  //  Divide by 5
-	DIVIDE_6          CSCMR1 = 0x05 << 0  //  Divide by 6
-	DIVIDE_7          CSCMR1 = 0x06 << 0  //  Divide by 7
-	DIVIDE_8          CSCMR1 = 0x07 << 0  //  Divide by 8
-	DIVIDE_9          CSCMR1 = 0x08 << 0  //  Divide by 9
-	DIVIDE_10         CSCMR1 = 0x09 << 0  //  Divide by 10
-	DIVIDE_11         CSCMR1 = 0x0A << 0  //  Divide by 11
-	DIVIDE_12         CSCMR1 = 0x0B << 0  //  Divide by 12
-	DIVIDE_13         CSCMR1 = 0x0C << 0  //  Divide by 13
-	DIVIDE_14         CSCMR1 = 0x0D << 0  //  Divide by 14
-	DIVIDE_15         CSCMR1 = 0x0E << 0  //  Divide by 15
-	DIVIDE_16         CSCMR1 = 0x0F << 0  //  Divide by 16
-	DIVIDE_17         CSCMR1 = 0x10 << 0  //  Divide by 17
-	DIVIDE_18         CSCMR1 = 0x11 << 0  //  Divide by 18
-	DIVIDE_19         CSCMR1 = 0x12 << 0  //  Divide by 19
-	DIVIDE_20         CSCMR1 = 0x13 << 0  //  Divide by 20
-	DIVIDE_21         CSCMR1 = 0x14 << 0  //  Divide by 21
-	DIVIDE_22         CSCMR1 = 0x15 << 0  //  Divide by 22
-	DIVIDE_23         CSCMR1 = 0x16 << 0  //  Divide by 23
-	DIVIDE_24         CSCMR1 = 0x17 << 0  //  Divide by 24
-	DIVIDE_25         CSCMR1 = 0x18 << 0  //  Divide by 25
-	DIVIDE_26         CSCMR1 = 0x19 << 0  //  Divide by 26
-	DIVIDE_27         CSCMR1 = 0x1A << 0  //  Divide by 27
-	DIVIDE_28         CSCMR1 = 0x1B << 0  //  Divide by 28
-	DIVIDE_29         CSCMR1 = 0x1C << 0  //  Divide by 29
-	DIVIDE_30         CSCMR1 = 0x1D << 0  //  Divide by 30
-	DIVIDE_31         CSCMR1 = 0x1E << 0  //  Divide by 31
-	DIVIDE_32         CSCMR1 = 0x1F << 0  //  Divide by 32
-	DIVIDE_33         CSCMR1 = 0x20 << 0  //  Divide by 33
-	DIVIDE_34         CSCMR1 = 0x21 << 0  //  Divide by 34
-	DIVIDE_35         CSCMR1 = 0x22 << 0  //  Divide by 35
-	DIVIDE_36         CSCMR1 = 0x23 << 0  //  Divide by 36
-	DIVIDE_37         CSCMR1 = 0x24 << 0  //  Divide by 37
-	DIVIDE_38         CSCMR1 = 0x25 << 0  //  Divide by 38
-	DIVIDE_39         CSCMR1 = 0x26 << 0  //  Divide by 39
-	DIVIDE_40         CSCMR1 = 0x27 << 0  //  Divide by 40
-	DIVIDE_41         CSCMR1 = 0x28 << 0  //  Divide by 41
-	DIVIDE_42         CSCMR1 = 0x29 << 0  //  Divide by 42
-	DIVIDE_43         CSCMR1 = 0x2A << 0  //  Divide by 43
-	DIVIDE_44         CSCMR1 = 0x2B << 0  //  Divide by 44
-	DIVIDE_45         CSCMR1 = 0x2C << 0  //  Divide by 45
-	DIVIDE_46         CSCMR1 = 0x2D << 0  //  Divide by 46
-	DIVIDE_47         CSCMR1 = 0x2E << 0  //  Divide by 47
-	DIVIDE_48         CSCMR1 = 0x2F << 0  //  Divide by 48
-	DIVIDE_49         CSCMR1 = 0x30 << 0  //  Divide by 49
-	DIVIDE_50         CSCMR1 = 0x31 << 0  //  Divide by 50
-	DIVIDE_51         CSCMR1 = 0x32 << 0  //  Divide by 51
-	DIVIDE_52         CSCMR1 = 0x33 << 0  //  Divide by 52
-	DIVIDE_53         CSCMR1 = 0x34 << 0  //  Divide by 53
-	DIVIDE_54         CSCMR1 = 0x35 << 0  //  Divide by 54
-	DIVIDE_55         CSCMR1 = 0x36 << 0  //  Divide by 55
-	DIVIDE_56         CSCMR1 = 0x37 << 0  //  Divide by 56
-	DIVIDE_57         CSCMR1 = 0x38 << 0  //  Divide by 57
-	DIVIDE_58         CSCMR1 = 0x39 << 0  //  Divide by 58
-	DIVIDE_59         CSCMR1 = 0x3A << 0  //  Divide by 59
-	DIVIDE_60         CSCMR1 = 0x3B << 0  //  Divide by 60
-	DIVIDE_61         CSCMR1 = 0x3C << 0  //  Divide by 61
-	DIVIDE_62         CSCMR1 = 0x3D << 0  //  Divide by 62
-	DIVIDE_63         CSCMR1 = 0x3E << 0  //  Divide by 63
-	DIVIDE_64         CSCMR1 = 0x3F << 0  //  Divide by 64
+	PERCLK_PODF_1     CSCMR1 = 0x00 << 0  //  Divide by 1
+	PERCLK_PODF_2     CSCMR1 = 0x01 << 0  //  Divide by 2
+	PERCLK_PODF_3     CSCMR1 = 0x02 << 0  //  Divide by 3
+	PERCLK_PODF_4     CSCMR1 = 0x03 << 0  //  Divide by 4
+	PERCLK_PODF_5     CSCMR1 = 0x04 << 0  //  Divide by 5
+	PERCLK_PODF_6     CSCMR1 = 0x05 << 0  //  Divide by 6
+	PERCLK_PODF_7     CSCMR1 = 0x06 << 0  //  Divide by 7
+	PERCLK_PODF_8     CSCMR1 = 0x07 << 0  //  Divide by 8
+	PERCLK_PODF_9     CSCMR1 = 0x08 << 0  //  Divide by 9
+	PERCLK_PODF_10    CSCMR1 = 0x09 << 0  //  Divide by 10
+	PERCLK_PODF_11    CSCMR1 = 0x0A << 0  //  Divide by 11
+	PERCLK_PODF_12    CSCMR1 = 0x0B << 0  //  Divide by 12
+	PERCLK_PODF_13    CSCMR1 = 0x0C << 0  //  Divide by 13
+	PERCLK_PODF_14    CSCMR1 = 0x0D << 0  //  Divide by 14
+	PERCLK_PODF_15    CSCMR1 = 0x0E << 0  //  Divide by 15
+	PERCLK_PODF_16    CSCMR1 = 0x0F << 0  //  Divide by 16
+	PERCLK_PODF_17    CSCMR1 = 0x10 << 0  //  Divide by 17
+	PERCLK_PODF_18    CSCMR1 = 0x11 << 0  //  Divide by 18
+	PERCLK_PODF_19    CSCMR1 = 0x12 << 0  //  Divide by 19
+	PERCLK_PODF_20    CSCMR1 = 0x13 << 0  //  Divide by 20
+	PERCLK_PODF_21    CSCMR1 = 0x14 << 0  //  Divide by 21
+	PERCLK_PODF_22    CSCMR1 = 0x15 << 0  //  Divide by 22
+	PERCLK_PODF_23    CSCMR1 = 0x16 << 0  //  Divide by 23
+	PERCLK_PODF_24    CSCMR1 = 0x17 << 0  //  Divide by 24
+	PERCLK_PODF_25    CSCMR1 = 0x18 << 0  //  Divide by 25
+	PERCLK_PODF_26    CSCMR1 = 0x19 << 0  //  Divide by 26
+	PERCLK_PODF_27    CSCMR1 = 0x1A << 0  //  Divide by 27
+	PERCLK_PODF_28    CSCMR1 = 0x1B << 0  //  Divide by 28
+	PERCLK_PODF_29    CSCMR1 = 0x1C << 0  //  Divide by 29
+	PERCLK_PODF_30    CSCMR1 = 0x1D << 0  //  Divide by 30
+	PERCLK_PODF_31    CSCMR1 = 0x1E << 0  //  Divide by 31
+	PERCLK_PODF_32    CSCMR1 = 0x1F << 0  //  Divide by 32
+	PERCLK_PODF_33    CSCMR1 = 0x20 << 0  //  Divide by 33
+	PERCLK_PODF_34    CSCMR1 = 0x21 << 0  //  Divide by 34
+	PERCLK_PODF_35    CSCMR1 = 0x22 << 0  //  Divide by 35
+	PERCLK_PODF_36    CSCMR1 = 0x23 << 0  //  Divide by 36
+	PERCLK_PODF_37    CSCMR1 = 0x24 << 0  //  Divide by 37
+	PERCLK_PODF_38    CSCMR1 = 0x25 << 0  //  Divide by 38
+	PERCLK_PODF_39    CSCMR1 = 0x26 << 0  //  Divide by 39
+	PERCLK_PODF_40    CSCMR1 = 0x27 << 0  //  Divide by 40
+	PERCLK_PODF_41    CSCMR1 = 0x28 << 0  //  Divide by 41
+	PERCLK_PODF_42    CSCMR1 = 0x29 << 0  //  Divide by 42
+	PERCLK_PODF_43    CSCMR1 = 0x2A << 0  //  Divide by 43
+	PERCLK_PODF_44    CSCMR1 = 0x2B << 0  //  Divide by 44
+	PERCLK_PODF_45    CSCMR1 = 0x2C << 0  //  Divide by 45
+	PERCLK_PODF_46    CSCMR1 = 0x2D << 0  //  Divide by 46
+	PERCLK_PODF_47    CSCMR1 = 0x2E << 0  //  Divide by 47
+	PERCLK_PODF_48    CSCMR1 = 0x2F << 0  //  Divide by 48
+	PERCLK_PODF_49    CSCMR1 = 0x30 << 0  //  Divide by 49
+	PERCLK_PODF_50    CSCMR1 = 0x31 << 0  //  Divide by 50
+	PERCLK_PODF_51    CSCMR1 = 0x32 << 0  //  Divide by 51
+	PERCLK_PODF_52    CSCMR1 = 0x33 << 0  //  Divide by 52
+	PERCLK_PODF_53    CSCMR1 = 0x34 << 0  //  Divide by 53
+	PERCLK_PODF_54    CSCMR1 = 0x35 << 0  //  Divide by 54
+	PERCLK_PODF_55    CSCMR1 = 0x36 << 0  //  Divide by 55
+	PERCLK_PODF_56    CSCMR1 = 0x37 << 0  //  Divide by 56
+	PERCLK_PODF_57    CSCMR1 = 0x38 << 0  //  Divide by 57
+	PERCLK_PODF_58    CSCMR1 = 0x39 << 0  //  Divide by 58
+	PERCLK_PODF_59    CSCMR1 = 0x3A << 0  //  Divide by 59
+	PERCLK_PODF_60    CSCMR1 = 0x3B << 0  //  Divide by 60
+	PERCLK_PODF_61    CSCMR1 = 0x3C << 0  //  Divide by 61
+	PERCLK_PODF_62    CSCMR1 = 0x3D << 0  //  Divide by 62
+	PERCLK_PODF_63    CSCMR1 = 0x3E << 0  //  Divide by 63
+	PERCLK_PODF_64    CSCMR1 = 0x3F << 0  //  Divide by 64
 	PERCLK_CLK_SEL    CSCMR1 = 0x01 << 6  //+ Selector for the perclk clock multiplexor
-	PERCLK_CLK_SEL_0  CSCMR1 = 0x00 << 6  //  derive clock from ipg clk root
-	PERCLK_CLK_SEL_1  CSCMR1 = 0x01 << 6  //  derive clock from osc_clk
 	SAI1_CLK_SEL      CSCMR1 = 0x03 << 10 //+ Selector for sai1 clock multiplexer
 	SAI1_CLK_SEL_0    CSCMR1 = 0x00 << 10 //  derive clock from PLL3 PFD2
 	SAI1_CLK_SEL_1    CSCMR1 = 0x01 << 10 //  derive clock from PLL5
@@ -306,11 +286,7 @@ const (
 	SAI3_CLK_SEL_1    CSCMR1 = 0x01 << 14 //  derive clock from PLL5
 	SAI3_CLK_SEL_2    CSCMR1 = 0x02 << 14 //  derive clock from PLL4
 	USDHC1_CLK_SEL    CSCMR1 = 0x01 << 16 //+ Selector for usdhc1 clock multiplexer
-	USDHC1_CLK_SEL_0  CSCMR1 = 0x00 << 16 //  derive clock from PLL2 PFD2
-	USDHC1_CLK_SEL_1  CSCMR1 = 0x01 << 16 //  derive clock from PLL2 PFD0
 	USDHC2_CLK_SEL    CSCMR1 = 0x01 << 17 //+ Selector for usdhc2 clock multiplexer
-	USDHC2_CLK_SEL_0  CSCMR1 = 0x00 << 17 //  derive clock from PLL2 PFD2
-	USDHC2_CLK_SEL_1  CSCMR1 = 0x01 << 17 //  derive clock from PLL2 PFD0
 	FLEXSPI_PODF      CSCMR1 = 0x07 << 23 //+ Divider for flexspi clock root.
 	FLEXSPI_PODF_0    CSCMR1 = 0x00 << 23 //  divide by 1
 	FLEXSPI_PODF_1    CSCMR1 = 0x01 << 23 //  divide by 2
@@ -341,70 +317,70 @@ const (
 
 const (
 	CAN_CLK_PODF      CSCMR2 = 0x3F << 2  //+ Divider for CAN/CANFD clock podf.
-	DIVIDE_1          CSCMR2 = 0x00 << 2  //  Divide by 1
-	DIVIDE_2          CSCMR2 = 0x01 << 2  //  Divide by 2
-	DIVIDE_3          CSCMR2 = 0x02 << 2  //  Divide by 3
-	DIVIDE_4          CSCMR2 = 0x03 << 2  //  Divide by 4
-	DIVIDE_5          CSCMR2 = 0x04 << 2  //  Divide by 5
-	DIVIDE_6          CSCMR2 = 0x05 << 2  //  Divide by 6
-	DIVIDE_7          CSCMR2 = 0x06 << 2  //  Divide by 7
-	DIVIDE_8          CSCMR2 = 0x07 << 2  //  Divide by 8
-	DIVIDE_9          CSCMR2 = 0x08 << 2  //  Divide by 9
-	DIVIDE_10         CSCMR2 = 0x09 << 2  //  Divide by 10
-	DIVIDE_11         CSCMR2 = 0x0A << 2  //  Divide by 11
-	DIVIDE_12         CSCMR2 = 0x0B << 2  //  Divide by 12
-	DIVIDE_13         CSCMR2 = 0x0C << 2  //  Divide by 13
-	DIVIDE_14         CSCMR2 = 0x0D << 2  //  Divide by 14
-	DIVIDE_15         CSCMR2 = 0x0E << 2  //  Divide by 15
-	DIVIDE_16         CSCMR2 = 0x0F << 2  //  Divide by 16
-	DIVIDE_17         CSCMR2 = 0x10 << 2  //  Divide by 17
-	DIVIDE_18         CSCMR2 = 0x11 << 2  //  Divide by 18
-	DIVIDE_19         CSCMR2 = 0x12 << 2  //  Divide by 19
-	DIVIDE_20         CSCMR2 = 0x13 << 2  //  Divide by 20
-	DIVIDE_21         CSCMR2 = 0x14 << 2  //  Divide by 21
-	DIVIDE_22         CSCMR2 = 0x15 << 2  //  Divide by 22
-	DIVIDE_23         CSCMR2 = 0x16 << 2  //  Divide by 23
-	DIVIDE_24         CSCMR2 = 0x17 << 2  //  Divide by 24
-	DIVIDE_25         CSCMR2 = 0x18 << 2  //  Divide by 25
-	DIVIDE_26         CSCMR2 = 0x19 << 2  //  Divide by 26
-	DIVIDE_27         CSCMR2 = 0x1A << 2  //  Divide by 27
-	DIVIDE_28         CSCMR2 = 0x1B << 2  //  Divide by 28
-	DIVIDE_29         CSCMR2 = 0x1C << 2  //  Divide by 29
-	DIVIDE_30         CSCMR2 = 0x1D << 2  //  Divide by 30
-	DIVIDE_31         CSCMR2 = 0x1E << 2  //  Divide by 31
-	DIVIDE_32         CSCMR2 = 0x1F << 2  //  Divide by 32
-	DIVIDE_33         CSCMR2 = 0x20 << 2  //  Divide by 33
-	DIVIDE_34         CSCMR2 = 0x21 << 2  //  Divide by 34
-	DIVIDE_35         CSCMR2 = 0x22 << 2  //  Divide by 35
-	DIVIDE_36         CSCMR2 = 0x23 << 2  //  Divide by 36
-	DIVIDE_37         CSCMR2 = 0x24 << 2  //  Divide by 37
-	DIVIDE_38         CSCMR2 = 0x25 << 2  //  Divide by 38
-	DIVIDE_39         CSCMR2 = 0x26 << 2  //  Divide by 39
-	DIVIDE_40         CSCMR2 = 0x27 << 2  //  Divide by 40
-	DIVIDE_41         CSCMR2 = 0x28 << 2  //  Divide by 41
-	DIVIDE_42         CSCMR2 = 0x29 << 2  //  Divide by 42
-	DIVIDE_43         CSCMR2 = 0x2A << 2  //  Divide by 43
-	DIVIDE_44         CSCMR2 = 0x2B << 2  //  Divide by 44
-	DIVIDE_45         CSCMR2 = 0x2C << 2  //  Divide by 45
-	DIVIDE_46         CSCMR2 = 0x2D << 2  //  Divide by 46
-	DIVIDE_47         CSCMR2 = 0x2E << 2  //  Divide by 47
-	DIVIDE_48         CSCMR2 = 0x2F << 2  //  Divide by 48
-	DIVIDE_49         CSCMR2 = 0x30 << 2  //  Divide by 49
-	DIVIDE_50         CSCMR2 = 0x31 << 2  //  Divide by 50
-	DIVIDE_51         CSCMR2 = 0x32 << 2  //  Divide by 51
-	DIVIDE_52         CSCMR2 = 0x33 << 2  //  Divide by 52
-	DIVIDE_53         CSCMR2 = 0x34 << 2  //  Divide by 53
-	DIVIDE_54         CSCMR2 = 0x35 << 2  //  Divide by 54
-	DIVIDE_55         CSCMR2 = 0x36 << 2  //  Divide by 55
-	DIVIDE_56         CSCMR2 = 0x37 << 2  //  Divide by 56
-	DIVIDE_57         CSCMR2 = 0x38 << 2  //  Divide by 57
-	DIVIDE_58         CSCMR2 = 0x39 << 2  //  Divide by 58
-	DIVIDE_59         CSCMR2 = 0x3A << 2  //  Divide by 59
-	DIVIDE_60         CSCMR2 = 0x3B << 2  //  Divide by 60
-	DIVIDE_61         CSCMR2 = 0x3C << 2  //  Divide by 61
-	DIVIDE_62         CSCMR2 = 0x3D << 2  //  Divide by 62
-	DIVIDE_63         CSCMR2 = 0x3E << 2  //  Divide by 63
-	DIVIDE_64         CSCMR2 = 0x3F << 2  //  Divide by 64
+	CAN_CLK_PODF_1    CSCMR2 = 0x00 << 2  //  Divide by 1
+	CAN_CLK_PODF_2    CSCMR2 = 0x01 << 2  //  Divide by 2
+	CAN_CLK_PODF_3    CSCMR2 = 0x02 << 2  //  Divide by 3
+	CAN_CLK_PODF_4    CSCMR2 = 0x03 << 2  //  Divide by 4
+	CAN_CLK_PODF_5    CSCMR2 = 0x04 << 2  //  Divide by 5
+	CAN_CLK_PODF_6    CSCMR2 = 0x05 << 2  //  Divide by 6
+	CAN_CLK_PODF_7    CSCMR2 = 0x06 << 2  //  Divide by 7
+	CAN_CLK_PODF_8    CSCMR2 = 0x07 << 2  //  Divide by 8
+	CAN_CLK_PODF_9    CSCMR2 = 0x08 << 2  //  Divide by 9
+	CAN_CLK_PODF_10   CSCMR2 = 0x09 << 2  //  Divide by 10
+	CAN_CLK_PODF_11   CSCMR2 = 0x0A << 2  //  Divide by 11
+	CAN_CLK_PODF_12   CSCMR2 = 0x0B << 2  //  Divide by 12
+	CAN_CLK_PODF_13   CSCMR2 = 0x0C << 2  //  Divide by 13
+	CAN_CLK_PODF_14   CSCMR2 = 0x0D << 2  //  Divide by 14
+	CAN_CLK_PODF_15   CSCMR2 = 0x0E << 2  //  Divide by 15
+	CAN_CLK_PODF_16   CSCMR2 = 0x0F << 2  //  Divide by 16
+	CAN_CLK_PODF_17   CSCMR2 = 0x10 << 2  //  Divide by 17
+	CAN_CLK_PODF_18   CSCMR2 = 0x11 << 2  //  Divide by 18
+	CAN_CLK_PODF_19   CSCMR2 = 0x12 << 2  //  Divide by 19
+	CAN_CLK_PODF_20   CSCMR2 = 0x13 << 2  //  Divide by 20
+	CAN_CLK_PODF_21   CSCMR2 = 0x14 << 2  //  Divide by 21
+	CAN_CLK_PODF_22   CSCMR2 = 0x15 << 2  //  Divide by 22
+	CAN_CLK_PODF_23   CSCMR2 = 0x16 << 2  //  Divide by 23
+	CAN_CLK_PODF_24   CSCMR2 = 0x17 << 2  //  Divide by 24
+	CAN_CLK_PODF_25   CSCMR2 = 0x18 << 2  //  Divide by 25
+	CAN_CLK_PODF_26   CSCMR2 = 0x19 << 2  //  Divide by 26
+	CAN_CLK_PODF_27   CSCMR2 = 0x1A << 2  //  Divide by 27
+	CAN_CLK_PODF_28   CSCMR2 = 0x1B << 2  //  Divide by 28
+	CAN_CLK_PODF_29   CSCMR2 = 0x1C << 2  //  Divide by 29
+	CAN_CLK_PODF_30   CSCMR2 = 0x1D << 2  //  Divide by 30
+	CAN_CLK_PODF_31   CSCMR2 = 0x1E << 2  //  Divide by 31
+	CAN_CLK_PODF_32   CSCMR2 = 0x1F << 2  //  Divide by 32
+	CAN_CLK_PODF_33   CSCMR2 = 0x20 << 2  //  Divide by 33
+	CAN_CLK_PODF_34   CSCMR2 = 0x21 << 2  //  Divide by 34
+	CAN_CLK_PODF_35   CSCMR2 = 0x22 << 2  //  Divide by 35
+	CAN_CLK_PODF_36   CSCMR2 = 0x23 << 2  //  Divide by 36
+	CAN_CLK_PODF_37   CSCMR2 = 0x24 << 2  //  Divide by 37
+	CAN_CLK_PODF_38   CSCMR2 = 0x25 << 2  //  Divide by 38
+	CAN_CLK_PODF_39   CSCMR2 = 0x26 << 2  //  Divide by 39
+	CAN_CLK_PODF_40   CSCMR2 = 0x27 << 2  //  Divide by 40
+	CAN_CLK_PODF_41   CSCMR2 = 0x28 << 2  //  Divide by 41
+	CAN_CLK_PODF_42   CSCMR2 = 0x29 << 2  //  Divide by 42
+	CAN_CLK_PODF_43   CSCMR2 = 0x2A << 2  //  Divide by 43
+	CAN_CLK_PODF_44   CSCMR2 = 0x2B << 2  //  Divide by 44
+	CAN_CLK_PODF_45   CSCMR2 = 0x2C << 2  //  Divide by 45
+	CAN_CLK_PODF_46   CSCMR2 = 0x2D << 2  //  Divide by 46
+	CAN_CLK_PODF_47   CSCMR2 = 0x2E << 2  //  Divide by 47
+	CAN_CLK_PODF_48   CSCMR2 = 0x2F << 2  //  Divide by 48
+	CAN_CLK_PODF_49   CSCMR2 = 0x30 << 2  //  Divide by 49
+	CAN_CLK_PODF_50   CSCMR2 = 0x31 << 2  //  Divide by 50
+	CAN_CLK_PODF_51   CSCMR2 = 0x32 << 2  //  Divide by 51
+	CAN_CLK_PODF_52   CSCMR2 = 0x33 << 2  //  Divide by 52
+	CAN_CLK_PODF_53   CSCMR2 = 0x34 << 2  //  Divide by 53
+	CAN_CLK_PODF_54   CSCMR2 = 0x35 << 2  //  Divide by 54
+	CAN_CLK_PODF_55   CSCMR2 = 0x36 << 2  //  Divide by 55
+	CAN_CLK_PODF_56   CSCMR2 = 0x37 << 2  //  Divide by 56
+	CAN_CLK_PODF_57   CSCMR2 = 0x38 << 2  //  Divide by 57
+	CAN_CLK_PODF_58   CSCMR2 = 0x39 << 2  //  Divide by 58
+	CAN_CLK_PODF_59   CSCMR2 = 0x3A << 2  //  Divide by 59
+	CAN_CLK_PODF_60   CSCMR2 = 0x3B << 2  //  Divide by 60
+	CAN_CLK_PODF_61   CSCMR2 = 0x3C << 2  //  Divide by 61
+	CAN_CLK_PODF_62   CSCMR2 = 0x3D << 2  //  Divide by 62
+	CAN_CLK_PODF_63   CSCMR2 = 0x3E << 2  //  Divide by 63
+	CAN_CLK_PODF_64   CSCMR2 = 0x3F << 2  //  Divide by 64
 	CAN_CLK_SEL       CSCMR2 = 0x03 << 8  //+ Selector for CAN/CANFD clock multiplexer
 	CAN_CLK_SEL_0     CSCMR2 = 0x00 << 8  //  derive clock from pll3_sw_clk divided clock (60M)
 	CAN_CLK_SEL_1     CSCMR2 = 0x01 << 8  //  derive clock from osc_clk (24M)
@@ -424,97 +400,95 @@ const (
 )
 
 const (
-	UART_CLK_PODF  CSCDR1 = 0x3F << 0  //+ Divider for uart clock podf.
-	DIVIDE_1       CSCDR1 = 0x00 << 0  //  Divide by 1
-	DIVIDE_2       CSCDR1 = 0x01 << 0  //  Divide by 2
-	DIVIDE_3       CSCDR1 = 0x02 << 0  //  Divide by 3
-	DIVIDE_4       CSCDR1 = 0x03 << 0  //  Divide by 4
-	DIVIDE_5       CSCDR1 = 0x04 << 0  //  Divide by 5
-	DIVIDE_6       CSCDR1 = 0x05 << 0  //  Divide by 6
-	DIVIDE_7       CSCDR1 = 0x06 << 0  //  Divide by 7
-	DIVIDE_8       CSCDR1 = 0x07 << 0  //  Divide by 8
-	DIVIDE_9       CSCDR1 = 0x08 << 0  //  Divide by 9
-	DIVIDE_10      CSCDR1 = 0x09 << 0  //  Divide by 10
-	DIVIDE_11      CSCDR1 = 0x0A << 0  //  Divide by 11
-	DIVIDE_12      CSCDR1 = 0x0B << 0  //  Divide by 12
-	DIVIDE_13      CSCDR1 = 0x0C << 0  //  Divide by 13
-	DIVIDE_14      CSCDR1 = 0x0D << 0  //  Divide by 14
-	DIVIDE_15      CSCDR1 = 0x0E << 0  //  Divide by 15
-	DIVIDE_16      CSCDR1 = 0x0F << 0  //  Divide by 16
-	DIVIDE_17      CSCDR1 = 0x10 << 0  //  Divide by 17
-	DIVIDE_18      CSCDR1 = 0x11 << 0  //  Divide by 18
-	DIVIDE_19      CSCDR1 = 0x12 << 0  //  Divide by 19
-	DIVIDE_20      CSCDR1 = 0x13 << 0  //  Divide by 20
-	DIVIDE_21      CSCDR1 = 0x14 << 0  //  Divide by 21
-	DIVIDE_22      CSCDR1 = 0x15 << 0  //  Divide by 22
-	DIVIDE_23      CSCDR1 = 0x16 << 0  //  Divide by 23
-	DIVIDE_24      CSCDR1 = 0x17 << 0  //  Divide by 24
-	DIVIDE_25      CSCDR1 = 0x18 << 0  //  Divide by 25
-	DIVIDE_26      CSCDR1 = 0x19 << 0  //  Divide by 26
-	DIVIDE_27      CSCDR1 = 0x1A << 0  //  Divide by 27
-	DIVIDE_28      CSCDR1 = 0x1B << 0  //  Divide by 28
-	DIVIDE_29      CSCDR1 = 0x1C << 0  //  Divide by 29
-	DIVIDE_30      CSCDR1 = 0x1D << 0  //  Divide by 30
-	DIVIDE_31      CSCDR1 = 0x1E << 0  //  Divide by 31
-	DIVIDE_32      CSCDR1 = 0x1F << 0  //  Divide by 32
-	DIVIDE_33      CSCDR1 = 0x20 << 0  //  Divide by 33
-	DIVIDE_34      CSCDR1 = 0x21 << 0  //  Divide by 34
-	DIVIDE_35      CSCDR1 = 0x22 << 0  //  Divide by 35
-	DIVIDE_36      CSCDR1 = 0x23 << 0  //  Divide by 36
-	DIVIDE_37      CSCDR1 = 0x24 << 0  //  Divide by 37
-	DIVIDE_38      CSCDR1 = 0x25 << 0  //  Divide by 38
-	DIVIDE_39      CSCDR1 = 0x26 << 0  //  Divide by 39
-	DIVIDE_40      CSCDR1 = 0x27 << 0  //  Divide by 40
-	DIVIDE_41      CSCDR1 = 0x28 << 0  //  Divide by 41
-	DIVIDE_42      CSCDR1 = 0x29 << 0  //  Divide by 42
-	DIVIDE_43      CSCDR1 = 0x2A << 0  //  Divide by 43
-	DIVIDE_44      CSCDR1 = 0x2B << 0  //  Divide by 44
-	DIVIDE_45      CSCDR1 = 0x2C << 0  //  Divide by 45
-	DIVIDE_46      CSCDR1 = 0x2D << 0  //  Divide by 46
-	DIVIDE_47      CSCDR1 = 0x2E << 0  //  Divide by 47
-	DIVIDE_48      CSCDR1 = 0x2F << 0  //  Divide by 48
-	DIVIDE_49      CSCDR1 = 0x30 << 0  //  Divide by 49
-	DIVIDE_50      CSCDR1 = 0x31 << 0  //  Divide by 50
-	DIVIDE_51      CSCDR1 = 0x32 << 0  //  Divide by 51
-	DIVIDE_52      CSCDR1 = 0x33 << 0  //  Divide by 52
-	DIVIDE_53      CSCDR1 = 0x34 << 0  //  Divide by 53
-	DIVIDE_54      CSCDR1 = 0x35 << 0  //  Divide by 54
-	DIVIDE_55      CSCDR1 = 0x36 << 0  //  Divide by 55
-	DIVIDE_56      CSCDR1 = 0x37 << 0  //  Divide by 56
-	DIVIDE_57      CSCDR1 = 0x38 << 0  //  Divide by 57
-	DIVIDE_58      CSCDR1 = 0x39 << 0  //  Divide by 58
-	DIVIDE_59      CSCDR1 = 0x3A << 0  //  Divide by 59
-	DIVIDE_60      CSCDR1 = 0x3B << 0  //  Divide by 60
-	DIVIDE_61      CSCDR1 = 0x3C << 0  //  Divide by 61
-	DIVIDE_62      CSCDR1 = 0x3D << 0  //  Divide by 62
-	DIVIDE_63      CSCDR1 = 0x3E << 0  //  Divide by 63
-	DIVIDE_64      CSCDR1 = 0x3F << 0  //  Divide by 64
-	UART_CLK_SEL   CSCDR1 = 0x01 << 6  //+ Selector for the UART clock multiplexor
-	UART_CLK_SEL_0 CSCDR1 = 0x00 << 6  //  derive clock from pll3_80m
-	UART_CLK_SEL_1 CSCDR1 = 0x01 << 6  //  derive clock from osc_clk
-	USDHC1_PODF    CSCDR1 = 0x07 << 11 //+ Divider for usdhc1 clock podf. Divider should be updated when output clock is gated.
-	USDHC1_PODF_0  CSCDR1 = 0x00 << 11 //  divide by 1
-	USDHC1_PODF_1  CSCDR1 = 0x01 << 11 //  divide by 2
-	USDHC1_PODF_2  CSCDR1 = 0x02 << 11 //  divide by 3
-	USDHC1_PODF_3  CSCDR1 = 0x03 << 11 //  divide by 4
-	USDHC1_PODF_4  CSCDR1 = 0x04 << 11 //  divide by 5
-	USDHC1_PODF_5  CSCDR1 = 0x05 << 11 //  divide by 6
-	USDHC1_PODF_6  CSCDR1 = 0x06 << 11 //  divide by 7
-	USDHC1_PODF_7  CSCDR1 = 0x07 << 11 //  divide by 8
-	USDHC2_PODF    CSCDR1 = 0x07 << 16 //+ Divider for usdhc2 clock. Divider should be updated when output clock is gated.
-	USDHC2_PODF_0  CSCDR1 = 0x00 << 16 //  divide by 1
-	USDHC2_PODF_1  CSCDR1 = 0x01 << 16 //  divide by 2
-	USDHC2_PODF_2  CSCDR1 = 0x02 << 16 //  divide by 3
-	USDHC2_PODF_3  CSCDR1 = 0x03 << 16 //  divide by 4
-	USDHC2_PODF_4  CSCDR1 = 0x04 << 16 //  divide by 5
-	USDHC2_PODF_5  CSCDR1 = 0x05 << 16 //  divide by 6
-	USDHC2_PODF_6  CSCDR1 = 0x06 << 16 //  divide by 7
-	USDHC2_PODF_7  CSCDR1 = 0x07 << 16 //  divide by 8
-	TRACE_PODF     CSCDR1 = 0x03 << 25 //+ Divider for trace clock. Divider should be updated when output clock is gated.
-	TRACE_PODF_0   CSCDR1 = 0x00 << 25 //  divide by 1
-	TRACE_PODF_1   CSCDR1 = 0x01 << 25 //  divide by 2
-	TRACE_PODF_2   CSCDR1 = 0x02 << 25 //  divide by 3
-	TRACE_PODF_3   CSCDR1 = 0x03 << 25 //  divide by 4
+	UART_CLK_PODF    CSCDR1 = 0x3F << 0  //+ Divider for uart clock podf.
+	UART_CLK_PODF_1  CSCDR1 = 0x00 << 0  //  Divide by 1
+	UART_CLK_PODF_2  CSCDR1 = 0x01 << 0  //  Divide by 2
+	UART_CLK_PODF_3  CSCDR1 = 0x02 << 0  //  Divide by 3
+	UART_CLK_PODF_4  CSCDR1 = 0x03 << 0  //  Divide by 4
+	UART_CLK_PODF_5  CSCDR1 = 0x04 << 0  //  Divide by 5
+	UART_CLK_PODF_6  CSCDR1 = 0x05 << 0  //  Divide by 6
+	UART_CLK_PODF_7  CSCDR1 = 0x06 << 0  //  Divide by 7
+	UART_CLK_PODF_8  CSCDR1 = 0x07 << 0  //  Divide by 8
+	UART_CLK_PODF_9  CSCDR1 = 0x08 << 0  //  Divide by 9
+	UART_CLK_PODF_10 CSCDR1 = 0x09 << 0  //  Divide by 10
+	UART_CLK_PODF_11 CSCDR1 = 0x0A << 0  //  Divide by 11
+	UART_CLK_PODF_12 CSCDR1 = 0x0B << 0  //  Divide by 12
+	UART_CLK_PODF_13 CSCDR1 = 0x0C << 0  //  Divide by 13
+	UART_CLK_PODF_14 CSCDR1 = 0x0D << 0  //  Divide by 14
+	UART_CLK_PODF_15 CSCDR1 = 0x0E << 0  //  Divide by 15
+	UART_CLK_PODF_16 CSCDR1 = 0x0F << 0  //  Divide by 16
+	UART_CLK_PODF_17 CSCDR1 = 0x10 << 0  //  Divide by 17
+	UART_CLK_PODF_18 CSCDR1 = 0x11 << 0  //  Divide by 18
+	UART_CLK_PODF_19 CSCDR1 = 0x12 << 0  //  Divide by 19
+	UART_CLK_PODF_20 CSCDR1 = 0x13 << 0  //  Divide by 20
+	UART_CLK_PODF_21 CSCDR1 = 0x14 << 0  //  Divide by 21
+	UART_CLK_PODF_22 CSCDR1 = 0x15 << 0  //  Divide by 22
+	UART_CLK_PODF_23 CSCDR1 = 0x16 << 0  //  Divide by 23
+	UART_CLK_PODF_24 CSCDR1 = 0x17 << 0  //  Divide by 24
+	UART_CLK_PODF_25 CSCDR1 = 0x18 << 0  //  Divide by 25
+	UART_CLK_PODF_26 CSCDR1 = 0x19 << 0  //  Divide by 26
+	UART_CLK_PODF_27 CSCDR1 = 0x1A << 0  //  Divide by 27
+	UART_CLK_PODF_28 CSCDR1 = 0x1B << 0  //  Divide by 28
+	UART_CLK_PODF_29 CSCDR1 = 0x1C << 0  //  Divide by 29
+	UART_CLK_PODF_30 CSCDR1 = 0x1D << 0  //  Divide by 30
+	UART_CLK_PODF_31 CSCDR1 = 0x1E << 0  //  Divide by 31
+	UART_CLK_PODF_32 CSCDR1 = 0x1F << 0  //  Divide by 32
+	UART_CLK_PODF_33 CSCDR1 = 0x20 << 0  //  Divide by 33
+	UART_CLK_PODF_34 CSCDR1 = 0x21 << 0  //  Divide by 34
+	UART_CLK_PODF_35 CSCDR1 = 0x22 << 0  //  Divide by 35
+	UART_CLK_PODF_36 CSCDR1 = 0x23 << 0  //  Divide by 36
+	UART_CLK_PODF_37 CSCDR1 = 0x24 << 0  //  Divide by 37
+	UART_CLK_PODF_38 CSCDR1 = 0x25 << 0  //  Divide by 38
+	UART_CLK_PODF_39 CSCDR1 = 0x26 << 0  //  Divide by 39
+	UART_CLK_PODF_40 CSCDR1 = 0x27 << 0  //  Divide by 40
+	UART_CLK_PODF_41 CSCDR1 = 0x28 << 0  //  Divide by 41
+	UART_CLK_PODF_42 CSCDR1 = 0x29 << 0  //  Divide by 42
+	UART_CLK_PODF_43 CSCDR1 = 0x2A << 0  //  Divide by 43
+	UART_CLK_PODF_44 CSCDR1 = 0x2B << 0  //  Divide by 44
+	UART_CLK_PODF_45 CSCDR1 = 0x2C << 0  //  Divide by 45
+	UART_CLK_PODF_46 CSCDR1 = 0x2D << 0  //  Divide by 46
+	UART_CLK_PODF_47 CSCDR1 = 0x2E << 0  //  Divide by 47
+	UART_CLK_PODF_48 CSCDR1 = 0x2F << 0  //  Divide by 48
+	UART_CLK_PODF_49 CSCDR1 = 0x30 << 0  //  Divide by 49
+	UART_CLK_PODF_50 CSCDR1 = 0x31 << 0  //  Divide by 50
+	UART_CLK_PODF_51 CSCDR1 = 0x32 << 0  //  Divide by 51
+	UART_CLK_PODF_52 CSCDR1 = 0x33 << 0  //  Divide by 52
+	UART_CLK_PODF_53 CSCDR1 = 0x34 << 0  //  Divide by 53
+	UART_CLK_PODF_54 CSCDR1 = 0x35 << 0  //  Divide by 54
+	UART_CLK_PODF_55 CSCDR1 = 0x36 << 0  //  Divide by 55
+	UART_CLK_PODF_56 CSCDR1 = 0x37 << 0  //  Divide by 56
+	UART_CLK_PODF_57 CSCDR1 = 0x38 << 0  //  Divide by 57
+	UART_CLK_PODF_58 CSCDR1 = 0x39 << 0  //  Divide by 58
+	UART_CLK_PODF_59 CSCDR1 = 0x3A << 0  //  Divide by 59
+	UART_CLK_PODF_60 CSCDR1 = 0x3B << 0  //  Divide by 60
+	UART_CLK_PODF_61 CSCDR1 = 0x3C << 0  //  Divide by 61
+	UART_CLK_PODF_62 CSCDR1 = 0x3D << 0  //  Divide by 62
+	UART_CLK_PODF_63 CSCDR1 = 0x3E << 0  //  Divide by 63
+	UART_CLK_PODF_64 CSCDR1 = 0x3F << 0  //  Divide by 64
+	UART_CLK_SEL     CSCDR1 = 0x01 << 6  //+ Selector for the UART clock multiplexor
+	USDHC1_PODF      CSCDR1 = 0x07 << 11 //+ Divider for usdhc1 clock podf. Divider should be updated when output clock is gated.
+	USDHC1_PODF_0    CSCDR1 = 0x00 << 11 //  divide by 1
+	USDHC1_PODF_1    CSCDR1 = 0x01 << 11 //  divide by 2
+	USDHC1_PODF_2    CSCDR1 = 0x02 << 11 //  divide by 3
+	USDHC1_PODF_3    CSCDR1 = 0x03 << 11 //  divide by 4
+	USDHC1_PODF_4    CSCDR1 = 0x04 << 11 //  divide by 5
+	USDHC1_PODF_5    CSCDR1 = 0x05 << 11 //  divide by 6
+	USDHC1_PODF_6    CSCDR1 = 0x06 << 11 //  divide by 7
+	USDHC1_PODF_7    CSCDR1 = 0x07 << 11 //  divide by 8
+	USDHC2_PODF      CSCDR1 = 0x07 << 16 //+ Divider for usdhc2 clock. Divider should be updated when output clock is gated.
+	USDHC2_PODF_0    CSCDR1 = 0x00 << 16 //  divide by 1
+	USDHC2_PODF_1    CSCDR1 = 0x01 << 16 //  divide by 2
+	USDHC2_PODF_2    CSCDR1 = 0x02 << 16 //  divide by 3
+	USDHC2_PODF_3    CSCDR1 = 0x03 << 16 //  divide by 4
+	USDHC2_PODF_4    CSCDR1 = 0x04 << 16 //  divide by 5
+	USDHC2_PODF_5    CSCDR1 = 0x05 << 16 //  divide by 6
+	USDHC2_PODF_6    CSCDR1 = 0x06 << 16 //  divide by 7
+	USDHC2_PODF_7    CSCDR1 = 0x07 << 16 //  divide by 8
+	TRACE_PODF       CSCDR1 = 0x03 << 25 //+ Divider for trace clock. Divider should be updated when output clock is gated.
+	TRACE_PODF_0     CSCDR1 = 0x00 << 25 //  divide by 1
+	TRACE_PODF_1     CSCDR1 = 0x01 << 25 //  divide by 2
+	TRACE_PODF_2     CSCDR1 = 0x02 << 25 //  divide by 3
+	TRACE_PODF_3     CSCDR1 = 0x03 << 25 //  divide by 4
 )
 
 const (
@@ -527,70 +501,70 @@ const (
 
 const (
 	SAI1_CLK_PODF      CS1CDR = 0x3F << 0  //+ Divider for sai1 clock podf. The input clock to this divider should be lower than 300Mhz, the predivider can be used to achieve this.
-	DIVIDE_1           CS1CDR = 0x00 << 0  //  Divide by 1
-	DIVIDE_2           CS1CDR = 0x01 << 0  //  Divide by 2
-	DIVIDE_3           CS1CDR = 0x02 << 0  //  Divide by 3
-	DIVIDE_4           CS1CDR = 0x03 << 0  //  Divide by 4
-	DIVIDE_5           CS1CDR = 0x04 << 0  //  Divide by 5
-	DIVIDE_6           CS1CDR = 0x05 << 0  //  Divide by 6
-	DIVIDE_7           CS1CDR = 0x06 << 0  //  Divide by 7
-	DIVIDE_8           CS1CDR = 0x07 << 0  //  Divide by 8
-	DIVIDE_9           CS1CDR = 0x08 << 0  //  Divide by 9
-	DIVIDE_10          CS1CDR = 0x09 << 0  //  Divide by 10
-	DIVIDE_11          CS1CDR = 0x0A << 0  //  Divide by 11
-	DIVIDE_12          CS1CDR = 0x0B << 0  //  Divide by 12
-	DIVIDE_13          CS1CDR = 0x0C << 0  //  Divide by 13
-	DIVIDE_14          CS1CDR = 0x0D << 0  //  Divide by 14
-	DIVIDE_15          CS1CDR = 0x0E << 0  //  Divide by 15
-	DIVIDE_16          CS1CDR = 0x0F << 0  //  Divide by 16
-	DIVIDE_17          CS1CDR = 0x10 << 0  //  Divide by 17
-	DIVIDE_18          CS1CDR = 0x11 << 0  //  Divide by 18
-	DIVIDE_19          CS1CDR = 0x12 << 0  //  Divide by 19
-	DIVIDE_20          CS1CDR = 0x13 << 0  //  Divide by 20
-	DIVIDE_21          CS1CDR = 0x14 << 0  //  Divide by 21
-	DIVIDE_22          CS1CDR = 0x15 << 0  //  Divide by 22
-	DIVIDE_23          CS1CDR = 0x16 << 0  //  Divide by 23
-	DIVIDE_24          CS1CDR = 0x17 << 0  //  Divide by 24
-	DIVIDE_25          CS1CDR = 0x18 << 0  //  Divide by 25
-	DIVIDE_26          CS1CDR = 0x19 << 0  //  Divide by 26
-	DIVIDE_27          CS1CDR = 0x1A << 0  //  Divide by 27
-	DIVIDE_28          CS1CDR = 0x1B << 0  //  Divide by 28
-	DIVIDE_29          CS1CDR = 0x1C << 0  //  Divide by 29
-	DIVIDE_30          CS1CDR = 0x1D << 0  //  Divide by 30
-	DIVIDE_31          CS1CDR = 0x1E << 0  //  Divide by 31
-	DIVIDE_32          CS1CDR = 0x1F << 0  //  Divide by 32
-	DIVIDE_33          CS1CDR = 0x20 << 0  //  Divide by 33
-	DIVIDE_34          CS1CDR = 0x21 << 0  //  Divide by 34
-	DIVIDE_35          CS1CDR = 0x22 << 0  //  Divide by 35
-	DIVIDE_36          CS1CDR = 0x23 << 0  //  Divide by 36
-	DIVIDE_37          CS1CDR = 0x24 << 0  //  Divide by 37
-	DIVIDE_38          CS1CDR = 0x25 << 0  //  Divide by 38
-	DIVIDE_39          CS1CDR = 0x26 << 0  //  Divide by 39
-	DIVIDE_40          CS1CDR = 0x27 << 0  //  Divide by 40
-	DIVIDE_41          CS1CDR = 0x28 << 0  //  Divide by 41
-	DIVIDE_42          CS1CDR = 0x29 << 0  //  Divide by 42
-	DIVIDE_43          CS1CDR = 0x2A << 0  //  Divide by 43
-	DIVIDE_44          CS1CDR = 0x2B << 0  //  Divide by 44
-	DIVIDE_45          CS1CDR = 0x2C << 0  //  Divide by 45
-	DIVIDE_46          CS1CDR = 0x2D << 0  //  Divide by 46
-	DIVIDE_47          CS1CDR = 0x2E << 0  //  Divide by 47
-	DIVIDE_48          CS1CDR = 0x2F << 0  //  Divide by 48
-	DIVIDE_49          CS1CDR = 0x30 << 0  //  Divide by 49
-	DIVIDE_50          CS1CDR = 0x31 << 0  //  Divide by 50
-	DIVIDE_51          CS1CDR = 0x32 << 0  //  Divide by 51
-	DIVIDE_52          CS1CDR = 0x33 << 0  //  Divide by 52
-	DIVIDE_53          CS1CDR = 0x34 << 0  //  Divide by 53
-	DIVIDE_54          CS1CDR = 0x35 << 0  //  Divide by 54
-	DIVIDE_55          CS1CDR = 0x36 << 0  //  Divide by 55
-	DIVIDE_56          CS1CDR = 0x37 << 0  //  Divide by 56
-	DIVIDE_57          CS1CDR = 0x38 << 0  //  Divide by 57
-	DIVIDE_58          CS1CDR = 0x39 << 0  //  Divide by 58
-	DIVIDE_59          CS1CDR = 0x3A << 0  //  Divide by 59
-	DIVIDE_60          CS1CDR = 0x3B << 0  //  Divide by 60
-	DIVIDE_61          CS1CDR = 0x3C << 0  //  Divide by 61
-	DIVIDE_62          CS1CDR = 0x3D << 0  //  Divide by 62
-	DIVIDE_63          CS1CDR = 0x3E << 0  //  Divide by 63
-	DIVIDE_64          CS1CDR = 0x3F << 0  //  Divide by 64
+	SAI1_CLK_PODF_1    CS1CDR = 0x00 << 0  //  Divide by 1
+	SAI1_CLK_PODF_2    CS1CDR = 0x01 << 0  //  Divide by 2
+	SAI1_CLK_PODF_3    CS1CDR = 0x02 << 0  //  Divide by 3
+	SAI1_CLK_PODF_4    CS1CDR = 0x03 << 0  //  Divide by 4
+	SAI1_CLK_PODF_5    CS1CDR = 0x04 << 0  //  Divide by 5
+	SAI1_CLK_PODF_6    CS1CDR = 0x05 << 0  //  Divide by 6
+	SAI1_CLK_PODF_7    CS1CDR = 0x06 << 0  //  Divide by 7
+	SAI1_CLK_PODF_8    CS1CDR = 0x07 << 0  //  Divide by 8
+	SAI1_CLK_PODF_9    CS1CDR = 0x08 << 0  //  Divide by 9
+	SAI1_CLK_PODF_10   CS1CDR = 0x09 << 0  //  Divide by 10
+	SAI1_CLK_PODF_11   CS1CDR = 0x0A << 0  //  Divide by 11
+	SAI1_CLK_PODF_12   CS1CDR = 0x0B << 0  //  Divide by 12
+	SAI1_CLK_PODF_13   CS1CDR = 0x0C << 0  //  Divide by 13
+	SAI1_CLK_PODF_14   CS1CDR = 0x0D << 0  //  Divide by 14
+	SAI1_CLK_PODF_15   CS1CDR = 0x0E << 0  //  Divide by 15
+	SAI1_CLK_PODF_16   CS1CDR = 0x0F << 0  //  Divide by 16
+	SAI1_CLK_PODF_17   CS1CDR = 0x10 << 0  //  Divide by 17
+	SAI1_CLK_PODF_18   CS1CDR = 0x11 << 0  //  Divide by 18
+	SAI1_CLK_PODF_19   CS1CDR = 0x12 << 0  //  Divide by 19
+	SAI1_CLK_PODF_20   CS1CDR = 0x13 << 0  //  Divide by 20
+	SAI1_CLK_PODF_21   CS1CDR = 0x14 << 0  //  Divide by 21
+	SAI1_CLK_PODF_22   CS1CDR = 0x15 << 0  //  Divide by 22
+	SAI1_CLK_PODF_23   CS1CDR = 0x16 << 0  //  Divide by 23
+	SAI1_CLK_PODF_24   CS1CDR = 0x17 << 0  //  Divide by 24
+	SAI1_CLK_PODF_25   CS1CDR = 0x18 << 0  //  Divide by 25
+	SAI1_CLK_PODF_26   CS1CDR = 0x19 << 0  //  Divide by 26
+	SAI1_CLK_PODF_27   CS1CDR = 0x1A << 0  //  Divide by 27
+	SAI1_CLK_PODF_28   CS1CDR = 0x1B << 0  //  Divide by 28
+	SAI1_CLK_PODF_29   CS1CDR = 0x1C << 0  //  Divide by 29
+	SAI1_CLK_PODF_30   CS1CDR = 0x1D << 0  //  Divide by 30
+	SAI1_CLK_PODF_31   CS1CDR = 0x1E << 0  //  Divide by 31
+	SAI1_CLK_PODF_32   CS1CDR = 0x1F << 0  //  Divide by 32
+	SAI1_CLK_PODF_33   CS1CDR = 0x20 << 0  //  Divide by 33
+	SAI1_CLK_PODF_34   CS1CDR = 0x21 << 0  //  Divide by 34
+	SAI1_CLK_PODF_35   CS1CDR = 0x22 << 0  //  Divide by 35
+	SAI1_CLK_PODF_36   CS1CDR = 0x23 << 0  //  Divide by 36
+	SAI1_CLK_PODF_37   CS1CDR = 0x24 << 0  //  Divide by 37
+	SAI1_CLK_PODF_38   CS1CDR = 0x25 << 0  //  Divide by 38
+	SAI1_CLK_PODF_39   CS1CDR = 0x26 << 0  //  Divide by 39
+	SAI1_CLK_PODF_40   CS1CDR = 0x27 << 0  //  Divide by 40
+	SAI1_CLK_PODF_41   CS1CDR = 0x28 << 0  //  Divide by 41
+	SAI1_CLK_PODF_42   CS1CDR = 0x29 << 0  //  Divide by 42
+	SAI1_CLK_PODF_43   CS1CDR = 0x2A << 0  //  Divide by 43
+	SAI1_CLK_PODF_44   CS1CDR = 0x2B << 0  //  Divide by 44
+	SAI1_CLK_PODF_45   CS1CDR = 0x2C << 0  //  Divide by 45
+	SAI1_CLK_PODF_46   CS1CDR = 0x2D << 0  //  Divide by 46
+	SAI1_CLK_PODF_47   CS1CDR = 0x2E << 0  //  Divide by 47
+	SAI1_CLK_PODF_48   CS1CDR = 0x2F << 0  //  Divide by 48
+	SAI1_CLK_PODF_49   CS1CDR = 0x30 << 0  //  Divide by 49
+	SAI1_CLK_PODF_50   CS1CDR = 0x31 << 0  //  Divide by 50
+	SAI1_CLK_PODF_51   CS1CDR = 0x32 << 0  //  Divide by 51
+	SAI1_CLK_PODF_52   CS1CDR = 0x33 << 0  //  Divide by 52
+	SAI1_CLK_PODF_53   CS1CDR = 0x34 << 0  //  Divide by 53
+	SAI1_CLK_PODF_54   CS1CDR = 0x35 << 0  //  Divide by 54
+	SAI1_CLK_PODF_55   CS1CDR = 0x36 << 0  //  Divide by 55
+	SAI1_CLK_PODF_56   CS1CDR = 0x37 << 0  //  Divide by 56
+	SAI1_CLK_PODF_57   CS1CDR = 0x38 << 0  //  Divide by 57
+	SAI1_CLK_PODF_58   CS1CDR = 0x39 << 0  //  Divide by 58
+	SAI1_CLK_PODF_59   CS1CDR = 0x3A << 0  //  Divide by 59
+	SAI1_CLK_PODF_60   CS1CDR = 0x3B << 0  //  Divide by 60
+	SAI1_CLK_PODF_61   CS1CDR = 0x3C << 0  //  Divide by 61
+	SAI1_CLK_PODF_62   CS1CDR = 0x3D << 0  //  Divide by 62
+	SAI1_CLK_PODF_63   CS1CDR = 0x3E << 0  //  Divide by 63
+	SAI1_CLK_PODF_64   CS1CDR = 0x3F << 0  //  Divide by 64
 	SAI1_CLK_PRED      CS1CDR = 0x07 << 6  //+ Divider for sai1 clock pred.
 	SAI1_CLK_PRED_0    CS1CDR = 0x00 << 6  //  divide by 1
 	SAI1_CLK_PRED_1    CS1CDR = 0x01 << 6  //  divide by 2
@@ -610,70 +584,70 @@ const (
 	FLEXIO2_CLK_PRED_6 CS1CDR = 0x06 << 9  //  divide by 7
 	FLEXIO2_CLK_PRED_7 CS1CDR = 0x07 << 9  //  divide by 8
 	SAI3_CLK_PODF      CS1CDR = 0x3F << 16 //+ Divider for sai3 clock podf. The input clock to this divider should be lower than 300Mhz, the predivider can be used to achieve this.
-	DIVIDE_1           CS1CDR = 0x00 << 16 //  Divide by 1
-	DIVIDE_2           CS1CDR = 0x01 << 16 //  Divide by 2
-	DIVIDE_3           CS1CDR = 0x02 << 16 //  Divide by 3
-	DIVIDE_4           CS1CDR = 0x03 << 16 //  Divide by 4
-	DIVIDE_5           CS1CDR = 0x04 << 16 //  Divide by 5
-	DIVIDE_6           CS1CDR = 0x05 << 16 //  Divide by 6
-	DIVIDE_7           CS1CDR = 0x06 << 16 //  Divide by 7
-	DIVIDE_8           CS1CDR = 0x07 << 16 //  Divide by 8
-	DIVIDE_9           CS1CDR = 0x08 << 16 //  Divide by 9
-	DIVIDE_10          CS1CDR = 0x09 << 16 //  Divide by 10
-	DIVIDE_11          CS1CDR = 0x0A << 16 //  Divide by 11
-	DIVIDE_12          CS1CDR = 0x0B << 16 //  Divide by 12
-	DIVIDE_13          CS1CDR = 0x0C << 16 //  Divide by 13
-	DIVIDE_14          CS1CDR = 0x0D << 16 //  Divide by 14
-	DIVIDE_15          CS1CDR = 0x0E << 16 //  Divide by 15
-	DIVIDE_16          CS1CDR = 0x0F << 16 //  Divide by 16
-	DIVIDE_17          CS1CDR = 0x10 << 16 //  Divide by 17
-	DIVIDE_18          CS1CDR = 0x11 << 16 //  Divide by 18
-	DIVIDE_19          CS1CDR = 0x12 << 16 //  Divide by 19
-	DIVIDE_20          CS1CDR = 0x13 << 16 //  Divide by 20
-	DIVIDE_21          CS1CDR = 0x14 << 16 //  Divide by 21
-	DIVIDE_22          CS1CDR = 0x15 << 16 //  Divide by 22
-	DIVIDE_23          CS1CDR = 0x16 << 16 //  Divide by 23
-	DIVIDE_24          CS1CDR = 0x17 << 16 //  Divide by 24
-	DIVIDE_25          CS1CDR = 0x18 << 16 //  Divide by 25
-	DIVIDE_26          CS1CDR = 0x19 << 16 //  Divide by 26
-	DIVIDE_27          CS1CDR = 0x1A << 16 //  Divide by 27
-	DIVIDE_28          CS1CDR = 0x1B << 16 //  Divide by 28
-	DIVIDE_29          CS1CDR = 0x1C << 16 //  Divide by 29
-	DIVIDE_30          CS1CDR = 0x1D << 16 //  Divide by 30
-	DIVIDE_31          CS1CDR = 0x1E << 16 //  Divide by 31
-	DIVIDE_32          CS1CDR = 0x1F << 16 //  Divide by 32
-	DIVIDE_33          CS1CDR = 0x20 << 16 //  Divide by 33
-	DIVIDE_34          CS1CDR = 0x21 << 16 //  Divide by 34
-	DIVIDE_35          CS1CDR = 0x22 << 16 //  Divide by 35
-	DIVIDE_36          CS1CDR = 0x23 << 16 //  Divide by 36
-	DIVIDE_37          CS1CDR = 0x24 << 16 //  Divide by 37
-	DIVIDE_38          CS1CDR = 0x25 << 16 //  Divide by 38
-	DIVIDE_39          CS1CDR = 0x26 << 16 //  Divide by 39
-	DIVIDE_40          CS1CDR = 0x27 << 16 //  Divide by 40
-	DIVIDE_41          CS1CDR = 0x28 << 16 //  Divide by 41
-	DIVIDE_42          CS1CDR = 0x29 << 16 //  Divide by 42
-	DIVIDE_43          CS1CDR = 0x2A << 16 //  Divide by 43
-	DIVIDE_44          CS1CDR = 0x2B << 16 //  Divide by 44
-	DIVIDE_45          CS1CDR = 0x2C << 16 //  Divide by 45
-	DIVIDE_46          CS1CDR = 0x2D << 16 //  Divide by 46
-	DIVIDE_47          CS1CDR = 0x2E << 16 //  Divide by 47
-	DIVIDE_48          CS1CDR = 0x2F << 16 //  Divide by 48
-	DIVIDE_49          CS1CDR = 0x30 << 16 //  Divide by 49
-	DIVIDE_50          CS1CDR = 0x31 << 16 //  Divide by 50
-	DIVIDE_51          CS1CDR = 0x32 << 16 //  Divide by 51
-	DIVIDE_52          CS1CDR = 0x33 << 16 //  Divide by 52
-	DIVIDE_53          CS1CDR = 0x34 << 16 //  Divide by 53
-	DIVIDE_54          CS1CDR = 0x35 << 16 //  Divide by 54
-	DIVIDE_55          CS1CDR = 0x36 << 16 //  Divide by 55
-	DIVIDE_56          CS1CDR = 0x37 << 16 //  Divide by 56
-	DIVIDE_57          CS1CDR = 0x38 << 16 //  Divide by 57
-	DIVIDE_58          CS1CDR = 0x39 << 16 //  Divide by 58
-	DIVIDE_59          CS1CDR = 0x3A << 16 //  Divide by 59
-	DIVIDE_60          CS1CDR = 0x3B << 16 //  Divide by 60
-	DIVIDE_61          CS1CDR = 0x3C << 16 //  Divide by 61
-	DIVIDE_62          CS1CDR = 0x3D << 16 //  Divide by 62
-	DIVIDE_63          CS1CDR = 0x3E << 16 //  Divide by 63
-	DIVIDE_64          CS1CDR = 0x3F << 16 //  Divide by 64
+	SAI3_CLK_PODF_1    CS1CDR = 0x00 << 16 //  Divide by 1
+	SAI3_CLK_PODF_2    CS1CDR = 0x01 << 16 //  Divide by 2
+	SAI3_CLK_PODF_3    CS1CDR = 0x02 << 16 //  Divide by 3
+	SAI3_CLK_PODF_4    CS1CDR = 0x03 << 16 //  Divide by 4
+	SAI3_CLK_PODF_5    CS1CDR = 0x04 << 16 //  Divide by 5
+	SAI3_CLK_PODF_6    CS1CDR = 0x05 << 16 //  Divide by 6
+	SAI3_CLK_PODF_7    CS1CDR = 0x06 << 16 //  Divide by 7
+	SAI3_CLK_PODF_8    CS1CDR = 0x07 << 16 //  Divide by 8
+	SAI3_CLK_PODF_9    CS1CDR = 0x08 << 16 //  Divide by 9
+	SAI3_CLK_PODF_10   CS1CDR = 0x09 << 16 //  Divide by 10
+	SAI3_CLK_PODF_11   CS1CDR = 0x0A << 16 //  Divide by 11
+	SAI3_CLK_PODF_12   CS1CDR = 0x0B << 16 //  Divide by 12
+	SAI3_CLK_PODF_13   CS1CDR = 0x0C << 16 //  Divide by 13
+	SAI3_CLK_PODF_14   CS1CDR = 0x0D << 16 //  Divide by 14
+	SAI3_CLK_PODF_15   CS1CDR = 0x0E << 16 //  Divide by 15
+	SAI3_CLK_PODF_16   CS1CDR = 0x0F << 16 //  Divide by 16
+	SAI3_CLK_PODF_17   CS1CDR = 0x10 << 16 //  Divide by 17
+	SAI3_CLK_PODF_18   CS1CDR = 0x11 << 16 //  Divide by 18
+	SAI3_CLK_PODF_19   CS1CDR = 0x12 << 16 //  Divide by 19
+	SAI3_CLK_PODF_20   CS1CDR = 0x13 << 16 //  Divide by 20
+	SAI3_CLK_PODF_21   CS1CDR = 0x14 << 16 //  Divide by 21
+	SAI3_CLK_PODF_22   CS1CDR = 0x15 << 16 //  Divide by 22
+	SAI3_CLK_PODF_23   CS1CDR = 0x16 << 16 //  Divide by 23
+	SAI3_CLK_PODF_24   CS1CDR = 0x17 << 16 //  Divide by 24
+	SAI3_CLK_PODF_25   CS1CDR = 0x18 << 16 //  Divide by 25
+	SAI3_CLK_PODF_26   CS1CDR = 0x19 << 16 //  Divide by 26
+	SAI3_CLK_PODF_27   CS1CDR = 0x1A << 16 //  Divide by 27
+	SAI3_CLK_PODF_28   CS1CDR = 0x1B << 16 //  Divide by 28
+	SAI3_CLK_PODF_29   CS1CDR = 0x1C << 16 //  Divide by 29
+	SAI3_CLK_PODF_30   CS1CDR = 0x1D << 16 //  Divide by 30
+	SAI3_CLK_PODF_31   CS1CDR = 0x1E << 16 //  Divide by 31
+	SAI3_CLK_PODF_32   CS1CDR = 0x1F << 16 //  Divide by 32
+	SAI3_CLK_PODF_33   CS1CDR = 0x20 << 16 //  Divide by 33
+	SAI3_CLK_PODF_34   CS1CDR = 0x21 << 16 //  Divide by 34
+	SAI3_CLK_PODF_35   CS1CDR = 0x22 << 16 //  Divide by 35
+	SAI3_CLK_PODF_36   CS1CDR = 0x23 << 16 //  Divide by 36
+	SAI3_CLK_PODF_37   CS1CDR = 0x24 << 16 //  Divide by 37
+	SAI3_CLK_PODF_38   CS1CDR = 0x25 << 16 //  Divide by 38
+	SAI3_CLK_PODF_39   CS1CDR = 0x26 << 16 //  Divide by 39
+	SAI3_CLK_PODF_40   CS1CDR = 0x27 << 16 //  Divide by 40
+	SAI3_CLK_PODF_41   CS1CDR = 0x28 << 16 //  Divide by 41
+	SAI3_CLK_PODF_42   CS1CDR = 0x29 << 16 //  Divide by 42
+	SAI3_CLK_PODF_43   CS1CDR = 0x2A << 16 //  Divide by 43
+	SAI3_CLK_PODF_44   CS1CDR = 0x2B << 16 //  Divide by 44
+	SAI3_CLK_PODF_45   CS1CDR = 0x2C << 16 //  Divide by 45
+	SAI3_CLK_PODF_46   CS1CDR = 0x2D << 16 //  Divide by 46
+	SAI3_CLK_PODF_47   CS1CDR = 0x2E << 16 //  Divide by 47
+	SAI3_CLK_PODF_48   CS1CDR = 0x2F << 16 //  Divide by 48
+	SAI3_CLK_PODF_49   CS1CDR = 0x30 << 16 //  Divide by 49
+	SAI3_CLK_PODF_50   CS1CDR = 0x31 << 16 //  Divide by 50
+	SAI3_CLK_PODF_51   CS1CDR = 0x32 << 16 //  Divide by 51
+	SAI3_CLK_PODF_52   CS1CDR = 0x33 << 16 //  Divide by 52
+	SAI3_CLK_PODF_53   CS1CDR = 0x34 << 16 //  Divide by 53
+	SAI3_CLK_PODF_54   CS1CDR = 0x35 << 16 //  Divide by 54
+	SAI3_CLK_PODF_55   CS1CDR = 0x36 << 16 //  Divide by 55
+	SAI3_CLK_PODF_56   CS1CDR = 0x37 << 16 //  Divide by 56
+	SAI3_CLK_PODF_57   CS1CDR = 0x38 << 16 //  Divide by 57
+	SAI3_CLK_PODF_58   CS1CDR = 0x39 << 16 //  Divide by 58
+	SAI3_CLK_PODF_59   CS1CDR = 0x3A << 16 //  Divide by 59
+	SAI3_CLK_PODF_60   CS1CDR = 0x3B << 16 //  Divide by 60
+	SAI3_CLK_PODF_61   CS1CDR = 0x3C << 16 //  Divide by 61
+	SAI3_CLK_PODF_62   CS1CDR = 0x3D << 16 //  Divide by 62
+	SAI3_CLK_PODF_63   CS1CDR = 0x3E << 16 //  Divide by 63
+	SAI3_CLK_PODF_64   CS1CDR = 0x3F << 16 //  Divide by 64
 	SAI3_CLK_PRED      CS1CDR = 0x07 << 22 //+ Divider for sai3/adc1/adc2 clock pred.
 	SAI3_CLK_PRED_0    CS1CDR = 0x00 << 22 //  divide by 1
 	SAI3_CLK_PRED_1    CS1CDR = 0x01 << 22 //  divide by 2
@@ -684,14 +658,14 @@ const (
 	SAI3_CLK_PRED_6    CS1CDR = 0x06 << 22 //  divide by 7
 	SAI3_CLK_PRED_7    CS1CDR = 0x07 << 22 //  divide by 8
 	FLEXIO2_CLK_PODF   CS1CDR = 0x07 << 25 //+ Divider for flexio2/flexio3 clock. Divider should be updated when output clock is gated.
-	DIVIDE_1           CS1CDR = 0x00 << 25 //  Divide by 1
-	DIVIDE_2           CS1CDR = 0x01 << 25 //  Divide by 2
-	DIVIDE_3           CS1CDR = 0x02 << 25 //  Divide by 3
-	DIVIDE_4           CS1CDR = 0x03 << 25 //  Divide by 4
-	DIVIDE_5           CS1CDR = 0x04 << 25 //  Divide by 5
-	DIVIDE_6           CS1CDR = 0x05 << 25 //  Divide by 6
-	DIVIDE_7           CS1CDR = 0x06 << 25 //  Divide by 7
-	DIVIDE_8           CS1CDR = 0x07 << 25 //  Divide by 8
+	FLEXIO2_CLK_PODF_1 CS1CDR = 0x00 << 25 //  Divide by 1
+	FLEXIO2_CLK_PODF_2 CS1CDR = 0x01 << 25 //  Divide by 2
+	FLEXIO2_CLK_PODF_3 CS1CDR = 0x02 << 25 //  Divide by 3
+	FLEXIO2_CLK_PODF_4 CS1CDR = 0x03 << 25 //  Divide by 4
+	FLEXIO2_CLK_PODF_5 CS1CDR = 0x04 << 25 //  Divide by 5
+	FLEXIO2_CLK_PODF_6 CS1CDR = 0x05 << 25 //  Divide by 6
+	FLEXIO2_CLK_PODF_7 CS1CDR = 0x06 << 25 //  Divide by 7
+	FLEXIO2_CLK_PODF_8 CS1CDR = 0x07 << 25 //  Divide by 8
 )
 
 const (
@@ -704,80 +678,80 @@ const (
 )
 
 const (
-	SAI2_CLK_PODF   CS2CDR = 0x3F << 0 //+ Divider for sai2 clock podf. The input clock to this divider should be lower than 300Mhz, the predivider can be used to achieve this.
-	DIVIDE_1        CS2CDR = 0x00 << 0 //  Divide by 1
-	DIVIDE_2        CS2CDR = 0x01 << 0 //  Divide by 2
-	DIVIDE_3        CS2CDR = 0x02 << 0 //  Divide by 3
-	DIVIDE_4        CS2CDR = 0x03 << 0 //  Divide by 4
-	DIVIDE_5        CS2CDR = 0x04 << 0 //  Divide by 5
-	DIVIDE_6        CS2CDR = 0x05 << 0 //  Divide by 6
-	DIVIDE_7        CS2CDR = 0x06 << 0 //  Divide by 7
-	DIVIDE_8        CS2CDR = 0x07 << 0 //  Divide by 8
-	DIVIDE_9        CS2CDR = 0x08 << 0 //  Divide by 9
-	DIVIDE_10       CS2CDR = 0x09 << 0 //  Divide by 10
-	DIVIDE_11       CS2CDR = 0x0A << 0 //  Divide by 11
-	DIVIDE_12       CS2CDR = 0x0B << 0 //  Divide by 12
-	DIVIDE_13       CS2CDR = 0x0C << 0 //  Divide by 13
-	DIVIDE_14       CS2CDR = 0x0D << 0 //  Divide by 14
-	DIVIDE_15       CS2CDR = 0x0E << 0 //  Divide by 15
-	DIVIDE_16       CS2CDR = 0x0F << 0 //  Divide by 16
-	DIVIDE_17       CS2CDR = 0x10 << 0 //  Divide by 17
-	DIVIDE_18       CS2CDR = 0x11 << 0 //  Divide by 18
-	DIVIDE_19       CS2CDR = 0x12 << 0 //  Divide by 19
-	DIVIDE_20       CS2CDR = 0x13 << 0 //  Divide by 20
-	DIVIDE_21       CS2CDR = 0x14 << 0 //  Divide by 21
-	DIVIDE_22       CS2CDR = 0x15 << 0 //  Divide by 22
-	DIVIDE_23       CS2CDR = 0x16 << 0 //  Divide by 23
-	DIVIDE_24       CS2CDR = 0x17 << 0 //  Divide by 24
-	DIVIDE_25       CS2CDR = 0x18 << 0 //  Divide by 25
-	DIVIDE_26       CS2CDR = 0x19 << 0 //  Divide by 26
-	DIVIDE_27       CS2CDR = 0x1A << 0 //  Divide by 27
-	DIVIDE_28       CS2CDR = 0x1B << 0 //  Divide by 28
-	DIVIDE_29       CS2CDR = 0x1C << 0 //  Divide by 29
-	DIVIDE_30       CS2CDR = 0x1D << 0 //  Divide by 30
-	DIVIDE_31       CS2CDR = 0x1E << 0 //  Divide by 31
-	DIVIDE_32       CS2CDR = 0x1F << 0 //  Divide by 32
-	DIVIDE_33       CS2CDR = 0x20 << 0 //  Divide by 33
-	DIVIDE_34       CS2CDR = 0x21 << 0 //  Divide by 34
-	DIVIDE_35       CS2CDR = 0x22 << 0 //  Divide by 35
-	DIVIDE_36       CS2CDR = 0x23 << 0 //  Divide by 36
-	DIVIDE_37       CS2CDR = 0x24 << 0 //  Divide by 37
-	DIVIDE_38       CS2CDR = 0x25 << 0 //  Divide by 38
-	DIVIDE_39       CS2CDR = 0x26 << 0 //  Divide by 39
-	DIVIDE_40       CS2CDR = 0x27 << 0 //  Divide by 40
-	DIVIDE_41       CS2CDR = 0x28 << 0 //  Divide by 41
-	DIVIDE_42       CS2CDR = 0x29 << 0 //  Divide by 42
-	DIVIDE_43       CS2CDR = 0x2A << 0 //  Divide by 43
-	DIVIDE_44       CS2CDR = 0x2B << 0 //  Divide by 44
-	DIVIDE_45       CS2CDR = 0x2C << 0 //  Divide by 45
-	DIVIDE_46       CS2CDR = 0x2D << 0 //  Divide by 46
-	DIVIDE_47       CS2CDR = 0x2E << 0 //  Divide by 47
-	DIVIDE_48       CS2CDR = 0x2F << 0 //  Divide by 48
-	DIVIDE_49       CS2CDR = 0x30 << 0 //  Divide by 49
-	DIVIDE_50       CS2CDR = 0x31 << 0 //  Divide by 50
-	DIVIDE_51       CS2CDR = 0x32 << 0 //  Divide by 51
-	DIVIDE_52       CS2CDR = 0x33 << 0 //  Divide by 52
-	DIVIDE_53       CS2CDR = 0x34 << 0 //  Divide by 53
-	DIVIDE_54       CS2CDR = 0x35 << 0 //  Divide by 54
-	DIVIDE_55       CS2CDR = 0x36 << 0 //  Divide by 55
-	DIVIDE_56       CS2CDR = 0x37 << 0 //  Divide by 56
-	DIVIDE_57       CS2CDR = 0x38 << 0 //  Divide by 57
-	DIVIDE_58       CS2CDR = 0x39 << 0 //  Divide by 58
-	DIVIDE_59       CS2CDR = 0x3A << 0 //  Divide by 59
-	DIVIDE_60       CS2CDR = 0x3B << 0 //  Divide by 60
-	DIVIDE_61       CS2CDR = 0x3C << 0 //  Divide by 61
-	DIVIDE_62       CS2CDR = 0x3D << 0 //  Divide by 62
-	DIVIDE_63       CS2CDR = 0x3E << 0 //  Divide by 63
-	DIVIDE_64       CS2CDR = 0x3F << 0 //  Divide by 64
-	SAI2_CLK_PRED   CS2CDR = 0x07 << 6 //+ Divider for sai2 clock pred.Divider should be updated when output clock is gated.
-	SAI2_CLK_PRED_0 CS2CDR = 0x00 << 6 //  divide by 1
-	SAI2_CLK_PRED_1 CS2CDR = 0x01 << 6 //  divide by 2
-	SAI2_CLK_PRED_2 CS2CDR = 0x02 << 6 //  divide by 3
-	SAI2_CLK_PRED_3 CS2CDR = 0x03 << 6 //  divide by 4
-	SAI2_CLK_PRED_4 CS2CDR = 0x04 << 6 //  divide by 5
-	SAI2_CLK_PRED_5 CS2CDR = 0x05 << 6 //  divide by 6
-	SAI2_CLK_PRED_6 CS2CDR = 0x06 << 6 //  divide by 7
-	SAI2_CLK_PRED_7 CS2CDR = 0x07 << 6 //  divide by 8
+	SAI2_CLK_PODF    CS2CDR = 0x3F << 0 //+ Divider for sai2 clock podf. The input clock to this divider should be lower than 300Mhz, the predivider can be used to achieve this.
+	SAI2_CLK_PODF_1  CS2CDR = 0x00 << 0 //  Divide by 1
+	SAI2_CLK_PODF_2  CS2CDR = 0x01 << 0 //  Divide by 2
+	SAI2_CLK_PODF_3  CS2CDR = 0x02 << 0 //  Divide by 3
+	SAI2_CLK_PODF_4  CS2CDR = 0x03 << 0 //  Divide by 4
+	SAI2_CLK_PODF_5  CS2CDR = 0x04 << 0 //  Divide by 5
+	SAI2_CLK_PODF_6  CS2CDR = 0x05 << 0 //  Divide by 6
+	SAI2_CLK_PODF_7  CS2CDR = 0x06 << 0 //  Divide by 7
+	SAI2_CLK_PODF_8  CS2CDR = 0x07 << 0 //  Divide by 8
+	SAI2_CLK_PODF_9  CS2CDR = 0x08 << 0 //  Divide by 9
+	SAI2_CLK_PODF_10 CS2CDR = 0x09 << 0 //  Divide by 10
+	SAI2_CLK_PODF_11 CS2CDR = 0x0A << 0 //  Divide by 11
+	SAI2_CLK_PODF_12 CS2CDR = 0x0B << 0 //  Divide by 12
+	SAI2_CLK_PODF_13 CS2CDR = 0x0C << 0 //  Divide by 13
+	SAI2_CLK_PODF_14 CS2CDR = 0x0D << 0 //  Divide by 14
+	SAI2_CLK_PODF_15 CS2CDR = 0x0E << 0 //  Divide by 15
+	SAI2_CLK_PODF_16 CS2CDR = 0x0F << 0 //  Divide by 16
+	SAI2_CLK_PODF_17 CS2CDR = 0x10 << 0 //  Divide by 17
+	SAI2_CLK_PODF_18 CS2CDR = 0x11 << 0 //  Divide by 18
+	SAI2_CLK_PODF_19 CS2CDR = 0x12 << 0 //  Divide by 19
+	SAI2_CLK_PODF_20 CS2CDR = 0x13 << 0 //  Divide by 20
+	SAI2_CLK_PODF_21 CS2CDR = 0x14 << 0 //  Divide by 21
+	SAI2_CLK_PODF_22 CS2CDR = 0x15 << 0 //  Divide by 22
+	SAI2_CLK_PODF_23 CS2CDR = 0x16 << 0 //  Divide by 23
+	SAI2_CLK_PODF_24 CS2CDR = 0x17 << 0 //  Divide by 24
+	SAI2_CLK_PODF_25 CS2CDR = 0x18 << 0 //  Divide by 25
+	SAI2_CLK_PODF_26 CS2CDR = 0x19 << 0 //  Divide by 26
+	SAI2_CLK_PODF_27 CS2CDR = 0x1A << 0 //  Divide by 27
+	SAI2_CLK_PODF_28 CS2CDR = 0x1B << 0 //  Divide by 28
+	SAI2_CLK_PODF_29 CS2CDR = 0x1C << 0 //  Divide by 29
+	SAI2_CLK_PODF_30 CS2CDR = 0x1D << 0 //  Divide by 30
+	SAI2_CLK_PODF_31 CS2CDR = 0x1E << 0 //  Divide by 31
+	SAI2_CLK_PODF_32 CS2CDR = 0x1F << 0 //  Divide by 32
+	SAI2_CLK_PODF_33 CS2CDR = 0x20 << 0 //  Divide by 33
+	SAI2_CLK_PODF_34 CS2CDR = 0x21 << 0 //  Divide by 34
+	SAI2_CLK_PODF_35 CS2CDR = 0x22 << 0 //  Divide by 35
+	SAI2_CLK_PODF_36 CS2CDR = 0x23 << 0 //  Divide by 36
+	SAI2_CLK_PODF_37 CS2CDR = 0x24 << 0 //  Divide by 37
+	SAI2_CLK_PODF_38 CS2CDR = 0x25 << 0 //  Divide by 38
+	SAI2_CLK_PODF_39 CS2CDR = 0x26 << 0 //  Divide by 39
+	SAI2_CLK_PODF_40 CS2CDR = 0x27 << 0 //  Divide by 40
+	SAI2_CLK_PODF_41 CS2CDR = 0x28 << 0 //  Divide by 41
+	SAI2_CLK_PODF_42 CS2CDR = 0x29 << 0 //  Divide by 42
+	SAI2_CLK_PODF_43 CS2CDR = 0x2A << 0 //  Divide by 43
+	SAI2_CLK_PODF_44 CS2CDR = 0x2B << 0 //  Divide by 44
+	SAI2_CLK_PODF_45 CS2CDR = 0x2C << 0 //  Divide by 45
+	SAI2_CLK_PODF_46 CS2CDR = 0x2D << 0 //  Divide by 46
+	SAI2_CLK_PODF_47 CS2CDR = 0x2E << 0 //  Divide by 47
+	SAI2_CLK_PODF_48 CS2CDR = 0x2F << 0 //  Divide by 48
+	SAI2_CLK_PODF_49 CS2CDR = 0x30 << 0 //  Divide by 49
+	SAI2_CLK_PODF_50 CS2CDR = 0x31 << 0 //  Divide by 50
+	SAI2_CLK_PODF_51 CS2CDR = 0x32 << 0 //  Divide by 51
+	SAI2_CLK_PODF_52 CS2CDR = 0x33 << 0 //  Divide by 52
+	SAI2_CLK_PODF_53 CS2CDR = 0x34 << 0 //  Divide by 53
+	SAI2_CLK_PODF_54 CS2CDR = 0x35 << 0 //  Divide by 54
+	SAI2_CLK_PODF_55 CS2CDR = 0x36 << 0 //  Divide by 55
+	SAI2_CLK_PODF_56 CS2CDR = 0x37 << 0 //  Divide by 56
+	SAI2_CLK_PODF_57 CS2CDR = 0x38 << 0 //  Divide by 57
+	SAI2_CLK_PODF_58 CS2CDR = 0x39 << 0 //  Divide by 58
+	SAI2_CLK_PODF_59 CS2CDR = 0x3A << 0 //  Divide by 59
+	SAI2_CLK_PODF_60 CS2CDR = 0x3B << 0 //  Divide by 60
+	SAI2_CLK_PODF_61 CS2CDR = 0x3C << 0 //  Divide by 61
+	SAI2_CLK_PODF_62 CS2CDR = 0x3D << 0 //  Divide by 62
+	SAI2_CLK_PODF_63 CS2CDR = 0x3E << 0 //  Divide by 63
+	SAI2_CLK_PODF_64 CS2CDR = 0x3F << 0 //  Divide by 64
+	SAI2_CLK_PRED    CS2CDR = 0x07 << 6 //+ Divider for sai2 clock pred.Divider should be updated when output clock is gated.
+	SAI2_CLK_PRED_0  CS2CDR = 0x00 << 6 //  divide by 1
+	SAI2_CLK_PRED_1  CS2CDR = 0x01 << 6 //  divide by 2
+	SAI2_CLK_PRED_2  CS2CDR = 0x02 << 6 //  divide by 3
+	SAI2_CLK_PRED_3  CS2CDR = 0x03 << 6 //  divide by 4
+	SAI2_CLK_PRED_4  CS2CDR = 0x04 << 6 //  divide by 5
+	SAI2_CLK_PRED_5  CS2CDR = 0x05 << 6 //  divide by 6
+	SAI2_CLK_PRED_6  CS2CDR = 0x06 << 6 //  divide by 7
+	SAI2_CLK_PRED_7  CS2CDR = 0x07 << 6 //  divide by 8
 )
 
 const (
@@ -786,52 +760,52 @@ const (
 )
 
 const (
-	FLEXIO1_CLK_SEL   CDCDR = 0x03 << 7  //+ Selector for flexio1 clock multiplexer
-	FLEXIO1_CLK_SEL_0 CDCDR = 0x00 << 7  //  derive clock from PLL4
-	FLEXIO1_CLK_SEL_1 CDCDR = 0x01 << 7  //  derive clock from PLL3 PFD2
-	FLEXIO1_CLK_SEL_2 CDCDR = 0x02 << 7  //  derive clock from PLL5
-	FLEXIO1_CLK_SEL_3 CDCDR = 0x03 << 7  //  derive clock from pll3_sw_clk
-	FLEXIO1_CLK_PODF  CDCDR = 0x07 << 9  //+ Divider for flexio1 clock podf. Divider should be updated when output clock is gated.
-	DIVIDE_1          CDCDR = 0x00 << 9  //  Divide by 1
-	DIVIDE_2          CDCDR = 0x01 << 9  //  Divide by 2
-	DIVIDE_3          CDCDR = 0x02 << 9  //  Divide by 3
-	DIVIDE_4          CDCDR = 0x03 << 9  //  Divide by 4
-	DIVIDE_5          CDCDR = 0x04 << 9  //  Divide by 5
-	DIVIDE_6          CDCDR = 0x05 << 9  //  Divide by 6
-	DIVIDE_7          CDCDR = 0x06 << 9  //  Divide by 7
-	DIVIDE_8          CDCDR = 0x07 << 9  //  Divide by 8
-	FLEXIO1_CLK_PRED  CDCDR = 0x07 << 12 //+ Divider for flexio1 clock pred. Divider should be updated when output clock is gated.
-	DIVIDE_1          CDCDR = 0x00 << 12 //  Divide by 1
-	DIVIDE_2          CDCDR = 0x01 << 12 //  Divide by 2
-	DIVIDE_3          CDCDR = 0x02 << 12 //  Divide by 3
-	DIVIDE_4          CDCDR = 0x03 << 12 //  Divide by 4
-	DIVIDE_5          CDCDR = 0x04 << 12 //  Divide by 5
-	DIVIDE_6          CDCDR = 0x05 << 12 //  Divide by 6
-	DIVIDE_7          CDCDR = 0x06 << 12 //  Divide by 7
-	DIVIDE_8          CDCDR = 0x07 << 12 //  Divide by 8
-	SPDIF0_CLK_SEL    CDCDR = 0x03 << 20 //+ Selector for spdif0 clock multiplexer
-	SPDIF0_CLK_SEL_0  CDCDR = 0x00 << 20 //  derive clock from PLL4
-	SPDIF0_CLK_SEL_1  CDCDR = 0x01 << 20 //  derive clock from PLL3 PFD2
-	SPDIF0_CLK_SEL_2  CDCDR = 0x02 << 20 //  derive clock from PLL5
-	SPDIF0_CLK_SEL_3  CDCDR = 0x03 << 20 //  derive clock from pll3_sw_clk
-	SPDIF0_CLK_PODF   CDCDR = 0x07 << 22 //+ Divider for spdif0 clock podf. Divider should be updated when output clock is gated.
-	DIVIDE_1          CDCDR = 0x00 << 22 //  Divide by 1
-	DIVIDE_2          CDCDR = 0x01 << 22 //  Divide by 2
-	DIVIDE_3          CDCDR = 0x02 << 22 //  Divide by 3
-	DIVIDE_4          CDCDR = 0x03 << 22 //  Divide by 4
-	DIVIDE_5          CDCDR = 0x04 << 22 //  Divide by 5
-	DIVIDE_6          CDCDR = 0x05 << 22 //  Divide by 6
-	DIVIDE_7          CDCDR = 0x06 << 22 //  Divide by 7
-	DIVIDE_8          CDCDR = 0x07 << 22 //  Divide by 8
-	SPDIF0_CLK_PRED   CDCDR = 0x07 << 25 //+ Divider for spdif0 clock pred. Divider should be updated when output clock is gated.
-	DIVIDE_1          CDCDR = 0x00 << 25 //  Divide by 1
-	DIVIDE_2          CDCDR = 0x01 << 25 //  Divide by 2
-	DIVIDE_3          CDCDR = 0x02 << 25 //  Divide by 3
-	DIVIDE_4          CDCDR = 0x03 << 25 //  Divide by 4
-	DIVIDE_5          CDCDR = 0x04 << 25 //  Divide by 5
-	DIVIDE_6          CDCDR = 0x05 << 25 //  Divide by 6
-	DIVIDE_7          CDCDR = 0x06 << 25 //  Divide by 7
-	DIVIDE_8          CDCDR = 0x07 << 25 //  Divide by 8
+	FLEXIO1_CLK_SEL    CDCDR = 0x03 << 7  //+ Selector for flexio1 clock multiplexer
+	FLEXIO1_CLK_SEL_0  CDCDR = 0x00 << 7  //  derive clock from PLL4
+	FLEXIO1_CLK_SEL_1  CDCDR = 0x01 << 7  //  derive clock from PLL3 PFD2
+	FLEXIO1_CLK_SEL_2  CDCDR = 0x02 << 7  //  derive clock from PLL5
+	FLEXIO1_CLK_SEL_3  CDCDR = 0x03 << 7  //  derive clock from pll3_sw_clk
+	FLEXIO1_CLK_PODF   CDCDR = 0x07 << 9  //+ Divider for flexio1 clock podf. Divider should be updated when output clock is gated.
+	FLEXIO1_CLK_PODF_1 CDCDR = 0x00 << 9  //  Divide by 1
+	FLEXIO1_CLK_PODF_2 CDCDR = 0x01 << 9  //  Divide by 2
+	FLEXIO1_CLK_PODF_3 CDCDR = 0x02 << 9  //  Divide by 3
+	FLEXIO1_CLK_PODF_4 CDCDR = 0x03 << 9  //  Divide by 4
+	FLEXIO1_CLK_PODF_5 CDCDR = 0x04 << 9  //  Divide by 5
+	FLEXIO1_CLK_PODF_6 CDCDR = 0x05 << 9  //  Divide by 6
+	FLEXIO1_CLK_PODF_7 CDCDR = 0x06 << 9  //  Divide by 7
+	FLEXIO1_CLK_PODF_8 CDCDR = 0x07 << 9  //  Divide by 8
+	FLEXIO1_CLK_PRED   CDCDR = 0x07 << 12 //+ Divider for flexio1 clock pred. Divider should be updated when output clock is gated.
+	FLEXIO1_CLK_PRED_1 CDCDR = 0x00 << 12 //  Divide by 1
+	FLEXIO1_CLK_PRED_2 CDCDR = 0x01 << 12 //  Divide by 2
+	FLEXIO1_CLK_PRED_3 CDCDR = 0x02 << 12 //  Divide by 3
+	FLEXIO1_CLK_PRED_4 CDCDR = 0x03 << 12 //  Divide by 4
+	FLEXIO1_CLK_PRED_5 CDCDR = 0x04 << 12 //  Divide by 5
+	FLEXIO1_CLK_PRED_6 CDCDR = 0x05 << 12 //  Divide by 6
+	FLEXIO1_CLK_PRED_7 CDCDR = 0x06 << 12 //  Divide by 7
+	FLEXIO1_CLK_PRED_8 CDCDR = 0x07 << 12 //  Divide by 8
+	SPDIF0_CLK_SEL     CDCDR = 0x03 << 20 //+ Selector for spdif0 clock multiplexer
+	SPDIF0_CLK_SEL_0   CDCDR = 0x00 << 20 //  derive clock from PLL4
+	SPDIF0_CLK_SEL_1   CDCDR = 0x01 << 20 //  derive clock from PLL3 PFD2
+	SPDIF0_CLK_SEL_2   CDCDR = 0x02 << 20 //  derive clock from PLL5
+	SPDIF0_CLK_SEL_3   CDCDR = 0x03 << 20 //  derive clock from pll3_sw_clk
+	SPDIF0_CLK_PODF    CDCDR = 0x07 << 22 //+ Divider for spdif0 clock podf. Divider should be updated when output clock is gated.
+	SPDIF0_CLK_PODF_1  CDCDR = 0x00 << 22 //  Divide by 1
+	SPDIF0_CLK_PODF_2  CDCDR = 0x01 << 22 //  Divide by 2
+	SPDIF0_CLK_PODF_3  CDCDR = 0x02 << 22 //  Divide by 3
+	SPDIF0_CLK_PODF_4  CDCDR = 0x03 << 22 //  Divide by 4
+	SPDIF0_CLK_PODF_5  CDCDR = 0x04 << 22 //  Divide by 5
+	SPDIF0_CLK_PODF_6  CDCDR = 0x05 << 22 //  Divide by 6
+	SPDIF0_CLK_PODF_7  CDCDR = 0x06 << 22 //  Divide by 7
+	SPDIF0_CLK_PODF_8  CDCDR = 0x07 << 22 //  Divide by 8
+	SPDIF0_CLK_PRED    CDCDR = 0x07 << 25 //+ Divider for spdif0 clock pred. Divider should be updated when output clock is gated.
+	SPDIF0_CLK_PRED_1  CDCDR = 0x00 << 25 //  Divide by 1
+	SPDIF0_CLK_PRED_2  CDCDR = 0x01 << 25 //  Divide by 2
+	SPDIF0_CLK_PRED_3  CDCDR = 0x02 << 25 //  Divide by 3
+	SPDIF0_CLK_PRED_4  CDCDR = 0x03 << 25 //  Divide by 4
+	SPDIF0_CLK_PRED_5  CDCDR = 0x04 << 25 //  Divide by 5
+	SPDIF0_CLK_PRED_6  CDCDR = 0x05 << 25 //  Divide by 6
+	SPDIF0_CLK_PRED_7  CDCDR = 0x06 << 25 //  Divide by 7
+	SPDIF0_CLK_PRED_8  CDCDR = 0x07 << 25 //  Divide by 8
 )
 
 const (
@@ -861,73 +835,71 @@ const (
 	LCDIF_PRE_CLK_SEL_4 CSCDR2 = 0x04 << 15 //  derive clock from PLL2 PFD1
 	LCDIF_PRE_CLK_SEL_5 CSCDR2 = 0x05 << 15 //  derive clock from PLL3 PFD1
 	LPI2C_CLK_SEL       CSCDR2 = 0x01 << 18 //+ Selector for the LPI2C clock multiplexor
-	LPI2C_CLK_SEL_0     CSCDR2 = 0x00 << 18 //  derive clock from pll3_60m
-	LPI2C_CLK_SEL_1     CSCDR2 = 0x01 << 18 //  derive clock from osc_clk
 	LPI2C_CLK_PODF      CSCDR2 = 0x3F << 19 //+ Divider for lpi2c clock podf. Divider should be updated when output clock is gated. The input clock to this divider should be lower than 300Mhz, the predivider can be used to achieve this.
-	DIVIDE_1            CSCDR2 = 0x00 << 19 //  Divide by 1
-	DIVIDE_2            CSCDR2 = 0x01 << 19 //  Divide by 2
-	DIVIDE_3            CSCDR2 = 0x02 << 19 //  Divide by 3
-	DIVIDE_4            CSCDR2 = 0x03 << 19 //  Divide by 4
-	DIVIDE_5            CSCDR2 = 0x04 << 19 //  Divide by 5
-	DIVIDE_6            CSCDR2 = 0x05 << 19 //  Divide by 6
-	DIVIDE_7            CSCDR2 = 0x06 << 19 //  Divide by 7
-	DIVIDE_8            CSCDR2 = 0x07 << 19 //  Divide by 8
-	DIVIDE_9            CSCDR2 = 0x08 << 19 //  Divide by 9
-	DIVIDE_10           CSCDR2 = 0x09 << 19 //  Divide by 10
-	DIVIDE_11           CSCDR2 = 0x0A << 19 //  Divide by 11
-	DIVIDE_12           CSCDR2 = 0x0B << 19 //  Divide by 12
-	DIVIDE_13           CSCDR2 = 0x0C << 19 //  Divide by 13
-	DIVIDE_14           CSCDR2 = 0x0D << 19 //  Divide by 14
-	DIVIDE_15           CSCDR2 = 0x0E << 19 //  Divide by 15
-	DIVIDE_16           CSCDR2 = 0x0F << 19 //  Divide by 16
-	DIVIDE_17           CSCDR2 = 0x10 << 19 //  Divide by 17
-	DIVIDE_18           CSCDR2 = 0x11 << 19 //  Divide by 18
-	DIVIDE_19           CSCDR2 = 0x12 << 19 //  Divide by 19
-	DIVIDE_20           CSCDR2 = 0x13 << 19 //  Divide by 20
-	DIVIDE_21           CSCDR2 = 0x14 << 19 //  Divide by 21
-	DIVIDE_22           CSCDR2 = 0x15 << 19 //  Divide by 22
-	DIVIDE_23           CSCDR2 = 0x16 << 19 //  Divide by 23
-	DIVIDE_24           CSCDR2 = 0x17 << 19 //  Divide by 24
-	DIVIDE_25           CSCDR2 = 0x18 << 19 //  Divide by 25
-	DIVIDE_26           CSCDR2 = 0x19 << 19 //  Divide by 26
-	DIVIDE_27           CSCDR2 = 0x1A << 19 //  Divide by 27
-	DIVIDE_28           CSCDR2 = 0x1B << 19 //  Divide by 28
-	DIVIDE_29           CSCDR2 = 0x1C << 19 //  Divide by 29
-	DIVIDE_30           CSCDR2 = 0x1D << 19 //  Divide by 30
-	DIVIDE_31           CSCDR2 = 0x1E << 19 //  Divide by 31
-	DIVIDE_32           CSCDR2 = 0x1F << 19 //  Divide by 32
-	DIVIDE_33           CSCDR2 = 0x20 << 19 //  Divide by 33
-	DIVIDE_34           CSCDR2 = 0x21 << 19 //  Divide by 34
-	DIVIDE_35           CSCDR2 = 0x22 << 19 //  Divide by 35
-	DIVIDE_36           CSCDR2 = 0x23 << 19 //  Divide by 36
-	DIVIDE_37           CSCDR2 = 0x24 << 19 //  Divide by 37
-	DIVIDE_38           CSCDR2 = 0x25 << 19 //  Divide by 38
-	DIVIDE_39           CSCDR2 = 0x26 << 19 //  Divide by 39
-	DIVIDE_40           CSCDR2 = 0x27 << 19 //  Divide by 40
-	DIVIDE_41           CSCDR2 = 0x28 << 19 //  Divide by 41
-	DIVIDE_42           CSCDR2 = 0x29 << 19 //  Divide by 42
-	DIVIDE_43           CSCDR2 = 0x2A << 19 //  Divide by 43
-	DIVIDE_44           CSCDR2 = 0x2B << 19 //  Divide by 44
-	DIVIDE_45           CSCDR2 = 0x2C << 19 //  Divide by 45
-	DIVIDE_46           CSCDR2 = 0x2D << 19 //  Divide by 46
-	DIVIDE_47           CSCDR2 = 0x2E << 19 //  Divide by 47
-	DIVIDE_48           CSCDR2 = 0x2F << 19 //  Divide by 48
-	DIVIDE_49           CSCDR2 = 0x30 << 19 //  Divide by 49
-	DIVIDE_50           CSCDR2 = 0x31 << 19 //  Divide by 50
-	DIVIDE_51           CSCDR2 = 0x32 << 19 //  Divide by 51
-	DIVIDE_52           CSCDR2 = 0x33 << 19 //  Divide by 52
-	DIVIDE_53           CSCDR2 = 0x34 << 19 //  Divide by 53
-	DIVIDE_54           CSCDR2 = 0x35 << 19 //  Divide by 54
-	DIVIDE_55           CSCDR2 = 0x36 << 19 //  Divide by 55
-	DIVIDE_56           CSCDR2 = 0x37 << 19 //  Divide by 56
-	DIVIDE_57           CSCDR2 = 0x38 << 19 //  Divide by 57
-	DIVIDE_58           CSCDR2 = 0x39 << 19 //  Divide by 58
-	DIVIDE_59           CSCDR2 = 0x3A << 19 //  Divide by 59
-	DIVIDE_60           CSCDR2 = 0x3B << 19 //  Divide by 60
-	DIVIDE_61           CSCDR2 = 0x3C << 19 //  Divide by 61
-	DIVIDE_62           CSCDR2 = 0x3D << 19 //  Divide by 62
-	DIVIDE_63           CSCDR2 = 0x3E << 19 //  Divide by 63
-	DIVIDE_64           CSCDR2 = 0x3F << 19 //  Divide by 64
+	LPI2C_CLK_PODF_1    CSCDR2 = 0x00 << 19 //  Divide by 1
+	LPI2C_CLK_PODF_2    CSCDR2 = 0x01 << 19 //  Divide by 2
+	LPI2C_CLK_PODF_3    CSCDR2 = 0x02 << 19 //  Divide by 3
+	LPI2C_CLK_PODF_4    CSCDR2 = 0x03 << 19 //  Divide by 4
+	LPI2C_CLK_PODF_5    CSCDR2 = 0x04 << 19 //  Divide by 5
+	LPI2C_CLK_PODF_6    CSCDR2 = 0x05 << 19 //  Divide by 6
+	LPI2C_CLK_PODF_7    CSCDR2 = 0x06 << 19 //  Divide by 7
+	LPI2C_CLK_PODF_8    CSCDR2 = 0x07 << 19 //  Divide by 8
+	LPI2C_CLK_PODF_9    CSCDR2 = 0x08 << 19 //  Divide by 9
+	LPI2C_CLK_PODF_10   CSCDR2 = 0x09 << 19 //  Divide by 10
+	LPI2C_CLK_PODF_11   CSCDR2 = 0x0A << 19 //  Divide by 11
+	LPI2C_CLK_PODF_12   CSCDR2 = 0x0B << 19 //  Divide by 12
+	LPI2C_CLK_PODF_13   CSCDR2 = 0x0C << 19 //  Divide by 13
+	LPI2C_CLK_PODF_14   CSCDR2 = 0x0D << 19 //  Divide by 14
+	LPI2C_CLK_PODF_15   CSCDR2 = 0x0E << 19 //  Divide by 15
+	LPI2C_CLK_PODF_16   CSCDR2 = 0x0F << 19 //  Divide by 16
+	LPI2C_CLK_PODF_17   CSCDR2 = 0x10 << 19 //  Divide by 17
+	LPI2C_CLK_PODF_18   CSCDR2 = 0x11 << 19 //  Divide by 18
+	LPI2C_CLK_PODF_19   CSCDR2 = 0x12 << 19 //  Divide by 19
+	LPI2C_CLK_PODF_20   CSCDR2 = 0x13 << 19 //  Divide by 20
+	LPI2C_CLK_PODF_21   CSCDR2 = 0x14 << 19 //  Divide by 21
+	LPI2C_CLK_PODF_22   CSCDR2 = 0x15 << 19 //  Divide by 22
+	LPI2C_CLK_PODF_23   CSCDR2 = 0x16 << 19 //  Divide by 23
+	LPI2C_CLK_PODF_24   CSCDR2 = 0x17 << 19 //  Divide by 24
+	LPI2C_CLK_PODF_25   CSCDR2 = 0x18 << 19 //  Divide by 25
+	LPI2C_CLK_PODF_26   CSCDR2 = 0x19 << 19 //  Divide by 26
+	LPI2C_CLK_PODF_27   CSCDR2 = 0x1A << 19 //  Divide by 27
+	LPI2C_CLK_PODF_28   CSCDR2 = 0x1B << 19 //  Divide by 28
+	LPI2C_CLK_PODF_29   CSCDR2 = 0x1C << 19 //  Divide by 29
+	LPI2C_CLK_PODF_30   CSCDR2 = 0x1D << 19 //  Divide by 30
+	LPI2C_CLK_PODF_31   CSCDR2 = 0x1E << 19 //  Divide by 31
+	LPI2C_CLK_PODF_32   CSCDR2 = 0x1F << 19 //  Divide by 32
+	LPI2C_CLK_PODF_33   CSCDR2 = 0x20 << 19 //  Divide by 33
+	LPI2C_CLK_PODF_34   CSCDR2 = 0x21 << 19 //  Divide by 34
+	LPI2C_CLK_PODF_35   CSCDR2 = 0x22 << 19 //  Divide by 35
+	LPI2C_CLK_PODF_36   CSCDR2 = 0x23 << 19 //  Divide by 36
+	LPI2C_CLK_PODF_37   CSCDR2 = 0x24 << 19 //  Divide by 37
+	LPI2C_CLK_PODF_38   CSCDR2 = 0x25 << 19 //  Divide by 38
+	LPI2C_CLK_PODF_39   CSCDR2 = 0x26 << 19 //  Divide by 39
+	LPI2C_CLK_PODF_40   CSCDR2 = 0x27 << 19 //  Divide by 40
+	LPI2C_CLK_PODF_41   CSCDR2 = 0x28 << 19 //  Divide by 41
+	LPI2C_CLK_PODF_42   CSCDR2 = 0x29 << 19 //  Divide by 42
+	LPI2C_CLK_PODF_43   CSCDR2 = 0x2A << 19 //  Divide by 43
+	LPI2C_CLK_PODF_44   CSCDR2 = 0x2B << 19 //  Divide by 44
+	LPI2C_CLK_PODF_45   CSCDR2 = 0x2C << 19 //  Divide by 45
+	LPI2C_CLK_PODF_46   CSCDR2 = 0x2D << 19 //  Divide by 46
+	LPI2C_CLK_PODF_47   CSCDR2 = 0x2E << 19 //  Divide by 47
+	LPI2C_CLK_PODF_48   CSCDR2 = 0x2F << 19 //  Divide by 48
+	LPI2C_CLK_PODF_49   CSCDR2 = 0x30 << 19 //  Divide by 49
+	LPI2C_CLK_PODF_50   CSCDR2 = 0x31 << 19 //  Divide by 50
+	LPI2C_CLK_PODF_51   CSCDR2 = 0x32 << 19 //  Divide by 51
+	LPI2C_CLK_PODF_52   CSCDR2 = 0x33 << 19 //  Divide by 52
+	LPI2C_CLK_PODF_53   CSCDR2 = 0x34 << 19 //  Divide by 53
+	LPI2C_CLK_PODF_54   CSCDR2 = 0x35 << 19 //  Divide by 54
+	LPI2C_CLK_PODF_55   CSCDR2 = 0x36 << 19 //  Divide by 55
+	LPI2C_CLK_PODF_56   CSCDR2 = 0x37 << 19 //  Divide by 56
+	LPI2C_CLK_PODF_57   CSCDR2 = 0x38 << 19 //  Divide by 57
+	LPI2C_CLK_PODF_58   CSCDR2 = 0x39 << 19 //  Divide by 58
+	LPI2C_CLK_PODF_59   CSCDR2 = 0x3A << 19 //  Divide by 59
+	LPI2C_CLK_PODF_60   CSCDR2 = 0x3B << 19 //  Divide by 60
+	LPI2C_CLK_PODF_61   CSCDR2 = 0x3C << 19 //  Divide by 61
+	LPI2C_CLK_PODF_62   CSCDR2 = 0x3D << 19 //  Divide by 62
+	LPI2C_CLK_PODF_63   CSCDR2 = 0x3E << 19 //  Divide by 63
+	LPI2C_CLK_PODF_64   CSCDR2 = 0x3F << 19 //  Divide by 64
 )
 
 const (
@@ -960,21 +932,11 @@ const (
 )
 
 const (
-	SEMC_PODF_BUSY         CDHIPR = 0x01 << 0  //+ Busy indicator for semc_podf.
-	SEMC_PODF_BUSY_0       CDHIPR = 0x00 << 0  //  divider is not busy and its value represents the actual division.
-	SEMC_PODF_BUSY_1       CDHIPR = 0x01 << 0  //  divider is busy with handshake process with module. The value read in the divider represents the previous value of the division factor, and after the handshake the written value of the semc_podf will be applied.
-	AHB_PODF_BUSY          CDHIPR = 0x01 << 1  //+ Busy indicator for ahb_podf.
-	AHB_PODF_BUSY_0        CDHIPR = 0x00 << 1  //  divider is not busy and its value represents the actual division.
-	AHB_PODF_BUSY_1        CDHIPR = 0x01 << 1  //  divider is busy with handshake process with module. The value read in the divider represents the previous value of the division factor, and after the handshake the written value of the ahb_podf will be applied.
-	PERIPH2_CLK_SEL_BUSY   CDHIPR = 0x01 << 3  //+ Busy indicator for periph2_clk_sel mux control.
-	PERIPH2_CLK_SEL_BUSY_0 CDHIPR = 0x00 << 3  //  mux is not busy and its value represents the actual division.
-	PERIPH2_CLK_SEL_BUSY_1 CDHIPR = 0x01 << 3  //  mux is busy with handshake process with module. The value read in the periph2_clk_sel represents the previous value of select, and after the handshake periph2_clk_sel value will be applied.
-	PERIPH_CLK_SEL_BUSY    CDHIPR = 0x01 << 5  //+ Busy indicator for periph_clk_sel mux control.
-	PERIPH_CLK_SEL_BUSY_0  CDHIPR = 0x00 << 5  //  mux is not busy and its value represents the actual division.
-	PERIPH_CLK_SEL_BUSY_1  CDHIPR = 0x01 << 5  //  mux is busy with handshake process with module. The value read in the periph_clk_sel represents the previous value of select, and after the handshake periph_clk_sel value will be applied.
-	ARM_PODF_BUSY          CDHIPR = 0x01 << 16 //+ Busy indicator for arm_podf.
-	ARM_PODF_BUSY_0        CDHIPR = 0x00 << 16 //  divider is not busy and its value represents the actual division.
-	ARM_PODF_BUSY_1        CDHIPR = 0x01 << 16 //  divider is busy with handshake process with module. The value read in the divider represents the previous value of the division factor, and after the handshake the written value of the arm_podf will be applied.
+	SEMC_PODF_BUSY       CDHIPR = 0x01 << 0  //+ Busy indicator for semc_podf.
+	AHB_PODF_BUSY        CDHIPR = 0x01 << 1  //+ Busy indicator for ahb_podf.
+	PERIPH2_CLK_SEL_BUSY CDHIPR = 0x01 << 3  //+ Busy indicator for periph2_clk_sel mux control.
+	PERIPH_CLK_SEL_BUSY  CDHIPR = 0x01 << 5  //+ Busy indicator for periph_clk_sel mux control.
+	ARM_PODF_BUSY        CDHIPR = 0x01 << 16 //+ Busy indicator for arm_podf.
 )
 
 const (
@@ -986,41 +948,25 @@ const (
 )
 
 const (
-	LPM                  CLPCR = 0x03 << 0  //+ Setting the low power mode that system will enter on next assertion of dsm_request signal.
-	LPM_0                CLPCR = 0x00 << 0  //  Remain in run mode
-	LPM_1                CLPCR = 0x01 << 0  //  Transfer to wait mode
-	LPM_2                CLPCR = 0x02 << 0  //  Transfer to stop mode
-	ARM_CLK_DIS_ON_LPM   CLPCR = 0x01 << 5  //+ Define if ARM clocks (arm_clk, soc_mxclk, soc_pclk, soc_dbg_pclk, vl_wrck) will be disabled on wait mode
-	ARM_CLK_DIS_ON_LPM_0 CLPCR = 0x00 << 5  //  ARM clock enabled on wait mode.
-	ARM_CLK_DIS_ON_LPM_1 CLPCR = 0x01 << 5  //  ARM clock disabled on wait mode. .
-	SBYOS                CLPCR = 0x01 << 6  //+ Standby clock oscillator bit
-	SBYOS_0              CLPCR = 0x00 << 6  //  On-chip oscillator will not be powered down, after next entrance to STOP mode. (CCM_REF_EN_B will remain asserted - '0' and cosc_pwrdown will remain de asserted - '0')
-	SBYOS_1              CLPCR = 0x01 << 6  //  On-chip oscillator will be powered down, after next entrance to STOP mode. (CCM_REF_EN_B will be deasserted - '1' and cosc_pwrdown will be asserted - '1'). When returning from STOP mode, external oscillator will be enabled again, on-chip oscillator will return to oscillator mode, and after oscnt count, CCM will continue with the exit from the STOP mode process.
-	DIS_REF_OSC          CLPCR = 0x01 << 7  //+ dis_ref_osc - in run mode, software can manually control closing of external reference oscillator clock, i
-	DIS_REF_OSC_0        CLPCR = 0x00 << 7  //  external high frequency oscillator will be enabled, i.e. CCM_REF_EN_B = '0'.
-	DIS_REF_OSC_1        CLPCR = 0x01 << 7  //  external high frequency oscillator will be disabled, i.e. CCM_REF_EN_B = '1'
-	VSTBY                CLPCR = 0x01 << 8  //+ Voltage standby request bit
-	VSTBY_0              CLPCR = 0x00 << 8  //  Voltage will not be changed to standby voltage after next entrance to STOP mode. ( PMIC_STBY_REQ will remain negated - '0')
-	VSTBY_1              CLPCR = 0x01 << 8  //  Voltage will be requested to change to standby voltage after next entrance to stop mode. ( PMIC_STBY_REQ will be asserted - '1').
-	STBY_COUNT           CLPCR = 0x03 << 9  //+ Standby counter definition
-	STBY_COUNT_0         CLPCR = 0x00 << 9  //  CCM will wait (1*pmic_delay_scaler)+1 ckil clock cycles
-	STBY_COUNT_1         CLPCR = 0x01 << 9  //  CCM will wait (3*pmic_delay_scaler)+1 ckil clock cycles
-	STBY_COUNT_2         CLPCR = 0x02 << 9  //  CCM will wait (7*pmic_delay_scaler)+1 ckil clock cycles
-	STBY_COUNT_3         CLPCR = 0x03 << 9  //  CCM will wait (15*pmic_delay_scaler)+1 ckil clock cycles
-	COSC_PWRDOWN         CLPCR = 0x01 << 11 //+ In run mode, software can manually control powering down of on chip oscillator, i
-	COSC_PWRDOWN_0       CLPCR = 0x00 << 11 //  On chip oscillator will not be powered down, i.e. cosc_pwrdown = '0'.
-	COSC_PWRDOWN_1       CLPCR = 0x01 << 11 //  On chip oscillator will be powered down, i.e. cosc_pwrdown = '1'.
-	BYPASS_LPM_HS1       CLPCR = 0x01 << 19 //+ Bypass low power mode handshake. This bit should always be set to 1'b1 by software.
-	BYPASS_LPM_HS0       CLPCR = 0x01 << 21 //+ Bypass low power mode handshake. This bit should always be set to 1'b1 by software.
-	MASK_CORE0_WFI       CLPCR = 0x01 << 22 //+ Mask WFI of core0 for entering low power mode Assertion of all bits[27:22] will generate low power mode request
-	MASK_CORE0_WFI_0     CLPCR = 0x00 << 22 //  WFI of core0 is not masked
-	MASK_CORE0_WFI_1     CLPCR = 0x01 << 22 //  WFI of core0 is masked
-	MASK_SCU_IDLE        CLPCR = 0x01 << 26 //+ Mask SCU IDLE for entering low power mode Assertion of all bits[27:22] will generate low power mode request
-	MASK_SCU_IDLE_0      CLPCR = 0x00 << 26 //  SCU IDLE is not masked
-	MASK_SCU_IDLE_1      CLPCR = 0x01 << 26 //  SCU IDLE is masked
-	MASK_L2CC_IDLE       CLPCR = 0x01 << 27 //+ Mask L2CC IDLE for entering low power mode
-	MASK_L2CC_IDLE_0     CLPCR = 0x00 << 27 //  L2CC IDLE is not masked
-	MASK_L2CC_IDLE_1     CLPCR = 0x01 << 27 //  L2CC IDLE is masked
+	LPM                CLPCR = 0x03 << 0  //+ Setting the low power mode that system will enter on next assertion of dsm_request signal.
+	LPM_0              CLPCR = 0x00 << 0  //  Remain in run mode
+	LPM_1              CLPCR = 0x01 << 0  //  Transfer to wait mode
+	LPM_2              CLPCR = 0x02 << 0  //  Transfer to stop mode
+	ARM_CLK_DIS_ON_LPM CLPCR = 0x01 << 5  //+ Define if ARM clocks (arm_clk, soc_mxclk, soc_pclk, soc_dbg_pclk, vl_wrck) will be disabled on wait mode
+	SBYOS              CLPCR = 0x01 << 6  //+ Standby clock oscillator bit
+	DIS_REF_OSC        CLPCR = 0x01 << 7  //+ dis_ref_osc - in run mode, software can manually control closing of external reference oscillator clock, i
+	VSTBY              CLPCR = 0x01 << 8  //+ Voltage standby request bit
+	STBY_COUNT         CLPCR = 0x03 << 9  //+ Standby counter definition
+	STBY_COUNT_0       CLPCR = 0x00 << 9  //  CCM will wait (1*pmic_delay_scaler)+1 ckil clock cycles
+	STBY_COUNT_1       CLPCR = 0x01 << 9  //  CCM will wait (3*pmic_delay_scaler)+1 ckil clock cycles
+	STBY_COUNT_2       CLPCR = 0x02 << 9  //  CCM will wait (7*pmic_delay_scaler)+1 ckil clock cycles
+	STBY_COUNT_3       CLPCR = 0x03 << 9  //  CCM will wait (15*pmic_delay_scaler)+1 ckil clock cycles
+	COSC_PWRDOWN       CLPCR = 0x01 << 11 //+ In run mode, software can manually control powering down of on chip oscillator, i
+	BYPASS_LPM_HS1     CLPCR = 0x01 << 19 //+ Bypass low power mode handshake. This bit should always be set to 1'b1 by software.
+	BYPASS_LPM_HS0     CLPCR = 0x01 << 21 //+ Bypass low power mode handshake. This bit should always be set to 1'b1 by software.
+	MASK_CORE0_WFI     CLPCR = 0x01 << 22 //+ Mask WFI of core0 for entering low power mode Assertion of all bits[27:22] will generate low power mode request
+	MASK_SCU_IDLE      CLPCR = 0x01 << 26 //+ Mask SCU IDLE for entering low power mode Assertion of all bits[27:22] will generate low power mode request
+	MASK_L2CC_IDLE     CLPCR = 0x01 << 27 //+ Mask L2CC IDLE for entering low power mode
 )
 
 const (
@@ -1039,125 +985,71 @@ const (
 )
 
 const (
-	LRF_PLL                  CISR = 0x01 << 0  //+ CCM interrupt request 2 generated due to lock of all enabled and not bypaseed PLLs
-	LRF_PLL_0                CISR = 0x00 << 0  //  interrupt is not generated due to lock ready of all enabled and not bypaseed PLLs
-	LRF_PLL_1                CISR = 0x01 << 0  //  interrupt generated due to lock ready of all enabled and not bypaseed PLLs
-	COSC_READY               CISR = 0x01 << 6  //+ CCM interrupt request 2 generated due to on board oscillator ready, i
-	COSC_READY_0             CISR = 0x00 << 6  //  interrupt is not generated due to on board oscillator ready
-	COSC_READY_1             CISR = 0x01 << 6  //  interrupt generated due to on board oscillator ready
-	SEMC_PODF_LOADED         CISR = 0x01 << 17 //+ CCM interrupt request 1 generated due to frequency change of semc_podf
-	SEMC_PODF_LOADED_0       CISR = 0x00 << 17 //  interrupt is not generated due to frequency change of semc_podf
-	SEMC_PODF_LOADED_1       CISR = 0x01 << 17 //  interrupt generated due to frequency change of semc_podf
-	PERIPH2_CLK_SEL_LOADED   CISR = 0x01 << 19 //+ CCM interrupt request 1 generated due to frequency change of periph2_clk_sel
-	PERIPH2_CLK_SEL_LOADED_0 CISR = 0x00 << 19 //  interrupt is not generated due to frequency change of periph2_clk_sel
-	PERIPH2_CLK_SEL_LOADED_1 CISR = 0x01 << 19 //  interrupt generated due to frequency change of periph2_clk_sel
-	AHB_PODF_LOADED          CISR = 0x01 << 20 //+ CCM interrupt request 1 generated due to frequency change of ahb_podf
-	AHB_PODF_LOADED_0        CISR = 0x00 << 20 //  interrupt is not generated due to frequency change of ahb_podf
-	AHB_PODF_LOADED_1        CISR = 0x01 << 20 //  interrupt generated due to frequency change of ahb_podf
-	PERIPH_CLK_SEL_LOADED    CISR = 0x01 << 22 //+ CCM interrupt request 1 generated due to update of periph_clk_sel.
-	PERIPH_CLK_SEL_LOADED_0  CISR = 0x00 << 22 //  interrupt is not generated due to update of periph_clk_sel.
-	PERIPH_CLK_SEL_LOADED_1  CISR = 0x01 << 22 //  interrupt generated due to update of periph_clk_sel.
-	ARM_PODF_LOADED          CISR = 0x01 << 26 //+ CCM interrupt request 1 generated due to frequency change of arm_podf
-	ARM_PODF_LOADED_0        CISR = 0x00 << 26 //  interrupt is not generated due to frequency change of arm_podf
-	ARM_PODF_LOADED_1        CISR = 0x01 << 26 //  interrupt generated due to frequency change of arm_podf
+	INT_LRF_PLL                CIR = 0x01 << 0  //+ CCM interrupt request 2 generated due to lock of all enabled and not bypaseed PLLs
+	INT_COSC_READY             CIR = 0x01 << 6  //+ CCM interrupt request 2 generated due to on board oscillator ready, i
+	INT_SEMC_PODF_LOADED       CIR = 0x01 << 17 //+ CCM interrupt request 1 generated due to frequency change of semc_podf
+	INT_PERIPH2_CLK_SEL_LOADED CIR = 0x01 << 19 //+ CCM interrupt request 1 generated due to frequency change of periph2_clk_sel
+	INT_AHB_PODF_LOADED        CIR = 0x01 << 20 //+ CCM interrupt request 1 generated due to frequency change of ahb_podf
+	INT_PERIPH_CLK_SEL_LOADED  CIR = 0x01 << 22 //+ CCM interrupt request 1 generated due to update of periph_clk_sel.
+	INT_ARM_PODF_LOADED        CIR = 0x01 << 26 //+ CCM interrupt request 1 generated due to frequency change of arm_podf
 )
 
 const (
-	LRF_PLLn                = 0
-	COSC_READYn             = 6
-	SEMC_PODF_LOADEDn       = 17
-	PERIPH2_CLK_SEL_LOADEDn = 19
-	AHB_PODF_LOADEDn        = 20
-	PERIPH_CLK_SEL_LOADEDn  = 22
-	ARM_PODF_LOADEDn        = 26
+	INT_LRF_PLLn                = 0
+	INT_COSC_READYn             = 6
+	INT_SEMC_PODF_LOADEDn       = 17
+	INT_PERIPH2_CLK_SEL_LOADEDn = 19
+	INT_AHB_PODF_LOADEDn        = 20
+	INT_PERIPH_CLK_SEL_LOADEDn  = 22
+	INT_ARM_PODF_LOADEDn        = 26
 )
 
 const (
-	MASK_LRF_PLL                  CIMR = 0x01 << 0  //+ mask interrupt generation due to lrf of PLLs
-	MASK_LRF_PLL_0                CIMR = 0x00 << 0  //  don't mask interrupt due to lrf of PLLs - interrupt will be created
-	MASK_LRF_PLL_1                CIMR = 0x01 << 0  //  mask interrupt due to lrf of PLLs
-	MASK_COSC_READY               CIMR = 0x01 << 6  //+ mask interrupt generation due to on board oscillator ready
-	MASK_COSC_READY_0             CIMR = 0x00 << 6  //  don't mask interrupt due to on board oscillator ready - interrupt will be created
-	MASK_COSC_READY_1             CIMR = 0x01 << 6  //  mask interrupt due to on board oscillator ready
-	MASK_SEMC_PODF_LOADED         CIMR = 0x01 << 17 //+ mask interrupt generation due to frequency change of semc_podf
-	MASK_SEMC_PODF_LOADED_0       CIMR = 0x00 << 17 //  don't mask interrupt due to frequency change of semc_podf - interrupt will be created
-	MASK_SEMC_PODF_LOADED_1       CIMR = 0x01 << 17 //  mask interrupt due to frequency change of semc_podf
-	MASK_PERIPH2_CLK_SEL_LOADED   CIMR = 0x01 << 19 //+ mask interrupt generation due to update of periph2_clk_sel.
-	MASK_PERIPH2_CLK_SEL_LOADED_0 CIMR = 0x00 << 19 //  don't mask interrupt due to update of periph2_clk_sel - interrupt will be created
-	MASK_PERIPH2_CLK_SEL_LOADED_1 CIMR = 0x01 << 19 //  mask interrupt due to update of periph2_clk_sel
-	MASK_AHB_PODF_LOADED          CIMR = 0x01 << 20 //+ mask interrupt generation due to frequency change of ahb_podf
-	MASK_AHB_PODF_LOADED_0        CIMR = 0x00 << 20 //  don't mask interrupt due to frequency change of ahb_podf - interrupt will be created
-	MASK_AHB_PODF_LOADED_1        CIMR = 0x01 << 20 //  mask interrupt due to frequency change of ahb_podf
-	MASK_PERIPH_CLK_SEL_LOADED    CIMR = 0x01 << 22 //+ mask interrupt generation due to update of periph_clk_sel.
-	MASK_PERIPH_CLK_SEL_LOADED_0  CIMR = 0x00 << 22 //  don't mask interrupt due to update of periph_clk_sel - interrupt will be created
-	MASK_PERIPH_CLK_SEL_LOADED_1  CIMR = 0x01 << 22 //  mask interrupt due to update of periph_clk_sel
-	ARM_PODF_LOADED               CIMR = 0x01 << 26 //+ mask interrupt generation due to frequency change of arm_podf
-	ARM_PODF_LOADED_0             CIMR = 0x00 << 26 //  don't mask interrupt due to frequency change of arm_podf - interrupt will be created
-	ARM_PODF_LOADED_1             CIMR = 0x01 << 26 //  mask interrupt due to frequency change of arm_podf
-)
-
-const (
-	MASK_LRF_PLLn                = 0
-	MASK_COSC_READYn             = 6
-	MASK_SEMC_PODF_LOADEDn       = 17
-	MASK_PERIPH2_CLK_SEL_LOADEDn = 19
-	MASK_AHB_PODF_LOADEDn        = 20
-	MASK_PERIPH_CLK_SEL_LOADEDn  = 22
-	ARM_PODF_LOADEDn             = 26
-)
-
-const (
-	CLKO1_SEL     CCOSR = 0x0F << 0  //+ Selection of the clock to be generated on CCM_CLKO1
-	CLKO1_SEL_0   CCOSR = 0x00 << 0  //  USB1 PLL clock (divided by 2)
-	CLKO1_SEL_1   CCOSR = 0x01 << 0  //  SYS PLL clock (divided by 2)
-	CLKO1_SEL_3   CCOSR = 0x03 << 0  //  VIDEO PLL clock (divided by 2)
-	CLKO1_SEL_5   CCOSR = 0x05 << 0  //  semc_clk_root
-	CLKO1_SEL_10  CCOSR = 0x0A << 0  //  lcdif_pix_clk_root
-	CLKO1_SEL_11  CCOSR = 0x0B << 0  //  ahb_clk_root
-	CLKO1_SEL_12  CCOSR = 0x0C << 0  //  ipg_clk_root
-	CLKO1_SEL_13  CCOSR = 0x0D << 0  //  perclk_root
-	CLKO1_SEL_14  CCOSR = 0x0E << 0  //  ckil_sync_clk_root
-	CLKO1_SEL_15  CCOSR = 0x0F << 0  //  pll4_main_clk
-	CLKO1_DIV     CCOSR = 0x07 << 4  //+ Setting the divider of CCM_CLKO1
-	CLKO1_DIV_0   CCOSR = 0x00 << 4  //  divide by 1
-	CLKO1_DIV_1   CCOSR = 0x01 << 4  //  divide by 2
-	CLKO1_DIV_2   CCOSR = 0x02 << 4  //  divide by 3
-	CLKO1_DIV_3   CCOSR = 0x03 << 4  //  divide by 4
-	CLKO1_DIV_4   CCOSR = 0x04 << 4  //  divide by 5
-	CLKO1_DIV_5   CCOSR = 0x05 << 4  //  divide by 6
-	CLKO1_DIV_6   CCOSR = 0x06 << 4  //  divide by 7
-	CLKO1_DIV_7   CCOSR = 0x07 << 4  //  divide by 8
-	CLKO1_EN      CCOSR = 0x01 << 7  //+ Enable of CCM_CLKO1 clock
-	CLKO1_EN_0    CCOSR = 0x00 << 7  //  CCM_CLKO1 disabled.
-	CLKO1_EN_1    CCOSR = 0x01 << 7  //  CCM_CLKO1 enabled.
-	CLK_OUT_SEL   CCOSR = 0x01 << 8  //+ CCM_CLKO1 output to reflect CCM_CLKO1 or CCM_CLKO2 clocks
-	CLK_OUT_SEL_0 CCOSR = 0x00 << 8  //  CCM_CLKO1 output drives CCM_CLKO1 clock
-	CLK_OUT_SEL_1 CCOSR = 0x01 << 8  //  CCM_CLKO1 output drives CCM_CLKO2 clock
-	CLKO2_SEL     CCOSR = 0x1F << 16 //+ Selection of the clock to be generated on CCM_CLKO2
-	CLKO2_SEL_3   CCOSR = 0x03 << 16 //  usdhc1_clk_root
-	CLKO2_SEL_6   CCOSR = 0x06 << 16 //  lpi2c_clk_root
-	CLKO2_SEL_11  CCOSR = 0x0B << 16 //  csi_clk_root
-	CLKO2_SEL_14  CCOSR = 0x0E << 16 //  osc_clk
-	CLKO2_SEL_17  CCOSR = 0x11 << 16 //  usdhc2_clk_root
-	CLKO2_SEL_18  CCOSR = 0x12 << 16 //  sai1_clk_root
-	CLKO2_SEL_19  CCOSR = 0x13 << 16 //  sai2_clk_root
-	CLKO2_SEL_20  CCOSR = 0x14 << 16 //  sai3_clk_root (shared with ADC1 and ADC2 alt_clk root)
-	CLKO2_SEL_23  CCOSR = 0x17 << 16 //  can_clk_root (FlexCAN, shared with CANFD)
-	CLKO2_SEL_27  CCOSR = 0x1B << 16 //  flexspi_clk_root
-	CLKO2_SEL_28  CCOSR = 0x1C << 16 //  uart_clk_root
-	CLKO2_SEL_29  CCOSR = 0x1D << 16 //  spdif0_clk_root
-	CLKO2_DIV     CCOSR = 0x07 << 21 //+ Setting the divider of CCM_CLKO2
-	CLKO2_DIV_0   CCOSR = 0x00 << 21 //  divide by 1
-	CLKO2_DIV_1   CCOSR = 0x01 << 21 //  divide by 2
-	CLKO2_DIV_2   CCOSR = 0x02 << 21 //  divide by 3
-	CLKO2_DIV_3   CCOSR = 0x03 << 21 //  divide by 4
-	CLKO2_DIV_4   CCOSR = 0x04 << 21 //  divide by 5
-	CLKO2_DIV_5   CCOSR = 0x05 << 21 //  divide by 6
-	CLKO2_DIV_6   CCOSR = 0x06 << 21 //  divide by 7
-	CLKO2_DIV_7   CCOSR = 0x07 << 21 //  divide by 8
-	CLKO2_EN      CCOSR = 0x01 << 24 //+ Enable of CCM_CLKO2 clock
-	CLKO2_EN_0    CCOSR = 0x00 << 24 //  CCM_CLKO2 disabled.
-	CLKO2_EN_1    CCOSR = 0x01 << 24 //  CCM_CLKO2 enabled.
+	CLKO1_SEL    CCOSR = 0x0F << 0  //+ Selection of the clock to be generated on CCM_CLKO1
+	CLKO1_SEL_0  CCOSR = 0x00 << 0  //  USB1 PLL clock (divided by 2)
+	CLKO1_SEL_1  CCOSR = 0x01 << 0  //  SYS PLL clock (divided by 2)
+	CLKO1_SEL_3  CCOSR = 0x03 << 0  //  VIDEO PLL clock (divided by 2)
+	CLKO1_SEL_5  CCOSR = 0x05 << 0  //  semc_clk_root
+	CLKO1_SEL_10 CCOSR = 0x0A << 0  //  lcdif_pix_clk_root
+	CLKO1_SEL_11 CCOSR = 0x0B << 0  //  ahb_clk_root
+	CLKO1_SEL_12 CCOSR = 0x0C << 0  //  ipg_clk_root
+	CLKO1_SEL_13 CCOSR = 0x0D << 0  //  perclk_root
+	CLKO1_SEL_14 CCOSR = 0x0E << 0  //  ckil_sync_clk_root
+	CLKO1_SEL_15 CCOSR = 0x0F << 0  //  pll4_main_clk
+	CLKO1_DIV    CCOSR = 0x07 << 4  //+ Setting the divider of CCM_CLKO1
+	CLKO1_DIV_0  CCOSR = 0x00 << 4  //  divide by 1
+	CLKO1_DIV_1  CCOSR = 0x01 << 4  //  divide by 2
+	CLKO1_DIV_2  CCOSR = 0x02 << 4  //  divide by 3
+	CLKO1_DIV_3  CCOSR = 0x03 << 4  //  divide by 4
+	CLKO1_DIV_4  CCOSR = 0x04 << 4  //  divide by 5
+	CLKO1_DIV_5  CCOSR = 0x05 << 4  //  divide by 6
+	CLKO1_DIV_6  CCOSR = 0x06 << 4  //  divide by 7
+	CLKO1_DIV_7  CCOSR = 0x07 << 4  //  divide by 8
+	CLKO1_EN     CCOSR = 0x01 << 7  //+ Enable of CCM_CLKO1 clock
+	CLK_OUT_SEL  CCOSR = 0x01 << 8  //+ CCM_CLKO1 output to reflect CCM_CLKO1 or CCM_CLKO2 clocks
+	CLKO2_SEL    CCOSR = 0x1F << 16 //+ Selection of the clock to be generated on CCM_CLKO2
+	CLKO2_SEL_3  CCOSR = 0x03 << 16 //  usdhc1_clk_root
+	CLKO2_SEL_6  CCOSR = 0x06 << 16 //  lpi2c_clk_root
+	CLKO2_SEL_11 CCOSR = 0x0B << 16 //  csi_clk_root
+	CLKO2_SEL_14 CCOSR = 0x0E << 16 //  osc_clk
+	CLKO2_SEL_17 CCOSR = 0x11 << 16 //  usdhc2_clk_root
+	CLKO2_SEL_18 CCOSR = 0x12 << 16 //  sai1_clk_root
+	CLKO2_SEL_19 CCOSR = 0x13 << 16 //  sai2_clk_root
+	CLKO2_SEL_20 CCOSR = 0x14 << 16 //  sai3_clk_root (shared with ADC1 and ADC2 alt_clk root)
+	CLKO2_SEL_23 CCOSR = 0x17 << 16 //  can_clk_root (FlexCAN, shared with CANFD)
+	CLKO2_SEL_27 CCOSR = 0x1B << 16 //  flexspi_clk_root
+	CLKO2_SEL_28 CCOSR = 0x1C << 16 //  uart_clk_root
+	CLKO2_SEL_29 CCOSR = 0x1D << 16 //  spdif0_clk_root
+	CLKO2_DIV    CCOSR = 0x07 << 21 //+ Setting the divider of CCM_CLKO2
+	CLKO2_DIV_0  CCOSR = 0x00 << 21 //  divide by 1
+	CLKO2_DIV_1  CCOSR = 0x01 << 21 //  divide by 2
+	CLKO2_DIV_2  CCOSR = 0x02 << 21 //  divide by 3
+	CLKO2_DIV_3  CCOSR = 0x03 << 21 //  divide by 4
+	CLKO2_DIV_4  CCOSR = 0x04 << 21 //  divide by 5
+	CLKO2_DIV_5  CCOSR = 0x05 << 21 //  divide by 6
+	CLKO2_DIV_6  CCOSR = 0x06 << 21 //  divide by 7
+	CLKO2_DIV_7  CCOSR = 0x07 << 21 //  divide by 8
+	CLKO2_EN     CCOSR = 0x01 << 24 //+ Enable of CCM_CLKO2 clock
 )
 
 const (
@@ -1171,22 +1063,14 @@ const (
 )
 
 const (
-	PMIC_DELAY_SCALER        CGPR = 0x01 << 0  //+ Defines clock dividion of clock for stby_count (pmic delay counter)
-	PMIC_DELAY_SCALER_0      CGPR = 0x00 << 0  //  clock is not divided
-	PMIC_DELAY_SCALER_1      CGPR = 0x01 << 0  //  clock is divided /8
-	EFUSE_PROG_SUPPLY_GATE   CGPR = 0x01 << 4  //+ Defines the value of the output signal cgpr_dout[4]. Gate of program supply for efuse programing
-	EFUSE_PROG_SUPPLY_GATE_0 CGPR = 0x00 << 4  //  fuse programing supply voltage is gated off to the efuse module
-	EFUSE_PROG_SUPPLY_GATE_1 CGPR = 0x01 << 4  //  allow fuse programing.
-	SYS_MEM_DS_CTRL          CGPR = 0x03 << 14 //+ System memory DS control
-	SYS_MEM_DS_CTRL_0        CGPR = 0x00 << 14 //  Disable memory DS mode always
-	SYS_MEM_DS_CTRL_1        CGPR = 0x01 << 14 //  Enable memory (outside ARM platform) DS mode when system STOP and PLL are disabled
-	SYS_MEM_DS_CTRL_2        CGPR = 0x02 << 14 //  enable memory (outside ARM platform) DS mode when system is in STOP mode
-	FPL                      CGPR = 0x01 << 16 //+ Fast PLL enable.
-	FPL_0                    CGPR = 0x00 << 16 //  Engage PLL enable default way.
-	FPL_1                    CGPR = 0x01 << 16 //  Engage PLL enable 3 CKIL clocks earlier at exiting low power mode (STOP). Should be used only if 24MHz OSC was active in low power mode.
-	INT_MEM_CLK_LPM          CGPR = 0x01 << 17 //+ Control for the Deep Sleep signal to the ARM Platform memories with additional control logic based on the ARM WFI signal
-	INT_MEM_CLK_LPM_0        CGPR = 0x00 << 17 //  Disable the clock to the ARM platform memories when entering Low Power Mode
-	INT_MEM_CLK_LPM_1        CGPR = 0x01 << 17 //  Keep the clocks to the ARM platform memories enabled only if an interrupt is pending when entering Low Power Modes (WAIT and STOP without power gating)
+	PMIC_DELAY_SCALER      CGPR = 0x01 << 0  //+ Defines clock dividion of clock for stby_count (pmic delay counter)
+	EFUSE_PROG_SUPPLY_GATE CGPR = 0x01 << 4  //+ Defines the value of the output signal cgpr_dout[4]. Gate of program supply for efuse programing
+	SYS_MEM_DS_CTRL        CGPR = 0x03 << 14 //+ System memory DS control
+	SYS_MEM_DS_CTRL_0      CGPR = 0x00 << 14 //  Disable memory DS mode always
+	SYS_MEM_DS_CTRL_1      CGPR = 0x01 << 14 //  Enable memory (outside ARM platform) DS mode when system STOP and PLL are disabled
+	SYS_MEM_DS_CTRL_2      CGPR = 0x02 << 14 //  enable memory (outside ARM platform) DS mode when system is in STOP mode
+	FPL                    CGPR = 0x01 << 16 //+ Fast PLL enable.
+	INT_MEM_CLK_LPM        CGPR = 0x01 << 17 //+ Control for the Deep Sleep signal to the ARM Platform memories with additional control logic based on the ARM WFI signal
 )
 
 const (
@@ -1198,313 +1082,299 @@ const (
 )
 
 const (
-	CG0  CCGR0 = 0x03 << 0  //+ aips_tz1 clocks (aips_tz1_clk_enable)
-	CG1  CCGR0 = 0x03 << 2  //+ aips_tz2 clocks (aips_tz2_clk_enable)
-	CG2  CCGR0 = 0x03 << 4  //+ mqs clock ( mqs_hmclk_clock_enable)
-	CG3  CCGR0 = 0x03 << 6  //+ flexspi_exsc clock (flexspi_exsc_clk_enable)
-	CG4  CCGR0 = 0x03 << 8  //+ sim_m or sim_main register access clock (sim_m_mainclk_r_enable)
-	CG5  CCGR0 = 0x03 << 10 //+ dcp clock (dcp_clk_enable)
-	CG6  CCGR0 = 0x03 << 12 //+ lpuart3 clock (lpuart3_clk_enable)
-	CG7  CCGR0 = 0x03 << 14 //+ can1 clock (can1_clk_enable)
-	CG8  CCGR0 = 0x03 << 16 //+ can1_serial clock (can1_serial_clk_enable)
-	CG9  CCGR0 = 0x03 << 18 //+ can2 clock (can2_clk_enable)
-	CG10 CCGR0 = 0x03 << 20 //+ can2_serial clock (can2_serial_clk_enable)
-	CG11 CCGR0 = 0x03 << 22 //+ trace clock (trace_clk_enable)
-	CG12 CCGR0 = 0x03 << 24 //+ gpt2 bus clocks (gpt2_bus_clk_enable)
-	CG13 CCGR0 = 0x03 << 26 //+ gpt2 serial clocks (gpt2_serial_clk_enable)
-	CG14 CCGR0 = 0x03 << 28 //+ lpuart2 clock (lpuart2_clk_enable)
-	CG15 CCGR0 = 0x03 << 30 //+ gpio2_clocks (gpio2_clk_enable)
+	CG0_0  CCGR0 = 0x03 << 0  //+ aips_tz1 clocks (aips_tz1_clk_enable)
+	CG0_1  CCGR0 = 0x03 << 2  //+ aips_tz2 clocks (aips_tz2_clk_enable)
+	CG0_2  CCGR0 = 0x03 << 4  //+ mqs clock ( mqs_hmclk_clock_enable)
+	CG0_3  CCGR0 = 0x03 << 6  //+ flexspi_exsc clock (flexspi_exsc_clk_enable)
+	CG0_4  CCGR0 = 0x03 << 8  //+ sim_m or sim_main register access clock (sim_m_mainclk_r_enable)
+	CG0_5  CCGR0 = 0x03 << 10 //+ dcp clock (dcp_clk_enable)
+	CG0_6  CCGR0 = 0x03 << 12 //+ lpuart3 clock (lpuart3_clk_enable)
+	CG0_7  CCGR0 = 0x03 << 14 //+ can1 clock (can1_clk_enable)
+	CG0_8  CCGR0 = 0x03 << 16 //+ can1_serial clock (can1_serial_clk_enable)
+	CG0_9  CCGR0 = 0x03 << 18 //+ can2 clock (can2_clk_enable)
+	CG0_10 CCGR0 = 0x03 << 20 //+ can2_serial clock (can2_serial_clk_enable)
+	CG0_11 CCGR0 = 0x03 << 22 //+ trace clock (trace_clk_enable)
+	CG0_12 CCGR0 = 0x03 << 24 //+ gpt2 bus clocks (gpt2_bus_clk_enable)
+	CG0_13 CCGR0 = 0x03 << 26 //+ gpt2 serial clocks (gpt2_serial_clk_enable)
+	CG0_14 CCGR0 = 0x03 << 28 //+ lpuart2 clock (lpuart2_clk_enable)
+	CG0_15 CCGR0 = 0x03 << 30 //+ gpio2_clocks (gpio2_clk_enable)
 )
 
 const (
-	CG0n  = 0
-	CG1n  = 2
-	CG2n  = 4
-	CG3n  = 6
-	CG4n  = 8
-	CG5n  = 10
-	CG6n  = 12
-	CG7n  = 14
-	CG8n  = 16
-	CG9n  = 18
-	CG10n = 20
-	CG11n = 22
-	CG12n = 24
-	CG13n = 26
-	CG14n = 28
-	CG15n = 30
+	CG0_0n  = 0
+	CG0_1n  = 2
+	CG0_2n  = 4
+	CG0_3n  = 6
+	CG0_4n  = 8
+	CG0_5n  = 10
+	CG0_6n  = 12
+	CG0_7n  = 14
+	CG0_8n  = 16
+	CG0_9n  = 18
+	CG0_10n = 20
+	CG0_11n = 22
+	CG0_12n = 24
+	CG0_13n = 26
+	CG0_14n = 28
+	CG0_15n = 30
 )
 
 const (
-	CG0  CCGR1 = 0x03 << 0  //+ lpspi1 clocks (lpspi1_clk_enable)
-	CG1  CCGR1 = 0x03 << 2  //+ lpspi2 clocks (lpspi2_clk_enable)
-	CG2  CCGR1 = 0x03 << 4  //+ lpspi3 clocks (lpspi3_clk_enable)
-	CG3  CCGR1 = 0x03 << 6  //+ lpspi4 clocks (lpspi4_clk_enable)
-	CG4  CCGR1 = 0x03 << 8  //+ adc2 clock (adc2_clk_enable)
-	CG5  CCGR1 = 0x03 << 10 //+ enet clock (enet_clk_enable)
-	CG6  CCGR1 = 0x03 << 12 //+ pit clocks (pit_clk_enable)
-	CG7  CCGR1 = 0x03 << 14 //+ aoi2 clocks (aoi2_clk_enable)
-	CG8  CCGR1 = 0x03 << 16 //+ adc1 clock (adc1_clk_enable)
-	CG9  CCGR1 = 0x03 << 18 //+ semc_exsc clock (semc_exsc_clk_enable)
-	CG10 CCGR1 = 0x03 << 20 //+ gpt1 bus clock (gpt_clk_enable)
-	CG11 CCGR1 = 0x03 << 22 //+ gpt1 serial clock (gpt_serial_clk_enable)
-	CG12 CCGR1 = 0x03 << 24 //+ lpuart4 clock (lpuart4_clk_enable)
-	CG13 CCGR1 = 0x03 << 26 //+ gpio1 clock (gpio1_clk_enable)
-	CG14 CCGR1 = 0x03 << 28 //+ csu clock (csu_clk_enable)
-	CG15 CCGR1 = 0x03 << 30 //+ Reserved
+	CG1_0  CCGR1 = 0x03 << 0  //+ lpspi1 clocks (lpspi1_clk_enable)
+	CG1_1  CCGR1 = 0x03 << 2  //+ lpspi2 clocks (lpspi2_clk_enable)
+	CG1_2  CCGR1 = 0x03 << 4  //+ lpspi3 clocks (lpspi3_clk_enable)
+	CG1_3  CCGR1 = 0x03 << 6  //+ lpspi4 clocks (lpspi4_clk_enable)
+	CG1_4  CCGR1 = 0x03 << 8  //+ adc2 clock (adc2_clk_enable)
+	CG1_5  CCGR1 = 0x03 << 10 //+ enet clock (enet_clk_enable)
+	CG1_6  CCGR1 = 0x03 << 12 //+ pit clocks (pit_clk_enable)
+	CG1_7  CCGR1 = 0x03 << 14 //+ aoi2 clocks (aoi2_clk_enable)
+	CG1_8  CCGR1 = 0x03 << 16 //+ adc1 clock (adc1_clk_enable)
+	CG1_9  CCGR1 = 0x03 << 18 //+ semc_exsc clock (semc_exsc_clk_enable)
+	CG1_10 CCGR1 = 0x03 << 20 //+ gpt1 bus clock (gpt_clk_enable)
+	CG1_11 CCGR1 = 0x03 << 22 //+ gpt1 serial clock (gpt_serial_clk_enable)
+	CG1_12 CCGR1 = 0x03 << 24 //+ lpuart4 clock (lpuart4_clk_enable)
+	CG1_13 CCGR1 = 0x03 << 26 //+ gpio1 clock (gpio1_clk_enable)
+	CG1_14 CCGR1 = 0x03 << 28 //+ csu clock (csu_clk_enable)
+	CG1_15 CCGR1 = 0x03 << 30 //+ Reserved
 )
 
 const (
-	CG0n  = 0
-	CG1n  = 2
-	CG2n  = 4
-	CG3n  = 6
-	CG4n  = 8
-	CG5n  = 10
-	CG6n  = 12
-	CG7n  = 14
-	CG8n  = 16
-	CG9n  = 18
-	CG10n = 20
-	CG11n = 22
-	CG12n = 24
-	CG13n = 26
-	CG14n = 28
-	CG15n = 30
+	CG1_0n  = 0
+	CG1_1n  = 2
+	CG1_2n  = 4
+	CG1_3n  = 6
+	CG1_4n  = 8
+	CG1_5n  = 10
+	CG1_6n  = 12
+	CG1_7n  = 14
+	CG1_8n  = 16
+	CG1_9n  = 18
+	CG1_10n = 20
+	CG1_11n = 22
+	CG1_12n = 24
+	CG1_13n = 26
+	CG1_14n = 28
+	CG1_15n = 30
 )
 
 const (
-	CG0  CCGR2 = 0x03 << 0  //+ ocram_exsc clock (ocram_exsc_clk_enable)
-	CG1  CCGR2 = 0x03 << 2  //+ csi clock (csi_clk_enable)
-	CG2  CCGR2 = 0x03 << 4  //+ iomuxc_snvs clock (iomuxc_snvs_clk_enable)
-	CG3  CCGR2 = 0x03 << 6  //+ lpi2c1 clock (lpi2c1_clk_enable)
-	CG4  CCGR2 = 0x03 << 8  //+ lpi2c2 clock (lpi2c2_clk_enable)
-	CG5  CCGR2 = 0x03 << 10 //+ lpi2c3 clock (lpi2c3_clk_enable)
-	CG6  CCGR2 = 0x03 << 12 //+ OCOTP_CTRL clock (iim_clk_enable)
-	CG7  CCGR2 = 0x03 << 14 //+ xbar3 clock (xbar3_clk_enable)
-	CG8  CCGR2 = 0x03 << 16 //+ ipmux1 clock (ipmux1_clk_enable)
-	CG9  CCGR2 = 0x03 << 18 //+ ipmux2 clock (ipmux2_clk_enable)
-	CG10 CCGR2 = 0x03 << 20 //+ ipmux3 clock (ipmux3_clk_enable)
-	CG11 CCGR2 = 0x03 << 22 //+ xbar1 clock (xbar1_clk_enable)
-	CG12 CCGR2 = 0x03 << 24 //+ xbar2 clock (xbar2_clk_enable)
-	CG13 CCGR2 = 0x03 << 26 //+ gpio3 clock (gpio3_clk_enable)
-	CG14 CCGR2 = 0x03 << 28 //+ lcd clocks (lcd_clk_enable)
-	CG15 CCGR2 = 0x03 << 30 //+ pxp clocks (pxp_clk_enable)
+	CG2_0  CCGR2 = 0x03 << 0  //+ ocram_exsc clock (ocram_exsc_clk_enable)
+	CG2_1  CCGR2 = 0x03 << 2  //+ csi clock (csi_clk_enable)
+	CG2_2  CCGR2 = 0x03 << 4  //+ iomuxc_snvs clock (iomuxc_snvs_clk_enable)
+	CG2_3  CCGR2 = 0x03 << 6  //+ lpi2c1 clock (lpi2c1_clk_enable)
+	CG2_4  CCGR2 = 0x03 << 8  //+ lpi2c2 clock (lpi2c2_clk_enable)
+	CG2_5  CCGR2 = 0x03 << 10 //+ lpi2c3 clock (lpi2c3_clk_enable)
+	CG2_6  CCGR2 = 0x03 << 12 //+ OCOTP_CTRL clock (iim_clk_enable)
+	CG2_7  CCGR2 = 0x03 << 14 //+ xbar3 clock (xbar3_clk_enable)
+	CG2_8  CCGR2 = 0x03 << 16 //+ ipmux1 clock (ipmux1_clk_enable)
+	CG2_9  CCGR2 = 0x03 << 18 //+ ipmux2 clock (ipmux2_clk_enable)
+	CG2_10 CCGR2 = 0x03 << 20 //+ ipmux3 clock (ipmux3_clk_enable)
+	CG2_11 CCGR2 = 0x03 << 22 //+ xbar1 clock (xbar1_clk_enable)
+	CG2_12 CCGR2 = 0x03 << 24 //+ xbar2 clock (xbar2_clk_enable)
+	CG2_13 CCGR2 = 0x03 << 26 //+ gpio3 clock (gpio3_clk_enable)
+	CG2_14 CCGR2 = 0x03 << 28 //+ lcd clocks (lcd_clk_enable)
+	CG2_15 CCGR2 = 0x03 << 30 //+ pxp clocks (pxp_clk_enable)
 )
 
 const (
-	CG0n  = 0
-	CG1n  = 2
-	CG2n  = 4
-	CG3n  = 6
-	CG4n  = 8
-	CG5n  = 10
-	CG6n  = 12
-	CG7n  = 14
-	CG8n  = 16
-	CG9n  = 18
-	CG10n = 20
-	CG11n = 22
-	CG12n = 24
-	CG13n = 26
-	CG14n = 28
-	CG15n = 30
+	CG2_0n  = 0
+	CG2_1n  = 2
+	CG2_2n  = 4
+	CG2_3n  = 6
+	CG2_4n  = 8
+	CG2_5n  = 10
+	CG2_6n  = 12
+	CG2_7n  = 14
+	CG2_8n  = 16
+	CG2_9n  = 18
+	CG2_10n = 20
+	CG2_11n = 22
+	CG2_12n = 24
+	CG2_13n = 26
+	CG2_14n = 28
+	CG2_15n = 30
 )
 
 const (
-	CG0  CCGR3 = 0x03 << 0  //+ flexio2 clocks (flexio2_clk_enable)
-	CG1  CCGR3 = 0x03 << 2  //+ lpuart5 clock (lpuart5_clk_enable)
-	CG2  CCGR3 = 0x03 << 4  //+ semc clocks (semc_clk_enable)
-	CG3  CCGR3 = 0x03 << 6  //+ lpuart6 clock (lpuart6_clk_enable)
-	CG4  CCGR3 = 0x03 << 8  //+ aoi1 clock (aoi1_clk_enable)
-	CG5  CCGR3 = 0x03 << 10 //+ lcdif pix clock (lcdif_pix_clk_enable)
-	CG6  CCGR3 = 0x03 << 12 //+ gpio4 clock (gpio4_clk_enable)
-	CG7  CCGR3 = 0x03 << 14 //+ ewm clocks (ewm_clk_enable)
-	CG8  CCGR3 = 0x03 << 16 //+ wdog1 clock (wdog1_clk_enable)
-	CG9  CCGR3 = 0x03 << 18 //+ flexram clock (flexram_clk_enable)
-	CG10 CCGR3 = 0x03 << 20 //+ acmp1 clocks (acmp1_clk_enable)
-	CG11 CCGR3 = 0x03 << 22 //+ acmp2 clocks (acmp2_clk_enable)
-	CG12 CCGR3 = 0x03 << 24 //+ acmp3 clocks (acmp3_clk_enable)
-	CG13 CCGR3 = 0x03 << 26 //+ acmp4 clocks (acmp4_clk_enable)
-	CG14 CCGR3 = 0x03 << 28 //+ The OCRAM clock cannot be turned off when the CM cache is running on this device.
-	CG15 CCGR3 = 0x03 << 30 //+ iomuxc_snvs_gpr clock (iomuxc_snvs_gpr_clk_enable)
+	CG3_0  CCGR3 = 0x03 << 0  //+ flexio2 clocks (flexio2_clk_enable)
+	CG3_1  CCGR3 = 0x03 << 2  //+ lpuart5 clock (lpuart5_clk_enable)
+	CG3_2  CCGR3 = 0x03 << 4  //+ semc clocks (semc_clk_enable)
+	CG3_3  CCGR3 = 0x03 << 6  //+ lpuart6 clock (lpuart6_clk_enable)
+	CG3_4  CCGR3 = 0x03 << 8  //+ aoi1 clock (aoi1_clk_enable)
+	CG3_5  CCGR3 = 0x03 << 10 //+ lcdif pix clock (lcdif_pix_clk_enable)
+	CG3_6  CCGR3 = 0x03 << 12 //+ gpio4 clock (gpio4_clk_enable)
+	CG3_7  CCGR3 = 0x03 << 14 //+ ewm clocks (ewm_clk_enable)
+	CG3_8  CCGR3 = 0x03 << 16 //+ wdog1 clock (wdog1_clk_enable)
+	CG3_9  CCGR3 = 0x03 << 18 //+ flexram clock (flexram_clk_enable)
+	CG3_10 CCGR3 = 0x03 << 20 //+ acmp1 clocks (acmp1_clk_enable)
+	CG3_11 CCGR3 = 0x03 << 22 //+ acmp2 clocks (acmp2_clk_enable)
+	CG3_12 CCGR3 = 0x03 << 24 //+ acmp3 clocks (acmp3_clk_enable)
+	CG3_13 CCGR3 = 0x03 << 26 //+ acmp4 clocks (acmp4_clk_enable)
+	CG3_14 CCGR3 = 0x03 << 28 //+ The OCRAM clock cannot be turned off when the CM cache is running on this device.
+	CG3_15 CCGR3 = 0x03 << 30 //+ iomuxc_snvs_gpr clock (iomuxc_snvs_gpr_clk_enable)
 )
 
 const (
-	CG0n  = 0
-	CG1n  = 2
-	CG2n  = 4
-	CG3n  = 6
-	CG4n  = 8
-	CG5n  = 10
-	CG6n  = 12
-	CG7n  = 14
-	CG8n  = 16
-	CG9n  = 18
-	CG10n = 20
-	CG11n = 22
-	CG12n = 24
-	CG13n = 26
-	CG14n = 28
-	CG15n = 30
+	CG3_0n  = 0
+	CG3_1n  = 2
+	CG3_2n  = 4
+	CG3_3n  = 6
+	CG3_4n  = 8
+	CG3_5n  = 10
+	CG3_6n  = 12
+	CG3_7n  = 14
+	CG3_8n  = 16
+	CG3_9n  = 18
+	CG3_10n = 20
+	CG3_11n = 22
+	CG3_12n = 24
+	CG3_13n = 26
+	CG3_14n = 28
+	CG3_15n = 30
 )
 
 const (
-	CG0  CCGR4 = 0x03 << 0  //+ sim_m7 register access clock (sim_m7_mainclk_r_enable)
-	CG1  CCGR4 = 0x03 << 2  //+ iomuxc clock (iomuxc_clk_enable)
-	CG2  CCGR4 = 0x03 << 4  //+ iomuxc gpr clock (iomuxc_gpr_clk_enable)
-	CG3  CCGR4 = 0x03 << 6  //+ bee clock(bee_clk_enable)
-	CG4  CCGR4 = 0x03 << 8  //+ sim_m7 clock (sim_m7_clk_enable)
-	CG5  CCGR4 = 0x03 << 10 //+ tsc_dig clock (tsc_clk_enable)
-	CG6  CCGR4 = 0x03 << 12 //+ sim_m clocks (sim_m_clk_enable)
-	CG7  CCGR4 = 0x03 << 14 //+ sim_ems clocks (sim_ems_clk_enable)
-	CG8  CCGR4 = 0x03 << 16 //+ pwm1 clocks (pwm1_clk_enable)
-	CG9  CCGR4 = 0x03 << 18 //+ pwm2 clocks (pwm2_clk_enable)
-	CG10 CCGR4 = 0x03 << 20 //+ pwm3 clocks (pwm3_clk_enable)
-	CG11 CCGR4 = 0x03 << 22 //+ pwm4 clocks (pwm4_clk_enable)
-	CG12 CCGR4 = 0x03 << 24 //+ enc1 clocks (enc1_clk_enable)
-	CG13 CCGR4 = 0x03 << 26 //+ enc2 clocks (enc2_clk_enable)
-	CG14 CCGR4 = 0x03 << 28 //+ enc3 clocks (enc3_clk_enable)
-	CG15 CCGR4 = 0x03 << 30 //+ enc4 clocks (enc4_clk_enable)
+	CG4_0  CCGR4 = 0x03 << 0  //+ sim_m7 register access clock (sim_m7_mainclk_r_enable)
+	CG4_1  CCGR4 = 0x03 << 2  //+ iomuxc clock (iomuxc_clk_enable)
+	CG4_2  CCGR4 = 0x03 << 4  //+ iomuxc gpr clock (iomuxc_gpr_clk_enable)
+	CG4_3  CCGR4 = 0x03 << 6  //+ bee clock(bee_clk_enable)
+	CG4_4  CCGR4 = 0x03 << 8  //+ sim_m7 clock (sim_m7_clk_enable)
+	CG4_5  CCGR4 = 0x03 << 10 //+ tsc_dig clock (tsc_clk_enable)
+	CG4_6  CCGR4 = 0x03 << 12 //+ sim_m clocks (sim_m_clk_enable)
+	CG4_7  CCGR4 = 0x03 << 14 //+ sim_ems clocks (sim_ems_clk_enable)
+	CG4_8  CCGR4 = 0x03 << 16 //+ pwm1 clocks (pwm1_clk_enable)
+	CG4_9  CCGR4 = 0x03 << 18 //+ pwm2 clocks (pwm2_clk_enable)
+	CG4_10 CCGR4 = 0x03 << 20 //+ pwm3 clocks (pwm3_clk_enable)
+	CG4_11 CCGR4 = 0x03 << 22 //+ pwm4 clocks (pwm4_clk_enable)
+	CG4_12 CCGR4 = 0x03 << 24 //+ enc1 clocks (enc1_clk_enable)
+	CG4_13 CCGR4 = 0x03 << 26 //+ enc2 clocks (enc2_clk_enable)
+	CG4_14 CCGR4 = 0x03 << 28 //+ enc3 clocks (enc3_clk_enable)
+	CG4_15 CCGR4 = 0x03 << 30 //+ enc4 clocks (enc4_clk_enable)
 )
 
 const (
-	CG0n  = 0
-	CG1n  = 2
-	CG2n  = 4
-	CG3n  = 6
-	CG4n  = 8
-	CG5n  = 10
-	CG6n  = 12
-	CG7n  = 14
-	CG8n  = 16
-	CG9n  = 18
-	CG10n = 20
-	CG11n = 22
-	CG12n = 24
-	CG13n = 26
-	CG14n = 28
-	CG15n = 30
+	CG4_0n  = 0
+	CG4_1n  = 2
+	CG4_2n  = 4
+	CG4_3n  = 6
+	CG4_4n  = 8
+	CG4_5n  = 10
+	CG4_6n  = 12
+	CG4_7n  = 14
+	CG4_8n  = 16
+	CG4_9n  = 18
+	CG4_10n = 20
+	CG4_11n = 22
+	CG4_12n = 24
+	CG4_13n = 26
+	CG4_14n = 28
+	CG4_15n = 30
 )
 
 const (
-	CG0  CCGR5 = 0x03 << 0  //+ rom clock (rom_clk_enable)
-	CG1  CCGR5 = 0x03 << 2  //+ flexio1 clock (flexio1_clk_enable)
-	CG2  CCGR5 = 0x03 << 4  //+ wdog3 clock (wdog3_clk_enable)
-	CG3  CCGR5 = 0x03 << 6  //+ dma clock (dma_clk_enable)
-	CG4  CCGR5 = 0x03 << 8  //+ kpp clock (kpp_clk_enable)
-	CG5  CCGR5 = 0x03 << 10 //+ wdog2 clock (wdog2_clk_enable)
-	CG6  CCGR5 = 0x03 << 12 //+ aipstz4 clocks (aips_tz4_clk_enable)
-	CG7  CCGR5 = 0x03 << 14 //+ spdif clock (spdif_clk_enable)
-	CG8  CCGR5 = 0x03 << 16 //+ sim_main clock (sim_main_clk_enable)
-	CG9  CCGR5 = 0x03 << 18 //+ sai1 clock (sai1_clk_enable)
-	CG10 CCGR5 = 0x03 << 20 //+ sai2 clock (sai2_clk_enable)
-	CG11 CCGR5 = 0x03 << 22 //+ sai3 clock (sai3_clk_enable)
-	CG12 CCGR5 = 0x03 << 24 //+ lpuart1 clock (lpuart1_clk_enable)
-	CG13 CCGR5 = 0x03 << 26 //+ lpuart7 clock (lpuart7_clk_enable)
-	CG14 CCGR5 = 0x03 << 28 //+ snvs_hp clock (snvs_hp_clk_enable)
-	CG15 CCGR5 = 0x03 << 30 //+ snvs_lp clock (snvs_lp_clk_enable)
+	CG5_0  CCGR5 = 0x03 << 0  //+ rom clock (rom_clk_enable)
+	CG5_1  CCGR5 = 0x03 << 2  //+ flexio1 clock (flexio1_clk_enable)
+	CG5_2  CCGR5 = 0x03 << 4  //+ wdog3 clock (wdog3_clk_enable)
+	CG5_3  CCGR5 = 0x03 << 6  //+ dma clock (dma_clk_enable)
+	CG5_4  CCGR5 = 0x03 << 8  //+ kpp clock (kpp_clk_enable)
+	CG5_5  CCGR5 = 0x03 << 10 //+ wdog2 clock (wdog2_clk_enable)
+	CG5_6  CCGR5 = 0x03 << 12 //+ aipstz4 clocks (aips_tz4_clk_enable)
+	CG5_7  CCGR5 = 0x03 << 14 //+ spdif clock (spdif_clk_enable)
+	CG5_8  CCGR5 = 0x03 << 16 //+ sim_main clock (sim_main_clk_enable)
+	CG5_9  CCGR5 = 0x03 << 18 //+ sai1 clock (sai1_clk_enable)
+	CG5_10 CCGR5 = 0x03 << 20 //+ sai2 clock (sai2_clk_enable)
+	CG5_11 CCGR5 = 0x03 << 22 //+ sai3 clock (sai3_clk_enable)
+	CG5_12 CCGR5 = 0x03 << 24 //+ lpuart1 clock (lpuart1_clk_enable)
+	CG5_13 CCGR5 = 0x03 << 26 //+ lpuart7 clock (lpuart7_clk_enable)
+	CG5_14 CCGR5 = 0x03 << 28 //+ snvs_hp clock (snvs_hp_clk_enable)
+	CG5_15 CCGR5 = 0x03 << 30 //+ snvs_lp clock (snvs_lp_clk_enable)
 )
 
 const (
-	CG0n  = 0
-	CG1n  = 2
-	CG2n  = 4
-	CG3n  = 6
-	CG4n  = 8
-	CG5n  = 10
-	CG6n  = 12
-	CG7n  = 14
-	CG8n  = 16
-	CG9n  = 18
-	CG10n = 20
-	CG11n = 22
-	CG12n = 24
-	CG13n = 26
-	CG14n = 28
-	CG15n = 30
+	CG5_0n  = 0
+	CG5_1n  = 2
+	CG5_2n  = 4
+	CG5_3n  = 6
+	CG5_4n  = 8
+	CG5_5n  = 10
+	CG5_6n  = 12
+	CG5_7n  = 14
+	CG5_8n  = 16
+	CG5_9n  = 18
+	CG5_10n = 20
+	CG5_11n = 22
+	CG5_12n = 24
+	CG5_13n = 26
+	CG5_14n = 28
+	CG5_15n = 30
 )
 
 const (
-	CG0  CCGR6 = 0x03 << 0  //+ usboh3 clock (usboh3_clk_enable)
-	CG1  CCGR6 = 0x03 << 2  //+ usdhc1 clocks (usdhc1_clk_enable)
-	CG2  CCGR6 = 0x03 << 4  //+ usdhc2 clocks (usdhc2_clk_enable)
-	CG3  CCGR6 = 0x03 << 6  //+ dcdc clocks (dcdc_clk_enable)
-	CG4  CCGR6 = 0x03 << 8  //+ ipmux4 clock (ipmux4_clk_enable)
-	CG5  CCGR6 = 0x03 << 10 //+ flexspi clocks (flexspi_clk_enable) sim_ems_clk_enable must also be cleared, when flexspi_clk_enable is cleared
-	CG6  CCGR6 = 0x03 << 12 //+ trng clock (trng_clk_enable)
-	CG7  CCGR6 = 0x03 << 14 //+ lpuart8 clocks (lpuart8_clk_enable)
-	CG8  CCGR6 = 0x03 << 16 //+ timer4 clocks (timer4_clk_enable)
-	CG9  CCGR6 = 0x03 << 18 //+ aips_tz3 clock (aips_tz3_clk_enable)
-	CG10 CCGR6 = 0x03 << 20 //+ sim_axbs_p_clk_enable
-	CG11 CCGR6 = 0x03 << 22 //+ anadig clocks (anadig_clk_enable)
-	CG12 CCGR6 = 0x03 << 24 //+ lpi2c4 serial clock (lpi2c4_serial_clk_enable)
-	CG13 CCGR6 = 0x03 << 26 //+ timer1 clocks (timer1_clk_enable)
-	CG14 CCGR6 = 0x03 << 28 //+ timer2 clocks (timer2_clk_enable)
-	CG15 CCGR6 = 0x03 << 30 //+ timer3 clocks (timer3_clk_enable)
+	CG6_0  CCGR6 = 0x03 << 0  //+ usboh3 clock (usboh3_clk_enable)
+	CG6_1  CCGR6 = 0x03 << 2  //+ usdhc1 clocks (usdhc1_clk_enable)
+	CG6_2  CCGR6 = 0x03 << 4  //+ usdhc2 clocks (usdhc2_clk_enable)
+	CG6_3  CCGR6 = 0x03 << 6  //+ dcdc clocks (dcdc_clk_enable)
+	CG6_4  CCGR6 = 0x03 << 8  //+ ipmux4 clock (ipmux4_clk_enable)
+	CG6_5  CCGR6 = 0x03 << 10 //+ flexspi clocks (flexspi_clk_enable) sim_ems_clk_enable must also be cleared, when flexspi_clk_enable is cleared
+	CG6_6  CCGR6 = 0x03 << 12 //+ trng clock (trng_clk_enable)
+	CG6_7  CCGR6 = 0x03 << 14 //+ lpuart8 clocks (lpuart8_clk_enable)
+	CG6_8  CCGR6 = 0x03 << 16 //+ timer4 clocks (timer4_clk_enable)
+	CG6_9  CCGR6 = 0x03 << 18 //+ aips_tz3 clock (aips_tz3_clk_enable)
+	CG6_10 CCGR6 = 0x03 << 20 //+ sim_axbs_p_clk_enable
+	CG6_11 CCGR6 = 0x03 << 22 //+ anadig clocks (anadig_clk_enable)
+	CG6_12 CCGR6 = 0x03 << 24 //+ lpi2c4 serial clock (lpi2c4_serial_clk_enable)
+	CG6_13 CCGR6 = 0x03 << 26 //+ timer1 clocks (timer1_clk_enable)
+	CG6_14 CCGR6 = 0x03 << 28 //+ timer2 clocks (timer2_clk_enable)
+	CG6_15 CCGR6 = 0x03 << 30 //+ timer3 clocks (timer3_clk_enable)
 )
 
 const (
-	CG0n  = 0
-	CG1n  = 2
-	CG2n  = 4
-	CG3n  = 6
-	CG4n  = 8
-	CG5n  = 10
-	CG6n  = 12
-	CG7n  = 14
-	CG8n  = 16
-	CG9n  = 18
-	CG10n = 20
-	CG11n = 22
-	CG12n = 24
-	CG13n = 26
-	CG14n = 28
-	CG15n = 30
+	CG6_0n  = 0
+	CG6_1n  = 2
+	CG6_2n  = 4
+	CG6_3n  = 6
+	CG6_4n  = 8
+	CG6_5n  = 10
+	CG6_6n  = 12
+	CG6_7n  = 14
+	CG6_8n  = 16
+	CG6_9n  = 18
+	CG6_10n = 20
+	CG6_11n = 22
+	CG6_12n = 24
+	CG6_13n = 26
+	CG6_14n = 28
+	CG6_15n = 30
 )
 
 const (
-	CG0 CCGR7 = 0x03 << 0  //+ enet2_clk_enable
-	CG1 CCGR7 = 0x03 << 2  //+ flexspi2_clk_enable
-	CG2 CCGR7 = 0x03 << 4  //+ axbs_l_clk_enable
-	CG3 CCGR7 = 0x03 << 6  //+ can3_clk_enable
-	CG4 CCGR7 = 0x03 << 8  //+ can3_serial_clk_enable
-	CG5 CCGR7 = 0x03 << 10 //+ aips_lite_clk_enable
-	CG6 CCGR7 = 0x03 << 12 //+ flexio3_clk_enable
+	CG7_0 CCGR7 = 0x03 << 0  //+ enet2_clk_enable
+	CG7_1 CCGR7 = 0x03 << 2  //+ flexspi2_clk_enable
+	CG7_2 CCGR7 = 0x03 << 4  //+ axbs_l_clk_enable
+	CG7_3 CCGR7 = 0x03 << 6  //+ can3_clk_enable
+	CG7_4 CCGR7 = 0x03 << 8  //+ can3_serial_clk_enable
+	CG7_5 CCGR7 = 0x03 << 10 //+ aips_lite_clk_enable
+	CG7_6 CCGR7 = 0x03 << 12 //+ flexio3_clk_enable
 )
 
 const (
-	CG0n = 0
-	CG1n = 2
-	CG2n = 4
-	CG3n = 6
-	CG4n = 8
-	CG5n = 10
-	CG6n = 12
+	CG7_0n = 0
+	CG7_1n = 2
+	CG7_2n = 4
+	CG7_3n = 6
+	CG7_4n = 8
+	CG7_5n = 10
+	CG7_6n = 12
 )
 
 const (
-	MOD_EN_OV_GPT         CMEOR = 0x01 << 5  //+ Overide clock enable signal from GPT - clock will not be gated based on GPT's signal 'ipg_enable_clk'
-	MOD_EN_OV_GPT_0       CMEOR = 0x00 << 5  //  don't override module enable signal
-	MOD_EN_OV_GPT_1       CMEOR = 0x01 << 5  //  override module enable signal
-	MOD_EN_OV_PIT         CMEOR = 0x01 << 6  //+ Overide clock enable signal from PIT - clock will not be gated based on PIT's signal 'ipg_enable_clk'
-	MOD_EN_OV_PIT_0       CMEOR = 0x00 << 6  //  don't override module enable signal
-	MOD_EN_OV_PIT_1       CMEOR = 0x01 << 6  //  override module enable signal
-	MOD_EN_USDHC          CMEOR = 0x01 << 7  //+ overide clock enable signal from USDHC.
-	MOD_EN_USDHC_0        CMEOR = 0x00 << 7  //  don't override module enable signal
-	MOD_EN_USDHC_1        CMEOR = 0x01 << 7  //  override module enable signal
-	MOD_EN_OV_TRNG        CMEOR = 0x01 << 9  //+ Overide clock enable signal from TRNG
-	MOD_EN_OV_TRNG_0      CMEOR = 0x00 << 9  //  don't override module enable signal
-	MOD_EN_OV_TRNG_1      CMEOR = 0x01 << 9  //  override module enable signal
-	MOD_EN_OV_CANFD_CPI   CMEOR = 0x01 << 10 //+ Overide clock enable signal from FlexCAN3(CANFD) - clock will not be gated based on CAN's signal 'enable_clk_cpi'
-	MOD_EN_OV_CANFD_CPI_0 CMEOR = 0x00 << 10 //  don't override module enable signal
-	MOD_EN_OV_CANFD_CPI_1 CMEOR = 0x01 << 10 //  override module enable signal
-	MOD_EN_OV_CAN2_CPI    CMEOR = 0x01 << 28 //+ Overide clock enable signal from CAN2 - clock will not be gated based on CAN's signal 'enable_clk_cpi'
-	MOD_EN_OV_CAN2_CPI_0  CMEOR = 0x00 << 28 //  don't override module enable signal
-	MOD_EN_OV_CAN2_CPI_1  CMEOR = 0x01 << 28 //  override module enable signal
-	MOD_EN_OV_CAN1_CPI    CMEOR = 0x01 << 30 //+ Overide clock enable signal from CAN1 - clock will not be gated based on CAN's signal 'enable_clk_cpi'
-	MOD_EN_OV_CAN1_CPI_0  CMEOR = 0x00 << 30 //  don't overide module enable signal
-	MOD_EN_OV_CAN1_CPI_1  CMEOR = 0x01 << 30 //  overide module enable signal
+	MOD_EN_OV_GPT       CMEOR = 0x01 << 5  //+ Overide clock enable signal from GPT - clock will not be gated based on GPT's signal 'ipg_enable_clk'
+	MOD_EN_OV_PIT       CMEOR = 0x01 << 6  //+ Overide clock enable signal from PIT - clock will not be gated based on PIT's signal 'ipg_enable_clk'
+	MOD_EN_USDHC        CMEOR = 0x01 << 7  //+ overide clock enable signal from USDHC.
+	MOD_EN_OV_TRNG      CMEOR = 0x01 << 9  //+ Overide clock enable signal from TRNG
+	MOD_EN_OV_CANFD_CPI CMEOR = 0x01 << 10 //+ Overide clock enable signal from FlexCAN3(CANFD) - clock will not be gated based on CAN's signal 'enable_clk_cpi'
+	MOD_EN_OV_CAN2_CPI  CMEOR = 0x01 << 28 //+ Overide clock enable signal from CAN2 - clock will not be gated based on CAN's signal 'enable_clk_cpi'
+	MOD_EN_OV_CAN1_CPI  CMEOR = 0x01 << 30 //+ Overide clock enable signal from CAN1 - clock will not be gated based on CAN's signal 'enable_clk_cpi'
 )
 
 const (

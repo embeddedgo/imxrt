@@ -39,8 +39,6 @@ const (
 	TxSel_1           SCR = 0x01 << 2  //  Feed-through SPDIFIN
 	TxSel_5           SCR = 0x05 << 2  //  Tx Normal operation
 	ValCtrl           SCR = 0x01 << 5  //+ no description available
-	ValCtrl_0         SCR = 0x00 << 5  //  Outgoing Validity always set
-	ValCtrl_1         SCR = 0x01 << 5  //  Outgoing Validity always clear
 	DMA_TX_En         SCR = 0x01 << 8  //+ DMA Transmit Request Enable (Tx FIFO empty)
 	DMA_Rx_En         SCR = 0x01 << 9  //+ DMA Receive Request Enable (RX FIFO full)
 	TxFIFO_Ctrl       SCR = 0x03 << 10 //+ no description available
@@ -55,25 +53,15 @@ const (
 	TxFIFOEmpty_Sel_2 SCR = 0x02 << 15 //  Empty interrupt if at most 8 sample in Tx left and right FIFOs
 	TxFIFOEmpty_Sel_3 SCR = 0x03 << 15 //  Empty interrupt if at most 12 sample in Tx left and right FIFOs
 	TxAutoSync        SCR = 0x01 << 17 //+ no description available
-	TxAutoSync_0      SCR = 0x00 << 17 //  Tx FIFO auto sync off
-	TxAutoSync_1      SCR = 0x01 << 17 //  Tx FIFO auto sync on
 	RxAutoSync        SCR = 0x01 << 18 //+ no description available
-	RxAutoSync_0      SCR = 0x00 << 18 //  Rx FIFO auto sync off
-	RxAutoSync_1      SCR = 0x01 << 18 //  RxFIFO auto sync on
 	RxFIFOFull_Sel    SCR = 0x03 << 19 //+ no description available
 	RxFIFOFull_Sel_0  SCR = 0x00 << 19 //  Full interrupt if at least 1 sample in Rx left and right FIFOs
 	RxFIFOFull_Sel_1  SCR = 0x01 << 19 //  Full interrupt if at least 4 sample in Rx left and right FIFOs
 	RxFIFOFull_Sel_2  SCR = 0x02 << 19 //  Full interrupt if at least 8 sample in Rx left and right FIFOs
 	RxFIFOFull_Sel_3  SCR = 0x03 << 19 //  Full interrupt if at least 16 sample in Rx left and right FIFO
 	RxFIFO_Rst        SCR = 0x01 << 21 //+ no description available
-	RxFIFO_Rst_0      SCR = 0x00 << 21 //  Normal operation
-	RxFIFO_Rst_1      SCR = 0x01 << 21 //  Reset register to 1 sample remaining
 	RxFIFO_Off_On     SCR = 0x01 << 22 //+ no description available
-	RxFIFO_Off_On_0   SCR = 0x00 << 22 //  SPDIF Rx FIFO is on
-	RxFIFO_Off_On_1   SCR = 0x01 << 22 //  SPDIF Rx FIFO is off. Does not accept data from interface
 	RxFIFO_Ctrl       SCR = 0x01 << 23 //+ no description available
-	RxFIFO_Ctrl_0     SCR = 0x00 << 23 //  Normal operation
-	RxFIFO_Ctrl_1     SCR = 0x01 << 23 //  Always read zero from Rx data register
 )
 
 const (
@@ -95,9 +83,7 @@ const (
 )
 
 const (
-	USyncMode   SRCD = 0x01 << 1 //+ no description available
-	USyncMode_0 SRCD = 0x00 << 1 //  Non-CD data
-	USyncMode_1 SRCD = 0x01 << 1 //  CD user channel subcode
+	USyncMode SRCD = 0x01 << 1 //+ no description available
 )
 
 const (
@@ -336,25 +322,23 @@ const (
 )
 
 const (
-	TxClk_DF        STC = 0x7F << 0   //+ Divider factor (1-128)
-	TxClk_DF_0      STC = 0x00 << 0   //  divider factor is 1
-	TxClk_DF_1      STC = 0x01 << 0   //  divider factor is 2
-	TxClk_DF_127    STC = 0x7F << 0   //  divider factor is 128
-	tx_all_clk_en   STC = 0x01 << 7   //+ Spdif transfer clock enable. When data is going to be transfered, this bit should be set to1.
-	tx_all_clk_en_0 STC = 0x00 << 7   //  disable transfer clock.
-	tx_all_clk_en_1 STC = 0x01 << 7   //  enable transfer clock.
-	TxClk_Source    STC = 0x07 << 8   //+ no description available
-	TxClk_Source_0  STC = 0x00 << 8   //  XTALOSC input (XTALOSC clock)
-	TxClk_Source_1  STC = 0x01 << 8   //  tx_clk input (from SPDIF0_CLK_ROOT. See CCM.)
-	TxClk_Source_2  STC = 0x02 << 8   //  tx_clk1 (from SAI1)
-	TxClk_Source_3  STC = 0x03 << 8   //  tx_clk2 SPDIF_EXT_CLK, from pads
-	TxClk_Source_4  STC = 0x04 << 8   //  tx_clk3 (from SAI2)
-	TxClk_Source_5  STC = 0x05 << 8   //  ipg_clk input (frequency divided)
-	TxClk_Source_6  STC = 0x06 << 8   //  tx_clk4 (from SAI3)
-	SYSCLK_DF       STC = 0x1FF << 11 //+ system clock divider factor, 2~512.
-	SYSCLK_DF_0     STC = 0x00 << 11  //  no clock signal
-	SYSCLK_DF_1     STC = 0x01 << 11  //  divider factor is 2
-	SYSCLK_DF_511   STC = 0x1FF << 11 //  divider factor is 512
+	TxClk_DF       STC = 0x7F << 0   //+ Divider factor (1-128)
+	TxClk_DF_0     STC = 0x00 << 0   //  divider factor is 1
+	TxClk_DF_1     STC = 0x01 << 0   //  divider factor is 2
+	TxClk_DF_127   STC = 0x7F << 0   //  divider factor is 128
+	tx_all_clk_en  STC = 0x01 << 7   //+ Spdif transfer clock enable. When data is going to be transfered, this bit should be set to1.
+	TxClk_Source   STC = 0x07 << 8   //+ no description available
+	TxClk_Source_0 STC = 0x00 << 8   //  XTALOSC input (XTALOSC clock)
+	TxClk_Source_1 STC = 0x01 << 8   //  tx_clk input (from SPDIF0_CLK_ROOT. See CCM.)
+	TxClk_Source_2 STC = 0x02 << 8   //  tx_clk1 (from SAI1)
+	TxClk_Source_3 STC = 0x03 << 8   //  tx_clk2 SPDIF_EXT_CLK, from pads
+	TxClk_Source_4 STC = 0x04 << 8   //  tx_clk3 (from SAI2)
+	TxClk_Source_5 STC = 0x05 << 8   //  ipg_clk input (frequency divided)
+	TxClk_Source_6 STC = 0x06 << 8   //  tx_clk4 (from SAI3)
+	SYSCLK_DF      STC = 0x1FF << 11 //+ system clock divider factor, 2~512.
+	SYSCLK_DF_0    STC = 0x00 << 11  //  no clock signal
+	SYSCLK_DF_1    STC = 0x01 << 11  //  divider factor is 2
+	SYSCLK_DF_511  STC = 0x1FF << 11 //  divider factor is 512
 )
 
 const (

@@ -25,14 +25,8 @@ package tempmon
 
 const (
 	POWER_DOWN   TEMPSENSE0 = 0x01 << 0   //+ This bit powers down the temperature sensor.
-	POWER_UP     TEMPSENSE0 = 0x00 << 0   //  Enable power to the temperature sensor.
-	POWER_DOWN   TEMPSENSE0 = 0x01 << 0   //  Power down the temperature sensor.
 	MEASURE_TEMP TEMPSENSE0 = 0x01 << 1   //+ Starts the measurement process
-	STOP         TEMPSENSE0 = 0x00 << 1   //  Do not start the measurement process.
-	START        TEMPSENSE0 = 0x01 << 1   //  Start the measurement process.
 	FINISHED     TEMPSENSE0 = 0x01 << 2   //+ Indicates that the latest temp is valid
-	INVALID      TEMPSENSE0 = 0x00 << 2   //  Last measurement is not ready yet.
-	VALID        TEMPSENSE0 = 0x01 << 2   //  Last measurement is valid.
 	TEMP_CNT     TEMPSENSE0 = 0xFFF << 8  //+ This bit field contains the last measured temperature count.
 	ALARM_VALUE  TEMPSENSE0 = 0xFFF << 20 //+ This bit field contains the temperature count (raw sensor output) that will generate a high alarm when TEMP_CNT is smaller than this field
 )
@@ -47,14 +41,8 @@ const (
 
 const (
 	POWER_DOWN   TEMPSENSE0_SET = 0x01 << 0   //+ This bit powers down the temperature sensor.
-	POWER_UP     TEMPSENSE0_SET = 0x00 << 0   //  Enable power to the temperature sensor.
-	POWER_DOWN   TEMPSENSE0_SET = 0x01 << 0   //  Power down the temperature sensor.
 	MEASURE_TEMP TEMPSENSE0_SET = 0x01 << 1   //+ Starts the measurement process
-	STOP         TEMPSENSE0_SET = 0x00 << 1   //  Do not start the measurement process.
-	START        TEMPSENSE0_SET = 0x01 << 1   //  Start the measurement process.
 	FINISHED     TEMPSENSE0_SET = 0x01 << 2   //+ Indicates that the latest temp is valid
-	INVALID      TEMPSENSE0_SET = 0x00 << 2   //  Last measurement is not ready yet.
-	VALID        TEMPSENSE0_SET = 0x01 << 2   //  Last measurement is valid.
 	TEMP_CNT     TEMPSENSE0_SET = 0xFFF << 8  //+ This bit field contains the last measured temperature count.
 	ALARM_VALUE  TEMPSENSE0_SET = 0xFFF << 20 //+ This bit field contains the temperature count (raw sensor output) that will generate a high alarm when TEMP_CNT is smaller than this field
 )
@@ -69,14 +57,8 @@ const (
 
 const (
 	POWER_DOWN   TEMPSENSE0_CLR = 0x01 << 0   //+ This bit powers down the temperature sensor.
-	POWER_UP     TEMPSENSE0_CLR = 0x00 << 0   //  Enable power to the temperature sensor.
-	POWER_DOWN   TEMPSENSE0_CLR = 0x01 << 0   //  Power down the temperature sensor.
 	MEASURE_TEMP TEMPSENSE0_CLR = 0x01 << 1   //+ Starts the measurement process
-	STOP         TEMPSENSE0_CLR = 0x00 << 1   //  Do not start the measurement process.
-	START        TEMPSENSE0_CLR = 0x01 << 1   //  Start the measurement process.
 	FINISHED     TEMPSENSE0_CLR = 0x01 << 2   //+ Indicates that the latest temp is valid
-	INVALID      TEMPSENSE0_CLR = 0x00 << 2   //  Last measurement is not ready yet.
-	VALID        TEMPSENSE0_CLR = 0x01 << 2   //  Last measurement is valid.
 	TEMP_CNT     TEMPSENSE0_CLR = 0xFFF << 8  //+ This bit field contains the last measured temperature count.
 	ALARM_VALUE  TEMPSENSE0_CLR = 0xFFF << 20 //+ This bit field contains the temperature count (raw sensor output) that will generate a high alarm when TEMP_CNT is smaller than this field
 )
@@ -91,14 +73,8 @@ const (
 
 const (
 	POWER_DOWN   TEMPSENSE0_TOG = 0x01 << 0   //+ This bit powers down the temperature sensor.
-	POWER_UP     TEMPSENSE0_TOG = 0x00 << 0   //  Enable power to the temperature sensor.
-	POWER_DOWN   TEMPSENSE0_TOG = 0x01 << 0   //  Power down the temperature sensor.
 	MEASURE_TEMP TEMPSENSE0_TOG = 0x01 << 1   //+ Starts the measurement process
-	STOP         TEMPSENSE0_TOG = 0x00 << 1   //  Do not start the measurement process.
-	START        TEMPSENSE0_TOG = 0x01 << 1   //  Start the measurement process.
 	FINISHED     TEMPSENSE0_TOG = 0x01 << 2   //+ Indicates that the latest temp is valid
-	INVALID      TEMPSENSE0_TOG = 0x00 << 2   //  Last measurement is not ready yet.
-	VALID        TEMPSENSE0_TOG = 0x01 << 2   //  Last measurement is valid.
 	TEMP_CNT     TEMPSENSE0_TOG = 0xFFF << 8  //+ This bit field contains the last measured temperature count.
 	ALARM_VALUE  TEMPSENSE0_TOG = 0xFFF << 20 //+ This bit field contains the temperature count (raw sensor output) that will generate a high alarm when TEMP_CNT is smaller than this field
 )

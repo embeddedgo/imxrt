@@ -89,11 +89,7 @@ const (
 	ENABLE_CONTEXT_CACHING   CTRL = 0x01 << 22 //+ The software must set this bit to enable the caching of contexts between the operations
 	GATHER_RESIDUAL_WRITES   CTRL = 0x01 << 23 //+ The software must set this bit to enable the ragged writes to the unaligned buffers to be gathered between multiple write operations
 	PRESENT_SHA              CTRL = 0x01 << 28 //+ Indicates whether the SHA1/SHA2 functions are present.
-	Absent                   CTRL = 0x00 << 28 //  Absent
-	Present                  CTRL = 0x01 << 28 //  Present
 	PRESENT_CRYPTO           CTRL = 0x01 << 29 //+ Indicates whether the crypto (cipher/hash) functions are present.
-	Absent                   CTRL = 0x00 << 29 //  Absent
-	Present                  CTRL = 0x01 << 29 //  Present
 	CLKGATE                  CTRL = 0x01 << 30 //+ This bit must be set to zero for a normal operation
 	SFTRST                   CTRL = 0x01 << 31 //+ Set this bit to zero to enable a normal DCP operation
 )
@@ -119,11 +115,7 @@ const (
 	ENABLE_CONTEXT_CACHING   CTRL_SET = 0x01 << 22 //+ The software must set this bit to enable the caching of contexts between the operations
 	GATHER_RESIDUAL_WRITES   CTRL_SET = 0x01 << 23 //+ The software must set this bit to enable the ragged writes to the unaligned buffers to be gathered between multiple write operations
 	PRESENT_SHA              CTRL_SET = 0x01 << 28 //+ Indicates whether the SHA1/SHA2 functions are present.
-	Absent                   CTRL_SET = 0x00 << 28 //  Absent
-	Present                  CTRL_SET = 0x01 << 28 //  Present
 	PRESENT_CRYPTO           CTRL_SET = 0x01 << 29 //+ Indicates whether the crypto (cipher/hash) functions are present.
-	Absent                   CTRL_SET = 0x00 << 29 //  Absent
-	Present                  CTRL_SET = 0x01 << 29 //  Present
 	CLKGATE                  CTRL_SET = 0x01 << 30 //+ This bit must be set to zero for a normal operation
 	SFTRST                   CTRL_SET = 0x01 << 31 //+ Set this bit to zero to enable a normal DCP operation
 )
@@ -149,11 +141,7 @@ const (
 	ENABLE_CONTEXT_CACHING   CTRL_CLR = 0x01 << 22 //+ The software must set this bit to enable the caching of contexts between the operations
 	GATHER_RESIDUAL_WRITES   CTRL_CLR = 0x01 << 23 //+ The software must set this bit to enable the ragged writes to the unaligned buffers to be gathered between multiple write operations
 	PRESENT_SHA              CTRL_CLR = 0x01 << 28 //+ Indicates whether the SHA1/SHA2 functions are present.
-	Absent                   CTRL_CLR = 0x00 << 28 //  Absent
-	Present                  CTRL_CLR = 0x01 << 28 //  Present
 	PRESENT_CRYPTO           CTRL_CLR = 0x01 << 29 //+ Indicates whether the crypto (cipher/hash) functions are present.
-	Absent                   CTRL_CLR = 0x00 << 29 //  Absent
-	Present                  CTRL_CLR = 0x01 << 29 //  Present
 	CLKGATE                  CTRL_CLR = 0x01 << 30 //+ This bit must be set to zero for a normal operation
 	SFTRST                   CTRL_CLR = 0x01 << 31 //+ Set this bit to zero to enable a normal DCP operation
 )
@@ -179,11 +167,7 @@ const (
 	ENABLE_CONTEXT_CACHING   CTRL_TOG = 0x01 << 22 //+ The software must set this bit to enable the caching of contexts between the operations
 	GATHER_RESIDUAL_WRITES   CTRL_TOG = 0x01 << 23 //+ The software must set this bit to enable the ragged writes to the unaligned buffers to be gathered between multiple write operations
 	PRESENT_SHA              CTRL_TOG = 0x01 << 28 //+ Indicates whether the SHA1/SHA2 functions are present.
-	Absent                   CTRL_TOG = 0x00 << 28 //  Absent
-	Present                  CTRL_TOG = 0x01 << 28 //  Present
 	PRESENT_CRYPTO           CTRL_TOG = 0x01 << 29 //+ Indicates whether the crypto (cipher/hash) functions are present.
-	Absent                   CTRL_TOG = 0x00 << 29 //  Absent
-	Present                  CTRL_TOG = 0x01 << 29 //  Present
 	CLKGATE                  CTRL_TOG = 0x01 << 30 //+ This bit must be set to zero for a normal operation
 	SFTRST                   CTRL_TOG = 0x01 << 31 //+ Set this bit to zero to enable a normal DCP operation
 )
@@ -443,8 +427,6 @@ const (
 	ENABLE_HASH      PACKET1 = 0x01 << 6  //+ Reflects whether the selected hashing function must be enabled for this operation.
 	ENABLE_BLIT      PACKET1 = 0x01 << 7  //+ Reflects whether the DCP must perform a blit operation
 	CIPHER_ENCRYPT   PACKET1 = 0x01 << 8  //+ When the cipher block is enabled, this bit indicates whether the operation is encryption or decryption
-	DECRYPT          PACKET1 = 0x00 << 8  //  DECRYPT
-	ENCRYPT          PACKET1 = 0x01 << 8  //  ENCRYPT
 	CIPHER_INIT      PACKET1 = 0x01 << 9  //+ Reflects whether the cipher block must load the initialization vector from the payload for this operation
 	OTP_KEY          PACKET1 = 0x01 << 10 //+ Reflects whether a hardware-based key must be used
 	PAYLOAD_KEY      PACKET1 = 0x01 << 11 //+ When set, it indicates the payload contains the key
@@ -452,8 +434,6 @@ const (
 	HASH_TERM        PACKET1 = 0x01 << 13 //+ Reflects whether the current hashing block is the final block in the hashing operation, so the hash padding must be applied by the hardware
 	CHECK_HASH       PACKET1 = 0x01 << 14 //+ Reflects whether the calculated hash value must be compared to the hash provided in the payload.
 	HASH_OUTPUT      PACKET1 = 0x01 << 15 //+ When the hashing is enabled, this bit controls whether the input or output data is hashed.
-	INPUT            PACKET1 = 0x00 << 15 //  INPUT
-	OUTPUT           PACKET1 = 0x01 << 15 //  OUTPUT
 	CONSTANT_FILL    PACKET1 = 0x01 << 16 //+ When this bit is set (MEMCOPY and BLIT modes only), the DCP simply fills the destination buffer with the value found in the source address field
 	TEST_SEMA_IRQ    PACKET1 = 0x01 << 17 //+ This bit is used to test the channel semaphore transition to 0. FOR TEST USE ONLY!
 	KEY_BYTESWAP     PACKET1 = 0x01 << 18 //+ Reflects whether the DCP engine swaps the key bytes (big-endian key).

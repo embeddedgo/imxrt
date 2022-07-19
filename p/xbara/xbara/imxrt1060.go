@@ -741,33 +741,21 @@ const (
 
 const (
 	DEN0    CTRL0 = 0x01 << 0  //+ DMA Enable for XBAR_OUT0
-	DEN0_0  CTRL0 = 0x00 << 0  //  DMA disabled
-	DEN0_1  CTRL0 = 0x01 << 0  //  DMA enabled
 	IEN0    CTRL0 = 0x01 << 1  //+ Interrupt Enable for XBAR_OUT0
-	IEN0_0  CTRL0 = 0x00 << 1  //  Interrupt disabled
-	IEN0_1  CTRL0 = 0x01 << 1  //  Interrupt enabled
 	EDGE0   CTRL0 = 0x03 << 2  //+ Active edge for edge detection on XBAR_OUT0
 	EDGE0_0 CTRL0 = 0x00 << 2  //  STS0 never asserts
 	EDGE0_1 CTRL0 = 0x01 << 2  //  STS0 asserts on rising edges of XBAR_OUT0
 	EDGE0_2 CTRL0 = 0x02 << 2  //  STS0 asserts on falling edges of XBAR_OUT0
 	EDGE0_3 CTRL0 = 0x03 << 2  //  STS0 asserts on rising and falling edges of XBAR_OUT0
 	STS0    CTRL0 = 0x01 << 4  //+ Edge detection status for XBAR_OUT0
-	STS0_0  CTRL0 = 0x00 << 4  //  Active edge not yet detected on XBAR_OUT0
-	STS0_1  CTRL0 = 0x01 << 4  //  Active edge detected on XBAR_OUT0
 	DEN1    CTRL0 = 0x01 << 8  //+ DMA Enable for XBAR_OUT1
-	DEN1_0  CTRL0 = 0x00 << 8  //  DMA disabled
-	DEN1_1  CTRL0 = 0x01 << 8  //  DMA enabled
 	IEN1    CTRL0 = 0x01 << 9  //+ Interrupt Enable for XBAR_OUT1
-	IEN1_0  CTRL0 = 0x00 << 9  //  Interrupt disabled
-	IEN1_1  CTRL0 = 0x01 << 9  //  Interrupt enabled
 	EDGE1   CTRL0 = 0x03 << 10 //+ Active edge for edge detection on XBAR_OUT1
 	EDGE1_0 CTRL0 = 0x00 << 10 //  STS1 never asserts
 	EDGE1_1 CTRL0 = 0x01 << 10 //  STS1 asserts on rising edges of XBAR_OUT1
 	EDGE1_2 CTRL0 = 0x02 << 10 //  STS1 asserts on falling edges of XBAR_OUT1
 	EDGE1_3 CTRL0 = 0x03 << 10 //  STS1 asserts on rising and falling edges of XBAR_OUT1
 	STS1    CTRL0 = 0x01 << 12 //+ Edge detection status for XBAR_OUT1
-	STS1_0  CTRL0 = 0x00 << 12 //  Active edge not yet detected on XBAR_OUT1
-	STS1_1  CTRL0 = 0x01 << 12 //  Active edge detected on XBAR_OUT1
 )
 
 const (
@@ -783,33 +771,21 @@ const (
 
 const (
 	DEN2    CTRL1 = 0x01 << 0  //+ DMA Enable for XBAR_OUT2
-	DEN2_0  CTRL1 = 0x00 << 0  //  DMA disabled
-	DEN2_1  CTRL1 = 0x01 << 0  //  DMA enabled
 	IEN2    CTRL1 = 0x01 << 1  //+ Interrupt Enable for XBAR_OUT2
-	IEN2_0  CTRL1 = 0x00 << 1  //  Interrupt disabled
-	IEN2_1  CTRL1 = 0x01 << 1  //  Interrupt enabled
 	EDGE2   CTRL1 = 0x03 << 2  //+ Active edge for edge detection on XBAR_OUT2
 	EDGE2_0 CTRL1 = 0x00 << 2  //  STS2 never asserts
 	EDGE2_1 CTRL1 = 0x01 << 2  //  STS2 asserts on rising edges of XBAR_OUT2
 	EDGE2_2 CTRL1 = 0x02 << 2  //  STS2 asserts on falling edges of XBAR_OUT2
 	EDGE2_3 CTRL1 = 0x03 << 2  //  STS2 asserts on rising and falling edges of XBAR_OUT2
 	STS2    CTRL1 = 0x01 << 4  //+ Edge detection status for XBAR_OUT2
-	STS2_0  CTRL1 = 0x00 << 4  //  Active edge not yet detected on XBAR_OUT2
-	STS2_1  CTRL1 = 0x01 << 4  //  Active edge detected on XBAR_OUT2
 	DEN3    CTRL1 = 0x01 << 8  //+ DMA Enable for XBAR_OUT3
-	DEN3_0  CTRL1 = 0x00 << 8  //  DMA disabled
-	DEN3_1  CTRL1 = 0x01 << 8  //  DMA enabled
 	IEN3    CTRL1 = 0x01 << 9  //+ Interrupt Enable for XBAR_OUT3
-	IEN3_0  CTRL1 = 0x00 << 9  //  Interrupt disabled
-	IEN3_1  CTRL1 = 0x01 << 9  //  Interrupt enabled
 	EDGE3   CTRL1 = 0x03 << 10 //+ Active edge for edge detection on XBAR_OUT3
 	EDGE3_0 CTRL1 = 0x00 << 10 //  STS3 never asserts
 	EDGE3_1 CTRL1 = 0x01 << 10 //  STS3 asserts on rising edges of XBAR_OUT3
 	EDGE3_2 CTRL1 = 0x02 << 10 //  STS3 asserts on falling edges of XBAR_OUT3
 	EDGE3_3 CTRL1 = 0x03 << 10 //  STS3 asserts on rising and falling edges of XBAR_OUT3
 	STS3    CTRL1 = 0x01 << 12 //+ Edge detection status for XBAR_OUT3
-	STS3_0  CTRL1 = 0x00 << 12 //  Active edge not yet detected on XBAR_OUT3
-	STS3_1  CTRL1 = 0x01 << 12 //  Active edge detected on XBAR_OUT3
 )
 
 const (

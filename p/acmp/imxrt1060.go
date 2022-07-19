@@ -43,27 +43,13 @@ const (
 )
 
 const (
-	EN      CR1 = 0x01 << 0 //+ Comparator Module Enable
-	EN_0    CR1 = 0x00 << 0 //  Analog Comparator is disabled.
-	EN_1    CR1 = 0x01 << 0 //  Analog Comparator is enabled.
-	OPE     CR1 = 0x01 << 1 //+ Comparator Output Pin Enable
-	OPE_0   CR1 = 0x00 << 1 //  CMPO is not available on the associated CMPO output pin. If the comparator does not own the pin, this field has no effect.
-	OPE_1   CR1 = 0x01 << 1 //  CMPO is available on the associated CMPO output pin. The comparator output (CMPO) is driven out on the associated CMPO output pin if the comparator owns the pin. If the comparator does not own the field, this bit has no effect.
-	COS     CR1 = 0x01 << 2 //+ Comparator Output Select
-	COS_0   CR1 = 0x00 << 2 //  Set the filtered comparator output (CMPO) to equal COUT.
-	COS_1   CR1 = 0x01 << 2 //  Set the unfiltered comparator output (CMPO) to equal COUTA.
-	INV     CR1 = 0x01 << 3 //+ Comparator INVERT
-	INV_0   CR1 = 0x00 << 3 //  Does not invert the comparator output.
-	INV_1   CR1 = 0x01 << 3 //  Inverts the comparator output.
-	PMODE   CR1 = 0x01 << 4 //+ Power Mode Select
-	PMODE_0 CR1 = 0x00 << 4 //  Low-Speed (LS) Comparison mode selected. In this mode, CMP has slower output propagation delay and lower current consumption.
-	PMODE_1 CR1 = 0x01 << 4 //  High-Speed (HS) Comparison mode selected. In this mode, CMP has faster output propagation delay and higher current consumption.
-	WE      CR1 = 0x01 << 6 //+ Windowing Enable
-	WE_0    CR1 = 0x00 << 6 //  Windowing mode is not selected.
-	WE_1    CR1 = 0x01 << 6 //  Windowing mode is selected.
-	SE      CR1 = 0x01 << 7 //+ Sample Enable
-	SE_0    CR1 = 0x00 << 7 //  Sampling mode is not selected.
-	SE_1    CR1 = 0x01 << 7 //  Sampling mode is selected.
+	EN    CR1 = 0x01 << 0 //+ Comparator Module Enable
+	OPE   CR1 = 0x01 << 1 //+ Comparator Output Pin Enable
+	COS   CR1 = 0x01 << 2 //+ Comparator Output Select
+	INV   CR1 = 0x01 << 3 //+ Comparator INVERT
+	PMODE CR1 = 0x01 << 4 //+ Power Mode Select
+	WE    CR1 = 0x01 << 6 //+ Windowing Enable
+	SE    CR1 = 0x01 << 7 //+ Sample Enable
 )
 
 const (
@@ -85,22 +71,12 @@ const (
 )
 
 const (
-	COUT    SCR = 0x01 << 0 //+ Analog Comparator Output
-	CFF     SCR = 0x01 << 1 //+ Analog Comparator Flag Falling
-	CFF_0   SCR = 0x00 << 1 //  Falling-edge on COUT has not been detected.
-	CFF_1   SCR = 0x01 << 1 //  Falling-edge on COUT has occurred.
-	CFR     SCR = 0x01 << 2 //+ Analog Comparator Flag Rising
-	CFR_0   SCR = 0x00 << 2 //  Rising-edge on COUT has not been detected.
-	CFR_1   SCR = 0x01 << 2 //  Rising-edge on COUT has occurred.
-	IEF     SCR = 0x01 << 3 //+ Comparator Interrupt Enable Falling
-	IEF_0   SCR = 0x00 << 3 //  Interrupt is disabled.
-	IEF_1   SCR = 0x01 << 3 //  Interrupt is enabled.
-	IER     SCR = 0x01 << 4 //+ Comparator Interrupt Enable Rising
-	IER_0   SCR = 0x00 << 4 //  Interrupt is disabled.
-	IER_1   SCR = 0x01 << 4 //  Interrupt is enabled.
-	DMAEN   SCR = 0x01 << 6 //+ DMA Enable Control
-	DMAEN_0 SCR = 0x00 << 6 //  DMA is disabled.
-	DMAEN_1 SCR = 0x01 << 6 //  DMA is enabled.
+	COUT  SCR = 0x01 << 0 //+ Analog Comparator Output
+	CFF   SCR = 0x01 << 1 //+ Analog Comparator Flag Falling
+	CFR   SCR = 0x01 << 2 //+ Analog Comparator Flag Rising
+	IEF   SCR = 0x01 << 3 //+ Comparator Interrupt Enable Falling
+	IER   SCR = 0x01 << 4 //+ Comparator Interrupt Enable Rising
+	DMAEN SCR = 0x01 << 6 //+ DMA Enable Control
 )
 
 const (
@@ -113,13 +89,9 @@ const (
 )
 
 const (
-	VOSEL   DACCR = 0x3F << 0 //+ DAC Output Voltage Select
-	VRSEL   DACCR = 0x01 << 6 //+ Supply Voltage Reference Source Select
-	VRSEL_0 DACCR = 0x00 << 6 //  Vin1 is selected as resistor ladder network supply reference.
-	VRSEL_1 DACCR = 0x01 << 6 //  Vin2 is selected as resistor ladder network supply reference.
-	DACEN   DACCR = 0x01 << 7 //+ DAC Enable
-	DACEN_0 DACCR = 0x00 << 7 //  DAC is disabled.
-	DACEN_1 DACCR = 0x01 << 7 //  DAC is enabled.
+	VOSEL DACCR = 0x3F << 0 //+ DAC Output Voltage Select
+	VRSEL DACCR = 0x01 << 6 //+ Supply Voltage Reference Source Select
+	DACEN DACCR = 0x01 << 7 //+ DAC Enable
 )
 
 const (

@@ -55,9 +55,7 @@ const (
 )
 
 const (
-	RST   GLOBAL = 0x01 << 1 //+ Software Reset
-	RST_0 GLOBAL = 0x00 << 1 //  Module is not reset.
-	RST_1 GLOBAL = 0x01 << 1 //  Module is reset.
+	RST GLOBAL = 0x01 << 1 //+ Software Reset
 )
 
 const (
@@ -77,76 +75,54 @@ const (
 )
 
 const (
-	SBR         BAUD = 0x1FFF << 0 //+ Baud Rate Modulo Divisor.
-	SBNS        BAUD = 0x01 << 13  //+ Stop Bit Number Select
-	SBNS_0      BAUD = 0x00 << 13  //  One stop bit.
-	SBNS_1      BAUD = 0x01 << 13  //  Two stop bits.
-	RXEDGIE     BAUD = 0x01 << 14  //+ RX Input Active Edge Interrupt Enable
-	RXEDGIE_0   BAUD = 0x00 << 14  //  Hardware interrupts from STAT[RXEDGIF] are disabled.
-	RXEDGIE_1   BAUD = 0x01 << 14  //  Hardware interrupt is requested when STAT[RXEDGIF] flag is 1.
-	LBKDIE      BAUD = 0x01 << 15  //+ LIN Break Detect Interrupt Enable
-	LBKDIE_0    BAUD = 0x00 << 15  //  Hardware interrupts from STAT[LBKDIF] flag are disabled (use polling).
-	LBKDIE_1    BAUD = 0x01 << 15  //  Hardware interrupt requested when STAT[LBKDIF] flag is 1.
-	RESYNCDIS   BAUD = 0x01 << 16  //+ Resynchronization Disable
-	RESYNCDIS_0 BAUD = 0x00 << 16  //  Resynchronization during received data word is supported
-	RESYNCDIS_1 BAUD = 0x01 << 16  //  Resynchronization during received data word is disabled
-	BOTHEDGE    BAUD = 0x01 << 17  //+ Both Edge Sampling
-	BOTHEDGE_0  BAUD = 0x00 << 17  //  Receiver samples input data using the rising edge of the baud rate clock.
-	BOTHEDGE_1  BAUD = 0x01 << 17  //  Receiver samples input data using the rising and falling edge of the baud rate clock.
-	MATCFG      BAUD = 0x03 << 18  //+ Match Configuration
-	MATCFG_0    BAUD = 0x00 << 18  //  Address Match Wakeup
-	MATCFG_1    BAUD = 0x01 << 18  //  Idle Match Wakeup
-	MATCFG_2    BAUD = 0x02 << 18  //  Match On and Match Off
-	MATCFG_3    BAUD = 0x03 << 18  //  Enables RWU on Data Match and Match On/Off for transmitter CTS input
-	RIDMAE      BAUD = 0x01 << 20  //+ Receiver Idle DMA Enable
-	RIDMAE_0    BAUD = 0x00 << 20  //  DMA request disabled.
-	RIDMAE_1    BAUD = 0x01 << 20  //  DMA request enabled.
-	RDMAE       BAUD = 0x01 << 21  //+ Receiver Full DMA Enable
-	RDMAE_0     BAUD = 0x00 << 21  //  DMA request disabled.
-	RDMAE_1     BAUD = 0x01 << 21  //  DMA request enabled.
-	TDMAE       BAUD = 0x01 << 23  //+ Transmitter DMA Enable
-	TDMAE_0     BAUD = 0x00 << 23  //  DMA request disabled.
-	TDMAE_1     BAUD = 0x01 << 23  //  DMA request enabled.
-	OSR         BAUD = 0x1F << 24  //+ Oversampling Ratio
-	OSR_0       BAUD = 0x00 << 24  //  Writing 0 to this field will result in an oversampling ratio of 16
-	OSR_3       BAUD = 0x03 << 24  //  Oversampling ratio of 4, requires BOTHEDGE to be set.
-	OSR_4       BAUD = 0x04 << 24  //  Oversampling ratio of 5, requires BOTHEDGE to be set.
-	OSR_5       BAUD = 0x05 << 24  //  Oversampling ratio of 6, requires BOTHEDGE to be set.
-	OSR_6       BAUD = 0x06 << 24  //  Oversampling ratio of 7, requires BOTHEDGE to be set.
-	OSR_7       BAUD = 0x07 << 24  //  Oversampling ratio of 8.
-	OSR_8       BAUD = 0x08 << 24  //  Oversampling ratio of 9.
-	OSR_9       BAUD = 0x09 << 24  //  Oversampling ratio of 10.
-	OSR_10      BAUD = 0x0A << 24  //  Oversampling ratio of 11.
-	OSR_11      BAUD = 0x0B << 24  //  Oversampling ratio of 12.
-	OSR_12      BAUD = 0x0C << 24  //  Oversampling ratio of 13.
-	OSR_13      BAUD = 0x0D << 24  //  Oversampling ratio of 14.
-	OSR_14      BAUD = 0x0E << 24  //  Oversampling ratio of 15.
-	OSR_15      BAUD = 0x0F << 24  //  Oversampling ratio of 16.
-	OSR_16      BAUD = 0x10 << 24  //  Oversampling ratio of 17.
-	OSR_17      BAUD = 0x11 << 24  //  Oversampling ratio of 18.
-	OSR_18      BAUD = 0x12 << 24  //  Oversampling ratio of 19.
-	OSR_19      BAUD = 0x13 << 24  //  Oversampling ratio of 20.
-	OSR_20      BAUD = 0x14 << 24  //  Oversampling ratio of 21.
-	OSR_21      BAUD = 0x15 << 24  //  Oversampling ratio of 22.
-	OSR_22      BAUD = 0x16 << 24  //  Oversampling ratio of 23.
-	OSR_23      BAUD = 0x17 << 24  //  Oversampling ratio of 24.
-	OSR_24      BAUD = 0x18 << 24  //  Oversampling ratio of 25.
-	OSR_25      BAUD = 0x19 << 24  //  Oversampling ratio of 26.
-	OSR_26      BAUD = 0x1A << 24  //  Oversampling ratio of 27.
-	OSR_27      BAUD = 0x1B << 24  //  Oversampling ratio of 28.
-	OSR_28      BAUD = 0x1C << 24  //  Oversampling ratio of 29.
-	OSR_29      BAUD = 0x1D << 24  //  Oversampling ratio of 30.
-	OSR_30      BAUD = 0x1E << 24  //  Oversampling ratio of 31.
-	OSR_31      BAUD = 0x1F << 24  //  Oversampling ratio of 32.
-	M10         BAUD = 0x01 << 29  //+ 10-bit Mode select
-	M10_0       BAUD = 0x00 << 29  //  Receiver and transmitter use 7-bit to 9-bit data characters.
-	M10_1       BAUD = 0x01 << 29  //  Receiver and transmitter use 10-bit data characters.
-	MAEN2       BAUD = 0x01 << 30  //+ Match Address Mode Enable 2
-	MAEN2_0     BAUD = 0x00 << 30  //  Normal operation.
-	MAEN2_1     BAUD = 0x01 << 30  //  Enables automatic address matching or data matching mode for MATCH[MA2].
-	MAEN1       BAUD = 0x01 << 31  //+ Match Address Mode Enable 1
-	MAEN1_0     BAUD = 0x00 << 31  //  Normal operation.
-	MAEN1_1     BAUD = 0x01 << 31  //  Enables automatic address matching or data matching mode for MATCH[MA1].
+	SBR       BAUD = 0x1FFF << 0 //+ Baud Rate Modulo Divisor.
+	SBNS      BAUD = 0x01 << 13  //+ Stop Bit Number Select
+	RXEDGIE   BAUD = 0x01 << 14  //+ RX Input Active Edge Interrupt Enable
+	LBKDIE    BAUD = 0x01 << 15  //+ LIN Break Detect Interrupt Enable
+	RESYNCDIS BAUD = 0x01 << 16  //+ Resynchronization Disable
+	BOTHEDGE  BAUD = 0x01 << 17  //+ Both Edge Sampling
+	MATCFG    BAUD = 0x03 << 18  //+ Match Configuration
+	MATCFG_0  BAUD = 0x00 << 18  //  Address Match Wakeup
+	MATCFG_1  BAUD = 0x01 << 18  //  Idle Match Wakeup
+	MATCFG_2  BAUD = 0x02 << 18  //  Match On and Match Off
+	MATCFG_3  BAUD = 0x03 << 18  //  Enables RWU on Data Match and Match On/Off for transmitter CTS input
+	RIDMAE    BAUD = 0x01 << 20  //+ Receiver Idle DMA Enable
+	RDMAE     BAUD = 0x01 << 21  //+ Receiver Full DMA Enable
+	TDMAE     BAUD = 0x01 << 23  //+ Transmitter DMA Enable
+	OSR       BAUD = 0x1F << 24  //+ Oversampling Ratio
+	OSR_0     BAUD = 0x00 << 24  //  Writing 0 to this field will result in an oversampling ratio of 16
+	OSR_3     BAUD = 0x03 << 24  //  Oversampling ratio of 4, requires BOTHEDGE to be set.
+	OSR_4     BAUD = 0x04 << 24  //  Oversampling ratio of 5, requires BOTHEDGE to be set.
+	OSR_5     BAUD = 0x05 << 24  //  Oversampling ratio of 6, requires BOTHEDGE to be set.
+	OSR_6     BAUD = 0x06 << 24  //  Oversampling ratio of 7, requires BOTHEDGE to be set.
+	OSR_7     BAUD = 0x07 << 24  //  Oversampling ratio of 8.
+	OSR_8     BAUD = 0x08 << 24  //  Oversampling ratio of 9.
+	OSR_9     BAUD = 0x09 << 24  //  Oversampling ratio of 10.
+	OSR_10    BAUD = 0x0A << 24  //  Oversampling ratio of 11.
+	OSR_11    BAUD = 0x0B << 24  //  Oversampling ratio of 12.
+	OSR_12    BAUD = 0x0C << 24  //  Oversampling ratio of 13.
+	OSR_13    BAUD = 0x0D << 24  //  Oversampling ratio of 14.
+	OSR_14    BAUD = 0x0E << 24  //  Oversampling ratio of 15.
+	OSR_15    BAUD = 0x0F << 24  //  Oversampling ratio of 16.
+	OSR_16    BAUD = 0x10 << 24  //  Oversampling ratio of 17.
+	OSR_17    BAUD = 0x11 << 24  //  Oversampling ratio of 18.
+	OSR_18    BAUD = 0x12 << 24  //  Oversampling ratio of 19.
+	OSR_19    BAUD = 0x13 << 24  //  Oversampling ratio of 20.
+	OSR_20    BAUD = 0x14 << 24  //  Oversampling ratio of 21.
+	OSR_21    BAUD = 0x15 << 24  //  Oversampling ratio of 22.
+	OSR_22    BAUD = 0x16 << 24  //  Oversampling ratio of 23.
+	OSR_23    BAUD = 0x17 << 24  //  Oversampling ratio of 24.
+	OSR_24    BAUD = 0x18 << 24  //  Oversampling ratio of 25.
+	OSR_25    BAUD = 0x19 << 24  //  Oversampling ratio of 26.
+	OSR_26    BAUD = 0x1A << 24  //  Oversampling ratio of 27.
+	OSR_27    BAUD = 0x1B << 24  //  Oversampling ratio of 28.
+	OSR_28    BAUD = 0x1C << 24  //  Oversampling ratio of 29.
+	OSR_29    BAUD = 0x1D << 24  //  Oversampling ratio of 30.
+	OSR_30    BAUD = 0x1E << 24  //  Oversampling ratio of 31.
+	OSR_31    BAUD = 0x1F << 24  //  Oversampling ratio of 32.
+	M10       BAUD = 0x01 << 29  //+ 10-bit Mode select
+	MAEN2     BAUD = 0x01 << 30  //+ Match Address Mode Enable 2
+	MAEN1     BAUD = 0x01 << 31  //+ Match Address Mode Enable 1
 )
 
 const (
@@ -167,60 +143,24 @@ const (
 )
 
 const (
-	MA2F      STAT = 0x01 << 14 //+ Match 2 Flag
-	MA2F_0    STAT = 0x00 << 14 //  Received data is not equal to MA2
-	MA2F_1    STAT = 0x01 << 14 //  Received data is equal to MA2
-	MA1F      STAT = 0x01 << 15 //+ Match 1 Flag
-	MA1F_0    STAT = 0x00 << 15 //  Received data is not equal to MA1
-	MA1F_1    STAT = 0x01 << 15 //  Received data is equal to MA1
-	PF        STAT = 0x01 << 16 //+ Parity Error Flag
-	PF_0      STAT = 0x00 << 16 //  No parity error.
-	PF_1      STAT = 0x01 << 16 //  Parity error.
-	FE        STAT = 0x01 << 17 //+ Framing Error Flag
-	FE_0      STAT = 0x00 << 17 //  No framing error detected. This does not guarantee the framing is correct.
-	FE_1      STAT = 0x01 << 17 //  Framing error.
-	NF        STAT = 0x01 << 18 //+ Noise Flag
-	NF_0      STAT = 0x00 << 18 //  No noise detected.
-	NF_1      STAT = 0x01 << 18 //  Noise detected in the received character in the DATA register.
-	OR        STAT = 0x01 << 19 //+ Receiver Overrun Flag
-	OR_0      STAT = 0x00 << 19 //  No overrun.
-	OR_1      STAT = 0x01 << 19 //  Receive overrun (new LPUART data lost).
-	IDLE      STAT = 0x01 << 20 //+ Idle Line Flag
-	IDLE_0    STAT = 0x00 << 20 //  No idle line detected.
-	IDLE_1    STAT = 0x01 << 20 //  Idle line was detected.
-	RDRF      STAT = 0x01 << 21 //+ Receive Data Register Full Flag
-	RDRF_0    STAT = 0x00 << 21 //  Receive data buffer empty.
-	RDRF_1    STAT = 0x01 << 21 //  Receive data buffer full.
-	TC        STAT = 0x01 << 22 //+ Transmission Complete Flag
-	TC_0      STAT = 0x00 << 22 //  Transmitter active (sending data, a preamble, or a break).
-	TC_1      STAT = 0x01 << 22 //  Transmitter idle (transmission activity complete).
-	TDRE      STAT = 0x01 << 23 //+ Transmit Data Register Empty Flag
-	TDRE_0    STAT = 0x00 << 23 //  Transmit data buffer full.
-	TDRE_1    STAT = 0x01 << 23 //  Transmit data buffer empty.
-	RAF       STAT = 0x01 << 24 //+ Receiver Active Flag
-	RAF_0     STAT = 0x00 << 24 //  LPUART receiver idle waiting for a start bit.
-	RAF_1     STAT = 0x01 << 24 //  LPUART receiver active (RXD input not idle).
-	LBKDE     STAT = 0x01 << 25 //+ LIN Break Detection Enable
-	LBKDE_0   STAT = 0x00 << 25 //  LIN break detect is disabled, normal break character can be detected.
-	LBKDE_1   STAT = 0x01 << 25 //  LIN break detect is enabled. LIN break character is detected at length of 11 bit times (if M = 0) or 12 (if M = 1) or 13 (M10 = 1).
-	BRK13     STAT = 0x01 << 26 //+ Break Character Generation Length
-	BRK13_0   STAT = 0x00 << 26 //  Break character is transmitted with length of 9 to 13 bit times.
-	BRK13_1   STAT = 0x01 << 26 //  Break character is transmitted with length of 12 to 15 bit times.
-	RWUID     STAT = 0x01 << 27 //+ Receive Wake Up Idle Detect
-	RWUID_0   STAT = 0x00 << 27 //  During receive standby state (RWU = 1), the IDLE bit does not get set upon detection of an idle character. During address match wakeup, the IDLE bit does not set when an address does not match.
-	RWUID_1   STAT = 0x01 << 27 //  During receive standby state (RWU = 1), the IDLE bit gets set upon detection of an idle character. During address match wakeup, the IDLE bit does set when an address does not match.
-	RXINV     STAT = 0x01 << 28 //+ Receive Data Inversion
-	RXINV_0   STAT = 0x00 << 28 //  Receive data not inverted.
-	RXINV_1   STAT = 0x01 << 28 //  Receive data inverted.
-	MSBF      STAT = 0x01 << 29 //+ MSB First
-	MSBF_0    STAT = 0x00 << 29 //  LSB (bit0) is the first bit that is transmitted following the start bit. Further, the first bit received after the start bit is identified as bit0.
-	MSBF_1    STAT = 0x01 << 29 //  MSB (bit9, bit8, bit7 or bit6) is the first bit that is transmitted following the start bit depending on the setting of CTRL[M], CTRL[PE] and BAUD[M10]. Further, the first bit received after the start bit is identified as bit9, bit8, bit7 or bit6 depending on the setting of CTRL[M] and CTRL[PE].
-	RXEDGIF   STAT = 0x01 << 30 //+ RXD Pin Active Edge Interrupt Flag
-	RXEDGIF_0 STAT = 0x00 << 30 //  No active edge on the receive pin has occurred.
-	RXEDGIF_1 STAT = 0x01 << 30 //  An active edge on the receive pin has occurred.
-	LBKDIF    STAT = 0x01 << 31 //+ LIN Break Detect Interrupt Flag
-	LBKDIF_0  STAT = 0x00 << 31 //  No LIN break character has been detected.
-	LBKDIF_1  STAT = 0x01 << 31 //  LIN break character has been detected.
+	MA2F    STAT = 0x01 << 14 //+ Match 2 Flag
+	MA1F    STAT = 0x01 << 15 //+ Match 1 Flag
+	PF      STAT = 0x01 << 16 //+ Parity Error Flag
+	FE      STAT = 0x01 << 17 //+ Framing Error Flag
+	NF      STAT = 0x01 << 18 //+ Noise Flag
+	OR      STAT = 0x01 << 19 //+ Receiver Overrun Flag
+	IDLE    STAT = 0x01 << 20 //+ Idle Line Flag
+	RDRF    STAT = 0x01 << 21 //+ Receive Data Register Full Flag
+	TC      STAT = 0x01 << 22 //+ Transmission Complete Flag
+	TDRE    STAT = 0x01 << 23 //+ Transmit Data Register Empty Flag
+	RAF     STAT = 0x01 << 24 //+ Receiver Active Flag
+	LBKDE   STAT = 0x01 << 25 //+ LIN Break Detection Enable
+	BRK13   STAT = 0x01 << 26 //+ Break Character Generation Length
+	RWUID   STAT = 0x01 << 27 //+ Receive Wake Up Idle Detect
+	RXINV   STAT = 0x01 << 28 //+ Receive Data Inversion
+	MSBF    STAT = 0x01 << 29 //+ MSB First
+	RXEDGIF STAT = 0x01 << 30 //+ RXD Pin Active Edge Interrupt Flag
+	LBKDIF  STAT = 0x01 << 31 //+ LIN Break Detect Interrupt Flag
 )
 
 const (
@@ -246,29 +186,13 @@ const (
 
 const (
 	PT        CTRL = 0x01 << 0  //+ Parity Type
-	PT_0      CTRL = 0x00 << 0  //  Even parity.
-	PT_1      CTRL = 0x01 << 0  //  Odd parity.
 	PE        CTRL = 0x01 << 1  //+ Parity Enable
-	PE_0      CTRL = 0x00 << 1  //  No hardware parity generation or checking.
-	PE_1      CTRL = 0x01 << 1  //  Parity enabled.
 	ILT       CTRL = 0x01 << 2  //+ Idle Line Type Select
-	ILT_0     CTRL = 0x00 << 2  //  Idle character bit count starts after start bit.
-	ILT_1     CTRL = 0x01 << 2  //  Idle character bit count starts after stop bit.
 	WAKE      CTRL = 0x01 << 3  //+ Receiver Wakeup Method Select
-	WAKE_0    CTRL = 0x00 << 3  //  Configures RWU for idle-line wakeup.
-	WAKE_1    CTRL = 0x01 << 3  //  Configures RWU with address-mark wakeup.
 	M         CTRL = 0x01 << 4  //+ 9-Bit or 8-Bit Mode Select
-	M_0       CTRL = 0x00 << 4  //  Receiver and transmitter use 8-bit data characters.
-	M_1       CTRL = 0x01 << 4  //  Receiver and transmitter use 9-bit data characters.
 	RSRC      CTRL = 0x01 << 5  //+ Receiver Source Select
-	RSRC_0    CTRL = 0x00 << 5  //  Provided LOOPS is set, RSRC is cleared, selects internal loop back mode and the LPUART does not use the RXD pin.
-	RSRC_1    CTRL = 0x01 << 5  //  Single-wire LPUART mode where the TXD pin is connected to the transmitter output and receiver input.
 	DOZEEN    CTRL = 0x01 << 6  //+ Doze Enable
-	DOZEEN_0  CTRL = 0x00 << 6  //  LPUART is enabled in Doze mode.
-	DOZEEN_1  CTRL = 0x01 << 6  //  LPUART is disabled in Doze mode.
 	LOOPS     CTRL = 0x01 << 7  //+ Loop Mode Select
-	LOOPS_0   CTRL = 0x00 << 7  //  Normal operation - RXD and TXD use separate pins.
-	LOOPS_1   CTRL = 0x01 << 7  //  Loop mode or single-wire mode where transmitter outputs are internally connected to receiver input (see RSRC bit).
 	IDLECFG   CTRL = 0x07 << 8  //+ Idle Configuration
 	IDLECFG_0 CTRL = 0x00 << 8  //  1 idle character
 	IDLECFG_1 CTRL = 0x01 << 8  //  2 idle characters
@@ -279,56 +203,22 @@ const (
 	IDLECFG_6 CTRL = 0x06 << 8  //  64 idle characters
 	IDLECFG_7 CTRL = 0x07 << 8  //  128 idle characters
 	M7        CTRL = 0x01 << 11 //+ 7-Bit Mode Select
-	M7_0      CTRL = 0x00 << 11 //  Receiver and transmitter use 8-bit to 10-bit data characters.
-	M7_1      CTRL = 0x01 << 11 //  Receiver and transmitter use 7-bit data characters.
 	MA2IE     CTRL = 0x01 << 14 //+ Match 2 Interrupt Enable
-	MA2IE_0   CTRL = 0x00 << 14 //  MA2F interrupt disabled
-	MA2IE_1   CTRL = 0x01 << 14 //  MA2F interrupt enabled
 	MA1IE     CTRL = 0x01 << 15 //+ Match 1 Interrupt Enable
-	MA1IE_0   CTRL = 0x00 << 15 //  MA1F interrupt disabled
-	MA1IE_1   CTRL = 0x01 << 15 //  MA1F interrupt enabled
 	SBK       CTRL = 0x01 << 16 //+ Send Break
-	SBK_0     CTRL = 0x00 << 16 //  Normal transmitter operation.
-	SBK_1     CTRL = 0x01 << 16 //  Queue break character(s) to be sent.
 	RWU       CTRL = 0x01 << 17 //+ Receiver Wakeup Control
-	RWU_0     CTRL = 0x00 << 17 //  Normal receiver operation.
-	RWU_1     CTRL = 0x01 << 17 //  LPUART receiver in standby waiting for wakeup condition.
 	RE        CTRL = 0x01 << 18 //+ Receiver Enable
-	RE_0      CTRL = 0x00 << 18 //  Receiver disabled.
-	RE_1      CTRL = 0x01 << 18 //  Receiver enabled.
 	TE        CTRL = 0x01 << 19 //+ Transmitter Enable
-	TE_0      CTRL = 0x00 << 19 //  Transmitter disabled.
-	TE_1      CTRL = 0x01 << 19 //  Transmitter enabled.
 	ILIE      CTRL = 0x01 << 20 //+ Idle Line Interrupt Enable
-	ILIE_0    CTRL = 0x00 << 20 //  Hardware interrupts from IDLE disabled; use polling.
-	ILIE_1    CTRL = 0x01 << 20 //  Hardware interrupt requested when IDLE flag is 1.
 	RIE       CTRL = 0x01 << 21 //+ Receiver Interrupt Enable
-	RIE_0     CTRL = 0x00 << 21 //  Hardware interrupts from RDRF disabled; use polling.
-	RIE_1     CTRL = 0x01 << 21 //  Hardware interrupt requested when RDRF flag is 1.
 	TCIE      CTRL = 0x01 << 22 //+ Transmission Complete Interrupt Enable for
-	TCIE_0    CTRL = 0x00 << 22 //  Hardware interrupts from TC disabled; use polling.
-	TCIE_1    CTRL = 0x01 << 22 //  Hardware interrupt requested when TC flag is 1.
 	TIE       CTRL = 0x01 << 23 //+ Transmit Interrupt Enable
-	TIE_0     CTRL = 0x00 << 23 //  Hardware interrupts from TDRE disabled; use polling.
-	TIE_1     CTRL = 0x01 << 23 //  Hardware interrupt requested when TDRE flag is 1.
 	PEIE      CTRL = 0x01 << 24 //+ Parity Error Interrupt Enable
-	PEIE_0    CTRL = 0x00 << 24 //  PF interrupts disabled; use polling).
-	PEIE_1    CTRL = 0x01 << 24 //  Hardware interrupt requested when PF is set.
 	FEIE      CTRL = 0x01 << 25 //+ Framing Error Interrupt Enable
-	FEIE_0    CTRL = 0x00 << 25 //  FE interrupts disabled; use polling.
-	FEIE_1    CTRL = 0x01 << 25 //  Hardware interrupt requested when FE is set.
 	NEIE      CTRL = 0x01 << 26 //+ Noise Error Interrupt Enable
-	NEIE_0    CTRL = 0x00 << 26 //  NF interrupts disabled; use polling.
-	NEIE_1    CTRL = 0x01 << 26 //  Hardware interrupt requested when NF is set.
 	ORIE      CTRL = 0x01 << 27 //+ Overrun Interrupt Enable
-	ORIE_0    CTRL = 0x00 << 27 //  OR interrupts disabled; use polling.
-	ORIE_1    CTRL = 0x01 << 27 //  Hardware interrupt requested when OR is set.
 	TXINV     CTRL = 0x01 << 28 //+ Transmit Data Inversion
-	TXINV_0   CTRL = 0x00 << 28 //  Transmit data not inverted.
-	TXINV_1   CTRL = 0x01 << 28 //  Transmit data inverted.
 	TXDIR     CTRL = 0x01 << 29 //+ TXD Pin Direction in Single-Wire Mode
-	TXDIR_0   CTRL = 0x00 << 29 //  TXD pin is an input in single-wire mode.
-	TXDIR_1   CTRL = 0x01 << 29 //  TXD pin is an output in single-wire mode.
 	R9T8      CTRL = 0x01 << 30 //+ Receive Bit 9 / Transmit Bit 8
 	R8T9      CTRL = 0x01 << 31 //+ Receive Bit 8 / Transmit Bit 9
 )
@@ -365,31 +255,21 @@ const (
 )
 
 const (
-	R0T0      DATA = 0x01 << 0  //+ R0T0
-	R1T1      DATA = 0x01 << 1  //+ R1T1
-	R2T2      DATA = 0x01 << 2  //+ R2T2
-	R3T3      DATA = 0x01 << 3  //+ R3T3
-	R4T4      DATA = 0x01 << 4  //+ R4T4
-	R5T5      DATA = 0x01 << 5  //+ R5T5
-	R6T6      DATA = 0x01 << 6  //+ R6T6
-	R7T7      DATA = 0x01 << 7  //+ R7T7
-	R8T8      DATA = 0x01 << 8  //+ R8T8
-	R9T9      DATA = 0x01 << 9  //+ R9T9
-	IDLINE    DATA = 0x01 << 11 //+ Idle Line
-	IDLINE_0  DATA = 0x00 << 11 //  Receiver was not idle before receiving this character.
-	IDLINE_1  DATA = 0x01 << 11 //  Receiver was idle before receiving this character.
-	RXEMPT    DATA = 0x01 << 12 //+ Receive Buffer Empty
-	RXEMPT_0  DATA = 0x00 << 12 //  Receive buffer contains valid data.
-	RXEMPT_1  DATA = 0x01 << 12 //  Receive buffer is empty, data returned on read is not valid.
-	FRETSC    DATA = 0x01 << 13 //+ Frame Error / Transmit Special Character
-	FRETSC_0  DATA = 0x00 << 13 //  The dataword was received without a frame error on read, or transmit a normal character on write.
-	FRETSC_1  DATA = 0x01 << 13 //  The dataword was received with a frame error, or transmit an idle or break character on transmit.
-	PARITYE   DATA = 0x01 << 14 //+ PARITYE
-	PARITYE_0 DATA = 0x00 << 14 //  The dataword was received without a parity error.
-	PARITYE_1 DATA = 0x01 << 14 //  The dataword was received with a parity error.
-	NOISY     DATA = 0x01 << 15 //+ NOISY
-	NOISY_0   DATA = 0x00 << 15 //  The dataword was received without noise.
-	NOISY_1   DATA = 0x01 << 15 //  The data was received with noise.
+	R0T0    DATA = 0x01 << 0  //+ R0T0
+	R1T1    DATA = 0x01 << 1  //+ R1T1
+	R2T2    DATA = 0x01 << 2  //+ R2T2
+	R3T3    DATA = 0x01 << 3  //+ R3T3
+	R4T4    DATA = 0x01 << 4  //+ R4T4
+	R5T5    DATA = 0x01 << 5  //+ R5T5
+	R6T6    DATA = 0x01 << 6  //+ R6T6
+	R7T7    DATA = 0x01 << 7  //+ R7T7
+	R8T8    DATA = 0x01 << 8  //+ R8T8
+	R9T9    DATA = 0x01 << 9  //+ R9T9
+	IDLINE  DATA = 0x01 << 11 //+ Idle Line
+	RXEMPT  DATA = 0x01 << 12 //+ Receive Buffer Empty
+	FRETSC  DATA = 0x01 << 13 //+ Frame Error / Transmit Special Character
+	PARITYE DATA = 0x01 << 14 //+ PARITYE
+	NOISY   DATA = 0x01 << 15 //+ NOISY
 )
 
 const (
@@ -421,33 +301,19 @@ const (
 )
 
 const (
-	TXCTSE     MODIR = 0x01 << 0  //+ Transmitter clear-to-send enable
-	TXCTSE_0   MODIR = 0x00 << 0  //  CTS has no effect on the transmitter.
-	TXCTSE_1   MODIR = 0x01 << 0  //  Enables clear-to-send operation. The transmitter checks the state of CTS each time it is ready to send a character. If CTS is asserted, the character is sent. If CTS is deasserted, the signal TXD remains in the mark state and transmission is delayed until CTS is asserted. Changes in CTS as a character is being sent do not affect its transmission.
-	TXRTSE     MODIR = 0x01 << 1  //+ Transmitter request-to-send enable
-	TXRTSE_0   MODIR = 0x00 << 1  //  The transmitter has no effect on RTS.
-	TXRTSE_1   MODIR = 0x01 << 1  //  When a character is placed into an empty transmitter data buffer , RTS asserts one bit time before the start bit is transmitted. RTS deasserts one bit time after all characters in the transmitter data buffer and shift register are completely sent, including the last stop bit.
-	TXRTSPOL   MODIR = 0x01 << 2  //+ Transmitter request-to-send polarity
-	TXRTSPOL_0 MODIR = 0x00 << 2  //  Transmitter RTS is active low.
-	TXRTSPOL_1 MODIR = 0x01 << 2  //  Transmitter RTS is active high.
-	RXRTSE     MODIR = 0x01 << 3  //+ Receiver request-to-send enable
-	RXRTSE_0   MODIR = 0x00 << 3  //  The receiver has no effect on RTS.
-	RXRTSE_1   MODIR = 0x01 << 3  //  RTS is deasserted if the receiver data register is full or a start bit has been detected that would cause the receiver data register to become full. RTS is asserted if the receiver data register is not full and has not detected a start bit that would cause the receiver data register to become full.
-	TXCTSC     MODIR = 0x01 << 4  //+ Transmit CTS Configuration
-	TXCTSC_0   MODIR = 0x00 << 4  //  CTS input is sampled at the start of each character.
-	TXCTSC_1   MODIR = 0x01 << 4  //  CTS input is sampled when the transmitter is idle.
-	TXCTSSRC   MODIR = 0x01 << 5  //+ Transmit CTS Source
-	TXCTSSRC_0 MODIR = 0x00 << 5  //  CTS input is the CTS_B pin.
-	TXCTSSRC_1 MODIR = 0x01 << 5  //  CTS input is the inverted Receiver Match result.
-	RTSWATER   MODIR = 0x03 << 8  //+ Receive RTS Configuration
-	TNP        MODIR = 0x03 << 16 //+ Transmitter narrow pulse
-	TNP_0      MODIR = 0x00 << 16 //  1/OSR.
-	TNP_1      MODIR = 0x01 << 16 //  2/OSR.
-	TNP_2      MODIR = 0x02 << 16 //  3/OSR.
-	TNP_3      MODIR = 0x03 << 16 //  4/OSR.
-	IREN       MODIR = 0x01 << 18 //+ Infrared enable
-	IREN_0     MODIR = 0x00 << 18 //  IR disabled.
-	IREN_1     MODIR = 0x01 << 18 //  IR enabled.
+	TXCTSE   MODIR = 0x01 << 0  //+ Transmitter clear-to-send enable
+	TXRTSE   MODIR = 0x01 << 1  //+ Transmitter request-to-send enable
+	TXRTSPOL MODIR = 0x01 << 2  //+ Transmitter request-to-send polarity
+	RXRTSE   MODIR = 0x01 << 3  //+ Receiver request-to-send enable
+	TXCTSC   MODIR = 0x01 << 4  //+ Transmit CTS Configuration
+	TXCTSSRC MODIR = 0x01 << 5  //+ Transmit CTS Source
+	RTSWATER MODIR = 0x03 << 8  //+ Receive RTS Configuration
+	TNP      MODIR = 0x03 << 16 //+ Transmitter narrow pulse
+	TNP_0    MODIR = 0x00 << 16 //  1/OSR.
+	TNP_1    MODIR = 0x01 << 16 //  2/OSR.
+	TNP_2    MODIR = 0x02 << 16 //  3/OSR.
+	TNP_3    MODIR = 0x03 << 16 //  4/OSR.
+	IREN     MODIR = 0x01 << 18 //+ Infrared enable
 )
 
 const (
@@ -473,8 +339,6 @@ const (
 	RXFIFOSIZE_6 FIFO = 0x06 << 0  //  Receive FIFO/Buffer depth = 128 datawords.
 	RXFIFOSIZE_7 FIFO = 0x07 << 0  //  Receive FIFO/Buffer depth = 256 datawords.
 	RXFE         FIFO = 0x01 << 3  //+ Receive FIFO Enable
-	RXFE_0       FIFO = 0x00 << 3  //  Receive FIFO is not enabled. Buffer is depth 1.
-	RXFE_1       FIFO = 0x01 << 3  //  Receive FIFO is enabled. Buffer is depth indicted by RXFIFOSIZE.
 	TXFIFOSIZE   FIFO = 0x07 << 4  //+ Transmit FIFO Buffer Depth
 	TXFIFOSIZE_0 FIFO = 0x00 << 4  //  Transmit FIFO/Buffer depth = 1 dataword.
 	TXFIFOSIZE_1 FIFO = 0x01 << 4  //  Transmit FIFO/Buffer depth = 4 datawords.
@@ -485,14 +349,8 @@ const (
 	TXFIFOSIZE_6 FIFO = 0x06 << 4  //  Transmit FIFO/Buffer depth = 128 datawords.
 	TXFIFOSIZE_7 FIFO = 0x07 << 4  //  Transmit FIFO/Buffer depth = 256 datawords
 	TXFE         FIFO = 0x01 << 7  //+ Transmit FIFO Enable
-	TXFE_0       FIFO = 0x00 << 7  //  Transmit FIFO is not enabled. Buffer is depth 1.
-	TXFE_1       FIFO = 0x01 << 7  //  Transmit FIFO is enabled. Buffer is depth indicated by TXFIFOSIZE.
 	RXUFE        FIFO = 0x01 << 8  //+ Receive FIFO Underflow Interrupt Enable
-	RXUFE_0      FIFO = 0x00 << 8  //  RXUF flag does not generate an interrupt to the host.
-	RXUFE_1      FIFO = 0x01 << 8  //  RXUF flag generates an interrupt to the host.
 	TXOFE        FIFO = 0x01 << 9  //+ Transmit FIFO Overflow Interrupt Enable
-	TXOFE_0      FIFO = 0x00 << 9  //  TXOF flag does not generate an interrupt to the host.
-	TXOFE_1      FIFO = 0x01 << 9  //  TXOF flag generates an interrupt to the host.
 	RXIDEN       FIFO = 0x07 << 10 //+ Receiver Idle Empty Enable
 	RXIDEN_0     FIFO = 0x00 << 10 //  Disable RDRF assertion due to partially filled FIFO when receiver is idle.
 	RXIDEN_1     FIFO = 0x01 << 10 //  Enable RDRF assertion due to partially filled FIFO when receiver is idle for 1 character.
@@ -503,23 +361,11 @@ const (
 	RXIDEN_6     FIFO = 0x06 << 10 //  Enable RDRF assertion due to partially filled FIFO when receiver is idle for 32 characters.
 	RXIDEN_7     FIFO = 0x07 << 10 //  Enable RDRF assertion due to partially filled FIFO when receiver is idle for 64 characters.
 	RXFLUSH      FIFO = 0x01 << 14 //+ Receive FIFO/Buffer Flush
-	RXFLUSH_0    FIFO = 0x00 << 14 //  No flush operation occurs.
-	RXFLUSH_1    FIFO = 0x01 << 14 //  All data in the receive FIFO/buffer is cleared out.
 	TXFLUSH      FIFO = 0x01 << 15 //+ Transmit FIFO/Buffer Flush
-	TXFLUSH_0    FIFO = 0x00 << 15 //  No flush operation occurs.
-	TXFLUSH_1    FIFO = 0x01 << 15 //  All data in the transmit FIFO/Buffer is cleared out.
 	RXUF         FIFO = 0x01 << 16 //+ Receiver Buffer Underflow Flag
-	RXUF_0       FIFO = 0x00 << 16 //  No receive buffer underflow has occurred since the last time the flag was cleared.
-	RXUF_1       FIFO = 0x01 << 16 //  At least one receive buffer underflow has occurred since the last time the flag was cleared.
 	TXOF         FIFO = 0x01 << 17 //+ Transmitter Buffer Overflow Flag
-	TXOF_0       FIFO = 0x00 << 17 //  No transmit buffer overflow has occurred since the last time the flag was cleared.
-	TXOF_1       FIFO = 0x01 << 17 //  At least one transmit buffer overflow has occurred since the last time the flag was cleared.
 	RXEMPT       FIFO = 0x01 << 22 //+ Receive Buffer/FIFO Empty
-	RXEMPT_0     FIFO = 0x00 << 22 //  Receive buffer is not empty.
-	RXEMPT_1     FIFO = 0x01 << 22 //  Receive buffer is empty.
 	TXEMPT       FIFO = 0x01 << 23 //+ Transmit Buffer/FIFO Empty
-	TXEMPT_0     FIFO = 0x00 << 23 //  Transmit buffer is not empty.
-	TXEMPT_1     FIFO = 0x01 << 23 //  Transmit buffer is empty.
 )
 
 const (

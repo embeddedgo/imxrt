@@ -34,63 +34,29 @@
 package can1
 
 const (
-	MAXMB     MCR = 0x7F << 0  //+ This 7-bit field defines the number of the last Message Buffers that will take part in the matching and arbitration processes
-	IDAM      MCR = 0x03 << 8  //+ This 2-bit field identifies the format of the elements of the Rx FIFO filter table, as shown below
-	IDAM_0    MCR = 0x00 << 8  //  Format A One full ID (standard or extended) per ID filter Table element.
-	IDAM_1    MCR = 0x01 << 8  //  Format B Two full standard IDs or two partial 14-bit extended IDs per ID filter Table element.
-	IDAM_2    MCR = 0x02 << 8  //  Format C Four partial 8-bit IDs (standard or extended) per ID filter Table element.
-	IDAM_3    MCR = 0x03 << 8  //  Format D All frames rejected.
-	AEN       MCR = 0x01 << 12 //+ This bit is supplied for backwards compatibility reasons
-	AEN_0     MCR = 0x00 << 12 //  Abort disabled
-	AEN_1     MCR = 0x01 << 12 //  Abort enabled
-	LPRIOEN   MCR = 0x01 << 13 //+ This bit is provided for backwards compatibility reasons
-	LPRIOEN_0 MCR = 0x00 << 13 //  Local Priority disabled
-	LPRIOEN_1 MCR = 0x01 << 13 //  Local Priority enabled
-	IRMQ      MCR = 0x01 << 16 //+ This bit indicates whether Rx matching process will be based either on individual masking and queue or on masking scheme with RXMGMASK, RX14MASK and RX15MASK, RXFGMASK
-	IRMQ_0    MCR = 0x00 << 16 //  Individual Rx masking and queue feature are disabled.For backward compatibility, the reading of C/S word locks the MB even if it is EMPTY.
-	IRMQ_1    MCR = 0x01 << 16 //  Individual Rx masking and queue feature are enabled.
-	SRXDIS    MCR = 0x01 << 17 //+ This bit defines whether FlexCAN is allowed to receive frames transmitted by itself
-	SRXDIS_0  MCR = 0x00 << 17 //  Self reception enabled
-	SRXDIS_1  MCR = 0x01 << 17 //  Self reception disabled
-	WAKSRC    MCR = 0x01 << 19 //+ This bit defines whether the integrated low-pass filter is applied to protect the FLEXCAN_RX input from spurious wake up
-	WAKSRC_0  MCR = 0x00 << 19 //  FLEXCAN uses the unfiltered FLEXCAN_RX input to detect recessive to dominant edges on the CAN bus.
-	WAKSRC_1  MCR = 0x01 << 19 //  FLEXCAN uses the filtered FLEXCAN_RX input to detect recessive to dominant edges on the CAN bus
-	LPMACK    MCR = 0x01 << 20 //+ This read-only bit indicates that FLEXCAN is either in Disable Mode or Stop Mode
-	LPMACK_0  MCR = 0x00 << 20 //  FLEXCAN not in any of the low power modes
-	LPMACK_1  MCR = 0x01 << 20 //  FLEXCAN is either in Disable Mode, or Stop mode
-	WRNEN     MCR = 0x01 << 21 //+ When asserted, this bit enables the generation of the TWRN_INT and RWRN_INT flags in the Error and Status Register
-	WRNEN_0   MCR = 0x00 << 21 //  TWRN_INT and RWRN_INT bits are zero, independent of the values in the error counters.
-	WRNEN_1   MCR = 0x01 << 21 //  TWRN_INT and RWRN_INT bits are set when the respective error counter transition from <96 to >= 96.
-	SLFWAK    MCR = 0x01 << 22 //+ This bit enables the Self Wake Up feature when FLEXCAN is in Stop Mode
-	SLFWAK_0  MCR = 0x00 << 22 //  FLEXCAN Self Wake Up feature is disabled
-	SLFWAK_1  MCR = 0x01 << 22 //  FLEXCAN Self Wake Up feature is enabled
-	SUPV      MCR = 0x01 << 23 //+ This bit configures some of the FLEXCAN registers to be either in Supervisor or User Mode
-	SUPV_0    MCR = 0x00 << 23 //  FlexCAN is in User Mode. Affected registers allow both Supervisor and Unrestricted accesses
-	SUPV_1    MCR = 0x01 << 23 //  FlexCAN is in Supervisor Mode. Affected registers allow only Supervisor access. Unrestricted access behaves as though the access was done to an unimplemented register location
-	FRZACK    MCR = 0x01 << 24 //+ This read-only bit indicates that FLEXCAN is in Freeze Mode and its prescaler is stopped
-	FRZACK_0  MCR = 0x00 << 24 //  FLEXCAN not in Freeze Mode, prescaler running
-	FRZACK_1  MCR = 0x01 << 24 //  FLEXCAN in Freeze Mode, prescaler stopped
-	SOFTRST   MCR = 0x01 << 25 //+ When this bit is asserted, FlexCAN resets its internal state machines and some of the memory mapped registers
-	SOFTRST_0 MCR = 0x00 << 25 //  No reset request
-	SOFTRST_1 MCR = 0x01 << 25 //  Reset the registers
-	WAKMSK    MCR = 0x01 << 26 //+ This bit enables the Wake Up Interrupt generation.
-	WAKMSK_0  MCR = 0x00 << 26 //  Wake Up Interrupt is disabled
-	WAKMSK_1  MCR = 0x01 << 26 //  Wake Up Interrupt is enabled
-	NOTRDY    MCR = 0x01 << 27 //+ This read-only bit indicates that FLEXCAN is either in Disable Mode, Stop Mode or Freeze Mode
-	NOTRDY_0  MCR = 0x00 << 27 //  FLEXCAN module is either in Normal Mode, Listen-Only Mode or Loop-Back Mode
-	NOTRDY_1  MCR = 0x01 << 27 //  FLEXCAN module is either in Disable Mode, Stop Mode or Freeze Mode
-	HALT      MCR = 0x01 << 28 //+ Assertion of this bit puts the FLEXCAN module into Freeze Mode
-	HALT_0    MCR = 0x00 << 28 //  No Freeze Mode request.
-	HALT_1    MCR = 0x01 << 28 //  Enters Freeze Mode if the FRZ bit is asserted.
-	RFEN      MCR = 0x01 << 29 //+ This bit controls whether the Rx FIFO feature is enabled or not
-	RFEN_0    MCR = 0x00 << 29 //  FIFO not enabled
-	RFEN_1    MCR = 0x01 << 29 //  FIFO enabled
-	FRZ       MCR = 0x01 << 30 //+ The FRZ bit specifies the FLEXCAN behavior when the HALT bit in the MCR Register is set or when Debug Mode is requested at Arm level
-	FRZ_0     MCR = 0x00 << 30 //  Not enabled to enter Freeze Mode
-	FRZ_1     MCR = 0x01 << 30 //  Enabled to enter Freeze Mode
-	MDIS      MCR = 0x01 << 31 //+ This bit controls whether FLEXCAN is enabled or not
-	MDIS_0    MCR = 0x00 << 31 //  Enable the FLEXCAN module
-	MDIS_1    MCR = 0x01 << 31 //  Disable the FLEXCAN module
+	MAXMB   MCR = 0x7F << 0  //+ This 7-bit field defines the number of the last Message Buffers that will take part in the matching and arbitration processes
+	IDAM    MCR = 0x03 << 8  //+ This 2-bit field identifies the format of the elements of the Rx FIFO filter table, as shown below
+	IDAM_0  MCR = 0x00 << 8  //  Format A One full ID (standard or extended) per ID filter Table element.
+	IDAM_1  MCR = 0x01 << 8  //  Format B Two full standard IDs or two partial 14-bit extended IDs per ID filter Table element.
+	IDAM_2  MCR = 0x02 << 8  //  Format C Four partial 8-bit IDs (standard or extended) per ID filter Table element.
+	IDAM_3  MCR = 0x03 << 8  //  Format D All frames rejected.
+	AEN     MCR = 0x01 << 12 //+ This bit is supplied for backwards compatibility reasons
+	LPRIOEN MCR = 0x01 << 13 //+ This bit is provided for backwards compatibility reasons
+	IRMQ    MCR = 0x01 << 16 //+ This bit indicates whether Rx matching process will be based either on individual masking and queue or on masking scheme with RXMGMASK, RX14MASK and RX15MASK, RXFGMASK
+	SRXDIS  MCR = 0x01 << 17 //+ This bit defines whether FlexCAN is allowed to receive frames transmitted by itself
+	WAKSRC  MCR = 0x01 << 19 //+ This bit defines whether the integrated low-pass filter is applied to protect the FLEXCAN_RX input from spurious wake up
+	LPMACK  MCR = 0x01 << 20 //+ This read-only bit indicates that FLEXCAN is either in Disable Mode or Stop Mode
+	WRNEN   MCR = 0x01 << 21 //+ When asserted, this bit enables the generation of the TWRN_INT and RWRN_INT flags in the Error and Status Register
+	SLFWAK  MCR = 0x01 << 22 //+ This bit enables the Self Wake Up feature when FLEXCAN is in Stop Mode
+	SUPV    MCR = 0x01 << 23 //+ This bit configures some of the FLEXCAN registers to be either in Supervisor or User Mode
+	FRZACK  MCR = 0x01 << 24 //+ This read-only bit indicates that FLEXCAN is in Freeze Mode and its prescaler is stopped
+	SOFTRST MCR = 0x01 << 25 //+ When this bit is asserted, FlexCAN resets its internal state machines and some of the memory mapped registers
+	WAKMSK  MCR = 0x01 << 26 //+ This bit enables the Wake Up Interrupt generation.
+	NOTRDY  MCR = 0x01 << 27 //+ This read-only bit indicates that FLEXCAN is either in Disable Mode, Stop Mode or Freeze Mode
+	HALT    MCR = 0x01 << 28 //+ Assertion of this bit puts the FLEXCAN module into Freeze Mode
+	RFEN    MCR = 0x01 << 29 //+ This bit controls whether the Rx FIFO feature is enabled or not
+	FRZ     MCR = 0x01 << 30 //+ The FRZ bit specifies the FLEXCAN behavior when the HALT bit in the MCR Register is set or when Debug Mode is requested at Arm level
+	MDIS    MCR = 0x01 << 31 //+ This bit controls whether FLEXCAN is enabled or not
 )
 
 const (
@@ -116,41 +82,21 @@ const (
 )
 
 const (
-	PROPSEG   CTRL1 = 0x07 << 0  //+ This 3-bit field defines the length of the Propagation Segment in the bit time
-	LOM       CTRL1 = 0x01 << 3  //+ This bit configures FLEXCAN to operate in Listen Only Mode
-	LOM_0     CTRL1 = 0x00 << 3  //  Listen Only Mode is deactivated
-	LOM_1     CTRL1 = 0x01 << 3  //  FLEXCAN module operates in Listen Only Mode
-	LBUF      CTRL1 = 0x01 << 4  //+ This bit defines the ordering mechanism for Message Buffer transmission
-	LBUF_0    CTRL1 = 0x00 << 4  //  Buffer with highest priority is transmitted first
-	LBUF_1    CTRL1 = 0x01 << 4  //  Lowest number buffer is transmitted first
-	TSYN      CTRL1 = 0x01 << 5  //+ This bit enables a mechanism that resets the free-running timer each time a message is received in Message Buffer 0
-	TSYN_0    CTRL1 = 0x00 << 5  //  Timer Sync feature disabled
-	TSYN_1    CTRL1 = 0x01 << 5  //  Timer Sync feature enabled
-	BOFFREC   CTRL1 = 0x01 << 6  //+ This bit defines how FLEXCAN recovers from Bus Off state
-	BOFFREC_0 CTRL1 = 0x00 << 6  //  Automatic recovering from Bus Off state enabled, according to CAN Spec 2.0 part B
-	BOFFREC_1 CTRL1 = 0x01 << 6  //  Automatic recovering from Bus Off state disabled
-	SMP       CTRL1 = 0x01 << 7  //+ This bit defines the sampling mode of CAN bits at the FLEXCAN_RX
-	SMP_0     CTRL1 = 0x00 << 7  //  Just one sample is used to determine the bit value
-	SMP_1     CTRL1 = 0x01 << 7  //  Three samples are used to determine the value of the received bit: the regular one (sample point) and 2 preceding samples, a majority rule is used
-	RWRNMSK   CTRL1 = 0x01 << 10 //+ This bit provides a mask for the Rx Warning Interrupt associated with the RWRN_INT flag in the Error and Status Register
-	RWRNMSK_0 CTRL1 = 0x00 << 10 //  Rx Warning Interrupt disabled
-	RWRNMSK_1 CTRL1 = 0x01 << 10 //  Rx Warning Interrupt enabled
-	TWRNMSK   CTRL1 = 0x01 << 11 //+ This bit provides a mask for the Tx Warning Interrupt associated with the TWRN_INT flag in the Error and Status Register
-	TWRNMSK_0 CTRL1 = 0x00 << 11 //  Tx Warning Interrupt disabled
-	TWRNMSK_1 CTRL1 = 0x01 << 11 //  Tx Warning Interrupt enabled
-	LPB       CTRL1 = 0x01 << 12 //+ This bit configures FlexCAN to operate in Loop-Back Mode
-	LPB_0     CTRL1 = 0x00 << 12 //  Loop Back disabled
-	LPB_1     CTRL1 = 0x01 << 12 //  Loop Back enabled
-	ERRMSK    CTRL1 = 0x01 << 14 //+ This bit provides a mask for the Error Interrupt.
-	ERRMSK_0  CTRL1 = 0x00 << 14 //  Error interrupt disabled
-	ERRMSK_1  CTRL1 = 0x01 << 14 //  Error interrupt enabled
-	BOFFMSK   CTRL1 = 0x01 << 15 //+ This bit provides a mask for the Bus Off Interrupt.
-	BOFFMSK_0 CTRL1 = 0x00 << 15 //  Bus Off interrupt disabled
-	BOFFMSK_1 CTRL1 = 0x01 << 15 //  Bus Off interrupt enabled
-	PSEG2     CTRL1 = 0x07 << 16 //+ This 3-bit field defines the length of Phase Buffer Segment 2 in the bit time
-	PSEG1     CTRL1 = 0x07 << 19 //+ This 3-bit field defines the length of Phase Buffer Segment 1 in the bit time
-	RJW       CTRL1 = 0x03 << 22 //+ This 2-bit field defines the maximum number of time quanta One time quantum is equal to the Sclock period
-	PRESDIV   CTRL1 = 0xFF << 24 //+ This 8-bit field defines the ratio between the PE clock frequency and the Serial Clock (Sclock) frequency
+	PROPSEG CTRL1 = 0x07 << 0  //+ This 3-bit field defines the length of the Propagation Segment in the bit time
+	LOM     CTRL1 = 0x01 << 3  //+ This bit configures FLEXCAN to operate in Listen Only Mode
+	LBUF    CTRL1 = 0x01 << 4  //+ This bit defines the ordering mechanism for Message Buffer transmission
+	TSYN    CTRL1 = 0x01 << 5  //+ This bit enables a mechanism that resets the free-running timer each time a message is received in Message Buffer 0
+	BOFFREC CTRL1 = 0x01 << 6  //+ This bit defines how FLEXCAN recovers from Bus Off state
+	SMP     CTRL1 = 0x01 << 7  //+ This bit defines the sampling mode of CAN bits at the FLEXCAN_RX
+	RWRNMSK CTRL1 = 0x01 << 10 //+ This bit provides a mask for the Rx Warning Interrupt associated with the RWRN_INT flag in the Error and Status Register
+	TWRNMSK CTRL1 = 0x01 << 11 //+ This bit provides a mask for the Tx Warning Interrupt associated with the TWRN_INT flag in the Error and Status Register
+	LPB     CTRL1 = 0x01 << 12 //+ This bit configures FlexCAN to operate in Loop-Back Mode
+	ERRMSK  CTRL1 = 0x01 << 14 //+ This bit provides a mask for the Error Interrupt.
+	BOFFMSK CTRL1 = 0x01 << 15 //+ This bit provides a mask for the Bus Off Interrupt.
+	PSEG2   CTRL1 = 0x07 << 16 //+ This 3-bit field defines the length of Phase Buffer Segment 2 in the bit time
+	PSEG1   CTRL1 = 0x07 << 19 //+ This 3-bit field defines the length of Phase Buffer Segment 1 in the bit time
+	RJW     CTRL1 = 0x03 << 22 //+ This 2-bit field defines the maximum number of time quanta One time quantum is equal to the Sclock period
+	PRESDIV CTRL1 = 0xFF << 24 //+ This 8-bit field defines the ratio between the PE clock frequency and the Serial Clock (Sclock) frequency
 )
 
 const (
@@ -221,60 +167,26 @@ const (
 
 const (
 	WAKINT    ESR1 = 0x01 << 0  //+ When FLEXCAN is Stop Mode and a recessive to dominant transition is detected on the CAN bus and if the WAK_MSK bit in the MCR Register is set, an interrupt is generated to the Arm
-	WAKINT_0  ESR1 = 0x00 << 0  //  No such occurrence
-	WAKINT_1  ESR1 = 0x01 << 0  //  Indicates a recessive to dominant transition received on the CAN bus when the FLEXCAN module is in Stop Mode
 	ERRINT    ESR1 = 0x01 << 1  //+ This bit indicates that at least one of the Error Bits (bits 15-10) is set
-	ERRINT_0  ESR1 = 0x00 << 1  //  No such occurrence
-	ERRINT_1  ESR1 = 0x01 << 1  //  Indicates setting of any Error Bit in the Error and Status Register
 	BOFFINT   ESR1 = 0x01 << 2  //+ This bit is set when FLEXCAN enters 'Bus Off' state
-	BOFFINT_0 ESR1 = 0x00 << 2  //  No such occurrence
-	BOFFINT_1 ESR1 = 0x01 << 2  //  FLEXCAN module entered 'Bus Off' state
 	RX        ESR1 = 0x01 << 3  //+ This bit indicates if FlexCAN is receiving a message. Refer to .
-	RX_0      ESR1 = 0x00 << 3  //  FLEXCAN is receiving a message
-	RX_1      ESR1 = 0x01 << 3  //  FLEXCAN is transmitting a message
 	FLTCONF   ESR1 = 0x03 << 4  //+ If the LOM bit in the Control Register is asserted, after some delay that depends on the CAN bit timing the FLT_CONF field will indicate "Error Passive"
 	FLTCONF_0 ESR1 = 0x00 << 4  //  Error Active
 	FLTCONF_1 ESR1 = 0x01 << 4  //  Error Passive
 	FLTCONF_2 ESR1 = 0x02 << 4  //  Bus off
 	TX        ESR1 = 0x01 << 6  //+ This bit indicates if FLEXCAN is transmitting a message.Refer to .
-	TX_0      ESR1 = 0x00 << 6  //  FLEXCAN is receiving a message
-	TX_1      ESR1 = 0x01 << 6  //  FLEXCAN is transmitting a message
 	IDLE      ESR1 = 0x01 << 7  //+ This bit indicates when CAN bus is in IDLE state.Refer to .
-	IDLE_0    ESR1 = 0x00 << 7  //  No such occurrence
-	IDLE_1    ESR1 = 0x01 << 7  //  CAN bus is now IDLE
 	RXWRN     ESR1 = 0x01 << 8  //+ This bit indicates when repetitive errors are occurring during message reception.
-	RXWRN_0   ESR1 = 0x00 << 8  //  No such occurrence
-	RXWRN_1   ESR1 = 0x01 << 8  //  Rx_Err_Counter >= 96
 	TXWRN     ESR1 = 0x01 << 9  //+ This bit indicates when repetitive errors are occurring during message transmission.
-	TXWRN_0   ESR1 = 0x00 << 9  //  No such occurrence
-	TXWRN_1   ESR1 = 0x01 << 9  //  TX_Err_Counter >= 96
 	STFERR    ESR1 = 0x01 << 10 //+ This bit indicates that a Stuffing Error has been detected.
-	STFERR_0  ESR1 = 0x00 << 10 //  No such occurrence.
-	STFERR_1  ESR1 = 0x01 << 10 //  A Stuffing Error occurred since last read of this register.
 	FRMERR    ESR1 = 0x01 << 11 //+ This bit indicates that a Form Error has been detected by the receiver node, i
-	FRMERR_0  ESR1 = 0x00 << 11 //  No such occurrence
-	FRMERR_1  ESR1 = 0x01 << 11 //  A Form Error occurred since last read of this register
 	CRCERR    ESR1 = 0x01 << 12 //+ This bit indicates that a CRC Error has been detected by the receiver node, i
-	CRCERR_0  ESR1 = 0x00 << 12 //  No such occurrence
-	CRCERR_1  ESR1 = 0x01 << 12 //  A CRC error occurred since last read of this register.
 	ACKERR    ESR1 = 0x01 << 13 //+ This bit indicates that an Acknowledge Error has been detected by the transmitter node, i
-	ACKERR_0  ESR1 = 0x00 << 13 //  No such occurrence
-	ACKERR_1  ESR1 = 0x01 << 13 //  An ACK error occurred since last read of this register
 	BIT0ERR   ESR1 = 0x01 << 14 //+ This bit indicates when an inconsistency occurs between the transmitted and the received bit in a message
-	BIT0ERR_0 ESR1 = 0x00 << 14 //  No such occurrence
-	BIT0ERR_1 ESR1 = 0x01 << 14 //  At least one bit sent as dominant is received as recessive
 	BIT1ERR   ESR1 = 0x01 << 15 //+ This bit indicates when an inconsistency occurs between the transmitted and the received bit in a message
-	BIT1ERR_0 ESR1 = 0x00 << 15 //  No such occurrence
-	BIT1ERR_1 ESR1 = 0x01 << 15 //  At least one bit sent as recessive is received as dominant
 	RWRNINT   ESR1 = 0x01 << 16 //+ If the WRN_EN bit in MCR is asserted, the RWRN_INT bit is set when the RX_WRN flag transition from '0' to '1', meaning that the Rx error counters reached 96
-	RWRNINT_0 ESR1 = 0x00 << 16 //  No such occurrence
-	RWRNINT_1 ESR1 = 0x01 << 16 //  The Rx error counter transition from < 96 to >= 96
 	TWRNINT   ESR1 = 0x01 << 17 //+ If the WRN_EN bit in MCR is asserted, the TWRN_INT bit is set when the TX_WRN flag transition from '0' to '1', meaning that the Tx error counter reached 96
-	TWRNINT_0 ESR1 = 0x00 << 17 //  No such occurrence
-	TWRNINT_1 ESR1 = 0x01 << 17 //  The Tx error counter transition from < 96 to >= 96
 	SYNCH     ESR1 = 0x01 << 18 //+ This read-only flag indicates whether the FlexCAN is synchronized to the CAN bus and able to participate in the communication process
-	SYNCH_0   ESR1 = 0x00 << 18 //  FlexCAN is not synchronized to the CAN bus
-	SYNCH_1   ESR1 = 0x01 << 18 //  FlexCAN is synchronized to the CAN bus
 )
 
 const (
@@ -333,14 +245,8 @@ const (
 	BUF4TO0I_0  IFLAG1 = 0x00 << 0     //  No such occurrence
 	BUF4TO0I_1  IFLAG1 = 0x01 << 0     //  Corresponding MB completed transmission/reception
 	BUF5I       IFLAG1 = 0x01 << 5     //+ If the Rx FIFO is not enabled, this bit flags the interrupt for MB5
-	BUF5I_0     IFLAG1 = 0x00 << 5     //  No such occurrence
-	BUF5I_1     IFLAG1 = 0x01 << 5     //  MB5 completed transmission/reception or frames available in the FIFO
 	BUF6I       IFLAG1 = 0x01 << 6     //+ If the Rx FIFO is not enabled, this bit flags the interrupt for MB6
-	BUF6I_0     IFLAG1 = 0x00 << 6     //  No such occurrence
-	BUF6I_1     IFLAG1 = 0x01 << 6     //  MB6 completed transmission/reception or FIFO almost full
 	BUF7I       IFLAG1 = 0x01 << 7     //+ If the Rx FIFO is not enabled, this bit flags the interrupt for MB7
-	BUF7I_0     IFLAG1 = 0x00 << 7     //  No such occurrence
-	BUF7I_1     IFLAG1 = 0x01 << 7     //  MB7 completed transmission/reception or FIFO overflow
 	BUF31TO8I   IFLAG1 = 0xFFFFFF << 8 //+ Each bit flags the respective FLEXCAN Message Buffer (MB8 to MB31) interrupt.
 	BUF31TO8I_0 IFLAG1 = 0x00 << 8     //  No such occurrence
 	BUF31TO8I_1 IFLAG1 = 0x01 << 8     //  The corresponding MB has successfully completed transmission or reception
@@ -355,20 +261,12 @@ const (
 )
 
 const (
-	EACEN    CTRL2 = 0x01 << 16 //+ This bit controls the comparison of IDE and RTR bits within Rx Mailboxes filters with their corresponding bits in the incoming frame by the matching process
-	EACEN_0  CTRL2 = 0x00 << 16 //  Rx Mailbox filter's IDE bit is always compared and RTR is never compared despite mask bits.
-	EACEN_1  CTRL2 = 0x01 << 16 //  Enables the comparison of both Rx Mailbox filter's IDE and RTR bit with their corresponding bits within the incoming frame. Mask bits do apply.
-	RRS      CTRL2 = 0x01 << 17 //+ If this bit is asserted Remote Request Frame is submitted to a matching process and stored in the corresponding Message Buffer in the same fashion of a Data Frame
-	RRS_0    CTRL2 = 0x00 << 17 //  Remote Response Frame is generated
-	RRS_1    CTRL2 = 0x01 << 17 //  Remote Request Frame is stored
-	MRP      CTRL2 = 0x01 << 18 //+ If this bit is set the matching process starts from the Mailboxes and if no match occurs the matching continues on the Rx FIFO
-	MRP_0    CTRL2 = 0x00 << 18 //  Matching starts from Rx FIFO and continues on Mailboxes
-	MRP_1    CTRL2 = 0x01 << 18 //  Matching starts from Mailboxes and continues on Rx FIFO
-	TASD     CTRL2 = 0x1F << 19 //+ This 5-bit field indicates how many CAN bits the Tx arbitration process start point can be delayed from the first bit of CRC field on CAN bus
-	RFFN     CTRL2 = 0x0F << 24 //+ This 4-bit field defines the number of Rx FIFO filters according to
-	WRMFRZ   CTRL2 = 0x01 << 28 //+ Enable unrestricted write access to FlexCAN memory in Freeze mode
-	WRMFRZ_0 CTRL2 = 0x00 << 28 //  Keep the write access restricted in some regions of FlexCAN memory
-	WRMFRZ_1 CTRL2 = 0x01 << 28 //  Enable unrestricted write access to FlexCAN memory
+	EACEN  CTRL2 = 0x01 << 16 //+ This bit controls the comparison of IDE and RTR bits within Rx Mailboxes filters with their corresponding bits in the incoming frame by the matching process
+	RRS    CTRL2 = 0x01 << 17 //+ If this bit is asserted Remote Request Frame is submitted to a matching process and stored in the corresponding Message Buffer in the same fashion of a Data Frame
+	MRP    CTRL2 = 0x01 << 18 //+ If this bit is set the matching process starts from the Mailboxes and if no match occurs the matching continues on the Rx FIFO
+	TASD   CTRL2 = 0x1F << 19 //+ This 5-bit field indicates how many CAN bits the Tx arbitration process start point can be delayed from the first bit of CRC field on CAN bus
+	RFFN   CTRL2 = 0x0F << 24 //+ This 4-bit field defines the number of Rx FIFO filters according to
+	WRMFRZ CTRL2 = 0x01 << 28 //+ Enable unrestricted write access to FlexCAN memory in Freeze mode
 )
 
 const (
@@ -381,13 +279,9 @@ const (
 )
 
 const (
-	IMB   ESR2 = 0x01 << 13 //+ If ESR2[VPS] is asserted, this bit indicates whether there is any inactive Mailbox (CODE field is either 0b1000 or 0b0000)
-	IMB_0 ESR2 = 0x00 << 13 //  If ESR2[VPS] is asserted, the ESR2[LPTM] is not an inactive Mailbox.
-	IMB_1 ESR2 = 0x01 << 13 //  If ESR2[VPS] is asserted, there is at least one inactive Mailbox. LPTM content is the number of the first one.
-	VPS   ESR2 = 0x01 << 14 //+ This bit indicates whether IMB and LPTM contents are currently valid or not
-	VPS_0 ESR2 = 0x00 << 14 //  Contents of IMB and LPTM are invalid
-	VPS_1 ESR2 = 0x01 << 14 //  Contents of IMB and LPTM are valid
-	LPTM  ESR2 = 0x7F << 16 //+ If ESR2[VPS] is asserted, his 7-bit field indicates the lowest number inactive Mailbox (refer to IMB bit description)
+	IMB  ESR2 = 0x01 << 13 //+ If ESR2[VPS] is asserted, this bit indicates whether there is any inactive Mailbox (CODE field is either 0b1000 or 0b0000)
+	VPS  ESR2 = 0x01 << 14 //+ This bit indicates whether IMB and LPTM contents are currently valid or not
+	LPTM ESR2 = 0x7F << 16 //+ If ESR2[VPS] is asserted, his 7-bit field indicates the lowest number inactive Mailbox (refer to IMB bit description)
 )
 
 const (
@@ -435,14 +329,10 @@ const (
 )
 
 const (
-	RMP   DBG2 = 0x7F << 0  //+ Rx Matching Pointer
-	MPP   DBG2 = 0x01 << 7  //+ Matching Process in Progress
-	MPP_0 DBG2 = 0x00 << 7  //  No matching process ongoing.
-	MPP_1 DBG2 = 0x01 << 7  //  Matching process is in progress.
-	TAP   DBG2 = 0x7F << 8  //+ Tx Arbitration Pointer
-	APP   DBG2 = 0x01 << 15 //+ Arbitration Process in Progress
-	APP_0 DBG2 = 0x00 << 15 //  No matching process ongoing.
-	APP_1 DBG2 = 0x01 << 15 //  Matching process is in progress.
+	RMP DBG2 = 0x7F << 0  //+ Rx Matching Pointer
+	MPP DBG2 = 0x01 << 7  //+ Matching Process in Progress
+	TAP DBG2 = 0x7F << 8  //+ Tx Arbitration Pointer
+	APP DBG2 = 0x01 << 15 //+ Arbitration Process in Progress
 )
 
 const (

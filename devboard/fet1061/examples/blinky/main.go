@@ -11,8 +11,10 @@ import (
 	"runtime"
 	"unsafe"
 
+	"github.com/embeddedgo/imxrt/p/ccm"
 	"github.com/embeddedgo/imxrt/p/gpio"
 	"github.com/embeddedgo/imxrt/p/iomuxc"
+	"github.com/embeddedgo/imxrt/p/iomuxc_gpr"
 )
 
 func mmio32(addr uintptr) *mmio.U32 {
@@ -20,11 +22,7 @@ func mmio32(addr uintptr) *mmio.U32 {
 }
 
 const (
-	IOMUXC_GPR_ADDR uintptr = 0x400AC000
 	CCM_ANALOG_ADDR uintptr = 0x400D8000
-	CCM_ADDR        uintptr = 0x400FC000
-	IOMUXC_ADDR     uintptr = 0x401F8000
-	GPIO6_ADDR      uintptr = 0x42000000
 )
 
 func main() {
@@ -36,9 +34,6 @@ func main() {
 	CCM_ANALOG_PFD_528 := mmio32(CCM_ANALOG_ADDR + 0x100)
 	CCM_ANALOG_PFD_528_SET := mmio32(CCM_ANALOG_ADDR + 0x100 + 4)
 	PMU_MISC0_SET := mmio32(CCM_ANALOG_ADDR + 0x150 + 4)
-	CCM_CSCMR1 := mmio32(CCM_ADDR + 0x01C)
-	CCM_CSCDR1 := mmio32(CCM_ADDR + 0x024)
-	IOMUXC_GPR_GPR26 := mmio32(IOMUXC_GPR_ADDR + 0x068)
 
 	// Set REFTOP_SELFBIASOFF after analog bandgap stabilized for best noise
 	// performance of analog blocks.
@@ -52,12 +47,22 @@ func main() {
 	//CCM_ANALOG_PFD_480_SET.Store(0x80808080) // gate PFD0,1,2,3
 	//CCM_ANALOG_PFD_480.Store(0x13110D0C)     // PFD0,1,2,3: 720,664,508,454 MHz
 
+	CCM := ccm.CCM()
+
 	// Configure clocks
-	CCM_CSCMR1.StoreBits(0x7F, 1<<6) // set PERCLK_CLK = OSC_CLK (24 MHz)
-	CCM_CSCDR1.StoreBits(0x7F, 1<<6) // set UART_CLK   = OSC_CLK (24 MHz)
+	CCM.CSCMR1.StoreBits(
+		ccm.PERCLK_PODF|ccm.PERCLK_CLK_SEL,
+		ccm.PERCLK_PODF_1|ccm.PERCLK_CLK_SEL,
+	)
+	CCM.CSCDR1.StoreBits(
+		ccm.UART_CLK_PODF|ccm.UART_CLK_SEL,
+		ccm.UART_CLK_PODF_1|ccm.UART_CLK_SEL,
+	)
+
+	IOMUXC_GPR := iomuxc_gpr.IOMUXC_GPR()
 
 	// GPIO_MUX1 ALT5 selects GPIO6 (fast) instead of GPIO1 (slow) for all bits.
-	IOMUXC_GPR_GPR26.Store(0xFFFFFFFF)
+	IOMUXC_GPR.GPR26.Store(0xFFFFFFFF)
 
 	IOMUXC := iomuxc.IOMUXC()
 

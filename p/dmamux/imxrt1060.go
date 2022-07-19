@@ -15,14 +15,8 @@ package dmamux
 const (
 	SOURCE CHCFG = 0x7F << 0  //+ DMA Channel Source (Slot Number)
 	A_ON   CHCFG = 0x01 << 29 //+ DMA Channel Always Enable
-	A_ON_0 CHCFG = 0x00 << 29 //  DMA Channel Always ON function is disabled
-	A_ON_1 CHCFG = 0x01 << 29 //  DMA Channel Always ON function is enabled
 	TRIG   CHCFG = 0x01 << 30 //+ DMA Channel Trigger Enable
-	TRIG_0 CHCFG = 0x00 << 30 //  Triggering is disabled. If triggering is disabled and ENBL is set, the DMA Channel will simply route the specified source to the DMA channel. (Normal mode)
-	TRIG_1 CHCFG = 0x01 << 30 //  Triggering is enabled. If triggering is enabled and ENBL is set, the DMA_CH_MUX is in Periodic Trigger mode.
 	ENBL   CHCFG = 0x01 << 31 //+ DMA Mux Channel Enable
-	ENBL_0 CHCFG = 0x00 << 31 //  DMA Mux channel is disabled
-	ENBL_1 CHCFG = 0x01 << 31 //  DMA Mux channel is enabled
 )
 
 const (

@@ -25,8 +25,6 @@ const (
 	ALT5     SW_MUX_CTL_PAD_WAKEUP = 0x05 << 0 //  Select mux mode: ALT5 mux port: GPIO5_IO00 of instance: gpio5
 	ALT7     SW_MUX_CTL_PAD_WAKEUP = 0x07 << 0 //  Select mux mode: ALT7 mux port: NMI_GLUE_NMI of instance: nmi_glue
 	SION     SW_MUX_CTL_PAD_WAKEUP = 0x01 << 4 //+ Software Input On Field.
-	DISABLED SW_MUX_CTL_PAD_WAKEUP = 0x00 << 4 //  Input Path is determined by functionality
-	ENABLED  SW_MUX_CTL_PAD_WAKEUP = 0x01 << 4 //  Force input path of pad WAKEUP
 )
 
 const (
@@ -39,8 +37,6 @@ const (
 	ALT0     SW_MUX_CTL_PAD_PMIC_ON_REQ = 0x00 << 0 //  Select mux mode: ALT0 mux port: SNVS_LP_PMIC_ON_REQ of instance: snvs_lp
 	ALT5     SW_MUX_CTL_PAD_PMIC_ON_REQ = 0x05 << 0 //  Select mux mode: ALT5 mux port: GPIO5_IO01 of instance: gpio5
 	SION     SW_MUX_CTL_PAD_PMIC_ON_REQ = 0x01 << 4 //+ Software Input On Field.
-	DISABLED SW_MUX_CTL_PAD_PMIC_ON_REQ = 0x00 << 4 //  Input Path is determined by functionality
-	ENABLED  SW_MUX_CTL_PAD_PMIC_ON_REQ = 0x01 << 4 //  Force input path of pad PMIC_ON_REQ
 )
 
 const (
@@ -53,8 +49,6 @@ const (
 	ALT0     SW_MUX_CTL_PAD_PMIC_STBY_REQ = 0x00 << 0 //  Select mux mode: ALT0 mux port: CCM_PMIC_VSTBY_REQ of instance: ccm
 	ALT5     SW_MUX_CTL_PAD_PMIC_STBY_REQ = 0x05 << 0 //  Select mux mode: ALT5 mux port: GPIO5_IO02 of instance: gpio5
 	SION     SW_MUX_CTL_PAD_PMIC_STBY_REQ = 0x01 << 4 //+ Software Input On Field.
-	DISABLED SW_MUX_CTL_PAD_PMIC_STBY_REQ = 0x00 << 4 //  Input Path is determined by functionality
-	ENABLED  SW_MUX_CTL_PAD_PMIC_STBY_REQ = 0x01 << 4 //  Force input path of pad PMIC_STBY_REQ
 )
 
 const (
@@ -64,8 +58,6 @@ const (
 
 const (
 	SRE                                                     SW_PAD_CTL_PAD_TEST_MODE = 0x01 << 0  //+ Slew Rate Field
-	SRE_0_Slow_Slew_Rate                                    SW_PAD_CTL_PAD_TEST_MODE = 0x00 << 0  //  Slow Slew Rate
-	SRE_1_Fast_Slew_Rate                                    SW_PAD_CTL_PAD_TEST_MODE = 0x01 << 0  //  Fast Slew Rate
 	DSE                                                     SW_PAD_CTL_PAD_TEST_MODE = 0x07 << 3  //+ Drive Strength Field
 	DSE_0_output_driver_disabled_                           SW_PAD_CTL_PAD_TEST_MODE = 0x00 << 3  //  output driver disabled;
 	DSE_1_R0_260_Ohm___3_3V__150_Ohm_1_8V__240_Ohm_for_DDR_ SW_PAD_CTL_PAD_TEST_MODE = 0x01 << 3  //  R0(260 Ohm @ 3.3V, 150 Ohm@1.8V, 240 Ohm for DDR)
@@ -78,22 +70,14 @@ const (
 	SPEED                                                   SW_PAD_CTL_PAD_TEST_MODE = 0x03 << 6  //+ Speed Field
 	SPEED                                                   SW_PAD_CTL_PAD_TEST_MODE = 0x02 << 6  //  medium(100MHz)
 	ODE                                                     SW_PAD_CTL_PAD_TEST_MODE = 0x01 << 11 //+ Open Drain Enable Field
-	ODE_0_Open_Drain_Disabled                               SW_PAD_CTL_PAD_TEST_MODE = 0x00 << 11 //  Open Drain Disabled
-	ODE_1_Open_Drain_Enabled                                SW_PAD_CTL_PAD_TEST_MODE = 0x01 << 11 //  Open Drain Enabled
 	PKE                                                     SW_PAD_CTL_PAD_TEST_MODE = 0x01 << 12 //+ Pull / Keep Enable Field
-	PKE_0_Pull_Keeper_Disabled                              SW_PAD_CTL_PAD_TEST_MODE = 0x00 << 12 //  Pull/Keeper Disabled
-	PKE_1_Pull_Keeper_Enabled                               SW_PAD_CTL_PAD_TEST_MODE = 0x01 << 12 //  Pull/Keeper Enabled
 	PUE                                                     SW_PAD_CTL_PAD_TEST_MODE = 0x01 << 13 //+ Pull / Keep Select Field
-	PUE_0_Keeper                                            SW_PAD_CTL_PAD_TEST_MODE = 0x00 << 13 //  Keeper
-	PUE_1_Pull                                              SW_PAD_CTL_PAD_TEST_MODE = 0x01 << 13 //  Pull
 	PUS                                                     SW_PAD_CTL_PAD_TEST_MODE = 0x03 << 14 //+ Pull Up / Down Config. Field
 	PUS_0_100K_Ohm_Pull_Down                                SW_PAD_CTL_PAD_TEST_MODE = 0x00 << 14 //  100K Ohm Pull Down
 	PUS_1_47K_Ohm_Pull_Up                                   SW_PAD_CTL_PAD_TEST_MODE = 0x01 << 14 //  47K Ohm Pull Up
 	PUS_2_100K_Ohm_Pull_Up                                  SW_PAD_CTL_PAD_TEST_MODE = 0x02 << 14 //  100K Ohm Pull Up
 	PUS_3_22K_Ohm_Pull_Up                                   SW_PAD_CTL_PAD_TEST_MODE = 0x03 << 14 //  22K Ohm Pull Up
 	HYS                                                     SW_PAD_CTL_PAD_TEST_MODE = 0x01 << 16 //+ Hyst. Enable Field
-	HYS_0_Hysteresis_Disabled                               SW_PAD_CTL_PAD_TEST_MODE = 0x00 << 16 //  Hysteresis Disabled
-	HYS_1_Hysteresis_Enabled                                SW_PAD_CTL_PAD_TEST_MODE = 0x01 << 16 //  Hysteresis Enabled
 )
 
 const (
@@ -109,8 +93,6 @@ const (
 
 const (
 	SRE                                                     SW_PAD_CTL_PAD_POR_B = 0x01 << 0  //+ Slew Rate Field
-	SRE_0_Slow_Slew_Rate                                    SW_PAD_CTL_PAD_POR_B = 0x00 << 0  //  Slow Slew Rate
-	SRE_1_Fast_Slew_Rate                                    SW_PAD_CTL_PAD_POR_B = 0x01 << 0  //  Fast Slew Rate
 	DSE                                                     SW_PAD_CTL_PAD_POR_B = 0x07 << 3  //+ Drive Strength Field
 	DSE_0_output_driver_disabled_                           SW_PAD_CTL_PAD_POR_B = 0x00 << 3  //  output driver disabled;
 	DSE_1_R0_260_Ohm___3_3V__150_Ohm_1_8V__240_Ohm_for_DDR_ SW_PAD_CTL_PAD_POR_B = 0x01 << 3  //  R0(260 Ohm @ 3.3V, 150 Ohm@1.8V, 240 Ohm for DDR)
@@ -123,22 +105,14 @@ const (
 	SPEED                                                   SW_PAD_CTL_PAD_POR_B = 0x03 << 6  //+ Speed Field
 	SPEED                                                   SW_PAD_CTL_PAD_POR_B = 0x02 << 6  //  medium(100MHz)
 	ODE                                                     SW_PAD_CTL_PAD_POR_B = 0x01 << 11 //+ Open Drain Enable Field
-	ODE_0_Open_Drain_Disabled                               SW_PAD_CTL_PAD_POR_B = 0x00 << 11 //  Open Drain Disabled
-	ODE_1_Open_Drain_Enabled                                SW_PAD_CTL_PAD_POR_B = 0x01 << 11 //  Open Drain Enabled
 	PKE                                                     SW_PAD_CTL_PAD_POR_B = 0x01 << 12 //+ Pull / Keep Enable Field
-	PKE_0_Pull_Keeper_Disabled                              SW_PAD_CTL_PAD_POR_B = 0x00 << 12 //  Pull/Keeper Disabled
-	PKE_1_Pull_Keeper_Enabled                               SW_PAD_CTL_PAD_POR_B = 0x01 << 12 //  Pull/Keeper Enabled
 	PUE                                                     SW_PAD_CTL_PAD_POR_B = 0x01 << 13 //+ Pull / Keep Select Field
-	PUE_0_Keeper                                            SW_PAD_CTL_PAD_POR_B = 0x00 << 13 //  Keeper
-	PUE_1_Pull                                              SW_PAD_CTL_PAD_POR_B = 0x01 << 13 //  Pull
 	PUS                                                     SW_PAD_CTL_PAD_POR_B = 0x03 << 14 //+ Pull Up / Down Config. Field
 	PUS_0_100K_Ohm_Pull_Down                                SW_PAD_CTL_PAD_POR_B = 0x00 << 14 //  100K Ohm Pull Down
 	PUS_1_47K_Ohm_Pull_Up                                   SW_PAD_CTL_PAD_POR_B = 0x01 << 14 //  47K Ohm Pull Up
 	PUS_2_100K_Ohm_Pull_Up                                  SW_PAD_CTL_PAD_POR_B = 0x02 << 14 //  100K Ohm Pull Up
 	PUS_3_22K_Ohm_Pull_Up                                   SW_PAD_CTL_PAD_POR_B = 0x03 << 14 //  22K Ohm Pull Up
 	HYS                                                     SW_PAD_CTL_PAD_POR_B = 0x01 << 16 //+ Hyst. Enable Field
-	HYS_0_Hysteresis_Disabled                               SW_PAD_CTL_PAD_POR_B = 0x00 << 16 //  Hysteresis Disabled
-	HYS_1_Hysteresis_Enabled                                SW_PAD_CTL_PAD_POR_B = 0x01 << 16 //  Hysteresis Enabled
 )
 
 const (
@@ -154,8 +128,6 @@ const (
 
 const (
 	SRE                                                     SW_PAD_CTL_PAD_ONOFF = 0x01 << 0  //+ Slew Rate Field
-	SRE_0_Slow_Slew_Rate                                    SW_PAD_CTL_PAD_ONOFF = 0x00 << 0  //  Slow Slew Rate
-	SRE_1_Fast_Slew_Rate                                    SW_PAD_CTL_PAD_ONOFF = 0x01 << 0  //  Fast Slew Rate
 	DSE                                                     SW_PAD_CTL_PAD_ONOFF = 0x07 << 3  //+ Drive Strength Field
 	DSE_0_output_driver_disabled_                           SW_PAD_CTL_PAD_ONOFF = 0x00 << 3  //  output driver disabled;
 	DSE_1_R0_260_Ohm___3_3V__150_Ohm_1_8V__240_Ohm_for_DDR_ SW_PAD_CTL_PAD_ONOFF = 0x01 << 3  //  R0(260 Ohm @ 3.3V, 150 Ohm@1.8V, 240 Ohm for DDR)
@@ -168,22 +140,14 @@ const (
 	SPEED                                                   SW_PAD_CTL_PAD_ONOFF = 0x03 << 6  //+ Speed Field
 	SPEED                                                   SW_PAD_CTL_PAD_ONOFF = 0x02 << 6  //  medium(100MHz)
 	ODE                                                     SW_PAD_CTL_PAD_ONOFF = 0x01 << 11 //+ Open Drain Enable Field
-	ODE_0_Open_Drain_Disabled                               SW_PAD_CTL_PAD_ONOFF = 0x00 << 11 //  Open Drain Disabled
-	ODE_1_Open_Drain_Enabled                                SW_PAD_CTL_PAD_ONOFF = 0x01 << 11 //  Open Drain Enabled
 	PKE                                                     SW_PAD_CTL_PAD_ONOFF = 0x01 << 12 //+ Pull / Keep Enable Field
-	PKE_0_Pull_Keeper_Disabled                              SW_PAD_CTL_PAD_ONOFF = 0x00 << 12 //  Pull/Keeper Disabled
-	PKE_1_Pull_Keeper_Enabled                               SW_PAD_CTL_PAD_ONOFF = 0x01 << 12 //  Pull/Keeper Enabled
 	PUE                                                     SW_PAD_CTL_PAD_ONOFF = 0x01 << 13 //+ Pull / Keep Select Field
-	PUE_0_Keeper                                            SW_PAD_CTL_PAD_ONOFF = 0x00 << 13 //  Keeper
-	PUE_1_Pull                                              SW_PAD_CTL_PAD_ONOFF = 0x01 << 13 //  Pull
 	PUS                                                     SW_PAD_CTL_PAD_ONOFF = 0x03 << 14 //+ Pull Up / Down Config. Field
 	PUS_0_100K_Ohm_Pull_Down                                SW_PAD_CTL_PAD_ONOFF = 0x00 << 14 //  100K Ohm Pull Down
 	PUS_1_47K_Ohm_Pull_Up                                   SW_PAD_CTL_PAD_ONOFF = 0x01 << 14 //  47K Ohm Pull Up
 	PUS_2_100K_Ohm_Pull_Up                                  SW_PAD_CTL_PAD_ONOFF = 0x02 << 14 //  100K Ohm Pull Up
 	PUS_3_22K_Ohm_Pull_Up                                   SW_PAD_CTL_PAD_ONOFF = 0x03 << 14 //  22K Ohm Pull Up
 	HYS                                                     SW_PAD_CTL_PAD_ONOFF = 0x01 << 16 //+ Hyst. Enable Field
-	HYS_0_Hysteresis_Disabled                               SW_PAD_CTL_PAD_ONOFF = 0x00 << 16 //  Hysteresis Disabled
-	HYS_1_Hysteresis_Enabled                                SW_PAD_CTL_PAD_ONOFF = 0x01 << 16 //  Hysteresis Enabled
 )
 
 const (
@@ -199,8 +163,6 @@ const (
 
 const (
 	SRE                                                     SW_PAD_CTL_PAD_WAKEUP = 0x01 << 0  //+ Slew Rate Field
-	SRE_0_Slow_Slew_Rate                                    SW_PAD_CTL_PAD_WAKEUP = 0x00 << 0  //  Slow Slew Rate
-	SRE_1_Fast_Slew_Rate                                    SW_PAD_CTL_PAD_WAKEUP = 0x01 << 0  //  Fast Slew Rate
 	DSE                                                     SW_PAD_CTL_PAD_WAKEUP = 0x07 << 3  //+ Drive Strength Field
 	DSE_0_output_driver_disabled_                           SW_PAD_CTL_PAD_WAKEUP = 0x00 << 3  //  output driver disabled;
 	DSE_1_R0_260_Ohm___3_3V__150_Ohm_1_8V__240_Ohm_for_DDR_ SW_PAD_CTL_PAD_WAKEUP = 0x01 << 3  //  R0(260 Ohm @ 3.3V, 150 Ohm@1.8V, 240 Ohm for DDR)
@@ -213,22 +175,14 @@ const (
 	SPEED                                                   SW_PAD_CTL_PAD_WAKEUP = 0x03 << 6  //+ Speed Field
 	SPEED                                                   SW_PAD_CTL_PAD_WAKEUP = 0x02 << 6  //  medium(100MHz)
 	ODE                                                     SW_PAD_CTL_PAD_WAKEUP = 0x01 << 11 //+ Open Drain Enable Field
-	ODE_0_Open_Drain_Disabled                               SW_PAD_CTL_PAD_WAKEUP = 0x00 << 11 //  Open Drain Disabled
-	ODE_1_Open_Drain_Enabled                                SW_PAD_CTL_PAD_WAKEUP = 0x01 << 11 //  Open Drain Enabled
 	PKE                                                     SW_PAD_CTL_PAD_WAKEUP = 0x01 << 12 //+ Pull / Keep Enable Field
-	PKE_0_Pull_Keeper_Disabled                              SW_PAD_CTL_PAD_WAKEUP = 0x00 << 12 //  Pull/Keeper Disabled
-	PKE_1_Pull_Keeper_Enabled                               SW_PAD_CTL_PAD_WAKEUP = 0x01 << 12 //  Pull/Keeper Enabled
 	PUE                                                     SW_PAD_CTL_PAD_WAKEUP = 0x01 << 13 //+ Pull / Keep Select Field
-	PUE_0_Keeper                                            SW_PAD_CTL_PAD_WAKEUP = 0x00 << 13 //  Keeper
-	PUE_1_Pull                                              SW_PAD_CTL_PAD_WAKEUP = 0x01 << 13 //  Pull
 	PUS                                                     SW_PAD_CTL_PAD_WAKEUP = 0x03 << 14 //+ Pull Up / Down Config. Field
 	PUS_0_100K_Ohm_Pull_Down                                SW_PAD_CTL_PAD_WAKEUP = 0x00 << 14 //  100K Ohm Pull Down
 	PUS_1_47K_Ohm_Pull_Up                                   SW_PAD_CTL_PAD_WAKEUP = 0x01 << 14 //  47K Ohm Pull Up
 	PUS_2_100K_Ohm_Pull_Up                                  SW_PAD_CTL_PAD_WAKEUP = 0x02 << 14 //  100K Ohm Pull Up
 	PUS_3_22K_Ohm_Pull_Up                                   SW_PAD_CTL_PAD_WAKEUP = 0x03 << 14 //  22K Ohm Pull Up
 	HYS                                                     SW_PAD_CTL_PAD_WAKEUP = 0x01 << 16 //+ Hyst. Enable Field
-	HYS_0_Hysteresis_Disabled                               SW_PAD_CTL_PAD_WAKEUP = 0x00 << 16 //  Hysteresis Disabled
-	HYS_1_Hysteresis_Enabled                                SW_PAD_CTL_PAD_WAKEUP = 0x01 << 16 //  Hysteresis Enabled
 )
 
 const (
@@ -244,8 +198,6 @@ const (
 
 const (
 	SRE                                                     SW_PAD_CTL_PAD_PMIC_ON_REQ = 0x01 << 0  //+ Slew Rate Field
-	SRE_0_Slow_Slew_Rate                                    SW_PAD_CTL_PAD_PMIC_ON_REQ = 0x00 << 0  //  Slow Slew Rate
-	SRE_1_Fast_Slew_Rate                                    SW_PAD_CTL_PAD_PMIC_ON_REQ = 0x01 << 0  //  Fast Slew Rate
 	DSE                                                     SW_PAD_CTL_PAD_PMIC_ON_REQ = 0x07 << 3  //+ Drive Strength Field
 	DSE_0_output_driver_disabled_                           SW_PAD_CTL_PAD_PMIC_ON_REQ = 0x00 << 3  //  output driver disabled;
 	DSE_1_R0_260_Ohm___3_3V__150_Ohm_1_8V__240_Ohm_for_DDR_ SW_PAD_CTL_PAD_PMIC_ON_REQ = 0x01 << 3  //  R0(260 Ohm @ 3.3V, 150 Ohm@1.8V, 240 Ohm for DDR)
@@ -258,22 +210,14 @@ const (
 	SPEED                                                   SW_PAD_CTL_PAD_PMIC_ON_REQ = 0x03 << 6  //+ Speed Field
 	SPEED                                                   SW_PAD_CTL_PAD_PMIC_ON_REQ = 0x02 << 6  //  medium(100MHz)
 	ODE                                                     SW_PAD_CTL_PAD_PMIC_ON_REQ = 0x01 << 11 //+ Open Drain Enable Field
-	ODE_0_Open_Drain_Disabled                               SW_PAD_CTL_PAD_PMIC_ON_REQ = 0x00 << 11 //  Open Drain Disabled
-	ODE_1_Open_Drain_Enabled                                SW_PAD_CTL_PAD_PMIC_ON_REQ = 0x01 << 11 //  Open Drain Enabled
 	PKE                                                     SW_PAD_CTL_PAD_PMIC_ON_REQ = 0x01 << 12 //+ Pull / Keep Enable Field
-	PKE_0_Pull_Keeper_Disabled                              SW_PAD_CTL_PAD_PMIC_ON_REQ = 0x00 << 12 //  Pull/Keeper Disabled
-	PKE_1_Pull_Keeper_Enabled                               SW_PAD_CTL_PAD_PMIC_ON_REQ = 0x01 << 12 //  Pull/Keeper Enabled
 	PUE                                                     SW_PAD_CTL_PAD_PMIC_ON_REQ = 0x01 << 13 //+ Pull / Keep Select Field
-	PUE_0_Keeper                                            SW_PAD_CTL_PAD_PMIC_ON_REQ = 0x00 << 13 //  Keeper
-	PUE_1_Pull                                              SW_PAD_CTL_PAD_PMIC_ON_REQ = 0x01 << 13 //  Pull
 	PUS                                                     SW_PAD_CTL_PAD_PMIC_ON_REQ = 0x03 << 14 //+ Pull Up / Down Config. Field
 	PUS_0_100K_Ohm_Pull_Down                                SW_PAD_CTL_PAD_PMIC_ON_REQ = 0x00 << 14 //  100K Ohm Pull Down
 	PUS_1_47K_Ohm_Pull_Up                                   SW_PAD_CTL_PAD_PMIC_ON_REQ = 0x01 << 14 //  47K Ohm Pull Up
 	PUS_2_100K_Ohm_Pull_Up                                  SW_PAD_CTL_PAD_PMIC_ON_REQ = 0x02 << 14 //  100K Ohm Pull Up
 	PUS_3_22K_Ohm_Pull_Up                                   SW_PAD_CTL_PAD_PMIC_ON_REQ = 0x03 << 14 //  22K Ohm Pull Up
 	HYS                                                     SW_PAD_CTL_PAD_PMIC_ON_REQ = 0x01 << 16 //+ Hyst. Enable Field
-	HYS_0_Hysteresis_Disabled                               SW_PAD_CTL_PAD_PMIC_ON_REQ = 0x00 << 16 //  Hysteresis Disabled
-	HYS_1_Hysteresis_Enabled                                SW_PAD_CTL_PAD_PMIC_ON_REQ = 0x01 << 16 //  Hysteresis Enabled
 )
 
 const (
@@ -289,8 +233,6 @@ const (
 
 const (
 	SRE                                                     SW_PAD_CTL_PAD_PMIC_STBY_REQ = 0x01 << 0  //+ Slew Rate Field
-	SRE_0_Slow_Slew_Rate                                    SW_PAD_CTL_PAD_PMIC_STBY_REQ = 0x00 << 0  //  Slow Slew Rate
-	SRE_1_Fast_Slew_Rate                                    SW_PAD_CTL_PAD_PMIC_STBY_REQ = 0x01 << 0  //  Fast Slew Rate
 	DSE                                                     SW_PAD_CTL_PAD_PMIC_STBY_REQ = 0x07 << 3  //+ Drive Strength Field
 	DSE_0_output_driver_disabled_                           SW_PAD_CTL_PAD_PMIC_STBY_REQ = 0x00 << 3  //  output driver disabled;
 	DSE_1_R0_260_Ohm___3_3V__150_Ohm_1_8V__240_Ohm_for_DDR_ SW_PAD_CTL_PAD_PMIC_STBY_REQ = 0x01 << 3  //  R0(260 Ohm @ 3.3V, 150 Ohm@1.8V, 240 Ohm for DDR)
@@ -303,22 +245,14 @@ const (
 	SPEED                                                   SW_PAD_CTL_PAD_PMIC_STBY_REQ = 0x03 << 6  //+ Speed Field
 	SPEED                                                   SW_PAD_CTL_PAD_PMIC_STBY_REQ = 0x02 << 6  //  medium(100MHz)
 	ODE                                                     SW_PAD_CTL_PAD_PMIC_STBY_REQ = 0x01 << 11 //+ Open Drain Enable Field
-	ODE_0_Open_Drain_Disabled                               SW_PAD_CTL_PAD_PMIC_STBY_REQ = 0x00 << 11 //  Open Drain Disabled
-	ODE_1_Open_Drain_Enabled                                SW_PAD_CTL_PAD_PMIC_STBY_REQ = 0x01 << 11 //  Open Drain Enabled
 	PKE                                                     SW_PAD_CTL_PAD_PMIC_STBY_REQ = 0x01 << 12 //+ Pull / Keep Enable Field
-	PKE_0_Pull_Keeper_Disabled                              SW_PAD_CTL_PAD_PMIC_STBY_REQ = 0x00 << 12 //  Pull/Keeper Disabled
-	PKE_1_Pull_Keeper_Enabled                               SW_PAD_CTL_PAD_PMIC_STBY_REQ = 0x01 << 12 //  Pull/Keeper Enabled
 	PUE                                                     SW_PAD_CTL_PAD_PMIC_STBY_REQ = 0x01 << 13 //+ Pull / Keep Select Field
-	PUE_0_Keeper                                            SW_PAD_CTL_PAD_PMIC_STBY_REQ = 0x00 << 13 //  Keeper
-	PUE_1_Pull                                              SW_PAD_CTL_PAD_PMIC_STBY_REQ = 0x01 << 13 //  Pull
 	PUS                                                     SW_PAD_CTL_PAD_PMIC_STBY_REQ = 0x03 << 14 //+ Pull Up / Down Config. Field
 	PUS_0_100K_Ohm_Pull_Down                                SW_PAD_CTL_PAD_PMIC_STBY_REQ = 0x00 << 14 //  100K Ohm Pull Down
 	PUS_1_47K_Ohm_Pull_Up                                   SW_PAD_CTL_PAD_PMIC_STBY_REQ = 0x01 << 14 //  47K Ohm Pull Up
 	PUS_2_100K_Ohm_Pull_Up                                  SW_PAD_CTL_PAD_PMIC_STBY_REQ = 0x02 << 14 //  100K Ohm Pull Up
 	PUS_3_22K_Ohm_Pull_Up                                   SW_PAD_CTL_PAD_PMIC_STBY_REQ = 0x03 << 14 //  22K Ohm Pull Up
 	HYS                                                     SW_PAD_CTL_PAD_PMIC_STBY_REQ = 0x01 << 16 //+ Hyst. Enable Field
-	HYS_0_Hysteresis_Disabled                               SW_PAD_CTL_PAD_PMIC_STBY_REQ = 0x00 << 16 //  Hysteresis Disabled
-	HYS_1_Hysteresis_Enabled                                SW_PAD_CTL_PAD_PMIC_STBY_REQ = 0x01 << 16 //  Hysteresis Enabled
 )
 
 const (

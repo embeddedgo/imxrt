@@ -445,11 +445,9 @@ const (
 )
 
 const (
-	UNUSED0   SEC_CFG = 0x01 << 0 //+ This bit is unused. Ignore.
-	NO_PRGM   SEC_CFG = 0x01 << 1 //+ If set, the TRNG registers cannot be programmed
-	NO_PRGM_0 SEC_CFG = 0x00 << 1 //  Programability of registers controlled only by the Miscellaneous Control Register's access mode bit.
-	NO_PRGM_1 SEC_CFG = 0x01 << 1 //  Overides Miscellaneous Control Register access mode and prevents TRNG register programming.
-	UNUSED2   SEC_CFG = 0x01 << 2 //+ This bit is unused. Ignore.
+	UNUSED0 SEC_CFG = 0x01 << 0 //+ This bit is unused. Ignore.
+	NO_PRGM SEC_CFG = 0x01 << 1 //+ If set, the TRNG registers cannot be programmed
+	UNUSED2 SEC_CFG = 0x01 << 2 //+ This bit is unused. Ignore.
 )
 
 const (
@@ -459,15 +457,9 @@ const (
 )
 
 const (
-	HW_ERR        INT_CTRL = 0x01 << 0 //+ Bit position that can be cleared if corresponding bit of INT_STATUS register has been asserted.
-	HW_ERR_0      INT_CTRL = 0x00 << 0 //  Corresponding bit of INT_STATUS register cleared.
-	HW_ERR_1      INT_CTRL = 0x01 << 0 //  Corresponding bit of INT_STATUS register active.
-	ENT_VAL       INT_CTRL = 0x01 << 1 //+ Same behavior as bit 0 of this register.
-	ENT_VAL_0     INT_CTRL = 0x00 << 1 //  Same behavior as bit 0 of this register.
-	ENT_VAL_1     INT_CTRL = 0x01 << 1 //  Same behavior as bit 0 of this register.
-	FRQ_CT_FAIL   INT_CTRL = 0x01 << 2 //+ Same behavior as bit 0 of this register.
-	FRQ_CT_FAIL_0 INT_CTRL = 0x00 << 2 //  Same behavior as bit 0 of this register.
-	FRQ_CT_FAIL_1 INT_CTRL = 0x01 << 2 //  Same behavior as bit 0 of this register.
+	HW_ERR      INT_CTRL = 0x01 << 0 //+ Bit position that can be cleared if corresponding bit of INT_STATUS register has been asserted.
+	ENT_VAL     INT_CTRL = 0x01 << 1 //+ Same behavior as bit 0 of this register.
+	FRQ_CT_FAIL INT_CTRL = 0x01 << 2 //+ Same behavior as bit 0 of this register.
 )
 
 const (
@@ -477,15 +469,9 @@ const (
 )
 
 const (
-	HW_ERR        INT_MASK = 0x01 << 0 //+ Bit position that can be cleared if corresponding bit of INT_STATUS has been asserted.
-	HW_ERR_0      INT_MASK = 0x00 << 0 //  Corresponding interrupt of INT_STATUS is masked.
-	HW_ERR_1      INT_MASK = 0x01 << 0 //  Corresponding bit of INT_STATUS is active.
-	ENT_VAL       INT_MASK = 0x01 << 1 //+ Same behavior as bit 0 of this register.
-	ENT_VAL_0     INT_MASK = 0x00 << 1 //  Same behavior as bit 0 of this register.
-	ENT_VAL_1     INT_MASK = 0x01 << 1 //  Same behavior as bit 0 of this register.
-	FRQ_CT_FAIL   INT_MASK = 0x01 << 2 //+ Same behavior as bit 0 of this register.
-	FRQ_CT_FAIL_0 INT_MASK = 0x00 << 2 //  Same behavior as bit 0 of this register.
-	FRQ_CT_FAIL_1 INT_MASK = 0x01 << 2 //  Same behavior as bit 0 of this register.
+	HW_ERR      INT_MASK = 0x01 << 0 //+ Bit position that can be cleared if corresponding bit of INT_STATUS has been asserted.
+	ENT_VAL     INT_MASK = 0x01 << 1 //+ Same behavior as bit 0 of this register.
+	FRQ_CT_FAIL INT_MASK = 0x01 << 2 //+ Same behavior as bit 0 of this register.
 )
 
 const (
@@ -495,15 +481,9 @@ const (
 )
 
 const (
-	HW_ERR        INT_STATUS = 0x01 << 0 //+ Read: Error status
-	HW_ERR_0      INT_STATUS = 0x00 << 0 //  no error
-	HW_ERR_1      INT_STATUS = 0x01 << 0 //  error detected.
-	ENT_VAL       INT_STATUS = 0x01 << 1 //+ Read only: Entropy Valid
-	ENT_VAL_0     INT_STATUS = 0x00 << 1 //  Busy generation entropy. Any value read is invalid.
-	ENT_VAL_1     INT_STATUS = 0x01 << 1 //  TRNG can be stopped and entropy is valid if read.
-	FRQ_CT_FAIL   INT_STATUS = 0x01 << 2 //+ Read only: Frequency Count Fail
-	FRQ_CT_FAIL_0 INT_STATUS = 0x00 << 2 //  No hardware nor self test frequency errors.
-	FRQ_CT_FAIL_1 INT_STATUS = 0x01 << 2 //  The frequency counter has detected a failure.
+	HW_ERR      INT_STATUS = 0x01 << 0 //+ Read: Error status
+	ENT_VAL     INT_STATUS = 0x01 << 1 //+ Read only: Entropy Valid
+	FRQ_CT_FAIL INT_STATUS = 0x01 << 2 //+ Read only: Frequency Count Fail
 )
 
 const (

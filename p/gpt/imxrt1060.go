@@ -24,23 +24,11 @@ package gpt
 
 const (
 	EN       CR = 0x01 << 0  //+ GPT Enable
-	EN_0     CR = 0x00 << 0  //  GPT is disabled.
-	EN_1     CR = 0x01 << 0  //  GPT is enabled.
 	ENMOD    CR = 0x01 << 1  //+ GPT Enable mode
-	ENMOD_0  CR = 0x00 << 1  //  GPT counter will retain its value when it is disabled.
-	ENMOD_1  CR = 0x01 << 1  //  GPT counter value is reset to 0 when it is disabled.
 	DBGEN    CR = 0x01 << 2  //+ GPT debug mode enable
-	DBGEN_0  CR = 0x00 << 2  //  GPT is disabled in debug mode.
-	DBGEN_1  CR = 0x01 << 2  //  GPT is enabled in debug mode.
 	WAITEN   CR = 0x01 << 3  //+ GPT Wait Mode enable
-	WAITEN_0 CR = 0x00 << 3  //  GPT is disabled in wait mode.
-	WAITEN_1 CR = 0x01 << 3  //  GPT is enabled in wait mode.
 	DOZEEN   CR = 0x01 << 4  //+ GPT Doze Mode Enable
-	DOZEEN_0 CR = 0x00 << 4  //  GPT is disabled in doze mode.
-	DOZEEN_1 CR = 0x01 << 4  //  GPT is enabled in doze mode.
 	STOPEN   CR = 0x01 << 5  //+ GPT Stop Mode enable
-	STOPEN_0 CR = 0x00 << 5  //  GPT is disabled in Stop mode.
-	STOPEN_1 CR = 0x01 << 5  //  GPT is enabled in Stop mode.
 	CLKSRC   CR = 0x07 << 6  //+ Clock Source select
 	CLKSRC_0 CR = 0x00 << 6  //  No clock
 	CLKSRC_1 CR = 0x01 << 6  //  Peripheral Clock (ipg_clk)
@@ -49,14 +37,8 @@ const (
 	CLKSRC_4 CR = 0x04 << 6  //  Low Frequency Reference Clock (ipg_clk_32k)
 	CLKSRC_5 CR = 0x05 << 6  //  Crystal oscillator as Reference Clock (ipg_clk_24M)
 	FRR      CR = 0x01 << 9  //+ Free-Run or Restart mode
-	FRR_0    CR = 0x00 << 9  //  Restart mode
-	FRR_1    CR = 0x01 << 9  //  Free-Run mode
 	EN_24M   CR = 0x01 << 10 //+ Enable 24 MHz clock input from crystal
-	EN_24M_0 CR = 0x00 << 10 //  24M clock disabled
-	EN_24M_1 CR = 0x01 << 10 //  24M clock enabled
 	SWR      CR = 0x01 << 15 //+ Software reset
-	SWR_0    CR = 0x00 << 15 //  GPT is not in reset state
-	SWR_1    CR = 0x01 << 15 //  GPT is in reset state
 	IM1      CR = 0x03 << 16 //+ See IM2
 	IM2      CR = 0x03 << 18 //+ IM2 (bits 19-18, Input Capture Channel 2 operating mode) IM1 (bits 17-16, Input Capture Channel 1 operating mode) The IMn bit field determines the transition on the input pin (for Input capture channel n), which will trigger a capture event
 	IM2_0    CR = 0x00 << 18 //  capture disabled
@@ -74,8 +56,6 @@ const (
 	FO1      CR = 0x01 << 29 //+ See F03
 	FO2      CR = 0x01 << 30 //+ See F03
 	FO3      CR = 0x01 << 31 //+ FO3 Force Output Compare Channel 3 FO2 Force Output Compare Channel 2 FO1 Force Output Compare Channel 1 The FOn bit causes the pin action programmed for the timer Output Compare n pin (according to the OMn bits in this register)
-	FO3_0    CR = 0x00 << 31 //  Writing a 0 has no effect.
-	FO3_1    CR = 0x01 << 31 //  Causes the programmed pin action on the timer Output Compare n pin; the OFn flag is not set.
 )
 
 const (
@@ -116,18 +96,12 @@ const (
 )
 
 const (
-	OF1   SR = 0x01 << 0 //+ See OF3
-	OF2   SR = 0x01 << 1 //+ See OF3
-	OF3   SR = 0x01 << 2 //+ OF3 Output Compare 3 Flag OF2 Output Compare 2 Flag OF1 Output Compare 1 Flag The OFn bit indicates that a compare event has occurred on Output Compare channel n
-	OF3_0 SR = 0x00 << 2 //  Compare event has not occurred.
-	OF3_1 SR = 0x01 << 2 //  Compare event has occurred.
-	IF1   SR = 0x01 << 3 //+ See IF2
-	IF2   SR = 0x01 << 4 //+ IF2 Input capture 2 Flag IF1 Input capture 1 Flag The IFn bit indicates that a capture event has occurred on Input Capture channel n
-	IF2_0 SR = 0x00 << 4 //  Capture event has not occurred.
-	IF2_1 SR = 0x01 << 4 //  Capture event has occurred.
-	ROV   SR = 0x01 << 5 //+ Rollover Flag
-	ROV_0 SR = 0x00 << 5 //  Rollover has not occurred.
-	ROV_1 SR = 0x01 << 5 //  Rollover has occurred.
+	OF1 SR = 0x01 << 0 //+ See OF3
+	OF2 SR = 0x01 << 1 //+ See OF3
+	OF3 SR = 0x01 << 2 //+ OF3 Output Compare 3 Flag OF2 Output Compare 2 Flag OF1 Output Compare 1 Flag The OFn bit indicates that a compare event has occurred on Output Compare channel n
+	IF1 SR = 0x01 << 3 //+ See IF2
+	IF2 SR = 0x01 << 4 //+ IF2 Input capture 2 Flag IF1 Input capture 1 Flag The IFn bit indicates that a capture event has occurred on Input Capture channel n
+	ROV SR = 0x01 << 5 //+ Rollover Flag
 )
 
 const (
@@ -140,18 +114,12 @@ const (
 )
 
 const (
-	OF1IE   IR = 0x01 << 0 //+ See OF3IE
-	OF2IE   IR = 0x01 << 1 //+ See OF3IE
-	OF3IE   IR = 0x01 << 2 //+ OF3IE Output Compare 3 Interrupt Enable OF2IE Output Compare 2 Interrupt Enable OF1IE Output Compare 1 Interrupt Enable The OFnIE bit controls the Output Compare Channel n interrupt
-	OF3IE_0 IR = 0x00 << 2 //  Output Compare Channel n interrupt is disabled.
-	OF3IE_1 IR = 0x01 << 2 //  Output Compare Channel n interrupt is enabled.
-	IF1IE   IR = 0x01 << 3 //+ See IF2IE
-	IF2IE   IR = 0x01 << 4 //+ IF2IE Input capture 2 Interrupt Enable IF1IE Input capture 1 Interrupt Enable The IFnIE bit controls the IFnIE Input Capture n Interrupt Enable
-	IF2IE_0 IR = 0x00 << 4 //  IF2IE Input Capture n Interrupt Enable is disabled.
-	IF2IE_1 IR = 0x01 << 4 //  IF2IE Input Capture n Interrupt Enable is enabled.
-	ROVIE   IR = 0x01 << 5 //+ Rollover Interrupt Enable. The ROVIE bit controls the Rollover interrupt.
-	ROVIE_0 IR = 0x00 << 5 //  Rollover interrupt is disabled.
-	ROVIE_1 IR = 0x01 << 5 //  Rollover interrupt enabled.
+	OF1IE IR = 0x01 << 0 //+ See OF3IE
+	OF2IE IR = 0x01 << 1 //+ See OF3IE
+	OF3IE IR = 0x01 << 2 //+ OF3IE Output Compare 3 Interrupt Enable OF2IE Output Compare 2 Interrupt Enable OF1IE Output Compare 1 Interrupt Enable The OFnIE bit controls the Output Compare Channel n interrupt
+	IF1IE IR = 0x01 << 3 //+ See IF2IE
+	IF2IE IR = 0x01 << 4 //+ IF2IE Input capture 2 Interrupt Enable IF1IE Input capture 1 Interrupt Enable The IFnIE bit controls the IFnIE Input Capture n Interrupt Enable
+	ROVIE IR = 0x01 << 5 //+ Rollover Interrupt Enable. The ROVIE bit controls the Rollover interrupt.
 )
 
 const (

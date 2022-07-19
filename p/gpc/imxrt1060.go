@@ -23,15 +23,9 @@
 package gpc
 
 const (
-	MEGA_PDN_REQ   CNTR = 0x01 << 2  //+ MEGA domain power down request
-	MEGA_PDN_REQ_0 CNTR = 0x00 << 2  //  No Request
-	MEGA_PDN_REQ_1 CNTR = 0x01 << 2  //  Request power down sequence
-	MEGA_PUP_REQ   CNTR = 0x01 << 3  //+ MEGA domain power up request
-	MEGA_PUP_REQ_0 CNTR = 0x00 << 3  //  No Request
-	MEGA_PUP_REQ_1 CNTR = 0x01 << 3  //  Request power up sequence
-	PDRAM0_PGE     CNTR = 0x01 << 22 //+ FlexRAM PDRAM0 Power Gate Enable
-	PDRAM0_PGE_0   CNTR = 0x00 << 22 //  FlexRAM PDRAM0 domain will keep power on even if CPU core is power down.
-	PDRAM0_PGE_1   CNTR = 0x01 << 22 //  FlexRAM PDRAM0 domain will be power down once when CPU core is power down.
+	MEGA_PDN_REQ CNTR = 0x01 << 2  //+ MEGA domain power down request
+	MEGA_PUP_REQ CNTR = 0x01 << 3  //+ MEGA domain power up request
+	PDRAM0_PGE   CNTR = 0x01 << 22 //+ FlexRAM PDRAM0 Power Gate Enable
 )
 
 const (

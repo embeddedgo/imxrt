@@ -62,39 +62,22 @@
 package scb
 
 const (
-	DISFOLD          ACTLR = 0x01 << 2  //+ Disables folding of IT instructions.
-	DISFOLD_0        ACTLR = 0x00 << 2  //  Normal operation.
-	FPEXCODIS        ACTLR = 0x01 << 10 //+ Disables FPU exception outputs.
-	FPEXCODIS_0      ACTLR = 0x00 << 10 //  Normal operation.
-	FPEXCODIS_1      ACTLR = 0x01 << 10 //  FPU exception outputs are disabled.
-	DISRAMODE        ACTLR = 0x01 << 11 //+ Disables dynamic read allocate mode for Write-Back Write-Allocate memory regions.
-	DISRAMODE_0      ACTLR = 0x00 << 11 //  Normal operation.
-	DISRAMODE_1      ACTLR = 0x01 << 11 //  Dynamic disabled.
-	DISITMATBFLUSH   ACTLR = 0x01 << 12 //+ Disables ITM and DWT ATB flush.
-	DISITMATBFLUSH_1 ACTLR = 0x01 << 12 //  ITM and DWT ATB flush disabled, this bit is always 1.
-	DISBTACREAD      ACTLR = 0x01 << 13 //+ Disables BTAC read.
-	DISBTACREAD_0    ACTLR = 0x00 << 13 //  Normal operation.
-	DISBTACREAD_1    ACTLR = 0x01 << 13 //  BTAC is not used and only static branch prediction can occur.
-	DISBTACALLOC     ACTLR = 0x01 << 14 //+ Disables BTAC allocate.
-	DISBTACALLOC_0   ACTLR = 0x00 << 14 //  Normal operation.
-	DISBTACALLOC_1   ACTLR = 0x01 << 14 //  No new entries are allocated in Branch Target Address Cache (BTAC), but existing entries can be updated.
-	DISCRITAXIRUR    ACTLR = 0x01 << 15 //+ Disables critical AXI Read-Under-Read.
-	DISCRITAXIRUR_0  ACTLR = 0x00 << 15 //  Normal operation.
-	DISCRITAXIRUR_1  ACTLR = 0x01 << 15 //  An AXI read to Strongly-Ordered or Device memory, or an LDREX to Shareable memory, is not put on AXI if there are any outstanding reads on AXI. Transactions on AXI cannot be interrupted. This bit might reduce the time that these transactions are in progress and might improve worst case interrupt latency. Performance is decreased when this bit is set.
-	DISDI            ACTLR = 0x1F << 16 //+ Disables dual-issued.
-	DISDI_0          ACTLR = 0x00 << 16 //  Normal operation.
-	DISDI_1          ACTLR = 0x01 << 16 //  Nothing can be dual-issued when this instruction type is in channel 0.
-	DISISSCH1        ACTLR = 0x1F << 21 //+ Disables dual-issued.
-	DISISSCH1_0      ACTLR = 0x00 << 21 //  Normal operation.
-	DISISSCH1_1      ACTLR = 0x01 << 21 //  Nothing can be dual-issued when this instruction type is in channel 1.
-	DISDYNADD        ACTLR = 0x01 << 26 //+ Disables dynamic allocation of ADD and SUB instructions
-	DISDYNADD_0      ACTLR = 0x00 << 26 //  Normal operation. Some ADD and SUB instrctions are resolved in EX1.
-	DISDYNADD_1      ACTLR = 0x01 << 26 //  All ADD and SUB instructions are resolved in EX2.
-	DISCRITAXIRUW    ACTLR = 0x01 << 27 //+ Disables critical AXI read-under-write
-	DISCRITAXIRUW_0  ACTLR = 0x00 << 27 //  Normal operation. This is backwards compatible with r0.
-	DISCRITAXIRUW_1  ACTLR = 0x01 << 27 //  AXI reads to DEV/SO memory. Exclusive reads to Shareable memory are not initiated on the AXIM AR channel until all outstanding stores on AXI are complete.
-	DISFPUISSOPT     ACTLR = 0x01 << 28 //+ Disables critical AXI read-under-write
-	DISFPUISSOPT_0   ACTLR = 0x00 << 28 //  Normal operation.
+	DISFOLD        ACTLR = 0x01 << 2  //+ Disables folding of IT instructions.
+	FPEXCODIS      ACTLR = 0x01 << 10 //+ Disables FPU exception outputs.
+	DISRAMODE      ACTLR = 0x01 << 11 //+ Disables dynamic read allocate mode for Write-Back Write-Allocate memory regions.
+	DISITMATBFLUSH ACTLR = 0x01 << 12 //+ Disables ITM and DWT ATB flush.
+	DISBTACREAD    ACTLR = 0x01 << 13 //+ Disables BTAC read.
+	DISBTACALLOC   ACTLR = 0x01 << 14 //+ Disables BTAC allocate.
+	DISCRITAXIRUR  ACTLR = 0x01 << 15 //+ Disables critical AXI Read-Under-Read.
+	DISDI          ACTLR = 0x1F << 16 //+ Disables dual-issued.
+	DISDI_0        ACTLR = 0x00 << 16 //  Normal operation.
+	DISDI_1        ACTLR = 0x01 << 16 //  Nothing can be dual-issued when this instruction type is in channel 0.
+	DISISSCH1      ACTLR = 0x1F << 21 //+ Disables dual-issued.
+	DISISSCH1_0    ACTLR = 0x00 << 21 //  Normal operation.
+	DISISSCH1_1    ACTLR = 0x01 << 21 //  Nothing can be dual-issued when this instruction type is in channel 1.
+	DISDYNADD      ACTLR = 0x01 << 26 //+ Disables dynamic allocation of ADD and SUB instructions
+	DISCRITAXIRUW  ACTLR = 0x01 << 27 //+ Disables critical AXI read-under-write
+	DISFPUISSOPT   ACTLR = 0x01 << 28 //+ Disables critical AXI read-under-write
 )
 
 const (
@@ -129,29 +112,15 @@ const (
 )
 
 const (
-	VECTACTIVE   ICSR = 0x1FF << 0  //+ Active exception number
-	RETTOBASE    ICSR = 0x01 << 11  //+ Indicates whether there are preempted active exceptions
-	RETTOBASE_0  ICSR = 0x00 << 11  //  there are preempted active exceptions to execute
-	RETTOBASE_1  ICSR = 0x01 << 11  //  there are no active exceptions, or the currently-executing exception is the only active exception
-	VECTPENDING  ICSR = 0x1FF << 12 //+ Exception number of the highest priority pending enabled exception
-	ISRPENDING   ICSR = 0x01 << 22  //+ Interrupt pending flag, excluding NMI and Faults
-	ISRPENDING_0 ICSR = 0x00 << 22  //  No external interrupt pending.
-	ISRPENDING_1 ICSR = 0x01 << 22  //  External interrupt pending.
-	PENDSTCLR    ICSR = 0x01 << 25  //+ SysTick exception clear-pending bit
-	PENDSTCLR_0  ICSR = 0x00 << 25  //  no effect
-	PENDSTCLR_1  ICSR = 0x01 << 25  //  removes the pending state from the SysTick exception
-	PENDSTSET    ICSR = 0x01 << 26  //+ SysTick exception set-pending bit
-	PENDSTSET_0  ICSR = 0x00 << 26  //  write: no effect; read: SysTick exception is not pending
-	PENDSTSET_1  ICSR = 0x01 << 26  //  write: changes SysTick exception state to pending; read: SysTick exception is pending
-	PENDSVCLR    ICSR = 0x01 << 27  //+ PendSV clear-pending bit
-	PENDSVCLR_0  ICSR = 0x00 << 27  //  no effect
-	PENDSVCLR_1  ICSR = 0x01 << 27  //  removes the pending state from the PendSV exception
-	PENDSVSET    ICSR = 0x01 << 28  //+ PendSV set-pending bit
-	PENDSVSET_0  ICSR = 0x00 << 28  //  write: no effect; read: PendSV exception is not pending
-	PENDSVSET_1  ICSR = 0x01 << 28  //  write: changes PendSV exception state to pending; read: PendSV exception is pending
-	NMIPENDSET   ICSR = 0x01 << 31  //+ NMI set-pending bit
-	NMIPENDSET_0 ICSR = 0x00 << 31  //  write: no effect; read: NMI exception is not pending
-	NMIPENDSET_1 ICSR = 0x01 << 31  //  write: changes NMI exception state to pending; read: NMI exception is pending
+	VECTACTIVE  ICSR = 0x1FF << 0  //+ Active exception number
+	RETTOBASE   ICSR = 0x01 << 11  //+ Indicates whether there are preempted active exceptions
+	VECTPENDING ICSR = 0x1FF << 12 //+ Exception number of the highest priority pending enabled exception
+	ISRPENDING  ICSR = 0x01 << 22  //+ Interrupt pending flag, excluding NMI and Faults
+	PENDSTCLR   ICSR = 0x01 << 25  //+ SysTick exception clear-pending bit
+	PENDSTSET   ICSR = 0x01 << 26  //+ SysTick exception set-pending bit
+	PENDSVCLR   ICSR = 0x01 << 27  //+ PendSV clear-pending bit
+	PENDSVSET   ICSR = 0x01 << 28  //+ PendSV set-pending bit
+	NMIPENDSET  ICSR = 0x01 << 31  //+ NMI set-pending bit
 )
 
 const (
@@ -175,20 +144,12 @@ const (
 )
 
 const (
-	VECTRESET       AIRCR = 0x01 << 0    //+ Writing 1 to this bit causes a local system reset
-	VECTRESET_0     AIRCR = 0x00 << 0    //  No change
-	VECTRESET_1     AIRCR = 0x01 << 0    //  Causes a local system reset
-	VECTCLRACTIVE   AIRCR = 0x01 << 1    //+ Writing 1 to this bit clears all active state information for fixed and configurable exceptions.
-	VECTCLRACTIVE_0 AIRCR = 0x00 << 1    //  No change
-	VECTCLRACTIVE_1 AIRCR = 0x01 << 1    //  Clears all active state information for fixed and configurable exceptions
-	SYSRESETREQ     AIRCR = 0x01 << 2    //+ System reset request
-	SYSRESETREQ_0   AIRCR = 0x00 << 2    //  no system reset request
-	SYSRESETREQ_1   AIRCR = 0x01 << 2    //  asserts a signal to the outer system that requests a reset
-	PRIGROUP        AIRCR = 0x07 << 8    //+ Interrupt priority grouping field. This field determines the split of group priority from subpriority.
-	ENDIANNESS      AIRCR = 0x01 << 15   //+ Data endianness
-	ENDIANNESS_0    AIRCR = 0x00 << 15   //  Little-endian
-	ENDIANNESS_1    AIRCR = 0x01 << 15   //  Big-endian
-	VECTKEY         AIRCR = 0xFFFF << 16 //+ Register key
+	VECTRESET     AIRCR = 0x01 << 0    //+ Writing 1 to this bit causes a local system reset
+	VECTCLRACTIVE AIRCR = 0x01 << 1    //+ Writing 1 to this bit clears all active state information for fixed and configurable exceptions.
+	SYSRESETREQ   AIRCR = 0x01 << 2    //+ System reset request
+	PRIGROUP      AIRCR = 0x07 << 8    //+ Interrupt priority grouping field. This field determines the split of group priority from subpriority.
+	ENDIANNESS    AIRCR = 0x01 << 15   //+ Data endianness
+	VECTKEY       AIRCR = 0xFFFF << 16 //+ Register key
 )
 
 const (
@@ -201,15 +162,9 @@ const (
 )
 
 const (
-	SLEEPONEXIT   SCR = 0x01 << 1 //+ Indicates sleep-on-exit when returning from Handler mode to Thread mode
-	SLEEPONEXIT_0 SCR = 0x00 << 1 //  o not sleep when returning to Thread mode
-	SLEEPONEXIT_1 SCR = 0x01 << 1 //  enter sleep, or deep sleep, on return from an ISR
-	SLEEPDEEP     SCR = 0x01 << 2 //+ Controls whether the processor uses sleep or deep sleep as its low power mode
-	SLEEPDEEP_0   SCR = 0x00 << 2 //  sleep
-	SLEEPDEEP_1   SCR = 0x01 << 2 //  deep sleep
-	SEVONPEND     SCR = 0x01 << 4 //+ Send Event on Pending bit
-	SEVONPEND_0   SCR = 0x00 << 4 //  only enabled interrupts or events can wakeup the processor, disabled interrupts are excluded
-	SEVONPEND_1   SCR = 0x01 << 4 //  enabled events and all interrupts, including disabled interrupts, can wakeup the processor
+	SLEEPONEXIT SCR = 0x01 << 1 //+ Indicates sleep-on-exit when returning from Handler mode to Thread mode
+	SLEEPDEEP   SCR = 0x01 << 2 //+ Controls whether the processor uses sleep or deep sleep as its low power mode
+	SEVONPEND   SCR = 0x01 << 4 //+ Send Event on Pending bit
 )
 
 const (
@@ -219,31 +174,15 @@ const (
 )
 
 const (
-	NONBASETHRDENA   CCR = 0x01 << 0  //+ Indicates how the processor enters Thread mode
-	NONBASETHRDENA_0 CCR = 0x00 << 0  //  processor can enter Thread mode only when no exception is active
-	NONBASETHRDENA_1 CCR = 0x01 << 0  //  processor can enter Thread mode from any level under the control of an EXC_RETURN value
-	USERSETMPEND     CCR = 0x01 << 1  //+ Enables unprivileged software access to the STIR
-	USERSETMPEND_0   CCR = 0x00 << 1  //  disable
-	USERSETMPEND_1   CCR = 0x01 << 1  //  enable
-	UNALIGN_TRP      CCR = 0x01 << 3  //+ Enables unaligned access traps
-	UNALIGN_TRP_0    CCR = 0x00 << 3  //  do not trap unaligned halfword and word accesses
-	UNALIGN_TRP_1    CCR = 0x01 << 3  //  trap unaligned halfword and word accesses
-	DIV_0_TRP        CCR = 0x01 << 4  //+ Enables faulting or halting when the processor executes an SDIV or UDIV instruction with a divisor of 0
-	DIV_0_TRP_0      CCR = 0x00 << 4  //  do not trap divide by 0
-	DIV_0_TRP_1      CCR = 0x01 << 4  //  trap divide by 0
-	BFHFNMIGN        CCR = 0x01 << 8  //+ Enables handlers with priority -1 or -2 to ignore data BusFaults caused by load and store instructions.
-	BFHFNMIGN_0      CCR = 0x00 << 8  //  data bus faults caused by load and store instructions cause a lock-up
-	BFHFNMIGN_1      CCR = 0x01 << 8  //  handlers running at priority -1 and -2 ignore data bus faults caused by load and store instructions
-	STKALIGN         CCR = 0x01 << 9  //+ Indicates stack alignment on exception entry
-	STKALIGN_0       CCR = 0x00 << 9  //  4-byte aligned
-	STKALIGN_1       CCR = 0x01 << 9  //  8-byte aligned
-	DC               CCR = 0x01 << 16 //+ Enables L1 data cache.
-	DC_0             CCR = 0x00 << 16 //  L1 data cache disabled
-	DC_1             CCR = 0x01 << 16 //  L1 data cache enabled
-	IC               CCR = 0x01 << 17 //+ Enables L1 instruction cache.
-	IC_0             CCR = 0x00 << 17 //  L1 instruction cache disabled
-	IC_1             CCR = 0x01 << 17 //  L1 instruction cache enabled
-	BP               CCR = 0x01 << 18 //+ Always reads-as-one. It indicates branch prediction is enabled.
+	NONBASETHRDENA CCR = 0x01 << 0  //+ Indicates how the processor enters Thread mode
+	USERSETMPEND   CCR = 0x01 << 1  //+ Enables unprivileged software access to the STIR
+	UNALIGN_TRP    CCR = 0x01 << 3  //+ Enables unaligned access traps
+	DIV_0_TRP      CCR = 0x01 << 4  //+ Enables faulting or halting when the processor executes an SDIV or UDIV instruction with a divisor of 0
+	BFHFNMIGN      CCR = 0x01 << 8  //+ Enables handlers with priority -1 or -2 to ignore data BusFaults caused by load and store instructions.
+	STKALIGN       CCR = 0x01 << 9  //+ Indicates stack alignment on exception entry
+	DC             CCR = 0x01 << 16 //+ Enables L1 data cache.
+	IC             CCR = 0x01 << 17 //+ Enables L1 instruction cache.
+	BP             CCR = 0x01 << 18 //+ Always reads-as-one. It indicates branch prediction is enabled.
 )
 
 const (
@@ -289,48 +228,20 @@ const (
 )
 
 const (
-	MEMFAULTACT      SHCSR = 0x01 << 0  //+ MemManage exception active bit
-	MEMFAULTACT_0    SHCSR = 0x00 << 0  //  exception is not active
-	MEMFAULTACT_1    SHCSR = 0x01 << 0  //  exception is active
-	BUSFAULTACT      SHCSR = 0x01 << 1  //+ BusFault exception active bit
-	BUSFAULTACT_0    SHCSR = 0x00 << 1  //  exception is not active
-	BUSFAULTACT_1    SHCSR = 0x01 << 1  //  exception is active
-	USGFAULTACT      SHCSR = 0x01 << 3  //+ UsageFault exception active bit
-	USGFAULTACT_0    SHCSR = 0x00 << 3  //  exception is not active
-	USGFAULTACT_1    SHCSR = 0x01 << 3  //  exception is active
-	SVCALLACT        SHCSR = 0x01 << 7  //+ SVCall active bit
-	SVCALLACT_0      SHCSR = 0x00 << 7  //  exception is not active
-	SVCALLACT_1      SHCSR = 0x01 << 7  //  exception is active
-	MONITORACT       SHCSR = 0x01 << 8  //+ Debug monitor active bit
-	MONITORACT_0     SHCSR = 0x00 << 8  //  exception is not active
-	MONITORACT_1     SHCSR = 0x01 << 8  //  exception is active
-	PENDSVACT        SHCSR = 0x01 << 10 //+ PendSV exception active bit
-	PENDSVACT_0      SHCSR = 0x00 << 10 //  exception is not active
-	PENDSVACT_1      SHCSR = 0x01 << 10 //  exception is active
-	SYSTICKACT       SHCSR = 0x01 << 11 //+ SysTick exception active bit
-	SYSTICKACT_0     SHCSR = 0x00 << 11 //  exception is not active
-	SYSTICKACT_1     SHCSR = 0x01 << 11 //  exception is active
-	USGFAULTPENDED   SHCSR = 0x01 << 12 //+ UsageFault exception pending bit
-	USGFAULTPENDED_0 SHCSR = 0x00 << 12 //  exception is not pending
-	USGFAULTPENDED_1 SHCSR = 0x01 << 12 //  exception is pending
-	MEMFAULTPENDED   SHCSR = 0x01 << 13 //+ MemManage exception pending bit
-	MEMFAULTPENDED_0 SHCSR = 0x00 << 13 //  exception is not pending
-	MEMFAULTPENDED_1 SHCSR = 0x01 << 13 //  exception is pending
-	BUSFAULTPENDED   SHCSR = 0x01 << 14 //+ BusFault exception pending bit
-	BUSFAULTPENDED_0 SHCSR = 0x00 << 14 //  exception is not pending
-	BUSFAULTPENDED_1 SHCSR = 0x01 << 14 //  exception is pending
-	SVCALLPENDED     SHCSR = 0x01 << 15 //+ SVCall pending bit
-	SVCALLPENDED_0   SHCSR = 0x00 << 15 //  exception is not pending
-	SVCALLPENDED_1   SHCSR = 0x01 << 15 //  exception is pending
-	MEMFAULTENA      SHCSR = 0x01 << 16 //+ MemManage enable bit
-	MEMFAULTENA_0    SHCSR = 0x00 << 16 //  disable the exception
-	MEMFAULTENA_1    SHCSR = 0x01 << 16 //  enable the exception
-	BUSFAULTENA      SHCSR = 0x01 << 17 //+ BusFault enable bit
-	BUSFAULTENA_0    SHCSR = 0x00 << 17 //  disable the exception
-	BUSFAULTENA_1    SHCSR = 0x01 << 17 //  enable the exception
-	USGFAULTENA      SHCSR = 0x01 << 18 //+ UsageFault enable bit
-	USGFAULTENA_0    SHCSR = 0x00 << 18 //  disable the exception
-	USGFAULTENA_1    SHCSR = 0x01 << 18 //  enable the exception
+	MEMFAULTACT    SHCSR = 0x01 << 0  //+ MemManage exception active bit
+	BUSFAULTACT    SHCSR = 0x01 << 1  //+ BusFault exception active bit
+	USGFAULTACT    SHCSR = 0x01 << 3  //+ UsageFault exception active bit
+	SVCALLACT      SHCSR = 0x01 << 7  //+ SVCall active bit
+	MONITORACT     SHCSR = 0x01 << 8  //+ Debug monitor active bit
+	PENDSVACT      SHCSR = 0x01 << 10 //+ PendSV exception active bit
+	SYSTICKACT     SHCSR = 0x01 << 11 //+ SysTick exception active bit
+	USGFAULTPENDED SHCSR = 0x01 << 12 //+ UsageFault exception pending bit
+	MEMFAULTPENDED SHCSR = 0x01 << 13 //+ MemManage exception pending bit
+	BUSFAULTPENDED SHCSR = 0x01 << 14 //+ BusFault exception pending bit
+	SVCALLPENDED   SHCSR = 0x01 << 15 //+ SVCall pending bit
+	MEMFAULTENA    SHCSR = 0x01 << 16 //+ MemManage enable bit
+	BUSFAULTENA    SHCSR = 0x01 << 17 //+ BusFault enable bit
+	USGFAULTENA    SHCSR = 0x01 << 18 //+ UsageFault enable bit
 )
 
 const (
@@ -351,63 +262,25 @@ const (
 )
 
 const (
-	IACCVIOL      CFSR = 0x01 << 0  //+ Instruction access violation flag
-	IACCVIOL_0    CFSR = 0x00 << 0  //  no instruction access violation fault
-	IACCVIOL_1    CFSR = 0x01 << 0  //  the processor attempted an instruction fetch from a location that does not permit execution
-	DACCVIOL      CFSR = 0x01 << 1  //+ Data access violation flag
-	DACCVIOL_0    CFSR = 0x00 << 1  //  no data access violation fault
-	DACCVIOL_1    CFSR = 0x01 << 1  //  the processor attempted a load or store at a location that does not permit the operation
-	MUNSTKERR     CFSR = 0x01 << 3  //+ MemManage fault on unstacking for a return from exception
-	MUNSTKERR_0   CFSR = 0x00 << 3  //  no unstacking fault
-	MUNSTKERR_1   CFSR = 0x01 << 3  //  unstack for an exception return has caused one or more access violations
-	MSTKERR       CFSR = 0x01 << 4  //+ MemManage fault on stacking for exception entry
-	MSTKERR_0     CFSR = 0x00 << 4  //  no stacking fault
-	MSTKERR_1     CFSR = 0x01 << 4  //  stacking for an exception entry has caused one or more access violations
-	MLSPERR       CFSR = 0x01 << 5  //+ MemManage fault occurred during floating-point lazy state preservation
-	MLSPERR_0     CFSR = 0x00 << 5  //  No MemManage fault occurred during floating-point lazy state preservation
-	MLSPERR_1     CFSR = 0x01 << 5  //  A MemManage fault occurred during floating-point lazy state preservation
-	MMARVALID     CFSR = 0x01 << 7  //+ MemManage Fault Address Register (MMFAR) valid flag
-	MMARVALID_0   CFSR = 0x00 << 7  //  value in MMAR is not a valid fault address
-	MMARVALID_1   CFSR = 0x01 << 7  //  MMAR holds a valid fault address
-	IBUSERR       CFSR = 0x01 << 8  //+ Instruction bus error
-	IBUSERR_0     CFSR = 0x00 << 8  //  no instruction bus error
-	IBUSERR_1     CFSR = 0x01 << 8  //  instruction bus error
-	PRECISERR     CFSR = 0x01 << 9  //+ Precise data bus error
-	PRECISERR_0   CFSR = 0x00 << 9  //  no precise data bus error
-	PRECISERR_1   CFSR = 0x01 << 9  //  a data bus error has occurred, and the PC value stacked for the exception return points to the instruction that caused the fault
-	IMPRECISERR   CFSR = 0x01 << 10 //+ Imprecise data bus error
-	IMPRECISERR_0 CFSR = 0x00 << 10 //  no imprecise data bus error
-	IMPRECISERR_1 CFSR = 0x01 << 10 //  a data bus error has occurred, but the return address in the stack frame is not related to the instruction that caused the error
-	UNSTKERR      CFSR = 0x01 << 11 //+ BusFault on unstacking for a return from exception
-	UNSTKERR_0    CFSR = 0x00 << 11 //  no unstacking fault
-	UNSTKERR_1    CFSR = 0x01 << 11 //  unstack for an exception return has caused one or more BusFaults
-	STKERR        CFSR = 0x01 << 12 //+ BusFault on stacking for exception entry
-	STKERR_0      CFSR = 0x00 << 12 //  no stacking fault
-	STKERR_1      CFSR = 0x01 << 12 //  stacking for an exception entry has caused one or more BusFaults
-	LSPERR        CFSR = 0x01 << 13 //+ Bus fault occurred during floating-point lazy state preservation
-	LSPERR_0      CFSR = 0x00 << 13 //  No bus fault occurred during floating-point lazy state preservation
-	LSPERR_1      CFSR = 0x01 << 13 //  A bus fault occurred during floating-point lazy state preservation
-	BFARVALID     CFSR = 0x01 << 15 //+ BusFault Address Register (BFAR) valid flag
-	BFARVALID_0   CFSR = 0x00 << 15 //  value in BFAR is not a valid fault address
-	BFARVALID_1   CFSR = 0x01 << 15 //  BFAR holds a valid fault address
-	UNDEFINSTR    CFSR = 0x01 << 16 //+ Undefined instruction UsageFault
-	UNDEFINSTR_0  CFSR = 0x00 << 16 //  no undefined instruction UsageFault
-	UNDEFINSTR_1  CFSR = 0x01 << 16 //  the processor has attempted to execute an undefined instruction
-	INVSTATE      CFSR = 0x01 << 17 //+ Invalid state UsageFault
-	INVSTATE_0    CFSR = 0x00 << 17 //  no invalid state UsageFault
-	INVSTATE_1    CFSR = 0x01 << 17 //  the processor has attempted to execute an instruction that makes illegal use of the EPSR
-	INVPC         CFSR = 0x01 << 18 //+ Invalid PC load UsageFault, caused by an invalid PC load by EXC_RETURN
-	INVPC_0       CFSR = 0x00 << 18 //  no invalid PC load UsageFault
-	INVPC_1       CFSR = 0x01 << 18 //  the processor has attempted an illegal load of EXC_RETURN to the PC
-	NOCP          CFSR = 0x01 << 19 //+ No coprocessor UsageFault
-	NOCP_0        CFSR = 0x00 << 19 //  no UsageFault caused by attempting to access a coprocessor
-	NOCP_1        CFSR = 0x01 << 19 //  the processor has attempted to access a coprocessor
-	UNALIGNED     CFSR = 0x01 << 24 //+ Unaligned access UsageFault
-	UNALIGNED_0   CFSR = 0x00 << 24 //  no unaligned access fault, or unaligned access trapping not enabled
-	UNALIGNED_1   CFSR = 0x01 << 24 //  the processor has made an unaligned memory access
-	DIVBYZERO     CFSR = 0x01 << 25 //+ Divide by zero UsageFault
-	DIVBYZERO_0   CFSR = 0x00 << 25 //  no divide by zero fault, or divide by zero trapping not enabled
-	DIVBYZERO_1   CFSR = 0x01 << 25 //  the processor has executed an SDIV or UDIV instruction with a divisor of 0
+	IACCVIOL    CFSR = 0x01 << 0  //+ Instruction access violation flag
+	DACCVIOL    CFSR = 0x01 << 1  //+ Data access violation flag
+	MUNSTKERR   CFSR = 0x01 << 3  //+ MemManage fault on unstacking for a return from exception
+	MSTKERR     CFSR = 0x01 << 4  //+ MemManage fault on stacking for exception entry
+	MLSPERR     CFSR = 0x01 << 5  //+ MemManage fault occurred during floating-point lazy state preservation
+	MMARVALID   CFSR = 0x01 << 7  //+ MemManage Fault Address Register (MMFAR) valid flag
+	IBUSERR     CFSR = 0x01 << 8  //+ Instruction bus error
+	PRECISERR   CFSR = 0x01 << 9  //+ Precise data bus error
+	IMPRECISERR CFSR = 0x01 << 10 //+ Imprecise data bus error
+	UNSTKERR    CFSR = 0x01 << 11 //+ BusFault on unstacking for a return from exception
+	STKERR      CFSR = 0x01 << 12 //+ BusFault on stacking for exception entry
+	LSPERR      CFSR = 0x01 << 13 //+ Bus fault occurred during floating-point lazy state preservation
+	BFARVALID   CFSR = 0x01 << 15 //+ BusFault Address Register (BFAR) valid flag
+	UNDEFINSTR  CFSR = 0x01 << 16 //+ Undefined instruction UsageFault
+	INVSTATE    CFSR = 0x01 << 17 //+ Invalid state UsageFault
+	INVPC       CFSR = 0x01 << 18 //+ Invalid PC load UsageFault, caused by an invalid PC load by EXC_RETURN
+	NOCP        CFSR = 0x01 << 19 //+ No coprocessor UsageFault
+	UNALIGNED   CFSR = 0x01 << 24 //+ Unaligned access UsageFault
+	DIVBYZERO   CFSR = 0x01 << 25 //+ Divide by zero UsageFault
 )
 
 const (
@@ -433,15 +306,9 @@ const (
 )
 
 const (
-	VECTTBL    HFSR = 0x01 << 1  //+ Indicates a BusFault on a vector table read during exception processing.
-	VECTTBL_0  HFSR = 0x00 << 1  //  no BusFault on vector table read
-	VECTTBL_1  HFSR = 0x01 << 1  //  BusFault on vector table read
-	FORCED     HFSR = 0x01 << 30 //+ Indicates a forced hard fault, generated by escalation of a fault with configurable priority that cannot be handles, either because of priority or because it is disabled.
-	FORCED_0   HFSR = 0x00 << 30 //  no forced HardFault
-	FORCED_1   HFSR = 0x01 << 30 //  forced HardFault
-	DEBUGEVT   HFSR = 0x01 << 31 //+ Reserved for Debug use. When writing to the register you must write 0 to this bit, otherwise behavior is Unpredictable.
-	DEBUGEVT_0 HFSR = 0x00 << 31 //  No Debug event has occurred.
-	DEBUGEVT_1 HFSR = 0x01 << 31 //  Debug event has occurred. The Debug Fault Status Register has been updated.
+	VECTTBL  HFSR = 0x01 << 1  //+ Indicates a BusFault on a vector table read during exception processing.
+	FORCED   HFSR = 0x01 << 30 //+ Indicates a forced hard fault, generated by escalation of a fault with configurable priority that cannot be handles, either because of priority or because it is disabled.
+	DEBUGEVT HFSR = 0x01 << 31 //+ Reserved for Debug use. When writing to the register you must write 0 to this bit, otherwise behavior is Unpredictable.
 )
 
 const (
@@ -451,21 +318,11 @@ const (
 )
 
 const (
-	HALTED     DFSR = 0x01 << 0 //+ Indicates a debug event generated by either a C_HALT or C_STEP request, triggered by a write to the DHCSR or a step request triggered by setting DEMCR.MON_STEP to 1.
-	HALTED_0   DFSR = 0x00 << 0 //  No active halt request debug event
-	HALTED_1   DFSR = 0x01 << 0 //  Halt request debug event active
-	BKPT       DFSR = 0x01 << 1 //+ Debug event generated by BKPT instruction execution or a breakpoint match in FPB
-	BKPT_0     DFSR = 0x00 << 1 //  No current breakpoint debug event
-	BKPT_1     DFSR = 0x01 << 1 //  At least one current breakpoint debug event
-	DWTTRAP    DFSR = 0x01 << 2 //+ Debug event generated by the DWT
-	DWTTRAP_0  DFSR = 0x00 << 2 //  No current debug events generated by the DWT
-	DWTTRAP_1  DFSR = 0x01 << 2 //  At least one current debug event generated by the DWT
-	VCATCH     DFSR = 0x01 << 3 //+ Indicates triggering of a Vector catch
-	VCATCH_0   DFSR = 0x00 << 3 //  No Vector catch triggered
-	VCATCH_1   DFSR = 0x01 << 3 //  Vector catch triggered
-	EXTERNAL   DFSR = 0x01 << 4 //+ Debug event generated because of the assertion of an external debug request
-	EXTERNAL_0 DFSR = 0x00 << 4 //  No external debug request debug event
-	EXTERNAL_1 DFSR = 0x01 << 4 //  External debug request debug event
+	HALTED   DFSR = 0x01 << 0 //+ Indicates a debug event generated by either a C_HALT or C_STEP request, triggered by a write to the DHCSR or a step request triggered by setting DEMCR.MON_STEP to 1.
+	BKPT     DFSR = 0x01 << 1 //+ Debug event generated by BKPT instruction execution or a breakpoint match in FPB
+	DWTTRAP  DFSR = 0x01 << 2 //+ Debug event generated by the DWT
+	VCATCH   DFSR = 0x01 << 3 //+ Indicates triggering of a Vector catch
+	EXTERNAL DFSR = 0x01 << 4 //+ Debug event generated because of the assertion of an external debug request
 )
 
 const (
@@ -895,17 +752,9 @@ const (
 	ASSOCIATIVITY CCSIDR = 0x3FF << 3   //+ (Associativity of cache) - 1, therefore a value of 0 indicates an associativity of 1. The associativity does not have to be a power of 2.
 	NUMSETS       CCSIDR = 0x7FFF << 13 //+ (Number of sets in cache) - 1, therefore a value of 0 indicates 1 set in the cache. The number of sets does not have to be a power of 2.
 	WA            CCSIDR = 0x01 << 28   //+ Indicates whether the cache level supports write-allocation
-	WA_0          CCSIDR = 0x00 << 28   //  Feature not supported
-	WA_1          CCSIDR = 0x01 << 28   //  Feature supported
 	RA            CCSIDR = 0x01 << 29   //+ Indicates whether the cache level supports read-allocation
-	RA_0          CCSIDR = 0x00 << 29   //  Feature not supported
-	RA_1          CCSIDR = 0x01 << 29   //  Feature supported
 	WB            CCSIDR = 0x01 << 30   //+ Indicates whether the cache level supports write-back
-	WB_0          CCSIDR = 0x00 << 30   //  Feature not supported
-	WB_1          CCSIDR = 0x01 << 30   //  Feature supported
 	WT            CCSIDR = 0x01 << 31   //+ Indicates whether the cache level supports write-through
-	WT_0          CCSIDR = 0x00 << 31   //  Feature not supported
-	WT_1          CCSIDR = 0x01 << 31   //  Feature supported
 )
 
 const (
@@ -920,8 +769,6 @@ const (
 
 const (
 	IND     CSSELR = 0x01 << 0 //+ Instruction not data bit
-	IND_0   CSSELR = 0x00 << 0 //  Data or unified cache.
-	IND_1   CSSELR = 0x01 << 0 //  Instruction cache.
 	LEVEL   CSSELR = 0x07 << 1 //+ Cache level of required cache
 	LEVEL_0 CSSELR = 0x00 << 1 //  Level 1 cache.
 	LEVEL_1 CSSELR = 0x01 << 1 //  Level 2 cache.
@@ -1074,30 +921,24 @@ const (
 )
 
 const (
-	EN      CM7_ITCMCR = 0x01 << 0 //+ TCM enable. When a TCM is disabled all accesses are made to the AXIM interface.
-	EN_0    CM7_ITCMCR = 0x00 << 0 //  TCM disabled.
-	EN_1    CM7_ITCMCR = 0x01 << 0 //  TCM enabled.
-	RMW     CM7_ITCMCR = 0x01 << 1 //+ Read-Modify-Write (RMW) enable. Indicates that all writes to TCM, that are not the full width of the TCM RAM, use a RMW sequence.
-	RMW_0   CM7_ITCMCR = 0x00 << 1 //  RMW disabled.
-	RMW_1   CM7_ITCMCR = 0x01 << 1 //  RMW enabled.
-	RETEN   CM7_ITCMCR = 0x01 << 2 //+ Retry phase enable. When enabled the processor guarantees to honor the retry output on the corresponding TCM interface, re-executing the instruction which carried out the TCM access.
-	RETEN_0 CM7_ITCMCR = 0x00 << 2 //  Retry phase disabled.
-	RETEN_1 CM7_ITCMCR = 0x01 << 2 //  Retry phase enabled.
-	SZ      CM7_ITCMCR = 0x0F << 3 //+ TCM size. Indicates the size of the relevant TCM.
-	SZ_0    CM7_ITCMCR = 0x00 << 3 //  No TCM implemented.
-	SZ_3    CM7_ITCMCR = 0x03 << 3 //  4KB.
-	SZ_4    CM7_ITCMCR = 0x04 << 3 //  8KB.
-	SZ_5    CM7_ITCMCR = 0x05 << 3 //  16KB.
-	SZ_6    CM7_ITCMCR = 0x06 << 3 //  32KB.
-	SZ_7    CM7_ITCMCR = 0x07 << 3 //  64KB.
-	SZ_8    CM7_ITCMCR = 0x08 << 3 //  128KB.
-	SZ_9    CM7_ITCMCR = 0x09 << 3 //  256KB.
-	SZ_10   CM7_ITCMCR = 0x0A << 3 //  512KB.
-	SZ_11   CM7_ITCMCR = 0x0B << 3 //  1MB.
-	SZ_12   CM7_ITCMCR = 0x0C << 3 //  2MB.
-	SZ_13   CM7_ITCMCR = 0x0D << 3 //  4MB.
-	SZ_14   CM7_ITCMCR = 0x0E << 3 //  8MB.
-	SZ_15   CM7_ITCMCR = 0x0F << 3 //  16MB.
+	EN    CM7_ITCMCR = 0x01 << 0 //+ TCM enable. When a TCM is disabled all accesses are made to the AXIM interface.
+	RMW   CM7_ITCMCR = 0x01 << 1 //+ Read-Modify-Write (RMW) enable. Indicates that all writes to TCM, that are not the full width of the TCM RAM, use a RMW sequence.
+	RETEN CM7_ITCMCR = 0x01 << 2 //+ Retry phase enable. When enabled the processor guarantees to honor the retry output on the corresponding TCM interface, re-executing the instruction which carried out the TCM access.
+	SZ    CM7_ITCMCR = 0x0F << 3 //+ TCM size. Indicates the size of the relevant TCM.
+	SZ_0  CM7_ITCMCR = 0x00 << 3 //  No TCM implemented.
+	SZ_3  CM7_ITCMCR = 0x03 << 3 //  4KB.
+	SZ_4  CM7_ITCMCR = 0x04 << 3 //  8KB.
+	SZ_5  CM7_ITCMCR = 0x05 << 3 //  16KB.
+	SZ_6  CM7_ITCMCR = 0x06 << 3 //  32KB.
+	SZ_7  CM7_ITCMCR = 0x07 << 3 //  64KB.
+	SZ_8  CM7_ITCMCR = 0x08 << 3 //  128KB.
+	SZ_9  CM7_ITCMCR = 0x09 << 3 //  256KB.
+	SZ_10 CM7_ITCMCR = 0x0A << 3 //  512KB.
+	SZ_11 CM7_ITCMCR = 0x0B << 3 //  1MB.
+	SZ_12 CM7_ITCMCR = 0x0C << 3 //  2MB.
+	SZ_13 CM7_ITCMCR = 0x0D << 3 //  4MB.
+	SZ_14 CM7_ITCMCR = 0x0E << 3 //  8MB.
+	SZ_15 CM7_ITCMCR = 0x0F << 3 //  16MB.
 )
 
 const (
@@ -1108,30 +949,24 @@ const (
 )
 
 const (
-	EN      CM7_DTCMCR = 0x01 << 0 //+ TCM enable. When a TCM is disabled all accesses are made to the AXIM interface.
-	EN_0    CM7_DTCMCR = 0x00 << 0 //  TCM disabled.
-	EN_1    CM7_DTCMCR = 0x01 << 0 //  TCM enabled.
-	RMW     CM7_DTCMCR = 0x01 << 1 //+ Read-Modify-Write (RMW) enable. Indicates that all writes to TCM, that are not the full width of the TCM RAM, use a RMW sequence.
-	RMW_0   CM7_DTCMCR = 0x00 << 1 //  RMW disabled.
-	RMW_1   CM7_DTCMCR = 0x01 << 1 //  RMW enabled.
-	RETEN   CM7_DTCMCR = 0x01 << 2 //+ Retry phase enable. When enabled the processor guarantees to honor the retry output on the corresponding TCM interface, re-executing the instruction which carried out the TCM access.
-	RETEN_0 CM7_DTCMCR = 0x00 << 2 //  Retry phase disabled.
-	RETEN_1 CM7_DTCMCR = 0x01 << 2 //  Retry phase enabled.
-	SZ      CM7_DTCMCR = 0x0F << 3 //+ TCM size. Indicates the size of the relevant TCM.
-	SZ_0    CM7_DTCMCR = 0x00 << 3 //  No TCM implemented.
-	SZ_3    CM7_DTCMCR = 0x03 << 3 //  4KB.
-	SZ_4    CM7_DTCMCR = 0x04 << 3 //  8KB.
-	SZ_5    CM7_DTCMCR = 0x05 << 3 //  16KB.
-	SZ_6    CM7_DTCMCR = 0x06 << 3 //  32KB.
-	SZ_7    CM7_DTCMCR = 0x07 << 3 //  64KB.
-	SZ_8    CM7_DTCMCR = 0x08 << 3 //  128KB.
-	SZ_9    CM7_DTCMCR = 0x09 << 3 //  256KB.
-	SZ_10   CM7_DTCMCR = 0x0A << 3 //  512KB.
-	SZ_11   CM7_DTCMCR = 0x0B << 3 //  1MB.
-	SZ_12   CM7_DTCMCR = 0x0C << 3 //  2MB.
-	SZ_13   CM7_DTCMCR = 0x0D << 3 //  4MB.
-	SZ_14   CM7_DTCMCR = 0x0E << 3 //  8MB.
-	SZ_15   CM7_DTCMCR = 0x0F << 3 //  16MB.
+	EN    CM7_DTCMCR = 0x01 << 0 //+ TCM enable. When a TCM is disabled all accesses are made to the AXIM interface.
+	RMW   CM7_DTCMCR = 0x01 << 1 //+ Read-Modify-Write (RMW) enable. Indicates that all writes to TCM, that are not the full width of the TCM RAM, use a RMW sequence.
+	RETEN CM7_DTCMCR = 0x01 << 2 //+ Retry phase enable. When enabled the processor guarantees to honor the retry output on the corresponding TCM interface, re-executing the instruction which carried out the TCM access.
+	SZ    CM7_DTCMCR = 0x0F << 3 //+ TCM size. Indicates the size of the relevant TCM.
+	SZ_0  CM7_DTCMCR = 0x00 << 3 //  No TCM implemented.
+	SZ_3  CM7_DTCMCR = 0x03 << 3 //  4KB.
+	SZ_4  CM7_DTCMCR = 0x04 << 3 //  8KB.
+	SZ_5  CM7_DTCMCR = 0x05 << 3 //  16KB.
+	SZ_6  CM7_DTCMCR = 0x06 << 3 //  32KB.
+	SZ_7  CM7_DTCMCR = 0x07 << 3 //  64KB.
+	SZ_8  CM7_DTCMCR = 0x08 << 3 //  128KB.
+	SZ_9  CM7_DTCMCR = 0x09 << 3 //  256KB.
+	SZ_10 CM7_DTCMCR = 0x0A << 3 //  512KB.
+	SZ_11 CM7_DTCMCR = 0x0B << 3 //  1MB.
+	SZ_12 CM7_DTCMCR = 0x0C << 3 //  2MB.
+	SZ_13 CM7_DTCMCR = 0x0D << 3 //  4MB.
+	SZ_14 CM7_DTCMCR = 0x0E << 3 //  8MB.
+	SZ_15 CM7_DTCMCR = 0x0F << 3 //  16MB.
 )
 
 const (
@@ -1143,8 +978,6 @@ const (
 
 const (
 	EN   CM7_AHBPCR = 0x01 << 0 //+ AHBP enable.
-	EN_0 CM7_AHBPCR = 0x00 << 0 //  AHBP disabled. When disabled all accesses are made to the AXIM interface.
-	EN_1 CM7_AHBPCR = 0x01 << 0 //  AHBP enabled.
 	SZ   CM7_AHBPCR = 0x07 << 1 //+ AHBP size.
 	SZ_0 CM7_AHBPCR = 0x00 << 1 //  0MB. AHBP disabled.
 	SZ_1 CM7_AHBPCR = 0x01 << 1 //  64MB.
@@ -1159,15 +992,9 @@ const (
 )
 
 const (
-	SIWT      CM7_CACR = 0x01 << 0 //+ Shared cacheable-is-WT for data cache. Enables limited cache coherency usage.
-	SIWT_0    CM7_CACR = 0x00 << 0 //  Normal Cacheable Shared locations are treated as being Non-cacheable. Default mode of operation for Shared memory.
-	SIWT_1    CM7_CACR = 0x01 << 0 //  Normal Cacheable shared locations are treated as Write-Through.
-	ECCDIS    CM7_CACR = 0x01 << 1 //+ Enables ECC in the instruction and data cache.
-	ECCDIS_0  CM7_CACR = 0x00 << 1 //  Enables ECC in the instruction and data cache.
-	ECCDIS_1  CM7_CACR = 0x01 << 1 //  Disables ECC in the instruction and data cache.
-	FORCEWT   CM7_CACR = 0x01 << 2 //+ Enables Force Write-Through in the data cache.
-	FORCEWT_0 CM7_CACR = 0x00 << 2 //  Disables Force Write-Through.
-	FORCEWT_1 CM7_CACR = 0x01 << 2 //  Enables Force Write-Through. All Cacheable memory regions are treated as Write-Through.
+	SIWT    CM7_CACR = 0x01 << 0 //+ Shared cacheable-is-WT for data cache. Enables limited cache coherency usage.
+	ECCDIS  CM7_CACR = 0x01 << 1 //+ Enables ECC in the instruction and data cache.
+	FORCEWT CM7_CACR = 0x01 << 2 //+ Enables Force Write-Through in the data cache.
 )
 
 const (

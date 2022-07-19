@@ -20,9 +20,7 @@
 package pgc
 
 const (
-	PCR   MEGA_CTRL = 0x01 << 0 //+ Power Control PCR must not change from power-down request (pdn_req) assertion until the target subsystem is completely powered up
-	PCR_0 MEGA_CTRL = 0x00 << 0 //  Do not switch off power even if pdn_req is asserted.
-	PCR_1 MEGA_CTRL = 0x01 << 0 //  Switch off power when pdn_req is asserted.
+	PCR MEGA_CTRL = 0x01 << 0 //+ Power Control PCR must not change from power-down request (pdn_req) assertion until the target subsystem is completely powered up
 )
 
 const (
@@ -50,9 +48,7 @@ const (
 )
 
 const (
-	PSR   MEGA_SR = 0x01 << 0 //+ Power status
-	PSR_0 MEGA_SR = 0x00 << 0 //  The target subsystem was not powered down for the previous power-down request.
-	PSR_1 MEGA_SR = 0x01 << 0 //  The target subsystem was powered down for the previous power-down request.
+	PSR MEGA_SR = 0x01 << 0 //+ Power status
 )
 
 const (
@@ -60,9 +56,7 @@ const (
 )
 
 const (
-	PCR   CPU_CTRL = 0x01 << 0 //+ Power Control PCR must not change from power-down request (pdn_req) assertion until the target subsystem is completely powered up
-	PCR_0 CPU_CTRL = 0x00 << 0 //  Do not switch off power even if pdn_req is asserted.
-	PCR_1 CPU_CTRL = 0x01 << 0 //  Switch off power when pdn_req is asserted.
+	PCR CPU_CTRL = 0x01 << 0 //+ Power Control PCR must not change from power-down request (pdn_req) assertion until the target subsystem is completely powered up
 )
 
 const (
@@ -90,9 +84,7 @@ const (
 )
 
 const (
-	PSR   CPU_SR = 0x01 << 0 //+ Power status
-	PSR_0 CPU_SR = 0x00 << 0 //  The target subsystem was not powered down for the previous power-down request.
-	PSR_1 CPU_SR = 0x01 << 0 //  The target subsystem was powered down for the previous power-down request.
+	PSR CPU_SR = 0x01 << 0 //+ Power status
 )
 
 const (

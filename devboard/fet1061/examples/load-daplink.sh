@@ -1,6 +1,6 @@
 #!/bin/sh
 
-MNT=/mnt/sdb
+MNT=/mnt/daplink
 
 name=$(basename $(pwd))
 

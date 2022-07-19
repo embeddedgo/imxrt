@@ -87,14 +87,8 @@ const (
 	RSPTYP_2 CMD_XFR_TYP = 0x02 << 16 //  Response Length 48
 	RSPTYP_3 CMD_XFR_TYP = 0x03 << 16 //  Response Length 48, check Busy after response
 	CCCEN    CMD_XFR_TYP = 0x01 << 19 //+ Command CRC Check Enable
-	CCCEN_0  CMD_XFR_TYP = 0x00 << 19 //  Disable
-	CCCEN_1  CMD_XFR_TYP = 0x01 << 19 //  Enable
 	CICEN    CMD_XFR_TYP = 0x01 << 20 //+ Command Index Check Enable
-	CICEN_0  CMD_XFR_TYP = 0x00 << 20 //  Disable
-	CICEN_1  CMD_XFR_TYP = 0x01 << 20 //  Enable
 	DPSEL    CMD_XFR_TYP = 0x01 << 21 //+ Data Present Select
-	DPSEL_0  CMD_XFR_TYP = 0x00 << 21 //  No Data Present
-	DPSEL_1  CMD_XFR_TYP = 0x01 << 21 //  Data Present
 	CMDTYP   CMD_XFR_TYP = 0x03 << 22 //+ Command Type
 	CMDTYP_0 CMD_XFR_TYP = 0x00 << 22 //  Normal Other commands
 	CMDTYP_1 CMD_XFR_TYP = 0x01 << 22 //  Suspend CMD52 for writing Bus Suspend in CCCR
@@ -153,67 +147,33 @@ const (
 )
 
 const (
-	CIHB     PRES_STATE = 0x01 << 0  //+ Command Inhibit (CMD)
-	CIHB_0   PRES_STATE = 0x00 << 0  //  Can issue command using only CMD line
-	CIHB_1   PRES_STATE = 0x01 << 0  //  Cannot issue command
-	CDIHB    PRES_STATE = 0x01 << 1  //+ Command Inhibit (DATA)
-	CDIHB_0  PRES_STATE = 0x00 << 1  //  Can issue command which uses the DATA line
-	CDIHB_1  PRES_STATE = 0x01 << 1  //  Cannot issue command which uses the DATA line
-	DLA      PRES_STATE = 0x01 << 2  //+ Data Line Active
-	DLA_0    PRES_STATE = 0x00 << 2  //  DATA Line Inactive
-	DLA_1    PRES_STATE = 0x01 << 2  //  DATA Line Active
-	SDSTB    PRES_STATE = 0x01 << 3  //+ SD Clock Stable
-	SDSTB_0  PRES_STATE = 0x00 << 3  //  Clock is changing frequency and not stable.
-	SDSTB_1  PRES_STATE = 0x01 << 3  //  Clock is stable.
-	IPGOFF   PRES_STATE = 0x01 << 4  //+ IPG_CLK Gated Off Internally
-	IPGOFF_0 PRES_STATE = 0x00 << 4  //  IPG_CLK is active.
-	IPGOFF_1 PRES_STATE = 0x01 << 4  //  IPG_CLK is gated off.
-	HCKOFF   PRES_STATE = 0x01 << 5  //+ HCLK Gated Off Internally
-	HCKOFF_0 PRES_STATE = 0x00 << 5  //  HCLK is active.
-	HCKOFF_1 PRES_STATE = 0x01 << 5  //  HCLK is gated off.
-	PEROFF   PRES_STATE = 0x01 << 6  //+ IPG_PERCLK Gated Off Internally
-	PEROFF_0 PRES_STATE = 0x00 << 6  //  IPG_PERCLK is active.
-	PEROFF_1 PRES_STATE = 0x01 << 6  //  IPG_PERCLK is gated off.
-	SDOFF    PRES_STATE = 0x01 << 7  //+ SD Clock Gated Off Internally
-	SDOFF_0  PRES_STATE = 0x00 << 7  //  SD Clock is active.
-	SDOFF_1  PRES_STATE = 0x01 << 7  //  SD Clock is gated off.
-	WTA      PRES_STATE = 0x01 << 8  //+ Write Transfer Active
-	WTA_0    PRES_STATE = 0x00 << 8  //  No valid data
-	WTA_1    PRES_STATE = 0x01 << 8  //  Transferring data
-	RTA      PRES_STATE = 0x01 << 9  //+ Read Transfer Active
-	RTA_0    PRES_STATE = 0x00 << 9  //  No valid data
-	RTA_1    PRES_STATE = 0x01 << 9  //  Transferring data
-	BWEN     PRES_STATE = 0x01 << 10 //+ Buffer Write Enable
-	BWEN_0   PRES_STATE = 0x00 << 10 //  Write disable
-	BWEN_1   PRES_STATE = 0x01 << 10 //  Write enable
-	BREN     PRES_STATE = 0x01 << 11 //+ Buffer Read Enable
-	BREN_0   PRES_STATE = 0x00 << 11 //  Read disable
-	BREN_1   PRES_STATE = 0x01 << 11 //  Read enable
-	RTR      PRES_STATE = 0x01 << 12 //+ Re-Tuning Request (only for SD3.0 SDR104 mode and EMMC HS200 mode)
-	RTR_0    PRES_STATE = 0x00 << 12 //  Fixed or well tuned sampling clock
-	RTR_1    PRES_STATE = 0x01 << 12 //  Sampling clock needs re-tuning
-	TSCD     PRES_STATE = 0x01 << 15 //+ Tape Select Change Done
-	TSCD_0   PRES_STATE = 0x00 << 15 //  Delay cell select change is not finished.
-	TSCD_1   PRES_STATE = 0x01 << 15 //  Delay cell select change is finished.
-	CINST    PRES_STATE = 0x01 << 16 //+ Card Inserted
-	CINST_0  PRES_STATE = 0x00 << 16 //  Power on Reset or No Card
-	CINST_1  PRES_STATE = 0x01 << 16 //  Card Inserted
-	CDPL     PRES_STATE = 0x01 << 18 //+ Card Detect Pin Level
-	CDPL_0   PRES_STATE = 0x00 << 18 //  No card present (CD_B = 1)
-	CDPL_1   PRES_STATE = 0x01 << 18 //  Card present (CD_B = 0)
-	WPSPL    PRES_STATE = 0x01 << 19 //+ Write Protect Switch Pin Level
-	WPSPL_0  PRES_STATE = 0x00 << 19 //  Write protected (WP = 1)
-	WPSPL_1  PRES_STATE = 0x01 << 19 //  Write enabled (WP = 0)
-	CLSL     PRES_STATE = 0x01 << 23 //+ CMD Line Signal Level
-	DLSL     PRES_STATE = 0xFF << 24 //+ DATA[7:0] Line Signal Level
-	DATA0    PRES_STATE = 0x00 << 24 //  Data 0 line signal level
-	DATA1    PRES_STATE = 0x01 << 24 //  Data 1 line signal level
-	DATA2    PRES_STATE = 0x02 << 24 //  Data 2 line signal level
-	DATA3    PRES_STATE = 0x03 << 24 //  Data 3 line signal level
-	DATA4    PRES_STATE = 0x04 << 24 //  Data 4 line signal level
-	DATA5    PRES_STATE = 0x05 << 24 //  Data 5 line signal level
-	DATA6    PRES_STATE = 0x06 << 24 //  Data 6 line signal level
-	DATA7    PRES_STATE = 0x07 << 24 //  Data 7 line signal level
+	CIHB   PRES_STATE = 0x01 << 0  //+ Command Inhibit (CMD)
+	CDIHB  PRES_STATE = 0x01 << 1  //+ Command Inhibit (DATA)
+	DLA    PRES_STATE = 0x01 << 2  //+ Data Line Active
+	SDSTB  PRES_STATE = 0x01 << 3  //+ SD Clock Stable
+	IPGOFF PRES_STATE = 0x01 << 4  //+ IPG_CLK Gated Off Internally
+	HCKOFF PRES_STATE = 0x01 << 5  //+ HCLK Gated Off Internally
+	PEROFF PRES_STATE = 0x01 << 6  //+ IPG_PERCLK Gated Off Internally
+	SDOFF  PRES_STATE = 0x01 << 7  //+ SD Clock Gated Off Internally
+	WTA    PRES_STATE = 0x01 << 8  //+ Write Transfer Active
+	RTA    PRES_STATE = 0x01 << 9  //+ Read Transfer Active
+	BWEN   PRES_STATE = 0x01 << 10 //+ Buffer Write Enable
+	BREN   PRES_STATE = 0x01 << 11 //+ Buffer Read Enable
+	RTR    PRES_STATE = 0x01 << 12 //+ Re-Tuning Request (only for SD3.0 SDR104 mode and EMMC HS200 mode)
+	TSCD   PRES_STATE = 0x01 << 15 //+ Tape Select Change Done
+	CINST  PRES_STATE = 0x01 << 16 //+ Card Inserted
+	CDPL   PRES_STATE = 0x01 << 18 //+ Card Detect Pin Level
+	WPSPL  PRES_STATE = 0x01 << 19 //+ Write Protect Switch Pin Level
+	CLSL   PRES_STATE = 0x01 << 23 //+ CMD Line Signal Level
+	DLSL   PRES_STATE = 0xFF << 24 //+ DATA[7:0] Line Signal Level
+	DATA0  PRES_STATE = 0x00 << 24 //  Data 0 line signal level
+	DATA1  PRES_STATE = 0x01 << 24 //  Data 1 line signal level
+	DATA2  PRES_STATE = 0x02 << 24 //  Data 2 line signal level
+	DATA3  PRES_STATE = 0x03 << 24 //  Data 3 line signal level
+	DATA4  PRES_STATE = 0x04 << 24 //  Data 4 line signal level
+	DATA5  PRES_STATE = 0x05 << 24 //  Data 5 line signal level
+	DATA6  PRES_STATE = 0x06 << 24 //  Data 6 line signal level
+	DATA7  PRES_STATE = 0x07 << 24 //  Data 7 line signal level
 )
 
 const (
@@ -239,57 +199,33 @@ const (
 )
 
 const (
-	LCTL               PROT_CTRL = 0x01 << 0  //+ LED Control
-	LCTL_0             PROT_CTRL = 0x00 << 0  //  LED off
-	LCTL_1             PROT_CTRL = 0x01 << 0  //  LED on
-	DTW                PROT_CTRL = 0x03 << 1  //+ Data Transfer Width
-	DTW_0              PROT_CTRL = 0x00 << 1  //  1-bit mode
-	DTW_1              PROT_CTRL = 0x01 << 1  //  4-bit mode
-	DTW_2              PROT_CTRL = 0x02 << 1  //  8-bit mode
-	D3CD               PROT_CTRL = 0x01 << 3  //+ DATA3 as Card Detection Pin
-	D3CD_0             PROT_CTRL = 0x00 << 3  //  DATA3 does not monitor Card Insertion
-	D3CD_1             PROT_CTRL = 0x01 << 3  //  DATA3 as Card Detection Pin
-	EMODE              PROT_CTRL = 0x03 << 4  //+ Endian Mode
-	EMODE_0            PROT_CTRL = 0x00 << 4  //  Big Endian Mode
-	EMODE_1            PROT_CTRL = 0x01 << 4  //  Half Word Big Endian Mode
-	EMODE_2            PROT_CTRL = 0x02 << 4  //  Little Endian Mode
-	CDTL               PROT_CTRL = 0x01 << 6  //+ Card Detect Test Level
-	CDTL_0             PROT_CTRL = 0x00 << 6  //  Card Detect Test Level is 0, no card inserted
-	CDTL_1             PROT_CTRL = 0x01 << 6  //  Card Detect Test Level is 1, card inserted
-	CDSS               PROT_CTRL = 0x01 << 7  //+ Card Detect Signal Selection
-	CDSS_0             PROT_CTRL = 0x00 << 7  //  Card Detection Level is selected (for normal purpose).
-	CDSS_1             PROT_CTRL = 0x01 << 7  //  Card Detection Test Level is selected (for test purpose).
-	DMASEL             PROT_CTRL = 0x03 << 8  //+ DMA Select
-	DMASEL_0           PROT_CTRL = 0x00 << 8  //  No DMA or Simple DMA is selected
-	DMASEL_1           PROT_CTRL = 0x01 << 8  //  ADMA1 is selected
-	DMASEL_2           PROT_CTRL = 0x02 << 8  //  ADMA2 is selected
-	SABGREQ            PROT_CTRL = 0x01 << 16 //+ Stop At Block Gap Request
-	SABGREQ_0          PROT_CTRL = 0x00 << 16 //  Transfer
-	SABGREQ_1          PROT_CTRL = 0x01 << 16 //  Stop
-	CREQ               PROT_CTRL = 0x01 << 17 //+ Continue Request
-	CREQ_0             PROT_CTRL = 0x00 << 17 //  No effect
-	CREQ_1             PROT_CTRL = 0x01 << 17 //  Restart
-	RWCTL              PROT_CTRL = 0x01 << 18 //+ Read Wait Control
-	RWCTL_0            PROT_CTRL = 0x00 << 18 //  Disable Read Wait Control, and stop SD Clock at block gap when SABGREQ bit is set
-	RWCTL_1            PROT_CTRL = 0x01 << 18 //  Enable Read Wait Control, and assert Read Wait without stopping SD Clock at block gap when SABGREQ bit is set
-	IABG               PROT_CTRL = 0x01 << 19 //+ Interrupt At Block Gap
-	IABG_0             PROT_CTRL = 0x00 << 19 //  Disabled
-	IABG_1             PROT_CTRL = 0x01 << 19 //  Enabled
-	RD_DONE_NO_8CLK    PROT_CTRL = 0x01 << 20 //+ RD_DONE_NO_8CLK
-	WECINT             PROT_CTRL = 0x01 << 24 //+ Wakeup Event Enable On Card Interrupt
-	WECINT_0           PROT_CTRL = 0x00 << 24 //  Disable
-	WECINT_1           PROT_CTRL = 0x01 << 24 //  Enable
-	WECINS             PROT_CTRL = 0x01 << 25 //+ Wakeup Event Enable On SD Card Insertion
-	WECINS_0           PROT_CTRL = 0x00 << 25 //  Disable
-	WECINS_1           PROT_CTRL = 0x01 << 25 //  Enable
-	WECRM              PROT_CTRL = 0x01 << 26 //+ Wakeup Event Enable On SD Card Removal
-	WECRM_0            PROT_CTRL = 0x00 << 26 //  Disable
-	WECRM_1            PROT_CTRL = 0x01 << 26 //  Enable
-	BURST_LEN_EN       PROT_CTRL = 0x07 << 27 //+ BURST length enable for INCR, INCR4 / INCR8 / INCR16, INCR4-WRAP / INCR8-WRAP / INCR16-WRAP
-	BURST_LEN_EN_1     PROT_CTRL = 0x01 << 27 //  Burst length is enabled for INCR
-	NON_EXACT_BLK_RD   PROT_CTRL = 0x01 << 30 //+ NON_EXACT_BLK_RD
-	NON_EXACT_BLK_RD_0 PROT_CTRL = 0x00 << 30 //  The block read is exact block read. Host driver doesn't need to issue abort command to terminate this multi-block read.
-	NON_EXACT_BLK_RD_1 PROT_CTRL = 0x01 << 30 //  The block read is non-exact block read. Host driver needs to issue abort command to terminate this multi-block read.
+	LCTL             PROT_CTRL = 0x01 << 0  //+ LED Control
+	DTW              PROT_CTRL = 0x03 << 1  //+ Data Transfer Width
+	DTW_0            PROT_CTRL = 0x00 << 1  //  1-bit mode
+	DTW_1            PROT_CTRL = 0x01 << 1  //  4-bit mode
+	DTW_2            PROT_CTRL = 0x02 << 1  //  8-bit mode
+	D3CD             PROT_CTRL = 0x01 << 3  //+ DATA3 as Card Detection Pin
+	EMODE            PROT_CTRL = 0x03 << 4  //+ Endian Mode
+	EMODE_0          PROT_CTRL = 0x00 << 4  //  Big Endian Mode
+	EMODE_1          PROT_CTRL = 0x01 << 4  //  Half Word Big Endian Mode
+	EMODE_2          PROT_CTRL = 0x02 << 4  //  Little Endian Mode
+	CDTL             PROT_CTRL = 0x01 << 6  //+ Card Detect Test Level
+	CDSS             PROT_CTRL = 0x01 << 7  //+ Card Detect Signal Selection
+	DMASEL           PROT_CTRL = 0x03 << 8  //+ DMA Select
+	DMASEL_0         PROT_CTRL = 0x00 << 8  //  No DMA or Simple DMA is selected
+	DMASEL_1         PROT_CTRL = 0x01 << 8  //  ADMA1 is selected
+	DMASEL_2         PROT_CTRL = 0x02 << 8  //  ADMA2 is selected
+	SABGREQ          PROT_CTRL = 0x01 << 16 //+ Stop At Block Gap Request
+	CREQ             PROT_CTRL = 0x01 << 17 //+ Continue Request
+	RWCTL            PROT_CTRL = 0x01 << 18 //+ Read Wait Control
+	IABG             PROT_CTRL = 0x01 << 19 //+ Interrupt At Block Gap
+	RD_DONE_NO_8CLK  PROT_CTRL = 0x01 << 20 //+ RD_DONE_NO_8CLK
+	WECINT           PROT_CTRL = 0x01 << 24 //+ Wakeup Event Enable On Card Interrupt
+	WECINS           PROT_CTRL = 0x01 << 25 //+ Wakeup Event Enable On SD Card Insertion
+	WECRM            PROT_CTRL = 0x01 << 26 //+ Wakeup Event Enable On SD Card Removal
+	BURST_LEN_EN     PROT_CTRL = 0x07 << 27 //+ BURST length enable for INCR, INCR4 / INCR8 / INCR16, INCR4-WRAP / INCR8-WRAP / INCR16-WRAP
+	BURST_LEN_EN_1   PROT_CTRL = 0x01 << 27 //  Burst length is enabled for INCR
+	NON_EXACT_BLK_RD PROT_CTRL = 0x01 << 30 //+ NON_EXACT_BLK_RD
 )
 
 const (
@@ -327,14 +263,8 @@ const (
 	DTOCV_15  SYS_CTRL = 0x0F << 16 //  SDCLK x 2 29
 	IPP_RST_N SYS_CTRL = 0x01 << 23 //+ IPP_RST_N
 	RSTA      SYS_CTRL = 0x01 << 24 //+ Software Reset For ALL
-	RSTA_0    SYS_CTRL = 0x00 << 24 //  No Reset
-	RSTA_1    SYS_CTRL = 0x01 << 24 //  Reset
 	RSTC      SYS_CTRL = 0x01 << 25 //+ Software Reset For CMD Line
-	RSTC_0    SYS_CTRL = 0x00 << 25 //  No Reset
-	RSTC_1    SYS_CTRL = 0x01 << 25 //  Reset
 	RSTD      SYS_CTRL = 0x01 << 26 //+ Software Reset For DATA Line
-	RSTD_0    SYS_CTRL = 0x00 << 26 //  No Reset
-	RSTD_1    SYS_CTRL = 0x01 << 26 //  Reset
 	INITA     SYS_CTRL = 0x01 << 27 //+ Initialization Active
 	RSTT      SYS_CTRL = 0x01 << 28 //+ Reset Tuning
 )
@@ -352,65 +282,27 @@ const (
 )
 
 const (
-	CC      INT_STATUS = 0x01 << 0  //+ Command Complete
-	CC_0    INT_STATUS = 0x00 << 0  //  Command not complete
-	CC_1    INT_STATUS = 0x01 << 0  //  Command complete
-	TC      INT_STATUS = 0x01 << 1  //+ Transfer Complete
-	TC_0    INT_STATUS = 0x00 << 1  //  Transfer not complete
-	TC_1    INT_STATUS = 0x01 << 1  //  Transfer complete
-	BGE     INT_STATUS = 0x01 << 2  //+ Block Gap Event
-	BGE_0   INT_STATUS = 0x00 << 2  //  No block gap event
-	BGE_1   INT_STATUS = 0x01 << 2  //  Transaction stopped at block gap
-	DINT    INT_STATUS = 0x01 << 3  //+ DMA Interrupt
-	DINT_0  INT_STATUS = 0x00 << 3  //  No DMA Interrupt
-	DINT_1  INT_STATUS = 0x01 << 3  //  DMA Interrupt is generated
-	BWR     INT_STATUS = 0x01 << 4  //+ Buffer Write Ready
-	BWR_0   INT_STATUS = 0x00 << 4  //  Not ready to write buffer
-	BWR_1   INT_STATUS = 0x01 << 4  //  Ready to write buffer:
-	BRR     INT_STATUS = 0x01 << 5  //+ Buffer Read Ready
-	BRR_0   INT_STATUS = 0x00 << 5  //  Not ready to read buffer
-	BRR_1   INT_STATUS = 0x01 << 5  //  Ready to read buffer
-	CINS    INT_STATUS = 0x01 << 6  //+ Card Insertion
-	CINS_0  INT_STATUS = 0x00 << 6  //  Card state unstable or removed
-	CINS_1  INT_STATUS = 0x01 << 6  //  Card inserted
-	CRM     INT_STATUS = 0x01 << 7  //+ Card Removal
-	CRM_0   INT_STATUS = 0x00 << 7  //  Card state unstable or inserted
-	CRM_1   INT_STATUS = 0x01 << 7  //  Card removed
-	CINT    INT_STATUS = 0x01 << 8  //+ Card Interrupt
-	CINT_0  INT_STATUS = 0x00 << 8  //  No Card Interrupt
-	CINT_1  INT_STATUS = 0x01 << 8  //  Generate Card Interrupt
-	RTE     INT_STATUS = 0x01 << 12 //+ Re-Tuning Event: (only for SD3.0 SDR104 mode and EMMC HS200 mode)
-	RTE_0   INT_STATUS = 0x00 << 12 //  Re-Tuning is not required
-	RTE_1   INT_STATUS = 0x01 << 12 //  Re-Tuning should be performed
-	TP      INT_STATUS = 0x01 << 14 //+ Tuning Pass:(only for SD3.0 SDR104 mode and EMMC HS200 mode)
-	CTOE    INT_STATUS = 0x01 << 16 //+ Command Timeout Error
-	CTOE_0  INT_STATUS = 0x00 << 16 //  No Error
-	CTOE_1  INT_STATUS = 0x01 << 16 //  Time out
-	CCE     INT_STATUS = 0x01 << 17 //+ Command CRC Error
-	CCE_0   INT_STATUS = 0x00 << 17 //  No Error
-	CCE_1   INT_STATUS = 0x01 << 17 //  CRC Error Generated.
-	CEBE    INT_STATUS = 0x01 << 18 //+ Command End Bit Error
-	CEBE_0  INT_STATUS = 0x00 << 18 //  No Error
-	CEBE_1  INT_STATUS = 0x01 << 18 //  End Bit Error Generated
-	CIE     INT_STATUS = 0x01 << 19 //+ Command Index Error
-	CIE_0   INT_STATUS = 0x00 << 19 //  No Error
-	CIE_1   INT_STATUS = 0x01 << 19 //  Error
-	DTOE    INT_STATUS = 0x01 << 20 //+ Data Timeout Error
-	DTOE_0  INT_STATUS = 0x00 << 20 //  No Error
-	DTOE_1  INT_STATUS = 0x01 << 20 //  Time out
-	DCE     INT_STATUS = 0x01 << 21 //+ Data CRC Error
-	DCE_0   INT_STATUS = 0x00 << 21 //  No Error
-	DCE_1   INT_STATUS = 0x01 << 21 //  Error
-	DEBE    INT_STATUS = 0x01 << 22 //+ Data End Bit Error
-	DEBE_0  INT_STATUS = 0x00 << 22 //  No Error
-	DEBE_1  INT_STATUS = 0x01 << 22 //  Error
-	AC12E   INT_STATUS = 0x01 << 24 //+ Auto CMD12 Error
-	AC12E_0 INT_STATUS = 0x00 << 24 //  No Error
-	AC12E_1 INT_STATUS = 0x01 << 24 //  Error
-	TNE     INT_STATUS = 0x01 << 26 //+ Tuning Error: (only for SD3.0 SDR104 mode and EMMC HS200 mode)
-	DMAE    INT_STATUS = 0x01 << 28 //+ DMA Error
-	DMAE_0  INT_STATUS = 0x00 << 28 //  No Error
-	DMAE_1  INT_STATUS = 0x01 << 28 //  Error
+	CC    INT_STATUS = 0x01 << 0  //+ Command Complete
+	TC    INT_STATUS = 0x01 << 1  //+ Transfer Complete
+	BGE   INT_STATUS = 0x01 << 2  //+ Block Gap Event
+	DINT  INT_STATUS = 0x01 << 3  //+ DMA Interrupt
+	BWR   INT_STATUS = 0x01 << 4  //+ Buffer Write Ready
+	BRR   INT_STATUS = 0x01 << 5  //+ Buffer Read Ready
+	CINS  INT_STATUS = 0x01 << 6  //+ Card Insertion
+	CRM   INT_STATUS = 0x01 << 7  //+ Card Removal
+	CINT  INT_STATUS = 0x01 << 8  //+ Card Interrupt
+	RTE   INT_STATUS = 0x01 << 12 //+ Re-Tuning Event: (only for SD3.0 SDR104 mode and EMMC HS200 mode)
+	TP    INT_STATUS = 0x01 << 14 //+ Tuning Pass:(only for SD3.0 SDR104 mode and EMMC HS200 mode)
+	CTOE  INT_STATUS = 0x01 << 16 //+ Command Timeout Error
+	CCE   INT_STATUS = 0x01 << 17 //+ Command CRC Error
+	CEBE  INT_STATUS = 0x01 << 18 //+ Command End Bit Error
+	CIE   INT_STATUS = 0x01 << 19 //+ Command Index Error
+	DTOE  INT_STATUS = 0x01 << 20 //+ Data Timeout Error
+	DCE   INT_STATUS = 0x01 << 21 //+ Data CRC Error
+	DEBE  INT_STATUS = 0x01 << 22 //+ Data End Bit Error
+	AC12E INT_STATUS = 0x01 << 24 //+ Auto CMD12 Error
+	TNE   INT_STATUS = 0x01 << 26 //+ Tuning Error: (only for SD3.0 SDR104 mode and EMMC HS200 mode)
+	DMAE  INT_STATUS = 0x01 << 28 //+ DMA Error
 )
 
 const (
@@ -438,69 +330,27 @@ const (
 )
 
 const (
-	CCSEN      INT_STATUS_EN = 0x01 << 0  //+ Command Complete Status Enable
-	CCSEN_0    INT_STATUS_EN = 0x00 << 0  //  Masked
-	CCSEN_1    INT_STATUS_EN = 0x01 << 0  //  Enabled
-	TCSEN      INT_STATUS_EN = 0x01 << 1  //+ Transfer Complete Status Enable
-	TCSEN_0    INT_STATUS_EN = 0x00 << 1  //  Masked
-	TCSEN_1    INT_STATUS_EN = 0x01 << 1  //  Enabled
-	BGESEN     INT_STATUS_EN = 0x01 << 2  //+ Block Gap Event Status Enable
-	BGESEN_0   INT_STATUS_EN = 0x00 << 2  //  Masked
-	BGESEN_1   INT_STATUS_EN = 0x01 << 2  //  Enabled
-	DINTSEN    INT_STATUS_EN = 0x01 << 3  //+ DMA Interrupt Status Enable
-	DINTSEN_0  INT_STATUS_EN = 0x00 << 3  //  Masked
-	DINTSEN_1  INT_STATUS_EN = 0x01 << 3  //  Enabled
-	BWRSEN     INT_STATUS_EN = 0x01 << 4  //+ Buffer Write Ready Status Enable
-	BWRSEN_0   INT_STATUS_EN = 0x00 << 4  //  Masked
-	BWRSEN_1   INT_STATUS_EN = 0x01 << 4  //  Enabled
-	BRRSEN     INT_STATUS_EN = 0x01 << 5  //+ Buffer Read Ready Status Enable
-	BRRSEN_0   INT_STATUS_EN = 0x00 << 5  //  Masked
-	BRRSEN_1   INT_STATUS_EN = 0x01 << 5  //  Enabled
-	CINSSEN    INT_STATUS_EN = 0x01 << 6  //+ Card Insertion Status Enable
-	CINSSEN_0  INT_STATUS_EN = 0x00 << 6  //  Masked
-	CINSSEN_1  INT_STATUS_EN = 0x01 << 6  //  Enabled
-	CRMSEN     INT_STATUS_EN = 0x01 << 7  //+ Card Removal Status Enable
-	CRMSEN_0   INT_STATUS_EN = 0x00 << 7  //  Masked
-	CRMSEN_1   INT_STATUS_EN = 0x01 << 7  //  Enabled
-	CINTSEN    INT_STATUS_EN = 0x01 << 8  //+ Card Interrupt Status Enable
-	CINTSEN_0  INT_STATUS_EN = 0x00 << 8  //  Masked
-	CINTSEN_1  INT_STATUS_EN = 0x01 << 8  //  Enabled
-	RTESEN     INT_STATUS_EN = 0x01 << 12 //+ Re-Tuning Event Status Enable
-	RTESEN_0   INT_STATUS_EN = 0x00 << 12 //  Masked
-	RTESEN_1   INT_STATUS_EN = 0x01 << 12 //  Enabled
-	TPSEN      INT_STATUS_EN = 0x01 << 14 //+ Tuning Pass Status Enable
-	TPSEN_0    INT_STATUS_EN = 0x00 << 14 //  Masked
-	TPSEN_1    INT_STATUS_EN = 0x01 << 14 //  Enabled
-	CTOESEN    INT_STATUS_EN = 0x01 << 16 //+ Command Timeout Error Status Enable
-	CTOESEN_0  INT_STATUS_EN = 0x00 << 16 //  Masked
-	CTOESEN_1  INT_STATUS_EN = 0x01 << 16 //  Enabled
-	CCESEN     INT_STATUS_EN = 0x01 << 17 //+ Command CRC Error Status Enable
-	CCESEN_0   INT_STATUS_EN = 0x00 << 17 //  Masked
-	CCESEN_1   INT_STATUS_EN = 0x01 << 17 //  Enabled
-	CEBESEN    INT_STATUS_EN = 0x01 << 18 //+ Command End Bit Error Status Enable
-	CEBESEN_0  INT_STATUS_EN = 0x00 << 18 //  Masked
-	CEBESEN_1  INT_STATUS_EN = 0x01 << 18 //  Enabled
-	CIESEN     INT_STATUS_EN = 0x01 << 19 //+ Command Index Error Status Enable
-	CIESEN_0   INT_STATUS_EN = 0x00 << 19 //  Masked
-	CIESEN_1   INT_STATUS_EN = 0x01 << 19 //  Enabled
-	DTOESEN    INT_STATUS_EN = 0x01 << 20 //+ Data Timeout Error Status Enable
-	DTOESEN_0  INT_STATUS_EN = 0x00 << 20 //  Masked
-	DTOESEN_1  INT_STATUS_EN = 0x01 << 20 //  Enabled
-	DCESEN     INT_STATUS_EN = 0x01 << 21 //+ Data CRC Error Status Enable
-	DCESEN_0   INT_STATUS_EN = 0x00 << 21 //  Masked
-	DCESEN_1   INT_STATUS_EN = 0x01 << 21 //  Enabled
-	DEBESEN    INT_STATUS_EN = 0x01 << 22 //+ Data End Bit Error Status Enable
-	DEBESEN_0  INT_STATUS_EN = 0x00 << 22 //  Masked
-	DEBESEN_1  INT_STATUS_EN = 0x01 << 22 //  Enabled
-	AC12ESEN   INT_STATUS_EN = 0x01 << 24 //+ Auto CMD12 Error Status Enable
-	AC12ESEN_0 INT_STATUS_EN = 0x00 << 24 //  Masked
-	AC12ESEN_1 INT_STATUS_EN = 0x01 << 24 //  Enabled
-	TNESEN     INT_STATUS_EN = 0x01 << 26 //+ Tuning Error Status Enable
-	TNESEN_0   INT_STATUS_EN = 0x00 << 26 //  Masked
-	TNESEN_1   INT_STATUS_EN = 0x01 << 26 //  Enabled
-	DMAESEN    INT_STATUS_EN = 0x01 << 28 //+ DMA Error Status Enable
-	DMAESEN_0  INT_STATUS_EN = 0x00 << 28 //  Masked
-	DMAESEN_1  INT_STATUS_EN = 0x01 << 28 //  Enabled
+	CCSEN    INT_STATUS_EN = 0x01 << 0  //+ Command Complete Status Enable
+	TCSEN    INT_STATUS_EN = 0x01 << 1  //+ Transfer Complete Status Enable
+	BGESEN   INT_STATUS_EN = 0x01 << 2  //+ Block Gap Event Status Enable
+	DINTSEN  INT_STATUS_EN = 0x01 << 3  //+ DMA Interrupt Status Enable
+	BWRSEN   INT_STATUS_EN = 0x01 << 4  //+ Buffer Write Ready Status Enable
+	BRRSEN   INT_STATUS_EN = 0x01 << 5  //+ Buffer Read Ready Status Enable
+	CINSSEN  INT_STATUS_EN = 0x01 << 6  //+ Card Insertion Status Enable
+	CRMSEN   INT_STATUS_EN = 0x01 << 7  //+ Card Removal Status Enable
+	CINTSEN  INT_STATUS_EN = 0x01 << 8  //+ Card Interrupt Status Enable
+	RTESEN   INT_STATUS_EN = 0x01 << 12 //+ Re-Tuning Event Status Enable
+	TPSEN    INT_STATUS_EN = 0x01 << 14 //+ Tuning Pass Status Enable
+	CTOESEN  INT_STATUS_EN = 0x01 << 16 //+ Command Timeout Error Status Enable
+	CCESEN   INT_STATUS_EN = 0x01 << 17 //+ Command CRC Error Status Enable
+	CEBESEN  INT_STATUS_EN = 0x01 << 18 //+ Command End Bit Error Status Enable
+	CIESEN   INT_STATUS_EN = 0x01 << 19 //+ Command Index Error Status Enable
+	DTOESEN  INT_STATUS_EN = 0x01 << 20 //+ Data Timeout Error Status Enable
+	DCESEN   INT_STATUS_EN = 0x01 << 21 //+ Data CRC Error Status Enable
+	DEBESEN  INT_STATUS_EN = 0x01 << 22 //+ Data End Bit Error Status Enable
+	AC12ESEN INT_STATUS_EN = 0x01 << 24 //+ Auto CMD12 Error Status Enable
+	TNESEN   INT_STATUS_EN = 0x01 << 26 //+ Tuning Error Status Enable
+	DMAESEN  INT_STATUS_EN = 0x01 << 28 //+ DMA Error Status Enable
 )
 
 const (
@@ -528,69 +378,27 @@ const (
 )
 
 const (
-	CCIEN      INT_SIGNAL_EN = 0x01 << 0  //+ Command Complete Interrupt Enable
-	CCIEN_0    INT_SIGNAL_EN = 0x00 << 0  //  Masked
-	CCIEN_1    INT_SIGNAL_EN = 0x01 << 0  //  Enabled
-	TCIEN      INT_SIGNAL_EN = 0x01 << 1  //+ Transfer Complete Interrupt Enable
-	TCIEN_0    INT_SIGNAL_EN = 0x00 << 1  //  Masked
-	TCIEN_1    INT_SIGNAL_EN = 0x01 << 1  //  Enabled
-	BGEIEN     INT_SIGNAL_EN = 0x01 << 2  //+ Block Gap Event Interrupt Enable
-	BGEIEN_0   INT_SIGNAL_EN = 0x00 << 2  //  Masked
-	BGEIEN_1   INT_SIGNAL_EN = 0x01 << 2  //  Enabled
-	DINTIEN    INT_SIGNAL_EN = 0x01 << 3  //+ DMA Interrupt Enable
-	DINTIEN_0  INT_SIGNAL_EN = 0x00 << 3  //  Masked
-	DINTIEN_1  INT_SIGNAL_EN = 0x01 << 3  //  Enabled
-	BWRIEN     INT_SIGNAL_EN = 0x01 << 4  //+ Buffer Write Ready Interrupt Enable
-	BWRIEN_0   INT_SIGNAL_EN = 0x00 << 4  //  Masked
-	BWRIEN_1   INT_SIGNAL_EN = 0x01 << 4  //  Enabled
-	BRRIEN     INT_SIGNAL_EN = 0x01 << 5  //+ Buffer Read Ready Interrupt Enable
-	BRRIEN_0   INT_SIGNAL_EN = 0x00 << 5  //  Masked
-	BRRIEN_1   INT_SIGNAL_EN = 0x01 << 5  //  Enabled
-	CINSIEN    INT_SIGNAL_EN = 0x01 << 6  //+ Card Insertion Interrupt Enable
-	CINSIEN_0  INT_SIGNAL_EN = 0x00 << 6  //  Masked
-	CINSIEN_1  INT_SIGNAL_EN = 0x01 << 6  //  Enabled
-	CRMIEN     INT_SIGNAL_EN = 0x01 << 7  //+ Card Removal Interrupt Enable
-	CRMIEN_0   INT_SIGNAL_EN = 0x00 << 7  //  Masked
-	CRMIEN_1   INT_SIGNAL_EN = 0x01 << 7  //  Enabled
-	CINTIEN    INT_SIGNAL_EN = 0x01 << 8  //+ Card Interrupt Interrupt Enable
-	CINTIEN_0  INT_SIGNAL_EN = 0x00 << 8  //  Masked
-	CINTIEN_1  INT_SIGNAL_EN = 0x01 << 8  //  Enabled
-	RTEIEN     INT_SIGNAL_EN = 0x01 << 12 //+ Re-Tuning Event Interrupt Enable
-	RTEIEN_0   INT_SIGNAL_EN = 0x00 << 12 //  Masked
-	RTEIEN_1   INT_SIGNAL_EN = 0x01 << 12 //  Enabled
-	TPIEN      INT_SIGNAL_EN = 0x01 << 14 //+ Tuning Pass Interrupt Enable
-	TPIEN_0    INT_SIGNAL_EN = 0x00 << 14 //  Masked
-	TPIEN_1    INT_SIGNAL_EN = 0x01 << 14 //  Enabled
-	CTOEIEN    INT_SIGNAL_EN = 0x01 << 16 //+ Command Timeout Error Interrupt Enable
-	CTOEIEN_0  INT_SIGNAL_EN = 0x00 << 16 //  Masked
-	CTOEIEN_1  INT_SIGNAL_EN = 0x01 << 16 //  Enabled
-	CCEIEN     INT_SIGNAL_EN = 0x01 << 17 //+ Command CRC Error Interrupt Enable
-	CCEIEN_0   INT_SIGNAL_EN = 0x00 << 17 //  Masked
-	CCEIEN_1   INT_SIGNAL_EN = 0x01 << 17 //  Enabled
-	CEBEIEN    INT_SIGNAL_EN = 0x01 << 18 //+ Command End Bit Error Interrupt Enable
-	CEBEIEN_0  INT_SIGNAL_EN = 0x00 << 18 //  Masked
-	CEBEIEN_1  INT_SIGNAL_EN = 0x01 << 18 //  Enabled
-	CIEIEN     INT_SIGNAL_EN = 0x01 << 19 //+ Command Index Error Interrupt Enable
-	CIEIEN_0   INT_SIGNAL_EN = 0x00 << 19 //  Masked
-	CIEIEN_1   INT_SIGNAL_EN = 0x01 << 19 //  Enabled
-	DTOEIEN    INT_SIGNAL_EN = 0x01 << 20 //+ Data Timeout Error Interrupt Enable
-	DTOEIEN_0  INT_SIGNAL_EN = 0x00 << 20 //  Masked
-	DTOEIEN_1  INT_SIGNAL_EN = 0x01 << 20 //  Enabled
-	DCEIEN     INT_SIGNAL_EN = 0x01 << 21 //+ Data CRC Error Interrupt Enable
-	DCEIEN_0   INT_SIGNAL_EN = 0x00 << 21 //  Masked
-	DCEIEN_1   INT_SIGNAL_EN = 0x01 << 21 //  Enabled
-	DEBEIEN    INT_SIGNAL_EN = 0x01 << 22 //+ Data End Bit Error Interrupt Enable
-	DEBEIEN_0  INT_SIGNAL_EN = 0x00 << 22 //  Masked
-	DEBEIEN_1  INT_SIGNAL_EN = 0x01 << 22 //  Enabled
-	AC12EIEN   INT_SIGNAL_EN = 0x01 << 24 //+ Auto CMD12 Error Interrupt Enable
-	AC12EIEN_0 INT_SIGNAL_EN = 0x00 << 24 //  Masked
-	AC12EIEN_1 INT_SIGNAL_EN = 0x01 << 24 //  Enabled
-	TNEIEN     INT_SIGNAL_EN = 0x01 << 26 //+ Tuning Error Interrupt Enable
-	TNEIEN_0   INT_SIGNAL_EN = 0x00 << 26 //  Masked
-	TNEIEN_1   INT_SIGNAL_EN = 0x01 << 26 //  Enabled
-	DMAEIEN    INT_SIGNAL_EN = 0x01 << 28 //+ DMA Error Interrupt Enable
-	DMAEIEN_0  INT_SIGNAL_EN = 0x00 << 28 //  Masked
-	DMAEIEN_1  INT_SIGNAL_EN = 0x01 << 28 //  Enable
+	CCIEN    INT_SIGNAL_EN = 0x01 << 0  //+ Command Complete Interrupt Enable
+	TCIEN    INT_SIGNAL_EN = 0x01 << 1  //+ Transfer Complete Interrupt Enable
+	BGEIEN   INT_SIGNAL_EN = 0x01 << 2  //+ Block Gap Event Interrupt Enable
+	DINTIEN  INT_SIGNAL_EN = 0x01 << 3  //+ DMA Interrupt Enable
+	BWRIEN   INT_SIGNAL_EN = 0x01 << 4  //+ Buffer Write Ready Interrupt Enable
+	BRRIEN   INT_SIGNAL_EN = 0x01 << 5  //+ Buffer Read Ready Interrupt Enable
+	CINSIEN  INT_SIGNAL_EN = 0x01 << 6  //+ Card Insertion Interrupt Enable
+	CRMIEN   INT_SIGNAL_EN = 0x01 << 7  //+ Card Removal Interrupt Enable
+	CINTIEN  INT_SIGNAL_EN = 0x01 << 8  //+ Card Interrupt Interrupt Enable
+	RTEIEN   INT_SIGNAL_EN = 0x01 << 12 //+ Re-Tuning Event Interrupt Enable
+	TPIEN    INT_SIGNAL_EN = 0x01 << 14 //+ Tuning Pass Interrupt Enable
+	CTOEIEN  INT_SIGNAL_EN = 0x01 << 16 //+ Command Timeout Error Interrupt Enable
+	CCEIEN   INT_SIGNAL_EN = 0x01 << 17 //+ Command CRC Error Interrupt Enable
+	CEBEIEN  INT_SIGNAL_EN = 0x01 << 18 //+ Command End Bit Error Interrupt Enable
+	CIEIEN   INT_SIGNAL_EN = 0x01 << 19 //+ Command Index Error Interrupt Enable
+	DTOEIEN  INT_SIGNAL_EN = 0x01 << 20 //+ Data Timeout Error Interrupt Enable
+	DCEIEN   INT_SIGNAL_EN = 0x01 << 21 //+ Data CRC Error Interrupt Enable
+	DEBEIEN  INT_SIGNAL_EN = 0x01 << 22 //+ Data End Bit Error Interrupt Enable
+	AC12EIEN INT_SIGNAL_EN = 0x01 << 24 //+ Auto CMD12 Error Interrupt Enable
+	TNEIEN   INT_SIGNAL_EN = 0x01 << 26 //+ Tuning Error Interrupt Enable
+	DMAEIEN  INT_SIGNAL_EN = 0x01 << 28 //+ DMA Error Interrupt Enable
 )
 
 const (
@@ -619,27 +427,13 @@ const (
 
 const (
 	AC12NE         AUTOCMD12_ERR_STATUS = 0x01 << 0  //+ Auto CMD12 Not Executed
-	AC12NE_0       AUTOCMD12_ERR_STATUS = 0x00 << 0  //  Executed
-	AC12NE_1       AUTOCMD12_ERR_STATUS = 0x01 << 0  //  Not executed
 	AC12TOE        AUTOCMD12_ERR_STATUS = 0x01 << 1  //+ Auto CMD12 / 23 Timeout Error
-	AC12TOE_0      AUTOCMD12_ERR_STATUS = 0x00 << 1  //  No error
-	AC12TOE_1      AUTOCMD12_ERR_STATUS = 0x01 << 1  //  Time out
 	AC12EBE        AUTOCMD12_ERR_STATUS = 0x01 << 2  //+ Auto CMD12 / 23 End Bit Error
-	AC12EBE_0      AUTOCMD12_ERR_STATUS = 0x00 << 2  //  No error
-	AC12EBE_1      AUTOCMD12_ERR_STATUS = 0x01 << 2  //  End Bit Error Generated
 	AC12CE         AUTOCMD12_ERR_STATUS = 0x01 << 3  //+ Auto CMD12 / 23 CRC Error
-	AC12CE_0       AUTOCMD12_ERR_STATUS = 0x00 << 3  //  No CRC error
-	AC12CE_1       AUTOCMD12_ERR_STATUS = 0x01 << 3  //  CRC Error Met in Auto CMD12/23 Response
 	AC12IE         AUTOCMD12_ERR_STATUS = 0x01 << 4  //+ Auto CMD12 / 23 Index Error
-	AC12IE_0       AUTOCMD12_ERR_STATUS = 0x00 << 4  //  No error
-	AC12IE_1       AUTOCMD12_ERR_STATUS = 0x01 << 4  //  Error, the CMD index in response is not CMD12/23
 	CNIBAC12E      AUTOCMD12_ERR_STATUS = 0x01 << 7  //+ Command Not Issued By Auto CMD12 Error
-	CNIBAC12E_0    AUTOCMD12_ERR_STATUS = 0x00 << 7  //  No error
-	CNIBAC12E_1    AUTOCMD12_ERR_STATUS = 0x01 << 7  //  Not Issued
 	EXECUTE_TUNING AUTOCMD12_ERR_STATUS = 0x01 << 22 //+ Execute Tuning
 	SMP_CLK_SEL    AUTOCMD12_ERR_STATUS = 0x01 << 23 //+ Sample Clock Select
-	SMP_CLK_SEL_0  AUTOCMD12_ERR_STATUS = 0x00 << 23 //  Fixed clock is used to sample data
-	SMP_CLK_SEL_1  AUTOCMD12_ERR_STATUS = 0x01 << 23 //  Tuned clock is used to sample data
 )
 
 const (
@@ -659,8 +453,6 @@ const (
 	DDR50_SUPPORT       HOST_CTRL_CAP = 0x01 << 2  //+ DDR50 support
 	TIME_COUNT_RETUNING HOST_CTRL_CAP = 0x0F << 8  //+ Time Counter for Retuning
 	USE_TUNING_SDR50    HOST_CTRL_CAP = 0x01 << 13 //+ Use Tuning for SDR50
-	USE_TUNING_SDR50_0  HOST_CTRL_CAP = 0x00 << 13 //  SDR does not require tuning
-	USE_TUNING_SDR50_1  HOST_CTRL_CAP = 0x01 << 13 //  SDR50 requires tuning
 	RETUNING_MODE       HOST_CTRL_CAP = 0x03 << 14 //+ Retuning Mode
 	RETUNING_MODE_0     HOST_CTRL_CAP = 0x00 << 14 //  Mode 1
 	RETUNING_MODE_1     HOST_CTRL_CAP = 0x01 << 14 //  Mode 2
@@ -671,26 +463,12 @@ const (
 	MBL_2               HOST_CTRL_CAP = 0x02 << 16 //  2048 bytes
 	MBL_3               HOST_CTRL_CAP = 0x03 << 16 //  4096 bytes
 	ADMAS               HOST_CTRL_CAP = 0x01 << 20 //+ ADMA Support
-	ADMAS_0             HOST_CTRL_CAP = 0x00 << 20 //  Advanced DMA Not supported
-	ADMAS_1             HOST_CTRL_CAP = 0x01 << 20 //  Advanced DMA Supported
 	HSS                 HOST_CTRL_CAP = 0x01 << 21 //+ High Speed Support
-	HSS_0               HOST_CTRL_CAP = 0x00 << 21 //  High Speed Not Supported
-	HSS_1               HOST_CTRL_CAP = 0x01 << 21 //  High Speed Supported
 	DMAS                HOST_CTRL_CAP = 0x01 << 22 //+ DMA Support
-	DMAS_0              HOST_CTRL_CAP = 0x00 << 22 //  DMA not supported
-	DMAS_1              HOST_CTRL_CAP = 0x01 << 22 //  DMA Supported
 	SRS                 HOST_CTRL_CAP = 0x01 << 23 //+ Suspend / Resume Support
-	SRS_0               HOST_CTRL_CAP = 0x00 << 23 //  Not supported
-	SRS_1               HOST_CTRL_CAP = 0x01 << 23 //  Supported
 	VS33                HOST_CTRL_CAP = 0x01 << 24 //+ Voltage Support 3.3V
-	VS33_0              HOST_CTRL_CAP = 0x00 << 24 //  3.3V not supported
-	VS33_1              HOST_CTRL_CAP = 0x01 << 24 //  3.3V supported
 	VS30                HOST_CTRL_CAP = 0x01 << 25 //+ Voltage Support 3.0 V
-	VS30_0              HOST_CTRL_CAP = 0x00 << 25 //  3.0V not supported
-	VS30_1              HOST_CTRL_CAP = 0x01 << 25 //  3.0V supported
 	VS18                HOST_CTRL_CAP = 0x01 << 26 //+ Voltage Support 1.8 V
-	VS18_0              HOST_CTRL_CAP = 0x00 << 26 //  1.8V not supported
-	VS18_1              HOST_CTRL_CAP = 0x01 << 26 //  1.8V supported
 )
 
 const (
@@ -725,36 +503,18 @@ const (
 )
 
 const (
-	DMAEN          MIX_CTRL = 0x01 << 0  //+ DMA Enable
-	DMAEN_0        MIX_CTRL = 0x00 << 0  //  Disable
-	DMAEN_1        MIX_CTRL = 0x01 << 0  //  Enable
-	BCEN           MIX_CTRL = 0x01 << 1  //+ Block Count Enable
-	BCEN_0         MIX_CTRL = 0x00 << 1  //  Disable
-	BCEN_1         MIX_CTRL = 0x01 << 1  //  Enable
-	AC12EN         MIX_CTRL = 0x01 << 2  //+ Auto CMD12 Enable
-	AC12EN_0       MIX_CTRL = 0x00 << 2  //  Disable
-	AC12EN_1       MIX_CTRL = 0x01 << 2  //  Enable
-	DDR_EN         MIX_CTRL = 0x01 << 3  //+ Dual Data Rate mode selection
-	DTDSEL         MIX_CTRL = 0x01 << 4  //+ Data Transfer Direction Select
-	DTDSEL_0       MIX_CTRL = 0x00 << 4  //  Write (Host to Card)
-	DTDSEL_1       MIX_CTRL = 0x01 << 4  //  Read (Card to Host)
-	MSBSEL         MIX_CTRL = 0x01 << 5  //+ Multi / Single Block Select
-	MSBSEL_0       MIX_CTRL = 0x00 << 5  //  Single Block
-	MSBSEL_1       MIX_CTRL = 0x01 << 5  //  Multiple Blocks
-	NIBBLE_POS     MIX_CTRL = 0x01 << 6  //+ NIBBLE_POS
-	AC23EN         MIX_CTRL = 0x01 << 7  //+ Auto CMD23 Enable
-	EXE_TUNE       MIX_CTRL = 0x01 << 22 //+ Execute Tuning: (Only used for SD3.0, SDR104 mode and EMMC HS200 mode)
-	EXE_TUNE_0     MIX_CTRL = 0x00 << 22 //  Not Tuned or Tuning Completed
-	EXE_TUNE_1     MIX_CTRL = 0x01 << 22 //  Execute Tuning
-	SMP_CLK_SEL    MIX_CTRL = 0x01 << 23 //+ SMP_CLK_SEL
-	SMP_CLK_SEL_0  MIX_CTRL = 0x00 << 23 //  Fixed clock is used to sample data / cmd
-	SMP_CLK_SEL_1  MIX_CTRL = 0x01 << 23 //  Tuned clock is used to sample data / cmd
-	AUTO_TUNE_EN   MIX_CTRL = 0x01 << 24 //+ Auto Tuning Enable (Only used for SD3.0, SDR104 mode and and EMMC HS200 mode)
-	AUTO_TUNE_EN_0 MIX_CTRL = 0x00 << 24 //  Disable auto tuning
-	AUTO_TUNE_EN_1 MIX_CTRL = 0x01 << 24 //  Enable auto tuning
-	FBCLK_SEL      MIX_CTRL = 0x01 << 25 //+ Feedback Clock Source Selection (Only used for SD3.0, SDR104 mode and EMMC HS200 mode)
-	FBCLK_SEL_0    MIX_CTRL = 0x00 << 25 //  Feedback clock comes from the loopback CLK
-	FBCLK_SEL_1    MIX_CTRL = 0x01 << 25 //  Feedback clock comes from the ipp_card_clk_out
+	DMAEN        MIX_CTRL = 0x01 << 0  //+ DMA Enable
+	BCEN         MIX_CTRL = 0x01 << 1  //+ Block Count Enable
+	AC12EN       MIX_CTRL = 0x01 << 2  //+ Auto CMD12 Enable
+	DDR_EN       MIX_CTRL = 0x01 << 3  //+ Dual Data Rate mode selection
+	DTDSEL       MIX_CTRL = 0x01 << 4  //+ Data Transfer Direction Select
+	MSBSEL       MIX_CTRL = 0x01 << 5  //+ Multi / Single Block Select
+	NIBBLE_POS   MIX_CTRL = 0x01 << 6  //+ NIBBLE_POS
+	AC23EN       MIX_CTRL = 0x01 << 7  //+ Auto CMD23 Enable
+	EXE_TUNE     MIX_CTRL = 0x01 << 22 //+ Execute Tuning: (Only used for SD3.0, SDR104 mode and EMMC HS200 mode)
+	SMP_CLK_SEL  MIX_CTRL = 0x01 << 23 //+ SMP_CLK_SEL
+	AUTO_TUNE_EN MIX_CTRL = 0x01 << 24 //+ Auto Tuning Enable (Only used for SD3.0, SDR104 mode and and EMMC HS200 mode)
+	FBCLK_SEL    MIX_CTRL = 0x01 << 25 //+ Feedback Clock Source Selection (Only used for SD3.0, SDR104 mode and EMMC HS200 mode)
 )
 
 const (
@@ -813,13 +573,9 @@ const (
 )
 
 const (
-	ADMAES    ADMA_ERR_STATUS = 0x03 << 0 //+ ADMA Error State (when ADMA Error is occurred)
-	ADMALME   ADMA_ERR_STATUS = 0x01 << 2 //+ ADMA Length Mismatch Error
-	ADMALME_0 ADMA_ERR_STATUS = 0x00 << 2 //  No Error
-	ADMALME_1 ADMA_ERR_STATUS = 0x01 << 2 //  Error
-	ADMADCE   ADMA_ERR_STATUS = 0x01 << 3 //+ ADMA Descriptor Error
-	ADMADCE_0 ADMA_ERR_STATUS = 0x00 << 3 //  No Error
-	ADMADCE_1 ADMA_ERR_STATUS = 0x01 << 3 //  Error
+	ADMAES  ADMA_ERR_STATUS = 0x03 << 0 //+ ADMA Error State (when ADMA Error is occurred)
+	ADMALME ADMA_ERR_STATUS = 0x01 << 2 //+ ADMA Length Mismatch Error
+	ADMADCE ADMA_ERR_STATUS = 0x01 << 3 //+ ADMA Descriptor Error
 )
 
 const (
@@ -899,24 +655,12 @@ const (
 )
 
 const (
-	VSELECT              VEND_SPEC = 0x01 << 1  //+ Voltage Selection
-	VSELECT_0            VEND_SPEC = 0x00 << 1  //  Change the voltage to high voltage range, around 3.0 V
-	VSELECT_1            VEND_SPEC = 0x01 << 1  //  Change the voltage to low voltage range, around 1.8 V
-	CONFLICT_CHK_EN      VEND_SPEC = 0x01 << 2  //+ Conflict check enable.
-	CONFLICT_CHK_EN_0    VEND_SPEC = 0x00 << 2  //  Conflict check disable
-	CONFLICT_CHK_EN_1    VEND_SPEC = 0x01 << 2  //  Conflict check enable
-	AC12_WR_CHKBUSY_EN   VEND_SPEC = 0x01 << 3  //+ AC12_WR_CHKBUSY_EN
-	AC12_WR_CHKBUSY_EN_0 VEND_SPEC = 0x00 << 3  //  Do not check busy after auto CMD12 for write data packet
-	AC12_WR_CHKBUSY_EN_1 VEND_SPEC = 0x01 << 3  //  Check busy after auto CMD12 for write data packet
-	FRC_SDCLK_ON         VEND_SPEC = 0x01 << 8  //+ FRC_SDCLK_ON
-	FRC_SDCLK_ON_0       VEND_SPEC = 0x00 << 8  //  CLK active or inactive is fully controlled by the hardware.
-	FRC_SDCLK_ON_1       VEND_SPEC = 0x01 << 8  //  Force CLK active.
-	CRC_CHK_DIS          VEND_SPEC = 0x01 << 15 //+ CRC Check Disable
-	CRC_CHK_DIS_0        VEND_SPEC = 0x00 << 15 //  Check CRC16 for every read data packet and check CRC bits for every write data packet
-	CRC_CHK_DIS_1        VEND_SPEC = 0x01 << 15 //  Ignore CRC16 check for every read data packet and ignore CRC bits check for every write data packet
-	CMD_BYTE_EN          VEND_SPEC = 0x01 << 31 //+ CMD_BYTE_EN
-	CMD_BYTE_EN_0        VEND_SPEC = 0x00 << 31 //  Disable
-	CMD_BYTE_EN_1        VEND_SPEC = 0x01 << 31 //  Enable
+	VSELECT            VEND_SPEC = 0x01 << 1  //+ Voltage Selection
+	CONFLICT_CHK_EN    VEND_SPEC = 0x01 << 2  //+ Conflict check enable.
+	AC12_WR_CHKBUSY_EN VEND_SPEC = 0x01 << 3  //+ AC12_WR_CHKBUSY_EN
+	FRC_SDCLK_ON       VEND_SPEC = 0x01 << 8  //+ FRC_SDCLK_ON
+	CRC_CHK_DIS        VEND_SPEC = 0x01 << 15 //+ CRC Check Disable
+	CMD_BYTE_EN        VEND_SPEC = 0x01 << 31 //+ CMD_BYTE_EN
 )
 
 const (
@@ -929,31 +673,23 @@ const (
 )
 
 const (
-	DTOCV_ACK          MMC_BOOT = 0x0F << 0    //+ DTOCV_ACK
-	DTOCV_ACK_0        MMC_BOOT = 0x00 << 0    //  SDCLK x 2^14
-	DTOCV_ACK_1        MMC_BOOT = 0x01 << 0    //  SDCLK x 2^15
-	DTOCV_ACK_2        MMC_BOOT = 0x02 << 0    //  SDCLK x 2^16
-	DTOCV_ACK_3        MMC_BOOT = 0x03 << 0    //  SDCLK x 2^17
-	DTOCV_ACK_4        MMC_BOOT = 0x04 << 0    //  SDCLK x 2^18
-	DTOCV_ACK_5        MMC_BOOT = 0x05 << 0    //  SDCLK x 2^19
-	DTOCV_ACK_6        MMC_BOOT = 0x06 << 0    //  SDCLK x 2^20
-	DTOCV_ACK_7        MMC_BOOT = 0x07 << 0    //  SDCLK x 2^21
-	DTOCV_ACK_14       MMC_BOOT = 0x0E << 0    //  SDCLK x 2^28
-	DTOCV_ACK_15       MMC_BOOT = 0x0F << 0    //  SDCLK x 2^29
-	BOOT_ACK           MMC_BOOT = 0x01 << 4    //+ BOOT_ACK
-	BOOT_ACK_0         MMC_BOOT = 0x00 << 4    //  No ack
-	BOOT_ACK_1         MMC_BOOT = 0x01 << 4    //  Ack
-	BOOT_MODE          MMC_BOOT = 0x01 << 5    //+ BOOT_MODE
-	BOOT_MODE_0        MMC_BOOT = 0x00 << 5    //  Normal boot
-	BOOT_MODE_1        MMC_BOOT = 0x01 << 5    //  Alternative boot
-	BOOT_EN            MMC_BOOT = 0x01 << 6    //+ BOOT_EN
-	BOOT_EN_0          MMC_BOOT = 0x00 << 6    //  Fast boot disable
-	BOOT_EN_1          MMC_BOOT = 0x01 << 6    //  Fast boot enable
-	AUTO_SABG_EN       MMC_BOOT = 0x01 << 7    //+ AUTO_SABG_EN
-	DISABLE_TIME_OUT   MMC_BOOT = 0x01 << 8    //+ Disable Time Out
-	DISABLE_TIME_OUT_0 MMC_BOOT = 0x00 << 8    //  Enable time out
-	DISABLE_TIME_OUT_1 MMC_BOOT = 0x01 << 8    //  Disable time out
-	BOOT_BLK_CNT       MMC_BOOT = 0xFFFF << 16 //+ BOOT_BLK_CNT
+	DTOCV_ACK        MMC_BOOT = 0x0F << 0    //+ DTOCV_ACK
+	DTOCV_ACK_0      MMC_BOOT = 0x00 << 0    //  SDCLK x 2^14
+	DTOCV_ACK_1      MMC_BOOT = 0x01 << 0    //  SDCLK x 2^15
+	DTOCV_ACK_2      MMC_BOOT = 0x02 << 0    //  SDCLK x 2^16
+	DTOCV_ACK_3      MMC_BOOT = 0x03 << 0    //  SDCLK x 2^17
+	DTOCV_ACK_4      MMC_BOOT = 0x04 << 0    //  SDCLK x 2^18
+	DTOCV_ACK_5      MMC_BOOT = 0x05 << 0    //  SDCLK x 2^19
+	DTOCV_ACK_6      MMC_BOOT = 0x06 << 0    //  SDCLK x 2^20
+	DTOCV_ACK_7      MMC_BOOT = 0x07 << 0    //  SDCLK x 2^21
+	DTOCV_ACK_14     MMC_BOOT = 0x0E << 0    //  SDCLK x 2^28
+	DTOCV_ACK_15     MMC_BOOT = 0x0F << 0    //  SDCLK x 2^29
+	BOOT_ACK         MMC_BOOT = 0x01 << 4    //+ BOOT_ACK
+	BOOT_MODE        MMC_BOOT = 0x01 << 5    //+ BOOT_MODE
+	BOOT_EN          MMC_BOOT = 0x01 << 6    //+ BOOT_EN
+	AUTO_SABG_EN     MMC_BOOT = 0x01 << 7    //+ AUTO_SABG_EN
+	DISABLE_TIME_OUT MMC_BOOT = 0x01 << 8    //+ Disable Time Out
+	BOOT_BLK_CNT     MMC_BOOT = 0xFFFF << 16 //+ BOOT_BLK_CNT
 )
 
 const (
@@ -967,19 +703,13 @@ const (
 )
 
 const (
-	CARD_INT_D3_TEST   VEND_SPEC2 = 0x01 << 3  //+ Card Interrupt Detection Test
-	CARD_INT_D3_TEST_0 VEND_SPEC2 = 0x00 << 3  //  Check the card interrupt only when DATA3 is high.
-	CARD_INT_D3_TEST_1 VEND_SPEC2 = 0x01 << 3  //  Check the card interrupt by ignoring the status of DATA3.
-	TUNING_8bit_EN     VEND_SPEC2 = 0x01 << 4  //+ TUNING_8bit_EN
-	TUNING_1bit_EN     VEND_SPEC2 = 0x01 << 5  //+ TUNING_1bit_EN
-	TUNING_CMD_EN      VEND_SPEC2 = 0x01 << 6  //+ TUNING_CMD_EN
-	TUNING_CMD_EN_0    VEND_SPEC2 = 0x00 << 6  //  Auto tuning circuit does not check the CMD line.
-	TUNING_CMD_EN_1    VEND_SPEC2 = 0x01 << 6  //  Auto tuning circuit checks the CMD line.
-	ACMD23_ARGU2_EN    VEND_SPEC2 = 0x01 << 12 //+ Argument2 register enable for ACMD23
-	ACMD23_ARGU2_EN_0  VEND_SPEC2 = 0x00 << 12 //  Disable
-	ACMD23_ARGU2_EN_1  VEND_SPEC2 = 0x01 << 12 //  Argument2 register enable for ACMD23 sharing with SDMA system address register. Default is enable.
-	PART_DLL_DEBUG     VEND_SPEC2 = 0x01 << 13 //+ debug for part dll
-	BUS_RST            VEND_SPEC2 = 0x01 << 14 //+ BUS reset
+	CARD_INT_D3_TEST VEND_SPEC2 = 0x01 << 3  //+ Card Interrupt Detection Test
+	TUNING_8bit_EN   VEND_SPEC2 = 0x01 << 4  //+ TUNING_8bit_EN
+	TUNING_1bit_EN   VEND_SPEC2 = 0x01 << 5  //+ TUNING_1bit_EN
+	TUNING_CMD_EN    VEND_SPEC2 = 0x01 << 6  //+ TUNING_CMD_EN
+	ACMD23_ARGU2_EN  VEND_SPEC2 = 0x01 << 12 //+ Argument2 register enable for ACMD23
+	PART_DLL_DEBUG   VEND_SPEC2 = 0x01 << 13 //+ debug for part dll
+	BUS_RST          VEND_SPEC2 = 0x01 << 14 //+ BUS reset
 )
 
 const (

@@ -30,8 +30,6 @@ const (
 	DATAFIX_0 ROMPATCHCNTL = 0x00 << 0  //  Address comparator triggers a opcode patch
 	DATAFIX_1 ROMPATCHCNTL = 0x01 << 0  //  Address comparator triggers a data fix
 	DIS       ROMPATCHCNTL = 0x01 << 29 //+ ROMC Disable -- This bit, when set, disables all ROMC operations
-	DIS_0     ROMPATCHCNTL = 0x00 << 29 //  Does not affect any ROMC functions (default)
-	DIS_1     ROMPATCHCNTL = 0x01 << 29 //  Disable all ROMC functions: data fixing, and opcode patching
 )
 
 const (
@@ -50,10 +48,8 @@ const (
 )
 
 const (
-	THUMBX   ROMPATCH = 0x01 << 0     //+ THUMB Comparator Select - Indicates that this address will trigger a THUMB opcode patch or an Arm opcode patch
-	THUMBX_0 ROMPATCH = 0x00 << 0     //  Arm patch
-	THUMBX_1 ROMPATCH = 0x01 << 0     //  THUMB patch (ignore if data fix)
-	ADDRX    ROMPATCH = 0x3FFFFF << 1 //+ Address Comparator Registers - Indicates the memory address to be watched
+	THUMBX ROMPATCH = 0x01 << 0     //+ THUMB Comparator Select - Indicates that this address will trigger a THUMB opcode patch or an Arm opcode patch
+	ADDRX  ROMPATCH = 0x3FFFFF << 1 //+ Address Comparator Registers - Indicates the memory address to be watched
 )
 
 const (
@@ -67,8 +63,6 @@ const (
 	SOURCE_1  ROMPATCHSR = 0x01 << 0  //  Address Comparator 1 matched
 	SOURCE_15 ROMPATCHSR = 0x0F << 0  //  Address Comparator 15 matched
 	SW        ROMPATCHSR = 0x01 << 17 //+ ROMC AHB Multiple Address Comparator matches Indicator - Indicates that multiple address comparator matches occurred
-	SW_0      ROMPATCHSR = 0x00 << 17 //  no event or comparator collisions
-	SW_1      ROMPATCHSR = 0x01 << 17 //  a collision has occurred
 )
 
 const (
