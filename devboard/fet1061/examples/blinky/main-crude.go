@@ -2,7 +2,8 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-// Work in progress..
+//go:build ignore
+
 package main
 
 import (
@@ -12,7 +13,6 @@ import (
 	"unsafe"
 
 	"github.com/embeddedgo/imxrt/p/gpio"
-	"github.com/embeddedgo/imxrt/p/iomuxc"
 )
 
 func mmio32(addr uintptr) *mmio.U32 {
@@ -27,6 +27,26 @@ const (
 	GPIO6_ADDR      uintptr = 0x42000000
 )
 
+type GPIO struct {
+	DR        mmio.U32
+	GDIR      mmio.U32
+	PSR       mmio.U32
+	ICR1      mmio.U32
+	ICR2      mmio.U32
+	IMR       mmio.U32
+	ISR       mmio.U32
+	EDGE_SEL  mmio.U32
+	_         [25]mmio.U32
+	DR_SET    mmio.U32
+	DR_CLEAR  mmio.U32
+	DR_TOGGLE mmio.U32
+}
+
+var (
+	GPIO6 = (*GPIO)(unsafe.Pointer(GPIO6_ADDR))
+	stop  = true
+)
+
 func main() {
 	runtime.LockOSThread()
 	privLevel, _ := rtos.SetPrivLevel(0)
@@ -38,6 +58,8 @@ func main() {
 	PMU_MISC0_SET := mmio32(CCM_ANALOG_ADDR + 0x150 + 4)
 	CCM_CSCMR1 := mmio32(CCM_ADDR + 0x01C)
 	CCM_CSCDR1 := mmio32(CCM_ADDR + 0x024)
+	IOMUXC_SW_MUX_CTL_PAD_GPIO_AD_B0_09 := mmio32(IOMUXC_ADDR + 0x0E0)
+	IOMUXC_SW_PAD_CTL_PAD_GPIO_AD_B0_09 := mmio32(IOMUXC_ADDR + 0x2D0)
 	IOMUXC_GPR_GPR26 := mmio32(IOMUXC_GPR_ADDR + 0x068)
 
 	// Set REFTOP_SELFBIASOFF after analog bandgap stabilized for best noise
@@ -59,18 +81,14 @@ func main() {
 	// GPIO_MUX1 ALT5 selects GPIO6 (fast) instead of GPIO1 (slow) for all bits.
 	IOMUXC_GPR_GPR26.Store(0xFFFFFFFF)
 
-	IOMUXC := iomuxc.IOMUXC()
-
 	// Connect pad AD_B0_09 to GPIO 1 or 6 (ALT5 iomux mode)
-	IOMUXC.SW_MUX_CTL_PAD_GPIO_AD_B0_09.Store(iomuxc.ALT5)
+	IOMUXC_SW_MUX_CTL_PAD_GPIO_AD_B0_09.Store(5)
 
 	// Configure pad AD_B0_09: hysteresis:off, 100KΩ pull-down, pull/keeper:off,
 	// open-drain:off, speed:low (50 MHz), drive-strength:(150/7)Ω, sr:slow
-	IOMUXC.SW_PAD_CTL_PAD_GPIO_AD_B0_09.Store(iomuxc.DSE_7_R0_7)
+	IOMUXC_SW_PAD_CTL_PAD_GPIO_AD_B0_09.Store(7 << 3)
 
 	rtos.SetPrivLevel(privLevel)
-
-	GPIO6 := gpio.GPIO6()
 
 	// Set GPIO6 bit 9-th to the output mode.
 	GPIO6.GDIR.SetBit(9)
