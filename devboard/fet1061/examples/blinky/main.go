@@ -32,8 +32,9 @@ func main() {
 	CCMA.PFD_528.Store(0x2018101B) // 352,594,396,297 MHz
 
 	// Setup PLL3
-	//CCM_ANALOG_PFD_480_SET.Store(0x80808080) // gate PFD0,1,2,3
-	//CCM_ANALOG_PFD_480.Store(0x13110D0C)     // PFD0,1,2,3: 720,664,508,454 MHz
+	CCMA.PFD_480_SET.Store(ccm_analog.PFD0_CLKGATE | ccm_analog.PFD1_CLKGATE |
+		ccm_analog.PFD2_CLKGATE | ccm_analog.PFD3_CLKGATE)
+	CCMA.PFD_480.Store(0x13110D0C) // PFD0,1,2,3: 720,664,508,454 MHz
 
 	CCM := ccm.CCM()
 
