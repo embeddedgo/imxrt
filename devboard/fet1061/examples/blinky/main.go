@@ -6,42 +6,30 @@
 package main
 
 import (
-	"embedded/mmio"
 	"embedded/rtos"
 	"runtime"
-	"unsafe"
 
 	"github.com/embeddedgo/imxrt/p/ccm"
+	"github.com/embeddedgo/imxrt/p/ccm_analog"
 	"github.com/embeddedgo/imxrt/p/gpio"
 	"github.com/embeddedgo/imxrt/p/iomuxc"
 	"github.com/embeddedgo/imxrt/p/iomuxc_gpr"
-)
-
-func mmio32(addr uintptr) *mmio.U32 {
-	return (*mmio.U32)(unsafe.Pointer(addr))
-}
-
-const (
-	CCM_ANALOG_ADDR uintptr = 0x400D8000
 )
 
 func main() {
 	runtime.LockOSThread()
 	privLevel, _ := rtos.SetPrivLevel(0)
 
-	//CCM_ANALOG_PFD_480 := mmio32(CCM_ANALOG_ADDR + 0x0F0)
-	//CCM_ANALOG_PFD_480_SET := mmio32(CCM_ANALOG_ADDR + 0x0F0 + 4)
-	CCM_ANALOG_PFD_528 := mmio32(CCM_ANALOG_ADDR + 0x100)
-	CCM_ANALOG_PFD_528_SET := mmio32(CCM_ANALOG_ADDR + 0x100 + 4)
-	PMU_MISC0_SET := mmio32(CCM_ANALOG_ADDR + 0x150 + 4)
+	CCMA := ccm_analog.CCM_ANALOG()
 
 	// Set REFTOP_SELFBIASOFF after analog bandgap stabilized for best noise
 	// performance of analog blocks.
-	PMU_MISC0_SET.Store(1 << 3)
+	CCMA.MISC0_SET.Store(ccm_analog.MISC0_REFTOP_SELFBIASOFF)
 
 	// Setup PLL2
-	CCM_ANALOG_PFD_528_SET.Store(0x80808080) // gate PFD0,1,2,3
-	CCM_ANALOG_PFD_528.Store(0x2018101B)     // PFD0,1,2,3: 352,594,396,297 MHz
+	CCMA.PFD_528_SET.Store(ccm_analog.PFD0_CLKGATE | ccm_analog.PFD1_CLKGATE |
+		ccm_analog.PFD2_CLKGATE | ccm_analog.PFD3_CLKGATE)
+	CCMA.PFD_528.Store(0x2018101B) // 352,594,396,297 MHz
 
 	// Setup PLL3
 	//CCM_ANALOG_PFD_480_SET.Store(0x80808080) // gate PFD0,1,2,3
