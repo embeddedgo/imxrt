@@ -82,10 +82,10 @@ func main() {
 	// Set GPIO6 bit 9-th to the output mode.
 	GPIO6.GDIR.SetBit(9)
 	for {
-		for i := 0; i < 2e5; i++ {
+		for i := 0; i < 1e6; i++ {
 			GPIO6.DR_CLEAR.Store(1 << 9)
 		}
-		for i := 0; i < 4e6; i++ {
+		for i := 0; i < 2e7; i++ {
 			GPIO6.DR_SET.Store(1 << 9)
 		}
 	}
