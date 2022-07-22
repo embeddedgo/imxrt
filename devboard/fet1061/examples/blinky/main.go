@@ -6,6 +6,7 @@
 package main
 
 import (
+	//"embedded/arch/cortexm/systim"
 	"embedded/rtos"
 	"runtime"
 
@@ -15,6 +16,8 @@ import (
 	"github.com/embeddedgo/imxrt/p/iomuxc"
 	"github.com/embeddedgo/imxrt/p/iomuxc_gpr"
 )
+
+var stop = true
 
 func main() {
 	runtime.LockOSThread()
@@ -73,6 +76,9 @@ func main() {
 	// Configure pad AD_B0_09: hysteresis:off, 100KΩ pull-down, pull/keeper:off,
 	// open-drain:off, speed:low (50 MHz), drive-strength:(150/7)Ω, sr:slow
 	IOMUXC.SW_PAD_CTL_PAD_GPIO_AD_B0_09.Store(iomuxc.DSE_7_R0_7)
+
+	//systim.Setup(2e6, 100e3, true)
+	//rtos.SetSystemTimer(systim.Nanotime, nil)
 
 	rtos.SetPrivLevel(privLevel)
 	runtime.UnlockOSThread()
