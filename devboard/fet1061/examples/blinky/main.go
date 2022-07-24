@@ -6,9 +6,10 @@
 package main
 
 import (
-	//"embedded/arch/cortexm/systim"
+	"embedded/arch/cortexm/systim"
 	"embedded/rtos"
 	"runtime"
+	"time"
 
 	"github.com/embeddedgo/imxrt/p/ccm"
 	"github.com/embeddedgo/imxrt/p/ccm_analog"
@@ -17,7 +18,10 @@ import (
 	"github.com/embeddedgo/imxrt/p/iomuxc_gpr"
 )
 
-var stop = true
+var (
+	t   time.Time
+	run bool
+)
 
 func main() {
 	runtime.LockOSThread()
@@ -63,10 +67,22 @@ func main() {
 		ccm.UART_CLK_PODF_1|ccm.UART_CLK_SEL,
 	)
 
-	IOMUXC_GPR := iomuxc_gpr.IOMUXC_GPR()
+	// Use SYSTICK timer as a system timer
+	//
+	// In case of i.MX RT the default response for WFE/WFI instruction is to
+	// enter the Wait mode. In this mode the whole Cortex-M7 core including
+	// NVIC is frozen. The system can be awakened by the GPC Interrupt
+	// Controller but the SYSTICK interrupt isn't connected to it.
+	//
+	// All this means that SYSTICK is almost useless as a system timer, but
+	// we'll use it anyway, for educational purposes, preventing entering Wait
+	// mode after WFE/WFI.
+	CCM.CLPCR.StoreBits(ccm.LPM, ccm.LPM_RUN) // stay in Run mode after WFE/WFI
+	systim.Setup(2e6, 100e3, true)
+	rtos.SetSystemTimer(systim.Nanotime, nil)
 
 	// GPIO_MUX1 ALT5 selects GPIO6 (fast) instead of GPIO1 (slow) for bit 9.
-	IOMUXC_GPR.GPR26.Store(1 << 9)
+	iomuxc_gpr.IOMUXC_GPR().GPR26.Store(1 << 9)
 
 	IOMUXC := iomuxc.IOMUXC()
 
@@ -77,9 +93,6 @@ func main() {
 	// open-drain:off, speed:low (50 MHz), drive-strength:(150/7)Ω, sr:slow
 	IOMUXC.SW_PAD_CTL_PAD_GPIO_AD_B0_09.Store(iomuxc.DSE_7_R0_7)
 
-	//systim.Setup(2e6, 100e3, true)
-	//rtos.SetSystemTimer(systim.Nanotime, nil)
-
 	rtos.SetPrivLevel(privLevel)
 	runtime.UnlockOSThread()
 
@@ -88,11 +101,9 @@ func main() {
 	// Set GPIO6 bit 9-th to the output mode.
 	GPIO6.GDIR.SetBit(9)
 	for {
-		for i := 0; i < 1e6; i++ {
-			GPIO6.DR_CLEAR.Store(1 << 9)
-		}
-		for i := 0; i < 2e7; i++ {
-			GPIO6.DR_SET.Store(1 << 9)
-		}
+		GPIO6.DR_CLEAR.Store(1 << 9)
+		time.Sleep(500 * time.Millisecond)
+		GPIO6.DR_SET.Store(1 << 9)
+		time.Sleep(500 * time.Millisecond)
 	}
 }
