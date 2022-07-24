@@ -949,9 +949,9 @@ const (
 
 const (
 	LPM                CLPCR = 0x03 << 0  //+ Setting the low power mode that system will enter on next assertion of dsm_request signal.
-	LPM_0              CLPCR = 0x00 << 0  //  Remain in run mode
-	LPM_1              CLPCR = 0x01 << 0  //  Transfer to wait mode
-	LPM_2              CLPCR = 0x02 << 0  //  Transfer to stop mode
+	LPM_RUN            CLPCR = 0x00 << 0  //  Remain in run mode
+	LPM_WAIT           CLPCR = 0x01 << 0  //  Transfer to wait mode
+	LPM_STOP           CLPCR = 0x02 << 0  //  Transfer to stop mode
 	ARM_CLK_DIS_ON_LPM CLPCR = 0x01 << 5  //+ Define if ARM clocks (arm_clk, soc_mxclk, soc_pclk, soc_dbg_pclk, vl_wrck) will be disabled on wait mode
 	SBYOS              CLPCR = 0x01 << 6  //+ Standby clock oscillator bit
 	DIS_REF_OSC        CLPCR = 0x01 << 7  //+ dis_ref_osc - in run mode, software can manually control closing of external reference oscillator clock, i
