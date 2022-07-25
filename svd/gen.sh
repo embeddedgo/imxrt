@@ -9,7 +9,7 @@ rm -rf *
 
 svdxgen github.com/embeddedgo/imxrt/p ../svd/*.svd
 
-for p in ccm ccm_analog gpio iomuxc iomuxc_gpr; do
+for p in ccm ccm_analog gpio iomuxc iomuxc_gpr wdog; do
 	cd $p
 	xgen *.go
 	GOOS=noos GOARCH=thumb $(emgo env GOROOT)/bin/go build -tags imxrt1060

@@ -47,16 +47,6 @@ const (
 )
 
 const (
-	WSR       WSR = 0xFFFF << 0 //+ WSR
-	WSR_21845 WSR = 0x5555 << 0 //  Write to the Watchdog Service Register (WDOG_WSR).
-	WSR_43690 WSR = 0xAAAA << 0 //  Write to the Watchdog Service Register (WDOG_WSR).
-)
-
-const (
-	WSRn = 0
-)
-
-const (
 	SFTW WRSR = 0x01 << 0 //+ SFTW
 	TOUT WRSR = 0x01 << 1 //+ TOUT
 	POR  WRSR = 0x01 << 4 //+ POR
