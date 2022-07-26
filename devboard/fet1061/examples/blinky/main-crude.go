@@ -70,10 +70,6 @@ func main() {
 	CCM_ANALOG_PFD_528_SET.Store(0x80808080) // gate PFD0,1,2,3
 	CCM_ANALOG_PFD_528.Store(0x2018101B)     // PFD0,1,2,3: 352,594,396,297 MHz
 
-	// Setup PLL3
-	//CCM_ANALOG_PFD_480_SET.Store(0x80808080) // gate PFD0,1,2,3
-	//CCM_ANALOG_PFD_480.Store(0x13110D0C)     // PFD0,1,2,3: 720,664,508,454 MHz
-
 	// Configure clocks
 	CCM_CSCMR1.StoreBits(0x7F, 1<<6) // set PERCLK_CLK = OSC_CLK (24 MHz)
 	CCM_CSCDR1.StoreBits(0x7F, 1<<6) // set UART_CLK   = OSC_CLK (24 MHz)
