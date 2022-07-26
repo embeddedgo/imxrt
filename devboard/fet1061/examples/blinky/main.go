@@ -2,17 +2,16 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-// Work in progress..
+// This example shows how to flash the onboard LED.
 package main
 
 import (
-	"embedded/arch/cortexm/systim"
 	"embedded/rtos"
 	"runtime"
 	"time"
 
 	"github.com/embeddedgo/imxrt/hal/system"
-	"github.com/embeddedgo/imxrt/p/ccm"
+	"github.com/embeddedgo/imxrt/hal/system/timer/systick"
 	"github.com/embeddedgo/imxrt/p/gpio"
 	"github.com/embeddedgo/imxrt/p/iomuxc"
 	"github.com/embeddedgo/imxrt/p/iomuxc_gpr"
@@ -20,24 +19,10 @@ import (
 
 func main() {
 	system.Setup528_FlexSPI(2)
+	systick.Setup(2e6)
 
 	runtime.LockOSThread()
 	privLevel, _ := rtos.SetPrivLevel(0)
-
-	// Use SYSTICK as a system timer
-	//
-	// In case of i.MX RT the default response for WFE/WFI instruction is to
-	// enter the Wait mode. In this mode the whole Cortex-M7 core including
-	// NVIC is frozen. The system can be awakened by the GPC Interrupt
-	// Controller but the SYSTICK interrupt is CM7 internal signal so it isn't
-	// routed to GPC.
-	//
-	// All this means that SYSTICK is almost useless as a system timer, but
-	// we'll use it anyway, for educational purposes, preventing entering Wait
-	// mode after WFE/WFI.
-	ccm.CCM().CLPCR.StoreBits(ccm.LPM, ccm.LPM_RUN)
-	systim.Setup(2e6, 100e3, true)
-	rtos.SetSystemTimer(systim.Nanotime, nil)
 
 	// GPIO_MUX1 ALT5 selects GPIO6 (fast) instead of GPIO1 (slow) for bit 9.
 	iomuxc_gpr.IOMUXC_GPR().GPR26.Store(1 << 9)
@@ -60,8 +45,8 @@ func main() {
 	GPIO6.GDIR.SetBit(9)
 	for {
 		GPIO6.DR_CLEAR.Store(1 << 9)
-		time.Sleep(100 * time.Millisecond)
+		time.Sleep(50 * time.Millisecond)
 		GPIO6.DR_SET.Store(1 << 9)
-		time.Sleep(900 * time.Millisecond)
+		time.Sleep(950 * time.Millisecond)
 	}
 }
