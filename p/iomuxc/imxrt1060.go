@@ -491,13 +491,17 @@
 package iomuxc
 
 const (
-	MUX_MODE SW_MUX_CTL = 0x07 << 0 //+ MUX Mode Select Field.
-	ALT0     SW_MUX_CTL = 0x00 << 0 //  Select mux mode: ALT0 mux port: SEMC_DATA00 of instance: semc
-	ALT1     SW_MUX_CTL = 0x01 << 0 //  Select mux mode: ALT1 mux port: FLEXPWM4_PWMA00 of instance: flexpwm4
-	ALT2     SW_MUX_CTL = 0x02 << 0 //  Select mux mode: ALT2 mux port: LPSPI2_SCK of instance: lpspi2
-	ALT3     SW_MUX_CTL = 0x03 << 0 //  Select mux mode: ALT3 mux port: XBAR1_XBAR_IN02 of instance: xbar1
-	ALT4     SW_MUX_CTL = 0x04 << 0 //  Select mux mode: ALT4 mux port: FLEXIO1_FLEXIO00 of instance: flexio1
-	ALT5     SW_MUX_CTL = 0x05 << 0 //  Select mux mode: ALT5 mux port: GPIO4_IO00 of instance: gpio4
+	MUX_MODE SW_MUX_CTL = 0x0F << 0 //+ MUX Mode Select Field.
+	ALT0     SW_MUX_CTL = 0x00 << 0 //  Select ALT0 mux mode
+	ALT1     SW_MUX_CTL = 0x01 << 0 //  Select ALT1 mux mode
+	ALT2     SW_MUX_CTL = 0x02 << 0 //  Select ALT2 mux mode
+	ALT3     SW_MUX_CTL = 0x03 << 0 //  Select ALT3 mux mode
+	ALT4     SW_MUX_CTL = 0x04 << 0 //  Select ALT4 mux mode
+	ALT5     SW_MUX_CTL = 0x05 << 0 //  Select ALT5 mux mode
+	ALT6     SW_MUX_CTL = 0x06 << 0 //  Select ALT6 mux mode
+	ALT7     SW_MUX_CTL = 0x07 << 0 //  Select ALT7 mux mode
+	ALT8     SW_MUX_CTL = 0x08 << 0 //  Select ALT8 mux mode
+	ALT9     SW_MUX_CTL = 0x09 << 0 //  Select ALT9 mux mode
 	SION     SW_MUX_CTL = 0x01 << 4 //+ Software Input On Field.
 )
 
@@ -520,7 +524,7 @@ const (
 	SPEED                              SW_PAD_CTL = 0x03 << 6  //+ Speed Field
 	SPEED_0_low_50MHz                  SW_PAD_CTL = 0x00 << 6  //  low(50MHz)
 	SPEED_1_medium_100MHz              SW_PAD_CTL = 0x01 << 6  //  medium(100MHz)
-	SPEED_2_medium_100MHz              SW_PAD_CTL = 0x02 << 6  //  medium(100MHz)
+	SPEED_2_fast_150MHz                SW_PAD_CTL = 0x02 << 6  //  medium(100MHz)
 	SPEED_3_max_200MHz                 SW_PAD_CTL = 0x03 << 6  //  max(200MHz)
 	ODE                                SW_PAD_CTL = 0x01 << 11 //+ Open Drain Enable Field
 	PKE                                SW_PAD_CTL = 0x01 << 12 //+ Pull / Keep Enable Field
