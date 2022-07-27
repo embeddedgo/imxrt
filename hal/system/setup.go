@@ -18,8 +18,10 @@ func Setup528_FlexSPI(podf int) {
 	runtime.LockOSThread()
 	privLevel, _ := rtos.SetPrivLevel(0)
 
-	// The clock configuration left by bootloader deviates significantly from
-	// the default configuration you can see in IMXRT1060RM_rev3 fig. 14-2.
+	// The clock configuration left by bootloader may deviate significantly
+	// from the default configuration you can see in IMXRT1060RM_rev3 fig.14-2.
+	// Bellow the values left after booting from SPI NOR Flash 133(30) MHz. See
+	// also IMXRT1060RM_rev3 tab.9-7.
 	//
 	// CCMA.PLL_ARM = 0x80002042: pll1=24MHz*66/2=792MHz
 	// CCMA.PLL_SYS = 0x80002001: pll2=24MHz*22=528MHz
@@ -32,13 +34,13 @@ func Setup528_FlexSPI(podf int) {
 	// CCM.CACRR = 0x00000001: pll1_=pll1/2
 	// CCM.CBCMR = 0xF5AE8104: prePeriph<-pll1_
 	// CCM.CBCDR = 0x000A8200: periph<-prePeriph, ahb=periph/1=396MHz
-	// CCM.CSCMR1= 0x66130001: flexSPI_<-pll3pfd0, flexSPI=flexSPI_/5=7.4MHz
+	// CCM.CSCMR1= 0x66130001: flexSPI_<-pll3pfd0, flexSPI=flexSPI_/5=133MHz
 
 	CCMA := ccm_analog.CCM_ANALOG()
 	CCM := ccm.CCM()
 
-	// Temporary select PLL_USB1 480 MHz as ARM Core clock source using
-	// glitchless multiplexer.
+	// Temporary select PLL_USB1 480 MHz as ARM Core clock using a glitchless
+	// multiplexer.
 	CCM.CBCDR.SetBits(ccm.PERIPH_CLK_SEL)
 	for CCM.CDHIPR.LoadBits(ccm.PERIPH_CLK_SEL_BUSY) != 0 {
 	}
@@ -53,11 +55,9 @@ func Setup528_FlexSPI(podf int) {
 	// Configure the remaining clocks in a way that somehow resembles the
 	// default configuration shown in the IMXRT1060RM_rev3 figure 14-2.
 
-	gateAll := ccm_analog.PFD0_CLKGATE | ccm_analog.PFD1_CLKGATE |
-		ccm_analog.PFD2_CLKGATE | ccm_analog.PFD3_CLKGATE
-
 	// Restore PFD_528 default dividers
-	CCMA.PFD_528_SET.Store(gateAll)
+	CCMA.PFD_528_SET.Store(ccm_analog.PFD0_CLKGATE | ccm_analog.PFD1_CLKGATE |
+		ccm_analog.PFD2_CLKGATE | ccm_analog.PFD3_CLKGATE)
 	CCMA.PFD_528.Store(0 |
 		27<<ccm_analog.PFD0_FRACn | // 528 MHz * 18 / 27 = 352 MHz
 		16<<ccm_analog.PFD1_FRACn | // 528 MHz * 18 / 16 = 594 MHz
@@ -65,30 +65,23 @@ func Setup528_FlexSPI(podf int) {
 		32<<ccm_analog.PFD3_FRACn, //  528 MHz * 18 / 32 = 297 MHz
 	)
 
-	// Clock FlexSPI from AXI/SEMC clock: PFD_528_PFD2 / 3 / 2 = 66 MHz
-	CCM.CSCMR1.StoreBits(
-		ccm.FLEXSPI_CLK_SEL|ccm.FLEXSPI_PODF,
-		ccm.FLEXSPI_CLK_SEL_0|ccm.CSCMR1(podf-1),
-	)
-
-	// After moving FlexSPI to PFD_528 we can restore the PFD_480 defaults.
-	CCMA.PFD_480_SET.Store(gateAll)
+	// Restore PFD_528 default dividers except PFD0 because the bootloader uses
+	// it as the clock source for FlexSPI and configures according to the
+	// SerialNORConfigBlock.SerialClkFreq field (see IMXRT1060RM_rev3 9.13.2
+	// and ../../tools/imxmbr/flashcfg.go:/flashConfig).
+	CCMA.PFD_480_SET.Store(ccm_analog.PFD1_CLKGATE | ccm_analog.PFD2_CLKGATE |
+		ccm_analog.PFD3_CLKGATE)
 	CCMA.PFD_480.Store(0 |
-		12<<ccm_analog.PFD0_FRACn | // 480 MHz * 18 / 12 = 720 MHz
 		13<<ccm_analog.PFD1_FRACn | // 480 MHz * 18 / 13 = 665 MHz
 		17<<ccm_analog.PFD2_FRACn | // 480 MHz * 18 / 17 = 508 MHz
 		19<<ccm_analog.PFD3_FRACn, //  480 MHz * 18 / 19 = 455 MHz
 	)
 
-	// Use OSC_CLK = 24 MHz clock source for GPT and PIT timers.
+	// Use OSC_CLK= 24 MHz as constant clock source for GPT and PIT timers so
+	// you can change the ARM Core clock without affecting them.
 	CCM.CSCMR1.StoreBits(
 		ccm.PERCLK_PODF|ccm.PERCLK_CLK_SEL,
 		ccm.PERCLK_PODF_1|ccm.PERCLK_CLK_SEL,
-	)
-	// Use OSC_CLK = 24 MHz clock source for UART.
-	CCM.CSCDR1.StoreBits(
-		ccm.UART_CLK_PODF|ccm.UART_CLK_SEL,
-		ccm.UART_CLK_PODF_1|ccm.UART_CLK_SEL,
 	)
 
 	// Set REFTOP_SELFBIASOFF after analog bandgap stabilized for best noise
