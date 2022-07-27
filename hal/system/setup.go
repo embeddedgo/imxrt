@@ -37,12 +37,21 @@ func Setup528_FlexSPI(podf int) {
 	CCMA := ccm_analog.CCM_ANALOG()
 	CCM := ccm.CCM()
 
-	// Use PLL_SYS 528 MHz as ARM Core clock, disable PLL_ARM.
+	// Temporary select PLL_USB1 480 MHz as ARM Core clock source using
+	// glitchless multiplexer.
+	CCM.CBCDR.SetBits(ccm.PERIPH_CLK_SEL)
+	for CCM.CDHIPR.LoadBits(ccm.PERIPH_CLK_SEL_BUSY) != 0 {
+	}
+	// Select PLL_SYS 528 MHz as ARM Core clock and disable PLL_ARM to save
+	// some power.
 	CCM.CBCMR.StoreBits(ccm.PRE_PERIPH_CLK_SEL, ccm.PRE_PERIPH_CLK_SEL_0)
+	CCM.CBCDR.ClearBits(ccm.PERIPH_CLK_SEL)
 	CCMA.PLL_ARM_SET.Store(ccm_analog.PLL_ARM_POWERDOWN)
+	for CCM.CDHIPR.LoadBits(ccm.PERIPH_CLK_SEL_BUSY) != 0 {
+	}
 
-	// Configure the remaining clocks in a way that resembles the default
-	// configuration in IMXRT1060RM_rev3 figure 14-2.
+	// Configure the remaining clocks in a way that somehow resembles the
+	// default configuration shown in the IMXRT1060RM_rev3 figure 14-2.
 
 	gateAll := ccm_analog.PFD0_CLKGATE | ccm_analog.PFD1_CLKGATE |
 		ccm_analog.PFD2_CLKGATE | ccm_analog.PFD3_CLKGATE
