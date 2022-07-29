@@ -13,11 +13,16 @@ import (
 	"github.com/embeddedgo/imxrt/p/wdog"
 )
 
-// Setup528_FlexSPI setups the SOC to run ARM Core from PLL_528 with constant
-// 528 MHz clock. It disables PLL_ARM to save some power. It assumes that the
-// code is executed from NOR SPI Flash connected to FlexSPI. The controller is
-// configured by bootloader according to Serial NOR Config Block, clocked from
-// PLL_USB1.PFD0 (Setup528_FlexSPI leaves this PFD channel intact).
+// Setup528_FlexSPI setups the SOC to run the ARM Core (AHB clock) from PLL_528
+// with constant 528 MHz clock. The other clocks are set to almost default
+// configuration. The main exception is PLL_ARM which is turned off to save
+// some power. Furthermore the GPT and PIT timers are clocked directly from 24
+// MHz to allow changin AHB clock without affecting their speed.
+//
+// Setup528_FlexSPI assumes that the code is executed from the NOR SPI Flash
+// connected to the FlexSPI controller. The controller is configured by the
+// bootloader according to the Serial NOR Config Block (see IMXRT1060RM_rev3
+// 9.13.2).
 func Setup528_FlexSPI() {
 	runtime.LockOSThread()
 	privLevel, _ := rtos.SetPrivLevel(0)
