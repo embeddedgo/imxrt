@@ -19,7 +19,7 @@ import (
 )
 
 func main() {
-	system.Setup528_FlexSPI(2)
+	system.Setup528_FlexSPI()
 	systick.Setup(2e6)
 
 	runtime.LockOSThread()

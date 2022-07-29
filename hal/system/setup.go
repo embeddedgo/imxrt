@@ -13,8 +13,12 @@ import (
 	"github.com/embeddedgo/imxrt/p/wdog"
 )
 
-// FlexSPI root clock is set to 396 MHz / SEMC_PODF / podf
-func Setup528_FlexSPI(podf int) {
+// Setup528_FlexSPI setups the SOC to run ARM Core from PLL_528 with constant
+// 528 MHz clock. It disables PLL_ARM to save some power. It assumes that the
+// code is executed from NOR SPI Flash connected to FlexSPI. The controller is
+// configured by bootloader according to Serial NOR Config Block, clocked from
+// PLL_USB1.PFD0 (Setup528_FlexSPI leaves this PFD channel intact).
+func Setup528_FlexSPI() {
 	runtime.LockOSThread()
 	privLevel, _ := rtos.SetPrivLevel(0)
 
