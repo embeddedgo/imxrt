@@ -10,11 +10,11 @@ import (
 	"runtime"
 	"time"
 
+	"github.com/embeddedgo/imxrt/hal/gpio"
 	"github.com/embeddedgo/imxrt/hal/iomux"
 	"github.com/embeddedgo/imxrt/hal/system"
 	"github.com/embeddedgo/imxrt/hal/system/timer/systick"
 
-	"github.com/embeddedgo/imxrt/p/gpio"
 	"github.com/embeddedgo/imxrt/p/iomuxc_gpr"
 )
 
@@ -28,21 +28,22 @@ func main() {
 	// GPIO_MUX1 ALT5 selects GPIO6 (fast) instead of GPIO1 (slow) for bit 9.
 	iomuxc_gpr.IOMUXC_GPR().GPR26.Store(1 << 9)
 
-	pin := iomux.AD_B0_09
-	pin.Setup(iomux.Drive7)
-	pin.SetAltFunc(iomux.ALT5) // connect to GPIO6 bit 9
+	pad := iomux.AD_B0_09
+	pad.Setup(iomux.Drive7)
+	pad.SetAltFunc(iomux.ALT5) // use as GPIO6 pin 9
 
 	rtos.SetPrivLevel(privLevel)
 	runtime.UnlockOSThread()
 
-	GPIO6 := gpio.GPIO6()
-
-	// Set GPIO6 bit 9-th to the output mode.
-	GPIO6.GDIR.SetBit(9)
+	pin := gpio.P(6).Pin(9)
+	pin.SetDirOut(true)
 	for {
-		GPIO6.DR_CLEAR.Store(1 << 9)
-		time.Sleep(50 * time.Millisecond)
-		GPIO6.DR_SET.Store(1 << 9)
-		time.Sleep(950 * time.Millisecond)
+		//pin.Clear()
+		//time.Sleep(50 * time.Millisecond)
+		//pin.Set()
+		//time.Sleep(950 * time.Millisecond)
+
+		pin.Toggle()
+		time.Sleep(500 * time.Millisecond)
 	}
 }
