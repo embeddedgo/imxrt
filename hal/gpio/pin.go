@@ -79,3 +79,46 @@ func (p Pin) Store(val int) {
 		port.ClearDR.Store(mask)
 	}
 }
+
+// Interrupt configuration constants
+const (
+	IntLow     = 0 // interrupt is low-level sensitive
+	IntHigh    = 1 // interrupt is high-level sensitive
+	IntRising  = 2 // interrupt is rising-edge sensitive
+	IntFalling = 3 // interrupt is falling-edge sensitive
+)
+
+// IntConf returns the interrupt configuration for pin.
+func (p Pin) IntConf() int {
+	n := uint(p.Num())
+	shift := n * 2 & 15
+	return int(p.Port().icr[n>>4].Load()>>shift) & 3
+}
+
+// SetIntConf sets the interrupt configuration for pin. It supports two more
+// options than Port.EdgeSel register.
+func (p Pin) SetIntConf(cfg int) {
+	n := uint(p.Num())
+	shift := n * 2 & 15
+	internal.AtomicStoreBits(&p.Port().icr[n>>4], 3<<shift, uint32(cfg<<shift))
+}
+
+// IntPending reports wheter the pending status of the pin interrupt.
+func (p Pin) IntPending() bool {
+	return p.Port().Pending.LoadPins(Pin0<<uint(p.Num())) != 0
+}
+
+// ClearPending clears the pending state of the pin interrupt.
+func (p Pin) ClearPending() {
+	p.Port().Pending.Store(Pin0 << uint(p.Num()))
+}
+
+// ConnectMux works like Port.ConnectMux(p.Mask())
+func (p Pin) ConnectMux() {
+	p.Port().ConnectMux(Pin0 << uint(p.Num()))
+}
+
+// ConnectMux reports wheter the pin is connected to IOMUX.
+func (p Pin) MuxConnected() bool {
+	return p.Port().MuxConnected()>>uint(p.Num())&1 != 0
+}

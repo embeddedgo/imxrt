@@ -187,9 +187,12 @@ const (
 	ALT9  AltFunc = 0x9 << 0 // Select ALT9 mux mode
 	ALT10 AltFunc = 0xa << 0 // Select ALT10 mux mode
 
-	SION AltFunc = 0x1 << 4 // Software Input On Field
+	SION AltFunc = 0x1 << 4 // Software Input On field
+
+	GPIO = ALT5 // More readable alias for ALT5
 )
 
+// Config return pin configuration.
 func (p Pin) Config() Config {
 	return Config(pr().pad[p].Load())
 }

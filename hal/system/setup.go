@@ -8,6 +8,7 @@ import (
 	"embedded/rtos"
 	"runtime"
 
+	"github.com/embeddedgo/imxrt/hal/internal/aipstz"
 	"github.com/embeddedgo/imxrt/p/ccm"
 	"github.com/embeddedgo/imxrt/p/ccm_analog"
 	"github.com/embeddedgo/imxrt/p/wdog"
@@ -24,8 +25,17 @@ import (
 // bootloader according to the Serial NOR Config Block (see IMXRT1060RM_rev3
 // 9.13.2).
 func Setup528_FlexSPI() {
+	// Enable full access to all peripherals in user mode.
 	runtime.LockOSThread()
-	privLevel, _ := rtos.SetPrivLevel(0)
+	pl, _ := rtos.SetPrivLevel(0)
+	for i := 1; i < 5; i++ {
+		opacr := &aipstz.P(i).OPACR
+		for k := 0; k < len(opacr); k++ {
+			opacr[k].Store(0)
+		}
+	}
+	rtos.SetPrivLevel(pl)
+	runtime.UnlockOSThread()
 
 	// The clock configuration left by bootloader may deviate significantly
 	// from the default configuration you can see in IMXRT1060RM_rev3 fig.14-2.
@@ -101,7 +111,4 @@ func Setup528_FlexSPI() {
 	// reset deassertion.
 	wdog.WDOG1().WMCR.ClearBits(wdog.PDE)
 	wdog.WDOG2().WMCR.ClearBits(wdog.PDE)
-
-	rtos.SetPrivLevel(privLevel)
-	runtime.UnlockOSThread()
 }
