@@ -11,7 +11,6 @@ export GOTARGET=imxrt1060
 export GOTEXT=0x60002000
 export GOMEM=0x20200000:512K
 export GOOUT=bin
-export ISRNAMES=no
 
 name=$(basename $(pwd))
 

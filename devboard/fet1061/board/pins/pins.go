@@ -1,6 +1,13 @@
+// Copyright 2022 The Embedded Go Authors. All rights reserved.
+// Use of this source code is governed by a BSD-style
+// license that can be found in the LICENSE file.
+
 package pins
 
-import "github.com/embeddedgo/imxrt/hal/iomux"
+import (
+	_ "github.com/embeddedgo/imxrt/devboard/fet1061/board/init"
+	"github.com/embeddedgo/imxrt/hal/iomux"
+)
 
 const (
 	P6   = iomux.AD_B1_07 // K10
@@ -74,4 +81,6 @@ const (
 	P98  = iomux.AD_B1_09 // M13
 	P99  = iomux.AD_B1_05 // K12
 	P100 = iomux.AD_B1_08 // H13
+
+	LED5 = P31
 )
