@@ -5,7 +5,7 @@
 package iomux
 
 // Pin represents an I/O pin (pad).
-type Pin uint8
+type Pin int
 
 const (
 	EMC_00 Pin = iota
