@@ -11,50 +11,50 @@
 //  0x004  32  ES                     Error Status Register
 //  0x00C  32  ERQ                    Enable Request Register
 //  0x014  32  EEI                    Enable Error Interrupt Register
-//  0x018   8  CEEI                   Clear Enable Error Interrupt Register
-//  0x019   8  SEEI                   Set Enable Error Interrupt Register
-//  0x01A   8  CERQ                   Clear Enable Request Register
-//  0x01B   8  SERQ                   Set Enable Request Register
-//  0x01C   8  CDNE                   Clear DONE Status Bit Register
-//  0x01D   8  SSRT                   Set START Bit Register
-//  0x01E   8  CERR                   Clear Error Register
-//  0x01F   8  CINT                   Clear Interrupt Request Register
+//  0x018   8  CEEI(CTRL)             Clear Enable Error Interrupt Register
+//  0x019   8  SEEI(CTRL)             Set Enable Error Interrupt Register
+//  0x01A   8  CERQ(CTRL)             Clear Enable Request Register
+//  0x01B   8  SERQ(CTRL)             Set Enable Request Register
+//  0x01C   8  CDNE(CTRL)             Clear DONE Status Bit Register
+//  0x01D   8  SSRT(CTRL)             Set START Bit Register
+//  0x01E   8  CERR(CTRL)             Clear Error Register
+//  0x01F   8  CINT(CTRL)             Clear Interrupt Request Register
 //  0x024  32  INT                    Interrupt Request Register
 //  0x02C  32  ERR                    Error Register
 //  0x034  32  HRS                    Hardware Request Status Register
 //  0x044  32  EARS                   Enable Asynchronous Request in Stop Register
-//  0x100   8  DCHPRI3                Channel n Priority Register
-//  0x101   8  DCHPRI2                Channel n Priority Register
-//  0x102   8  DCHPRI1                Channel n Priority Register
-//  0x103   8  DCHPRI0                Channel n Priority Register
-//  0x104   8  DCHPRI7                Channel n Priority Register
-//  0x105   8  DCHPRI6                Channel n Priority Register
-//  0x106   8  DCHPRI5                Channel n Priority Register
-//  0x107   8  DCHPRI4                Channel n Priority Register
-//  0x108   8  DCHPRI11               Channel n Priority Register
-//  0x109   8  DCHPRI10               Channel n Priority Register
-//  0x10A   8  DCHPRI9                Channel n Priority Register
-//  0x10B   8  DCHPRI8                Channel n Priority Register
-//  0x10C   8  DCHPRI15               Channel n Priority Register
-//  0x10D   8  DCHPRI14               Channel n Priority Register
-//  0x10E   8  DCHPRI13               Channel n Priority Register
-//  0x10F   8  DCHPRI12               Channel n Priority Register
-//  0x110   8  DCHPRI19               Channel n Priority Register
-//  0x111   8  DCHPRI18               Channel n Priority Register
-//  0x112   8  DCHPRI17               Channel n Priority Register
-//  0x113   8  DCHPRI16               Channel n Priority Register
-//  0x114   8  DCHPRI23               Channel n Priority Register
-//  0x115   8  DCHPRI22               Channel n Priority Register
-//  0x116   8  DCHPRI21               Channel n Priority Register
-//  0x117   8  DCHPRI20               Channel n Priority Register
-//  0x118   8  DCHPRI27               Channel n Priority Register
-//  0x119   8  DCHPRI26               Channel n Priority Register
-//  0x11A   8  DCHPRI25               Channel n Priority Register
-//  0x11B   8  DCHPRI24               Channel n Priority Register
-//  0x11C   8  DCHPRI31               Channel n Priority Register
-//  0x11D   8  DCHPRI30               Channel n Priority Register
-//  0x11E   8  DCHPRI29               Channel n Priority Register
-//  0x11F   8  DCHPRI28               Channel n Priority Register
+//  0x100   8  DCHPRI3(DCHPR)         Channel n Priority Register
+//  0x101   8  DCHPRI2(DCHPR)         Channel n Priority Register
+//  0x102   8  DCHPRI1(DCHPR)         Channel n Priority Register
+//  0x103   8  DCHPRI0(DCHPR)         Channel n Priority Register
+//  0x104   8  DCHPRI7(DCHPR)         Channel n Priority Register
+//  0x105   8  DCHPRI6(DCHPR)         Channel n Priority Register
+//  0x106   8  DCHPRI5(DCHPR)         Channel n Priority Register
+//  0x107   8  DCHPRI4(DCHPR)         Channel n Priority Register
+//  0x108   8  DCHPRI11(DCHPR)        Channel n Priority Register
+//  0x109   8  DCHPRI10(DCHPR)        Channel n Priority Register
+//  0x10A   8  DCHPRI9(DCHPR)         Channel n Priority Register
+//  0x10B   8  DCHPRI8(DCHPR)         Channel n Priority Register
+//  0x10C   8  DCHPRI15(DCHPR)        Channel n Priority Register
+//  0x10D   8  DCHPRI14(DCHPR)        Channel n Priority Register
+//  0x10E   8  DCHPRI13(DCHPR)        Channel n Priority Register
+//  0x10F   8  DCHPRI12(DCHPR)        Channel n Priority Register
+//  0x110   8  DCHPRI19(DCHPR)        Channel n Priority Register
+//  0x111   8  DCHPRI18(DCHPR)        Channel n Priority Register
+//  0x112   8  DCHPRI17(DCHPR)        Channel n Priority Register
+//  0x113   8  DCHPRI16(DCHPR)        Channel n Priority Register
+//  0x114   8  DCHPRI23(DCHPR)        Channel n Priority Register
+//  0x115   8  DCHPRI22(DCHPR)        Channel n Priority Register
+//  0x116   8  DCHPRI21(DCHPR)        Channel n Priority Register
+//  0x117   8  DCHPRI20(DCHPR)        Channel n Priority Register
+//  0x118   8  DCHPRI27(DCHPR)        Channel n Priority Register
+//  0x119   8  DCHPRI26(DCHPR)        Channel n Priority Register
+//  0x11A   8  DCHPRI25(DCHPR)        Channel n Priority Register
+//  0x11B   8  DCHPRI24(DCHPR)        Channel n Priority Register
+//  0x11C   8  DCHPRI31(DCHPR)        Channel n Priority Register
+//  0x11D   8  DCHPRI30(DCHPR)        Channel n Priority Register
+//  0x11E   8  DCHPRI29(DCHPR)        Channel n Priority Register
+//  0x11F   8  DCHPRI28(DCHPR)        Channel n Priority Register
 //  0x1000 32  TCD0_SADDR             TCD Source Address
 //  0x1004 16  TCD0_SOFF              TCD Signed Source Address Offset
 //  0x1006 16  TCD0_ATTR              TCD Transfer Attributes
@@ -570,35 +570,35 @@ const (
 )
 
 const (
-	DBE    ES = 0x01 << 0  //+ Destination Bus Error
-	SBE    ES = 0x01 << 1  //+ Source Bus Error
-	SGE    ES = 0x01 << 2  //+ Scatter/Gather Configuration Error
-	NCE    ES = 0x01 << 3  //+ NBYTES/CITER Configuration Error
-	DOE    ES = 0x01 << 4  //+ Destination Offset Error
-	DAE    ES = 0x01 << 5  //+ Destination Address Error
-	SOE    ES = 0x01 << 6  //+ Source Offset Error
-	SAE    ES = 0x01 << 7  //+ Source Address Error
-	ERRCHN ES = 0x1F << 8  //+ Error Channel Number or Canceled Channel Number
-	CPE    ES = 0x01 << 14 //+ Channel Priority Error
-	GPE    ES = 0x01 << 15 //+ Group Priority Error
-	ECX    ES = 0x01 << 16 //+ Transfer Canceled
-	VLD    ES = 0x01 << 31 //+ VLD
+	DBE ES = 0x01 << 0  //+ Destination Bus Error
+	SBE ES = 0x01 << 1  //+ Source Bus Error
+	SGE ES = 0x01 << 2  //+ Scatter/Gather Configuration Error
+	NCE ES = 0x01 << 3  //+ NBYTES/CITER Configuration Error
+	DOE ES = 0x01 << 4  //+ Destination Offset Error
+	DAE ES = 0x01 << 5  //+ Destination Address Error
+	SOE ES = 0x01 << 6  //+ Source Offset Error
+	SAE ES = 0x01 << 7  //+ Source Address Error
+	CNE ES = 0x1F << 8  //+ Error Channel Number or Canceled Channel Number
+	CPE ES = 0x01 << 14 //+ Channel Priority Error
+	GPE ES = 0x01 << 15 //+ Group Priority Error
+	CXE ES = 0x01 << 16 //+ Transfer Canceled
+	VLD ES = 0x01 << 31 //+ VLD
 )
 
 const (
-	DBEn    = 0
-	SBEn    = 1
-	SGEn    = 2
-	NCEn    = 3
-	DOEn    = 4
-	DAEn    = 5
-	SOEn    = 6
-	SAEn    = 7
-	ERRCHNn = 8
-	CPEn    = 14
-	GPEn    = 15
-	ECXn    = 16
-	VLDn    = 31
+	DBEn = 0
+	SBEn = 1
+	SGEn = 2
+	NCEn = 3
+	DOEn = 4
+	DAEn = 5
+	SOEn = 6
+	SAEn = 7
+	CNEn = 8
+	CPEn = 14
+	GPEn = 15
+	CXEn = 16
+	VLDn = 31
 )
 
 const (
@@ -742,99 +742,15 @@ const (
 )
 
 const (
-	CEEI CEEI = 0x1F << 0 //+ Clear Enable Error Interrupt
-	CAEE CEEI = 0x01 << 6 //+ Clear All Enable Error Interrupts
-	NOP  CEEI = 0x01 << 7 //+ No Op enable
+	CMASK CTRL = 0x1F << 0 //+ Affect the specified channels
+	CALL  CTRL = 0x01 << 6 //+ Affect all channels
+	NOP   CTRL = 0x01 << 7 //+ Allows 32-bit write to selected CTRL registers
 )
 
 const (
-	CEEIn = 0
-	CAEEn = 6
-	NOPn  = 7
-)
-
-const (
-	SEEI SEEI = 0x1F << 0 //+ Set Enable Error Interrupt
-	SAEE SEEI = 0x01 << 6 //+ Sets All Enable Error Interrupts
-	NOP  SEEI = 0x01 << 7 //+ No Op enable
-)
-
-const (
-	SEEIn = 0
-	SAEEn = 6
-	NOPn  = 7
-)
-
-const (
-	CERQ CERQ = 0x1F << 0 //+ Clear Enable Request
-	CAER CERQ = 0x01 << 6 //+ Clear All Enable Requests
-	NOP  CERQ = 0x01 << 7 //+ No Op enable
-)
-
-const (
-	CERQn = 0
-	CAERn = 6
-	NOPn  = 7
-)
-
-const (
-	SERQ SERQ = 0x1F << 0 //+ Set Enable Request
-	SAER SERQ = 0x01 << 6 //+ Set All Enable Requests
-	NOP  SERQ = 0x01 << 7 //+ No Op enable
-)
-
-const (
-	SERQn = 0
-	SAERn = 6
-	NOPn  = 7
-)
-
-const (
-	CDNE CDNE = 0x1F << 0 //+ Clear DONE Bit
-	CADN CDNE = 0x01 << 6 //+ Clears All DONE Bits
-	NOP  CDNE = 0x01 << 7 //+ No Op enable
-)
-
-const (
-	CDNEn = 0
-	CADNn = 6
-	NOPn  = 7
-)
-
-const (
-	SSRT SSRT = 0x1F << 0 //+ Set START Bit
-	SAST SSRT = 0x01 << 6 //+ Set All START Bits (activates all channels)
-	NOP  SSRT = 0x01 << 7 //+ No Op enable
-)
-
-const (
-	SSRTn = 0
-	SASTn = 6
-	NOPn  = 7
-)
-
-const (
-	CERR CERR = 0x1F << 0 //+ Clear Error Indicator
-	CAEI CERR = 0x01 << 6 //+ Clear All Error Indicators
-	NOP  CERR = 0x01 << 7 //+ No Op enable
-)
-
-const (
-	CERRn = 0
-	CAEIn = 6
-	NOPn  = 7
-)
-
-const (
-	CINT CINT = 0x1F << 0 //+ Clear Interrupt Request
-	CAIR CINT = 0x01 << 6 //+ Clear All Interrupt Requests
-	NOP  CINT = 0x01 << 7 //+ No Op enable
-)
-
-const (
-	CINTn = 0
-	CAIRn = 6
-	NOPn  = 7
+	CMASKn = 0
+	CALLn  = 6
+	NOPn   = 7
 )
 
 const (
@@ -1118,444 +1034,10 @@ const (
 )
 
 const (
-	CHPRI  DCHPRI3 = 0x0F << 0 //+ Channel n Arbitration Priority
-	GRPPRI DCHPRI3 = 0x03 << 4 //+ Channel n Current Group Priority
-	DPA    DCHPRI3 = 0x01 << 6 //+ Disable Preempt Ability. This field resets to 0.
-	ECP    DCHPRI3 = 0x01 << 7 //+ Enable Channel Preemption. This field resets to 0.
-)
-
-const (
-	CHPRIn  = 0
-	GRPPRIn = 4
-	DPAn    = 6
-	ECPn    = 7
-)
-
-const (
-	CHPRI  DCHPRI2 = 0x0F << 0 //+ Channel n Arbitration Priority
-	GRPPRI DCHPRI2 = 0x03 << 4 //+ Channel n Current Group Priority
-	DPA    DCHPRI2 = 0x01 << 6 //+ Disable Preempt Ability. This field resets to 0.
-	ECP    DCHPRI2 = 0x01 << 7 //+ Enable Channel Preemption. This field resets to 0.
-)
-
-const (
-	CHPRIn  = 0
-	GRPPRIn = 4
-	DPAn    = 6
-	ECPn    = 7
-)
-
-const (
-	CHPRI  DCHPRI1 = 0x0F << 0 //+ Channel n Arbitration Priority
-	GRPPRI DCHPRI1 = 0x03 << 4 //+ Channel n Current Group Priority
-	DPA    DCHPRI1 = 0x01 << 6 //+ Disable Preempt Ability. This field resets to 0.
-	ECP    DCHPRI1 = 0x01 << 7 //+ Enable Channel Preemption. This field resets to 0.
-)
-
-const (
-	CHPRIn  = 0
-	GRPPRIn = 4
-	DPAn    = 6
-	ECPn    = 7
-)
-
-const (
-	CHPRI  DCHPRI0 = 0x0F << 0 //+ Channel n Arbitration Priority
-	GRPPRI DCHPRI0 = 0x03 << 4 //+ Channel n Current Group Priority
-	DPA    DCHPRI0 = 0x01 << 6 //+ Disable Preempt Ability. This field resets to 0.
-	ECP    DCHPRI0 = 0x01 << 7 //+ Enable Channel Preemption. This field resets to 0.
-)
-
-const (
-	CHPRIn  = 0
-	GRPPRIn = 4
-	DPAn    = 6
-	ECPn    = 7
-)
-
-const (
-	CHPRI  DCHPRI7 = 0x0F << 0 //+ Channel n Arbitration Priority
-	GRPPRI DCHPRI7 = 0x03 << 4 //+ Channel n Current Group Priority
-	DPA    DCHPRI7 = 0x01 << 6 //+ Disable Preempt Ability. This field resets to 0.
-	ECP    DCHPRI7 = 0x01 << 7 //+ Enable Channel Preemption. This field resets to 0.
-)
-
-const (
-	CHPRIn  = 0
-	GRPPRIn = 4
-	DPAn    = 6
-	ECPn    = 7
-)
-
-const (
-	CHPRI  DCHPRI6 = 0x0F << 0 //+ Channel n Arbitration Priority
-	GRPPRI DCHPRI6 = 0x03 << 4 //+ Channel n Current Group Priority
-	DPA    DCHPRI6 = 0x01 << 6 //+ Disable Preempt Ability. This field resets to 0.
-	ECP    DCHPRI6 = 0x01 << 7 //+ Enable Channel Preemption. This field resets to 0.
-)
-
-const (
-	CHPRIn  = 0
-	GRPPRIn = 4
-	DPAn    = 6
-	ECPn    = 7
-)
-
-const (
-	CHPRI  DCHPRI5 = 0x0F << 0 //+ Channel n Arbitration Priority
-	GRPPRI DCHPRI5 = 0x03 << 4 //+ Channel n Current Group Priority
-	DPA    DCHPRI5 = 0x01 << 6 //+ Disable Preempt Ability. This field resets to 0.
-	ECP    DCHPRI5 = 0x01 << 7 //+ Enable Channel Preemption. This field resets to 0.
-)
-
-const (
-	CHPRIn  = 0
-	GRPPRIn = 4
-	DPAn    = 6
-	ECPn    = 7
-)
-
-const (
-	CHPRI  DCHPRI4 = 0x0F << 0 //+ Channel n Arbitration Priority
-	GRPPRI DCHPRI4 = 0x03 << 4 //+ Channel n Current Group Priority
-	DPA    DCHPRI4 = 0x01 << 6 //+ Disable Preempt Ability. This field resets to 0.
-	ECP    DCHPRI4 = 0x01 << 7 //+ Enable Channel Preemption. This field resets to 0.
-)
-
-const (
-	CHPRIn  = 0
-	GRPPRIn = 4
-	DPAn    = 6
-	ECPn    = 7
-)
-
-const (
-	CHPRI  DCHPRI11 = 0x0F << 0 //+ Channel n Arbitration Priority
-	GRPPRI DCHPRI11 = 0x03 << 4 //+ Channel n Current Group Priority
-	DPA    DCHPRI11 = 0x01 << 6 //+ Disable Preempt Ability. This field resets to 0.
-	ECP    DCHPRI11 = 0x01 << 7 //+ Enable Channel Preemption. This field resets to 0.
-)
-
-const (
-	CHPRIn  = 0
-	GRPPRIn = 4
-	DPAn    = 6
-	ECPn    = 7
-)
-
-const (
-	CHPRI  DCHPRI10 = 0x0F << 0 //+ Channel n Arbitration Priority
-	GRPPRI DCHPRI10 = 0x03 << 4 //+ Channel n Current Group Priority
-	DPA    DCHPRI10 = 0x01 << 6 //+ Disable Preempt Ability. This field resets to 0.
-	ECP    DCHPRI10 = 0x01 << 7 //+ Enable Channel Preemption. This field resets to 0.
-)
-
-const (
-	CHPRIn  = 0
-	GRPPRIn = 4
-	DPAn    = 6
-	ECPn    = 7
-)
-
-const (
-	CHPRI  DCHPRI9 = 0x0F << 0 //+ Channel n Arbitration Priority
-	GRPPRI DCHPRI9 = 0x03 << 4 //+ Channel n Current Group Priority
-	DPA    DCHPRI9 = 0x01 << 6 //+ Disable Preempt Ability. This field resets to 0.
-	ECP    DCHPRI9 = 0x01 << 7 //+ Enable Channel Preemption. This field resets to 0.
-)
-
-const (
-	CHPRIn  = 0
-	GRPPRIn = 4
-	DPAn    = 6
-	ECPn    = 7
-)
-
-const (
-	CHPRI  DCHPRI8 = 0x0F << 0 //+ Channel n Arbitration Priority
-	GRPPRI DCHPRI8 = 0x03 << 4 //+ Channel n Current Group Priority
-	DPA    DCHPRI8 = 0x01 << 6 //+ Disable Preempt Ability. This field resets to 0.
-	ECP    DCHPRI8 = 0x01 << 7 //+ Enable Channel Preemption. This field resets to 0.
-)
-
-const (
-	CHPRIn  = 0
-	GRPPRIn = 4
-	DPAn    = 6
-	ECPn    = 7
-)
-
-const (
-	CHPRI  DCHPRI15 = 0x0F << 0 //+ Channel n Arbitration Priority
-	GRPPRI DCHPRI15 = 0x03 << 4 //+ Channel n Current Group Priority
-	DPA    DCHPRI15 = 0x01 << 6 //+ Disable Preempt Ability. This field resets to 0.
-	ECP    DCHPRI15 = 0x01 << 7 //+ Enable Channel Preemption. This field resets to 0.
-)
-
-const (
-	CHPRIn  = 0
-	GRPPRIn = 4
-	DPAn    = 6
-	ECPn    = 7
-)
-
-const (
-	CHPRI  DCHPRI14 = 0x0F << 0 //+ Channel n Arbitration Priority
-	GRPPRI DCHPRI14 = 0x03 << 4 //+ Channel n Current Group Priority
-	DPA    DCHPRI14 = 0x01 << 6 //+ Disable Preempt Ability. This field resets to 0.
-	ECP    DCHPRI14 = 0x01 << 7 //+ Enable Channel Preemption. This field resets to 0.
-)
-
-const (
-	CHPRIn  = 0
-	GRPPRIn = 4
-	DPAn    = 6
-	ECPn    = 7
-)
-
-const (
-	CHPRI  DCHPRI13 = 0x0F << 0 //+ Channel n Arbitration Priority
-	GRPPRI DCHPRI13 = 0x03 << 4 //+ Channel n Current Group Priority
-	DPA    DCHPRI13 = 0x01 << 6 //+ Disable Preempt Ability. This field resets to 0.
-	ECP    DCHPRI13 = 0x01 << 7 //+ Enable Channel Preemption. This field resets to 0.
-)
-
-const (
-	CHPRIn  = 0
-	GRPPRIn = 4
-	DPAn    = 6
-	ECPn    = 7
-)
-
-const (
-	CHPRI  DCHPRI12 = 0x0F << 0 //+ Channel n Arbitration Priority
-	GRPPRI DCHPRI12 = 0x03 << 4 //+ Channel n Current Group Priority
-	DPA    DCHPRI12 = 0x01 << 6 //+ Disable Preempt Ability. This field resets to 0.
-	ECP    DCHPRI12 = 0x01 << 7 //+ Enable Channel Preemption. This field resets to 0.
-)
-
-const (
-	CHPRIn  = 0
-	GRPPRIn = 4
-	DPAn    = 6
-	ECPn    = 7
-)
-
-const (
-	CHPRI  DCHPRI19 = 0x0F << 0 //+ Channel n Arbitration Priority
-	GRPPRI DCHPRI19 = 0x03 << 4 //+ Channel n Current Group Priority
-	DPA    DCHPRI19 = 0x01 << 6 //+ Disable Preempt Ability. This field resets to 0.
-	ECP    DCHPRI19 = 0x01 << 7 //+ Enable Channel Preemption. This field resets to 0.
-)
-
-const (
-	CHPRIn  = 0
-	GRPPRIn = 4
-	DPAn    = 6
-	ECPn    = 7
-)
-
-const (
-	CHPRI  DCHPRI18 = 0x0F << 0 //+ Channel n Arbitration Priority
-	GRPPRI DCHPRI18 = 0x03 << 4 //+ Channel n Current Group Priority
-	DPA    DCHPRI18 = 0x01 << 6 //+ Disable Preempt Ability. This field resets to 0.
-	ECP    DCHPRI18 = 0x01 << 7 //+ Enable Channel Preemption. This field resets to 0.
-)
-
-const (
-	CHPRIn  = 0
-	GRPPRIn = 4
-	DPAn    = 6
-	ECPn    = 7
-)
-
-const (
-	CHPRI  DCHPRI17 = 0x0F << 0 //+ Channel n Arbitration Priority
-	GRPPRI DCHPRI17 = 0x03 << 4 //+ Channel n Current Group Priority
-	DPA    DCHPRI17 = 0x01 << 6 //+ Disable Preempt Ability. This field resets to 0.
-	ECP    DCHPRI17 = 0x01 << 7 //+ Enable Channel Preemption. This field resets to 0.
-)
-
-const (
-	CHPRIn  = 0
-	GRPPRIn = 4
-	DPAn    = 6
-	ECPn    = 7
-)
-
-const (
-	CHPRI  DCHPRI16 = 0x0F << 0 //+ Channel n Arbitration Priority
-	GRPPRI DCHPRI16 = 0x03 << 4 //+ Channel n Current Group Priority
-	DPA    DCHPRI16 = 0x01 << 6 //+ Disable Preempt Ability. This field resets to 0.
-	ECP    DCHPRI16 = 0x01 << 7 //+ Enable Channel Preemption. This field resets to 0.
-)
-
-const (
-	CHPRIn  = 0
-	GRPPRIn = 4
-	DPAn    = 6
-	ECPn    = 7
-)
-
-const (
-	CHPRI  DCHPRI23 = 0x0F << 0 //+ Channel n Arbitration Priority
-	GRPPRI DCHPRI23 = 0x03 << 4 //+ Channel n Current Group Priority
-	DPA    DCHPRI23 = 0x01 << 6 //+ Disable Preempt Ability. This field resets to 0.
-	ECP    DCHPRI23 = 0x01 << 7 //+ Enable Channel Preemption. This field resets to 0.
-)
-
-const (
-	CHPRIn  = 0
-	GRPPRIn = 4
-	DPAn    = 6
-	ECPn    = 7
-)
-
-const (
-	CHPRI  DCHPRI22 = 0x0F << 0 //+ Channel n Arbitration Priority
-	GRPPRI DCHPRI22 = 0x03 << 4 //+ Channel n Current Group Priority
-	DPA    DCHPRI22 = 0x01 << 6 //+ Disable Preempt Ability. This field resets to 0.
-	ECP    DCHPRI22 = 0x01 << 7 //+ Enable Channel Preemption. This field resets to 0.
-)
-
-const (
-	CHPRIn  = 0
-	GRPPRIn = 4
-	DPAn    = 6
-	ECPn    = 7
-)
-
-const (
-	CHPRI  DCHPRI21 = 0x0F << 0 //+ Channel n Arbitration Priority
-	GRPPRI DCHPRI21 = 0x03 << 4 //+ Channel n Current Group Priority
-	DPA    DCHPRI21 = 0x01 << 6 //+ Disable Preempt Ability. This field resets to 0.
-	ECP    DCHPRI21 = 0x01 << 7 //+ Enable Channel Preemption. This field resets to 0.
-)
-
-const (
-	CHPRIn  = 0
-	GRPPRIn = 4
-	DPAn    = 6
-	ECPn    = 7
-)
-
-const (
-	CHPRI  DCHPRI20 = 0x0F << 0 //+ Channel n Arbitration Priority
-	GRPPRI DCHPRI20 = 0x03 << 4 //+ Channel n Current Group Priority
-	DPA    DCHPRI20 = 0x01 << 6 //+ Disable Preempt Ability. This field resets to 0.
-	ECP    DCHPRI20 = 0x01 << 7 //+ Enable Channel Preemption. This field resets to 0.
-)
-
-const (
-	CHPRIn  = 0
-	GRPPRIn = 4
-	DPAn    = 6
-	ECPn    = 7
-)
-
-const (
-	CHPRI  DCHPRI27 = 0x0F << 0 //+ Channel n Arbitration Priority
-	GRPPRI DCHPRI27 = 0x03 << 4 //+ Channel n Current Group Priority
-	DPA    DCHPRI27 = 0x01 << 6 //+ Disable Preempt Ability. This field resets to 0.
-	ECP    DCHPRI27 = 0x01 << 7 //+ Enable Channel Preemption. This field resets to 0.
-)
-
-const (
-	CHPRIn  = 0
-	GRPPRIn = 4
-	DPAn    = 6
-	ECPn    = 7
-)
-
-const (
-	CHPRI  DCHPRI26 = 0x0F << 0 //+ Channel n Arbitration Priority
-	GRPPRI DCHPRI26 = 0x03 << 4 //+ Channel n Current Group Priority
-	DPA    DCHPRI26 = 0x01 << 6 //+ Disable Preempt Ability. This field resets to 0.
-	ECP    DCHPRI26 = 0x01 << 7 //+ Enable Channel Preemption. This field resets to 0.
-)
-
-const (
-	CHPRIn  = 0
-	GRPPRIn = 4
-	DPAn    = 6
-	ECPn    = 7
-)
-
-const (
-	CHPRI  DCHPRI25 = 0x0F << 0 //+ Channel n Arbitration Priority
-	GRPPRI DCHPRI25 = 0x03 << 4 //+ Channel n Current Group Priority
-	DPA    DCHPRI25 = 0x01 << 6 //+ Disable Preempt Ability. This field resets to 0.
-	ECP    DCHPRI25 = 0x01 << 7 //+ Enable Channel Preemption. This field resets to 0.
-)
-
-const (
-	CHPRIn  = 0
-	GRPPRIn = 4
-	DPAn    = 6
-	ECPn    = 7
-)
-
-const (
-	CHPRI  DCHPRI24 = 0x0F << 0 //+ Channel n Arbitration Priority
-	GRPPRI DCHPRI24 = 0x03 << 4 //+ Channel n Current Group Priority
-	DPA    DCHPRI24 = 0x01 << 6 //+ Disable Preempt Ability. This field resets to 0.
-	ECP    DCHPRI24 = 0x01 << 7 //+ Enable Channel Preemption. This field resets to 0.
-)
-
-const (
-	CHPRIn  = 0
-	GRPPRIn = 4
-	DPAn    = 6
-	ECPn    = 7
-)
-
-const (
-	CHPRI  DCHPRI31 = 0x0F << 0 //+ Channel n Arbitration Priority
-	GRPPRI DCHPRI31 = 0x03 << 4 //+ Channel n Current Group Priority
-	DPA    DCHPRI31 = 0x01 << 6 //+ Disable Preempt Ability. This field resets to 0.
-	ECP    DCHPRI31 = 0x01 << 7 //+ Enable Channel Preemption. This field resets to 0.
-)
-
-const (
-	CHPRIn  = 0
-	GRPPRIn = 4
-	DPAn    = 6
-	ECPn    = 7
-)
-
-const (
-	CHPRI  DCHPRI30 = 0x0F << 0 //+ Channel n Arbitration Priority
-	GRPPRI DCHPRI30 = 0x03 << 4 //+ Channel n Current Group Priority
-	DPA    DCHPRI30 = 0x01 << 6 //+ Disable Preempt Ability. This field resets to 0.
-	ECP    DCHPRI30 = 0x01 << 7 //+ Enable Channel Preemption. This field resets to 0.
-)
-
-const (
-	CHPRIn  = 0
-	GRPPRIn = 4
-	DPAn    = 6
-	ECPn    = 7
-)
-
-const (
-	CHPRI  DCHPRI29 = 0x0F << 0 //+ Channel n Arbitration Priority
-	GRPPRI DCHPRI29 = 0x03 << 4 //+ Channel n Current Group Priority
-	DPA    DCHPRI29 = 0x01 << 6 //+ Disable Preempt Ability. This field resets to 0.
-	ECP    DCHPRI29 = 0x01 << 7 //+ Enable Channel Preemption. This field resets to 0.
-)
-
-const (
-	CHPRIn  = 0
-	GRPPRIn = 4
-	DPAn    = 6
-	ECPn    = 7
-)
-
-const (
-	CHPRI  DCHPRI28 = 0x0F << 0 //+ Channel n Arbitration Priority
-	GRPPRI DCHPRI28 = 0x03 << 4 //+ Channel n Current Group Priority
-	DPA    DCHPRI28 = 0x01 << 6 //+ Disable Preempt Ability. This field resets to 0.
-	ECP    DCHPRI28 = 0x01 << 7 //+ Enable Channel Preemption. This field resets to 0.
+	CHPRI  DCHPR = 0x0F << 0 //+ Channel n Arbitration Priority
+	GRPPRI DCHPR = 0x03 << 4 //+ Channel n Current Group Priority
+	DPA    DCHPR = 0x01 << 6 //+ Disable Preempt Ability. This field resets to 0.
+	ECP    DCHPR = 0x01 << 7 //+ Enable Channel Preemption. This field resets to 0.
 )
 
 const (
