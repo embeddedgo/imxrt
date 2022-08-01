@@ -18,22 +18,19 @@ func main() {
 	system.Setup528_FlexSPI()
 	systick.Setup(2e6)
 
-	pad := iomux.AD_B0_09
-	pad.Setup(iomux.Drive7)
-	pad.SetAltFunc(iomux.GPIO)
-	iomux.Lock()
+	ledPin := iomux.AD_B0_09
+	ledPin.Setup(iomux.Drive7)
 
-	pin := gpio.P(1).Pin(9) // AD_B0 goes to GPIO port 1 (slow) or 6 (fast)
-	pin.ConnectMux()
-	pin.SetDirOut(true)
+	led := gpio.UsePin(ledPin, true)
+	led.SetDirOut(true)
 
 	for {
-		pin.Clear()
+		led.Clear()
 		time.Sleep(50 * time.Millisecond)
-		pin.Set()
+		led.Set()
 		time.Sleep(950 * time.Millisecond)
 
-		//pin.Toggle()
-		//time.Sleep(500 * time.Millisecond)
+		led.Toggle()
+		time.Sleep(500 * time.Millisecond)
 	}
 }
