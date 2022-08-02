@@ -10,7 +10,7 @@ import (
 	"github.com/embeddedgo/imxrt/hal/iomux"
 )
 
-var User LED // LED5
+var User LED // LED5 (blue)
 
 type LED struct{ bit gpio.Bit }
 

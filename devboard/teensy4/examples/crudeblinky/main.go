@@ -2,8 +2,8 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-// This example shows how to flash the onboard LED without using HAL or any
-// other packages outside the Embedded Go standard library.
+// Crudeblinky flashes the on-board LED without using HAL or any other packages
+// outside the Embedded Go standard library.
 package main
 
 import (
@@ -34,8 +34,8 @@ type GPIO struct {
 }
 
 func main() {
-	// By default, supervisor privilege level is required to access most
-	// peripherals. This can be changed using in APISTZ registers.
+	// By default, access to most peripherals require the supervisor privilege
+	// level. This can be changed in APISTZ registers.
 	runtime.LockOSThread()
 	rtos.SetPrivLevel(0)
 
@@ -44,8 +44,10 @@ func main() {
 	PAD_CTL_B0_03 := (*mmio.U32)(unsafe.Pointer(IOMUXC_ADDR + 0x338))
 	PAD_CTL_B0_03.Store(7 << 3)
 
-	// By default the B0_03 pad is connected to the GPIO2 bit 3. Configure it
-	// as output.
+	// By default the B0_03 pad is connected to the GPIO2 bit 3 (ALT5 mux mode)
+	// so we don't need to change anything in MUX_CTL_B0_03.
+
+	// Configure GPIO2 bit 3 as output.
 	GPIO2 := (*GPIO)(unsafe.Pointer(GPIO2_ADDR))
 	GPIO2.GDIR.SetBit(3) // output mode
 

@@ -6,6 +6,7 @@ package pins
 
 import (
 	_ "github.com/embeddedgo/imxrt/devboard/teensy4/board/init"
+	"github.com/embeddedgo/imxrt/hal/iomux"
 )
 
 // Teensy 4.0 and 4.1 common pin names

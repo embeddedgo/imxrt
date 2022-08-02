@@ -2,8 +2,8 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-// This example shows how to flash the onboard LED without using HAL or any
-// other packages outside the Embedded Go standard library.
+// Crudeblinky flashes the on-board LED without using HAL or any other packages
+// outside the Embedded Go standard library.
 package main
 
 import (
@@ -34,8 +34,8 @@ type GPIO struct {
 }
 
 func main() {
-	// By default, supervisor privilege level is required to access most
-	// peripherals. This can be changed using in APISTZ registers.
+	// By default, access to most peripherals require the supervisor privilege
+	// level. This can be changed using in APISTZ registers.
 	runtime.LockOSThread()
 	rtos.SetPrivLevel(0)
 
