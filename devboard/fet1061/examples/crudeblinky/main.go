@@ -39,12 +39,12 @@ func main() {
 	runtime.LockOSThread()
 	rtos.SetPrivLevel(0)
 
-	// Configure pad AD_B0_09: hysteresis:off, 100KΩ pull-down, pull/keeper:off,
+	// Configure the LED pin: hysteresis:off, 100KΩ pull-down, pull/keeper:off,
 	// open-drain:off, speed:low (50 MHz), drive-strength:(150/7)Ω, sr:slow
 	PAD_CTL_AD_B0_09 := (*mmio.U32)(unsafe.Pointer(IOMUXC_ADDR + 0x2D0))
 	PAD_CTL_AD_B0_09.Store(7 << 3)
 
-	// By default the AD_B0_09 pad is used as JTAG_TDI (ALT0 mux mode).
+	// By default the AD_B0_09 pin is used as JTAG_TDI (ALT0 mux mode).
 	// Connect it to the GPIO1 bit 9 (ALT5 mux mode).
 	MUX_CTL_AD_B0_09 := (*mmio.U32)(unsafe.Pointer(IOMUXC_ADDR + 0x0E0))
 	MUX_CTL_AD_B0_09.Store(5)

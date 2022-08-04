@@ -39,12 +39,12 @@ func main() {
 	runtime.LockOSThread()
 	rtos.SetPrivLevel(0)
 
-	// Configure pad AD_B0_09: hysteresis:off, 100KΩ pull-down, pull/keeper:off,
+	// Configure the LED pin: hysteresis:off, 100KΩ pull-down, pull/keeper:off,
 	// open-drain:off, speed:low (50 MHz), drive-strength:(150/7)Ω, sr:slow
 	PAD_CTL_B0_03 := (*mmio.U32)(unsafe.Pointer(IOMUXC_ADDR + 0x338))
 	PAD_CTL_B0_03.Store(7 << 3)
 
-	// By default the B0_03 pad is connected to the GPIO2 bit 3 (ALT5 mux mode)
+	// By default the B0_03 pin is connected to the GPIO2 bit 3 (ALT5 mux mode)
 	// so we don't need to change anything in MUX_CTL_B0_03.
 
 	// Configure GPIO2 bit 3 as output.
