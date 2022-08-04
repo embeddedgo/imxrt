@@ -12,15 +12,35 @@ package main
 import (
 	"time"
 
-	"github.com/embeddedgo/imxrt/devboard/fet1061/board/leds"
+	"github.com/embeddedgo/imxrt/p/ccm"
+	"github.com/embeddedgo/imxrt/p/lpuart"
+
 	"github.com/embeddedgo/imxrt/hal/iomux"
 
-	"github.com/embeddedgo/imxrt/p/lpuart"
+	"github.com/embeddedgo/imxrt/devboard/fet1061/board/leds"
 )
 
-const (
-	uartClkDiv = 1
-)
+func dividers(clk, baud uint) (osr, sbr int) {
+	div := int((clk + baud/2) / baud)
+	le := 1<<31 - 1
+	for o := 32; o >= 4; o-- {
+		for s := 1; s <= 8191; s++ {
+			e := div - o*s
+			if e < 0 {
+				e = -e
+			}
+			if e < le {
+				le = e
+				osr = o
+				sbr = s
+				if e == 0 {
+					return
+				}
+			}
+		}
+	}
+	return
+}
 
 func main() {
 	tx := iomux.AD_B0_12
@@ -31,26 +51,32 @@ func main() {
 	rx.Setup(0)
 	rx.SetAltFunc(iomux.ALT2)
 
-	// uartClkHz := 480e6 / 6 / uartClkDiv = 80e6
-	// br = uartClkHz / ((OSR+1) * SBR)
-	// SBR = 80e6 / (16 * br)
+	CCM := ccm.CCM()
+	CCM.CSCDR1.StoreBits(ccm.UART_CLK_PODF, 0<<ccm.UART_CLK_PODFn)
+	CCM.CCGR5.StoreBits(ccm.CG5_12, 3<<ccm.CG5_12n) // enable in all modes
 
-	div := uint32(16 * 9600)
-	sbr := uint32(80e6+div/2) / div
+	// UART_CLK_ROOT = 480e6 / 6 / (UART_CLK_PODF+1) = 80e6
+
+	var baud lpuart.BAUD
+	osr, sbr := dividers(80e6, 9600)
+	if osr < 8 {
+		baud = lpuart.BOTHEDGE
+	}
+	baud |= lpuart.BAUD((osr-1)<<lpuart.OSRn | sbr)
 
 	u := lpuart.LPUART1()
-	u.BAUD.U32.Store(sbr)
-	u.CTRL.Store(lpuart.RE | lpuart.TE)
+	u.BAUD.Store(baud)
+	u.CTRL.Store(lpuart.RE | lpuart.TE | lpuart.DOZEEN)
 
 	for {
-		var data uint32
+		var data lpuart.DATA
 		for {
-			data = u.DATA.U32.Load()
-			if data&^0xff == 0 {
+			data = u.DATA.Load()
+			if data&^(lpuart.IDLINE|0x3ff) == 0 {
 				break
 			}
 		}
-		u.DATA.U32.Store(data)
+		u.DATA.Store(data & 0xff)
 		leds.User.SetOn()
 		time.Sleep(10 * time.Millisecond)
 		leds.User.SetOff()
