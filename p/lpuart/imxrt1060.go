@@ -364,8 +364,8 @@ const (
 	TXFLUSH      FIFO = 0x01 << 15 //+ Transmit FIFO/Buffer Flush
 	RXUF         FIFO = 0x01 << 16 //+ Receiver Buffer Underflow Flag
 	TXOF         FIFO = 0x01 << 17 //+ Transmitter Buffer Overflow Flag
-	RXEMPT       FIFO = 0x01 << 22 //+ Receive Buffer/FIFO Empty
-	TXEMPT       FIFO = 0x01 << 23 //+ Transmit Buffer/FIFO Empty
+	RXFEMPT      FIFO = 0x01 << 22 //+ Receive Buffer/FIFO Empty
+	TXFEMPT      FIFO = 0x01 << 23 //+ Transmit Buffer/FIFO Empty
 )
 
 const (
@@ -380,8 +380,8 @@ const (
 	TXFLUSHn    = 15
 	RXUFn       = 16
 	TXOFn       = 17
-	RXEMPTn     = 22
-	TXEMPTn     = 23
+	RXFEMPTn    = 22
+	TXFEMPTn    = 23
 )
 
 const (
