@@ -51,14 +51,12 @@ func main() {
 	rx.Setup(0)
 	rx.SetAltFunc(iomux.ALT2)
 
-	CCM := ccm.CCM()
-	CCM.CSCDR1.StoreBits(ccm.UART_CLK_PODF, 0<<ccm.UART_CLK_PODFn)
-	CCM.CCGR5.StoreBits(ccm.CG5_12, 3<<ccm.CG5_12n) // enable in all modes
+	ccm.CCM().CCGR5.StoreBits(ccm.CG5_12, 3<<ccm.CG5_12n) // enable in all modes
 
-	// UART_CLK_ROOT = 480e6 / 6 / (UART_CLK_PODF+1) = 80e6
+	const uartClkRoot = 80e6
 
 	var baud lpuart.BAUD
-	osr, sbr := dividers(80e6, 9600)
+	osr, sbr := dividers(uartClkRoot, 115200)
 	if osr < 8 {
 		baud = lpuart.BOTHEDGE
 	}
@@ -75,6 +73,7 @@ func main() {
 			if data&^(lpuart.IDLINE|0x3ff) == 0 {
 				break
 			}
+			u.STAT.Store(lpuart.OR) // clear possible Overrun flag
 		}
 		u.DATA.Store(data & 0xff)
 		leds.User.SetOn()

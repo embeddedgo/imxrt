@@ -103,6 +103,10 @@ func Setup528_FlexSPI() {
 		ccm.PERCLK_PODF_1|ccm.PERCLK_CLK_SEL,
 	)
 
+	// CM7 Trace: 132 MHz, USDHCs: 198 MHz, LPUARTs: 80 MHz.
+	CCM.CSCDR1.Store(0x480300 | 3<<ccm.TRACE_PODFn | 1<<ccm.USDHC2_PODFn |
+		1<<ccm.USDHC1_PODFn | 0<<ccm.UART_CLK_SELn | 0<<ccm.UART_CLK_PODFn)
+
 	// Set REFTOP_SELFBIASOFF after analog bandgap stabilized for best noise
 	// performance of analog blocks.
 	CCMA.MISC0_SET.Store(ccm_analog.MISC0_REFTOP_SELFBIASOFF)
