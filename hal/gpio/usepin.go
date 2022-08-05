@@ -142,13 +142,15 @@ var portBits = [...]uint8{
 	iomux.SD_B1_11: p3 + 11,
 }
 
+// UsePin connects pin with the proper bit of GPIO port and returns this bit.
 func UsePin(pin iomux.Pin, fast bool) Bit {
 	portBit := int(portBits[pin])
 	pn := portBit >> 5
 	if fast {
 		pn += 5
 	}
-	bit := P(pn).Bit(portBit & 31)
+	p := P(pn)
+	bit := p.Bit(portBit & 31)
 	bit.ConnectMux()
 	pin.SetAltFunc(iomux.GPIO)
 	return bit

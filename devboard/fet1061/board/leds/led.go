@@ -22,7 +22,8 @@ func (d LED) Pin() gpio.Bit { return d.bit }
 
 func init() {
 	iomux.AD_B0_09.Setup(iomux.Drive7)
-	User.bit = gpio.UsePin(iomux.AD_B0_09, true)
+	User.bit = gpio.UsePin(iomux.AD_B0_09, false)
+	User.bit.Port().EnableClock(true) // lp=true to don't interfere with other users of this port that enabled it earlier and require clock in low-power mode
 	User.bit.SetDirOut(true)
 	User.SetOff()
 }

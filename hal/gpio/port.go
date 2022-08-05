@@ -9,6 +9,7 @@ import (
 	"unsafe"
 
 	"github.com/embeddedgo/imxrt/hal/internal"
+	"github.com/embeddedgo/imxrt/hal/internal/ccm"
 	"github.com/embeddedgo/imxrt/hal/internal/iomux"
 	"github.com/embeddedgo/imxrt/p/mmap"
 )
@@ -57,6 +58,39 @@ func (p *Port) Num() int {
 		}
 	}
 	return -1
+}
+
+func cg(p *Port) (*ccm.CCGR_, int) {
+	switch uintptr(unsafe.Pointer(p)) {
+	case mmap.GPIO1_BASE:
+		return ccm.CCGR(1), 13
+	case mmap.GPIO2_BASE:
+		return ccm.CCGR(0), 15
+	case mmap.GPIO3_BASE:
+		return ccm.CCGR(2), 13
+	case mmap.GPIO4_BASE:
+		return ccm.CCGR(3), 6
+	case mmap.GPIO5_BASE:
+		return ccm.CCGR(1), 15
+	}
+	return nil, 0
+}
+
+// EnableClock enables clock for port p.
+// lp determines whether the clock remains on in low power WAIT mode.
+func (p *Port) EnableClock(lp bool) {
+	ccgr, cgn := cg(p)
+	if ccgr != nil {
+		ccgr.SetCG(cgn, ccm.ClkEn|int8(internal.BoolToInt(lp)<<1))
+	}
+}
+
+// DisableClock disables clock for port p.
+func (p *Port) DisableClock() {
+	ccgr, cgn := cg(p)
+	if ccgr != nil {
+		ccgr.SetCG(cgn, 0)
+	}
 }
 
 func (p *Port) Bit(n int) Bit {

@@ -14,7 +14,7 @@ import (
 	"github.com/embeddedgo/imxrt/p/wdog"
 )
 
-// Setup528_FlexSPI setups the SOC to run the ARM Core (AHB clock) from PLL_528
+// Setup528_FlexSPI setups the CCM to run the ARM Core (AHB clock) from PLL_528
 // with constant 528 MHz clock. The other clocks are set to almost default
 // configuration. The main exception is PLL_ARM which is turned off to save
 // some power. Furthermore the GPT and PIT timers are clocked directly from 24
@@ -115,4 +115,14 @@ func Setup528_FlexSPI() {
 	// reset deassertion.
 	wdog.WDOG1().WMCR.ClearBits(wdog.PDE)
 	wdog.WDOG2().WMCR.ClearBits(wdog.PDE)
+
+	// Gate all possible clocks, exceptions in comments
+	CCM.CCGR0.Store(0x0000_00cf) // flexspi_exsc, apis_tz1, apis_tz2
+	CCM.CCGR1.Store(0x0000_0000)
+	CCM.CCGR2.Store(0x003f_0003) // ipmux3, impux2, ipmux1,  ocram_exsc
+	CCM.CCGR3.Store(0x300c_0000) // ocram, flexram
+	CCM.CCGR4.Store(0x0000_f3ff) // sim_*, bee, iomux_gpr, ioumxc
+	CCM.CCGR5.Store(0xc003_0003) // snvs_lp, sim_main, rom(for Teensy)
+	CCM.CCGR6.Store(0x03c0_0f00) // sim_per, aips_tz3, flexspi, ipmux4
+	CCM.CCGR7.Store(0xffff_cc30) // aips_lite, axbs_l
 }
