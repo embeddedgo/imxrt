@@ -20,22 +20,27 @@ import (
 	"github.com/embeddedgo/imxrt/devboard/fet1061/board/leds"
 )
 
-func dividers(clk, baud uint) (osr, sbr int) {
-	div := int((clk + baud/2) / baud)
-	le := 1<<31 - 1
+func dividers(clk, baud int) (osr, sbr int) {
+	lowestE := 1<<31 - 1
 	for o := 32; o >= 4; o-- {
-		for s := 1; s <= 8191; s++ {
-			e := div - o*s
+		bo := baud * o
+		minS := clk / bo
+		// check s = minS and s = minS + 1
+		for s := minS; ; s++ {
+			e := clk - bo*s
 			if e < 0 {
 				e = -e
 			}
-			if e < le {
-				le = e
+			if e < lowestE {
+				lowestE = e
 				osr = o
 				sbr = s
 				if e == 0 {
 					return
 				}
+			}
+			if s != minS {
+				break
 			}
 		}
 	}
@@ -55,10 +60,11 @@ func main() {
 
 	const uartClkRoot = 80e6
 
-	var baud lpuart.BAUD
 	osr, sbr := dividers(uartClkRoot, 115200)
+	var baud lpuart.BAUD
 	if osr < 8 {
 		baud = lpuart.BOTHEDGE
+
 	}
 	baud |= lpuart.BAUD((osr-1)<<lpuart.OSRn | sbr)
 
@@ -70,14 +76,14 @@ func main() {
 		var data lpuart.DATA
 		for {
 			data = u.DATA.Load()
-			if data&^(lpuart.IDLINE|0x3ff) == 0 {
+			if data&^(lpuart.IDLINE|0xff) == 0 {
 				break
 			}
 			u.STAT.Store(lpuart.OR) // clear possible Overrun flag
 		}
 		u.DATA.Store(data & 0xff)
 		leds.User.SetOn()
-		time.Sleep(10 * time.Millisecond)
+		time.Sleep(2 * time.Millisecond)
 		leds.User.SetOff()
 	}
 }
