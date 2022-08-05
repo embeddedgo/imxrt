@@ -24,4 +24,5 @@ func init() {
 	iomux.AD_B0_09.Setup(iomux.Drive7)
 	User.bit = gpio.UsePin(iomux.AD_B0_09, true)
 	User.bit.SetDirOut(true)
+	User.SetOff()
 }
