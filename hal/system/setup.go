@@ -25,15 +25,17 @@ import (
 // bootloader according to the Serial NOR Config Block (see IMXRT1060RM_rev3
 // 9.13.2).
 func Setup528_FlexSPI() {
-	// Enable full access to all peripherals in user mode.
 	runtime.LockOSThread()
 	pl, _ := rtos.SetPrivLevel(0)
+
+	// Enable full access to all peripherals in user mode.
 	for i := 1; i < 5; i++ {
 		opacr := &aipstz.P(i).OPACR
 		for k := 0; k < len(opacr); k++ {
 			opacr[k].Store(0)
 		}
 	}
+
 	rtos.SetPrivLevel(pl)
 	runtime.UnlockOSThread()
 
@@ -123,6 +125,6 @@ func Setup528_FlexSPI() {
 	CCM.CCGR3.Store(0x300c_0000) // ocram, flexram
 	CCM.CCGR4.Store(0x0000_f3ff) // sim_*, bee, iomux_gpr, ioumxc
 	CCM.CCGR5.Store(0xc003_0003) // snvs_lp, sim_main, rom(for Teensy)
-	CCM.CCGR6.Store(0x03c0_0f00) // sim_per, aips_tz3, flexspi, ipmux4
+	CCM.CCGR6.Store(0x003c_0f00) // sim_per, aips_tz3, flexspi, ipmux4
 	CCM.CCGR7.Store(0xffff_cc30) // aips_lite, axbs_l
 }
