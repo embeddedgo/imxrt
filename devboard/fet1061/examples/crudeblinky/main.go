@@ -51,7 +51,7 @@ func main() {
 
 	// Configure GPIO1 bit 9 as output.
 	GPIO1 := (*GPIO)(unsafe.Pointer(GPIO1_ADDR))
-	GPIO1.GDIR.SetBit(9)
+	GPIO1.GDIR.SetBits(1 << 9)
 
 	// Blinking in a loop. As the system timer isn't initialized the required
 	// delays are implemented by writting GPIO registers multiple times.

@@ -49,7 +49,7 @@ func main() {
 
 	// Configure GPIO2 bit 3 as output.
 	GPIO2 := (*GPIO)(unsafe.Pointer(GPIO2_ADDR))
-	GPIO2.GDIR.SetBit(3) // output mode
+	GPIO2.GDIR.SetBits(1 << 3) // output mode
 
 	// Blinking in a loop. As the system timer isn't initialized the required
 	// delays are implemented by writting GPIO registers multiple times.

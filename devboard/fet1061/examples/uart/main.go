@@ -14,6 +14,7 @@ import (
 	"github.com/embeddedgo/imxrt/p/lpuart"
 
 	"github.com/embeddedgo/imxrt/hal/iomux"
+	_ "github.com/embeddedgo/imxrt/hal/lpuart"
 
 	"github.com/embeddedgo/imxrt/devboard/fet1061/board/leds"
 )
