@@ -10,8 +10,6 @@
 package main
 
 import (
-	"time"
-
 	"github.com/embeddedgo/imxrt/p/ccm"
 	"github.com/embeddedgo/imxrt/p/lpuart"
 
@@ -71,6 +69,7 @@ func main() {
 	u := lpuart.LPUART1()
 	u.BAUD.Store(baud)
 	u.CTRL.Store(lpuart.RE | lpuart.TE | lpuart.DOZEEN)
+	//u.FIFO.Store(lpuart.RXFE | lpuart.TXFE)
 
 	for {
 		var data lpuart.DATA
@@ -82,8 +81,6 @@ func main() {
 			u.STAT.Store(lpuart.OR) // clear possible Overrun flag
 		}
 		u.DATA.Store(data & 0xff)
-		leds.User.SetOn()
-		time.Sleep(2 * time.Millisecond)
-		leds.User.SetOff()
+		leds.User.Toggle()
 	}
 }

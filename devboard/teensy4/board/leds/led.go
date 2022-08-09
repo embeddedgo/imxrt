@@ -16,6 +16,7 @@ type LED struct{ bit gpio.Bit }
 
 func (d LED) SetOn()        { d.bit.Set() }
 func (d LED) SetOff()       { d.bit.Clear() }
+func (d LED) Toggle()       { d.bit.Toggle() }
 func (d LED) Set(on int)    { d.bit.Store(on) }
 func (d LED) Get() int      { return d.bit.Load() }
 func (d LED) Pin() gpio.Bit { return d.bit }
