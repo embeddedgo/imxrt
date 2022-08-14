@@ -12,9 +12,9 @@ import (
 )
 
 type Periph struct {
-	MPR   RMPR
+	MPR   mmio.R32[MPR]
 	_     [15]uint32
-	OPACR [5]ROPACR
+	OPACR [5]mmio.R32[OPACR]
 }
 
 func AIPSTZ1() *Periph { return (*Periph)(unsafe.Pointer(uintptr(mmap.AIPSTZ1_BASE))) }
@@ -28,84 +28,19 @@ func (p *Periph) BaseAddr() uintptr {
 
 type MPR uint32
 
-type RMPR struct{ mmio.U32 }
-
-func (r *RMPR) LoadBits(mask MPR) MPR { return MPR(r.U32.LoadBits(uint32(mask))) }
-func (r *RMPR) StoreBits(mask, b MPR) { r.U32.StoreBits(uint32(mask), uint32(b)) }
-func (r *RMPR) SetBits(mask MPR)      { r.U32.SetBits(uint32(mask)) }
-func (r *RMPR) ClearBits(mask MPR)    { r.U32.ClearBits(uint32(mask)) }
-func (r *RMPR) Load() MPR             { return MPR(r.U32.Load()) }
-func (r *RMPR) Store(b MPR)           { r.U32.Store(uint32(b)) }
-
-type RMMPR struct{ mmio.UM32 }
-
-func (rm RMMPR) Load() MPR   { return MPR(rm.UM32.Load()) }
-func (rm RMMPR) Store(b MPR) { rm.UM32.Store(uint32(b)) }
-
-func MPROT5_(p *Periph) RMMPR {
-	return RMMPR{mmio.UM32{&p.MPR.U32, uint32(MPROT5)}}
-}
-
-func MPROT3_(p *Periph) RMMPR {
-	return RMMPR{mmio.UM32{&p.MPR.U32, uint32(MPROT3)}}
-}
-
-func MPROT2_(p *Periph) RMMPR {
-	return RMMPR{mmio.UM32{&p.MPR.U32, uint32(MPROT2)}}
-}
-
-func MPROT1_(p *Periph) RMMPR {
-	return RMMPR{mmio.UM32{&p.MPR.U32, uint32(MPROT1)}}
-}
-
-func MPROT0_(p *Periph) RMMPR {
-	return RMMPR{mmio.UM32{&p.MPR.U32, uint32(MPROT0)}}
-}
+func MPROT5_(p *Periph) mmio.RM32[MPR] { return mmio.RM32[MPR]{&p.MPR, MPROT5} }
+func MPROT3_(p *Periph) mmio.RM32[MPR] { return mmio.RM32[MPR]{&p.MPR, MPROT3} }
+func MPROT2_(p *Periph) mmio.RM32[MPR] { return mmio.RM32[MPR]{&p.MPR, MPROT2} }
+func MPROT1_(p *Periph) mmio.RM32[MPR] { return mmio.RM32[MPR]{&p.MPR, MPROT1} }
+func MPROT0_(p *Periph) mmio.RM32[MPR] { return mmio.RM32[MPR]{&p.MPR, MPROT0} }
 
 type OPACR uint32
 
-type ROPACR struct{ mmio.U32 }
-
-func (r *ROPACR) LoadBits(mask OPACR) OPACR { return OPACR(r.U32.LoadBits(uint32(mask))) }
-func (r *ROPACR) StoreBits(mask, b OPACR)   { r.U32.StoreBits(uint32(mask), uint32(b)) }
-func (r *ROPACR) SetBits(mask OPACR)        { r.U32.SetBits(uint32(mask)) }
-func (r *ROPACR) ClearBits(mask OPACR)      { r.U32.ClearBits(uint32(mask)) }
-func (r *ROPACR) Load() OPACR               { return OPACR(r.U32.Load()) }
-func (r *ROPACR) Store(b OPACR)             { r.U32.Store(uint32(b)) }
-
-type RMOPACR struct{ mmio.UM32 }
-
-func (rm RMOPACR) Load() OPACR   { return OPACR(rm.UM32.Load()) }
-func (rm RMOPACR) Store(b OPACR) { rm.UM32.Store(uint32(b)) }
-
-func OPAC7_(p *Periph, n int) RMOPACR {
-	return RMOPACR{mmio.UM32{&p.OPACR[n].U32, uint32(OPAC7)}}
-}
-
-func OPAC6_(p *Periph, n int) RMOPACR {
-	return RMOPACR{mmio.UM32{&p.OPACR[n].U32, uint32(OPAC6)}}
-}
-
-func OPAC5_(p *Periph, n int) RMOPACR {
-	return RMOPACR{mmio.UM32{&p.OPACR[n].U32, uint32(OPAC5)}}
-}
-
-func OPAC4_(p *Periph, n int) RMOPACR {
-	return RMOPACR{mmio.UM32{&p.OPACR[n].U32, uint32(OPAC4)}}
-}
-
-func OPAC3_(p *Periph, n int) RMOPACR {
-	return RMOPACR{mmio.UM32{&p.OPACR[n].U32, uint32(OPAC3)}}
-}
-
-func OPAC2_(p *Periph, n int) RMOPACR {
-	return RMOPACR{mmio.UM32{&p.OPACR[n].U32, uint32(OPAC2)}}
-}
-
-func OPAC1_(p *Periph, n int) RMOPACR {
-	return RMOPACR{mmio.UM32{&p.OPACR[n].U32, uint32(OPAC1)}}
-}
-
-func OPAC0_(p *Periph, n int) RMOPACR {
-	return RMOPACR{mmio.UM32{&p.OPACR[n].U32, uint32(OPAC0)}}
-}
+func OPAC7_(p *Periph, i int) mmio.RM32[OPACR] { return mmio.RM32[OPACR]{&p.OPACR[i], OPAC7} }
+func OPAC6_(p *Periph, i int) mmio.RM32[OPACR] { return mmio.RM32[OPACR]{&p.OPACR[i], OPAC6} }
+func OPAC5_(p *Periph, i int) mmio.RM32[OPACR] { return mmio.RM32[OPACR]{&p.OPACR[i], OPAC5} }
+func OPAC4_(p *Periph, i int) mmio.RM32[OPACR] { return mmio.RM32[OPACR]{&p.OPACR[i], OPAC4} }
+func OPAC3_(p *Periph, i int) mmio.RM32[OPACR] { return mmio.RM32[OPACR]{&p.OPACR[i], OPAC3} }
+func OPAC2_(p *Periph, i int) mmio.RM32[OPACR] { return mmio.RM32[OPACR]{&p.OPACR[i], OPAC2} }
+func OPAC1_(p *Periph, i int) mmio.RM32[OPACR] { return mmio.RM32[OPACR]{&p.OPACR[i], OPAC1} }
+func OPAC0_(p *Periph, i int) mmio.RM32[OPACR] { return mmio.RM32[OPACR]{&p.OPACR[i], OPAC0} }
