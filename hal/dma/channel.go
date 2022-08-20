@@ -17,12 +17,12 @@ type TCD struct {
 	SADDR       unsafe.Pointer
 	SOFF        int16
 	ATTR        ATTR
-	ML_NBYTES   int32
-	SLAST       int32
+	ML_NBYTES   int
+	SLAST       int
 	DADDR       unsafe.Pointer
 	DOFF        int16
 	ELINK_CITER uint16
-	DLASTSGA    int32
+	DLAST_SGA   int
 	CSR         CSR
 	ELINK_BITER uint16
 }
@@ -169,6 +169,6 @@ func (c Channel) WriteTCD(tcd *TCD) {
 	tcdio[7].Store(tcda[7])
 }
 
-func (c Channel) LoadCSR() CSR {
-	return CSR(d(c).tcd[n(c)].csr.Load())
+func (c Channel) TCD() *TCDIO {
+	return &d(c).tcd[n(c)]
 }

@@ -57,14 +57,14 @@ func main() {
 		DADDR:       dstAddr,             // destination address
 		DOFF:        4,                   // added to DADDR after each write
 		ELINK_CITER: 1,                   // number of itreations in major loop
-		DLASTSGA:    -n * 4,              // added to DADDR when CITER reaches zero
+		DLAST_SGA:   -n * 4,              // added to DADDR when CITER reaches zero
 		CSR:         dma.START,           // start the transfer immediately
 		ELINK_BITER: 1,                   // reloaded to ELINK_CITER when CITER reaches zero
 	}
 	c.WriteTCD(&tcd)
 
 	// Wait for the end of transfer. We don't use interrupts to simplify things.
-	for c.LoadCSR()&dma.DONE == 0 {
+	for c.TCD().CSR.LoadBits(dma.DONE) == 0 {
 	}
 
 	// Blink slow if all went well, blink fast if something went wrong.

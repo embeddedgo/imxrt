@@ -14,7 +14,7 @@ import (
 )
 
 type Controller struct {
-	cr     mmio.U32
+	CR     mmio.R32[CR]
 	es     mmio.U32
 	_      uint32
 	erq    mmio.U32
@@ -39,21 +39,21 @@ type Controller struct {
 	_      [46]uint32
 	dchpri [32]mmio.U8 // 3,2,1,0, 7,6,5,4, 11,10,9,8, ...
 	_      [952]uint32
-	tcd    [32]tcd
+	tcd    [32]TCDIO
 }
 
-type tcd struct {
-	saddr       mmio.U32
-	soff        mmio.U16
-	attr        mmio.U16
-	ml_nbytes   mmio.U32
-	slast       mmio.U32
-	daddr       mmio.U32
-	doff        mmio.U16
-	elink_citer mmio.U16
-	dlastsga    mmio.U32
-	csr         mmio.U16
-	elink_biter mmio.U16
+type TCDIO struct {
+	SADDR       mmio.P32
+	SOFF        mmio.R16[int16]
+	ATTR        mmio.R16[ATTR]
+	ML_NBYTES   mmio.R32[int32]
+	SLAST       mmio.R32[int32]
+	DADDR       mmio.P32
+	DOFF        mmio.R16[int16]
+	ELINK_CITER mmio.R16[uint16]
+	DLAST_SGA   mmio.R32[int32]
+	CSR         mmio.R16[CSR]
+	ELINK_BITER mmio.R16[uint16]
 }
 
 func DMA(n int) *Controller {
@@ -103,18 +103,6 @@ const (
 	CXn      = 17
 	ACTn     = 31
 )
-
-func (d *Controller) LoadCR() CR {
-	return CR(d.cr.Load())
-}
-
-func (d *Controller) StoreCR(cr CR) {
-	d.cr.Store(uint32(cr))
-}
-
-func (d *Controller) StoreBitsCR(mask, bits CR) {
-	d.cr.StoreBits(uint32(mask), uint32(bits))
-}
 
 type Error uint32
 
