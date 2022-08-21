@@ -10,38 +10,19 @@
 package main
 
 import (
+	"embedded/rtos"
+
 	"github.com/embeddedgo/imxrt/devboard/fet1061/board/leds"
+	"github.com/embeddedgo/imxrt/hal/dma"
 	"github.com/embeddedgo/imxrt/hal/iomux"
-	"github.com/embeddedgo/imxrt/p/ccm"
-	"github.com/embeddedgo/imxrt/p/lpuart"
+	"github.com/embeddedgo/imxrt/hal/irq"
+	"github.com/embeddedgo/imxrt/hal/lpuart"
 )
 
-func dividers(clk, baud int) (osr, sbr int) {
-	lowestE := 1<<31 - 1
-	for o := 32; o >= 4; o-- {
-		bo := baud * o
-		minS := clk / bo
-		// check s = minS and s = minS + 1
-		for s := minS; ; s++ {
-			e := clk - bo*s
-			if e < 0 {
-				e = -e
-			}
-			if e < lowestE {
-				lowestE = e
-				osr = o
-				sbr = s
-				if e == 0 {
-					return
-				}
-			}
-			if s != minS {
-				break
-			}
-		}
-	}
-	return
-}
+var (
+	u    *lpuart.Driver
+	note rtos.Note
+)
 
 func main() {
 	tx := iomux.AD_B0_12
@@ -52,33 +33,38 @@ func main() {
 	rx.Setup(0)
 	rx.SetAltFunc(iomux.ALT2)
 
-	ccm.CCM().CCGR5.StoreBits(ccm.CG5_12, 3<<ccm.CG5_12n) // enable in all modes
+	u = lpuart.NewDriver(lpuart.LPUART(1), dma.Channel{}, dma.Channel{})
+	u.Setup(lpuart.Word8b, 115200)
+	u.Periph().FIFO.Store(lpuart.RXFE | lpuart.TXFE)
+	irq.LPUART1.Enable(rtos.IntPrioLow, 0)
 
-	const uartClkRoot = 80e6
-
-	osr, sbr := dividers(uartClkRoot, 115200)
-	var baud lpuart.BAUD
-	if osr < 8 {
-		baud = lpuart.BOTHEDGE
-
-	}
-	baud |= lpuart.BAUD((osr-1)<<lpuart.OSRn | sbr)
-
-	u := lpuart.LPUART1()
-	u.BAUD.Store(baud)
-	u.CTRL.Store(lpuart.RE | lpuart.TE | lpuart.DOZEEN)
-	//u.FIFO.Store(lpuart.RXFE | lpuart.TXFE)
-
+	u.EnableRx()
+	u.EnableTx()
 	for {
-		var data lpuart.DATA
-		for {
-			data = u.DATA.Load()
-			if data&^(lpuart.IDLINE|0xff) == 0 {
-				break
-			}
-			u.STAT.Store(lpuart.OR) // clear possible Overrun flag
-		}
-		u.DATA.Store(data & 0xff)
+		wait(u.Periph(), lpuart.RDRF)
+		data := u.Periph().DATA.Load()
+		wait(u.Periph(), lpuart.TDRE)
+		u.Periph().DATA.Store(data & 0xff)
 		leds.User.Toggle()
 	}
+}
+
+const (
+	errMask  = lpuart.PF | lpuart.FE | lpuart.NF | lpuart.OR
+	errIntEn = lpuart.CTRL(errMask) << (lpuart.PEIEn - lpuart.PFn)
+)
+
+func wait(u *lpuart.Periph, ev lpuart.STAT) (err lpuart.STAT) {
+	note.Clear()
+	u.CTRL.SetBits(lpuart.CTRL(ev) | errIntEn) // enable interrupts
+	note.Sleep(-1)                             // wait for interrupt
+	err = u.STAT.Load() & errMask              // check for errors
+	u.STAT.Store(err)                          // clear known errors
+	return
+}
+
+//go:interrupthandler
+func LPUART1_Handler() {
+	u.Periph().CTRL.ClearBits(lpuart.RIE | lpuart.TIE | errIntEn) // disable interrupts
+	note.Wakeup()
 }

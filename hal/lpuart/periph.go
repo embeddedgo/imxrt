@@ -13,41 +13,19 @@ import (
 	"github.com/embeddedgo/imxrt/p/mmap"
 )
 
-type VERID uint32
-type PARAM uint32
-type GLOBAL uint32
-type PINCFG uint32
-type BAUD uint32
-type STAT uint32
-type CTRL uint32
-type DATA uint32
-type MATCH uint32
-type MODIR uint32
-type FIFO uint32
-type WATER uint32
-
-type R32[T ~uint32] struct{ U32 mmio.U32 }
-
-func (r *R32[T]) LoadBits(mask T) T   { return T(r.U32.LoadBits(uint32(mask))) }
-func (r *R32[T]) StoreBits(mask, b T) { r.U32.StoreBits(uint32(mask), uint32(b)) }
-func (r *R32[T]) SetBits(mask T)      { r.U32.SetBits(uint32(mask)) }
-func (r *R32[T]) ClearBits(mask T)    { r.U32.ClearBits(uint32(mask)) }
-func (r *R32[T]) Load() T             { return T(r.U32.Load()) }
-func (r *R32[T]) Store(b T)           { r.U32.Store(uint32(b)) }
-
 type Periph struct {
-	VERID  R32[VERID]
-	PARAM  R32[PARAM]
-	GLOBAL R32[GLOBAL]
-	PINCFG R32[PINCFG]
-	BAUD   R32[BAUD]
-	STAT   R32[STAT]
-	CTRL   R32[CTRL]
-	DATA   R32[DATA]
-	MATCH  R32[MATCH]
-	MODIR  R32[MODIR]
-	FIFO   R32[FIFO]
-	WATER  R32[WATER]
+	VERID  mmio.R32[uint32]
+	PARAM  mmio.R32[uint32]
+	GLOBAL mmio.R32[GLOBAL]
+	PINCFG mmio.R32[PINCFG]
+	BAUD   mmio.R32[BAUD]
+	STAT   mmio.R32[STAT]
+	CTRL   mmio.R32[CTRL]
+	DATA   mmio.R32[DATA]
+	MATCH  mmio.R32[uint32]
+	MODIR  mmio.R32[MODIR]
+	FIFO   mmio.R32[FIFO]
+	WATER  mmio.R32[uint32]
 }
 
 func LPUART(n int) *Periph {
@@ -98,12 +76,6 @@ func (p *Periph) DisableClock() {
 	}
 }
 
-// Reset resets all internal logic and registers of LPUART peripheral.
-func (p *Periph) Reset() {
-	p.GLOBAL.Store(2)
-	p.GLOBAL.Store(0)
-}
-
 func dividers(clk, baud int) (osr, sbr int) {
 	lowestE := 1<<31 - 1
 	for o := 32; o >= 4; o-- {
@@ -131,17 +103,15 @@ func dividers(clk, baud int) (osr, sbr int) {
 	return
 }
 
-/*
 // SetBaudrate sets the UART speed [sym/s].
 func (p *Periph) SetBaudrate(baud int) {
 	const uartClkRoot = 80e6 // TODO: calculate from CCM settings
 	osr, sbr := dividers(uartClkRoot, baud)
-	var bc lpuart.BAUD
+	var baudBits BAUD
 	if osr < 8 {
-		bc = lpuart.BOTHEDGE
+		baudBits = BOTHEDGE
 
 	}
-	bc |= lpuart.BAUD((osr-1)<<lpuart.OSRn | sbr)
-	p.BAUD.Store(baud)
+	baudBits |= BAUD((osr-1)<<OSRn | sbr)
+	p.BAUD.StoreBits(BOTHEDGE|OSR|SBR, baudBits)
 }
-*/

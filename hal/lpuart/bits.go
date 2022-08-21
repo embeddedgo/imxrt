@@ -1,0 +1,365 @@
+// Copyright 2022 The Embedded Go Authors. All rights reserved.
+// Use of this source code is governed by a BSD-style
+// license that can be found in the LICENSE file.
+
+package lpuart
+
+const (
+	FEATURE   uint32 = 0xFFFF << 0 //+ Feature Identification Number
+	FEATURE_1 uint32 = 0x01 << 0   //  Standard feature set.
+	FEATURE_3 uint32 = 0x03 << 0   //  Standard feature set with MODEM/IrDA support.
+	MINOR     uint32 = 0xFF << 16  //+ Minor Version Number
+	MAJOR     uint32 = 0xFF << 24  //+ Major Version Number
+
+	FEATUREn = 0
+	MINORn   = 16
+	MAJORn   = 24
+)
+
+const (
+	TXFIFO uint32 = 0xFF << 0 //+ Transmit FIFO Size
+	RXFIFO uint32 = 0xFF << 8 //+ Receive FIFO Size
+
+	TXFIFOn = 0
+	RXFIFOn = 8
+)
+
+type GLOBAL uint32
+
+const (
+	RST GLOBAL = 0x01 << 1 //+ Software Reset
+
+	RSTn = 1
+)
+
+type PINCFG uint32
+
+const (
+	TRGSEL   PINCFG = 0x03 << 0 //+ Trigger Select
+	TRGSEL_0 PINCFG = 0x00 << 0 //  Input trigger is disabled.
+	TRGSEL_1 PINCFG = 0x01 << 0 //  Input trigger is used instead of RXD pin input.
+	TRGSEL_2 PINCFG = 0x02 << 0 //  Input trigger is used instead of CTS_B pin input.
+	TRGSEL_3 PINCFG = 0x03 << 0 //  Input trigger is used to modulate the TXD pin output. The TXD pin output (after TXINV configuration) is ANDed with the input trigger.
+
+	TRGSELn = 0
+)
+
+type BAUD uint32
+
+const (
+	SBR       BAUD = 0x1FFF << 0 //+ Baud Rate Modulo Divisor.
+	SBNS      BAUD = 0x01 << 13  //+ Stop Bit Number Select
+	RXEDGIE   BAUD = 0x01 << 14  //+ RX Input Active Edge Interrupt Enable
+	LBKDIE    BAUD = 0x01 << 15  //+ LIN Break Detect Interrupt Enable
+	RESYNCDIS BAUD = 0x01 << 16  //+ Resynchronization Disable
+	BOTHEDGE  BAUD = 0x01 << 17  //+ Both Edge Sampling
+	MATCFG    BAUD = 0x03 << 18  //+ Match Configuration
+	MATCFG_0  BAUD = 0x00 << 18  //  Address Match Wakeup
+	MATCFG_1  BAUD = 0x01 << 18  //  Idle Match Wakeup
+	MATCFG_2  BAUD = 0x02 << 18  //  Match On and Match Off
+	MATCFG_3  BAUD = 0x03 << 18  //  Enables RWU on Data Match and Match On/Off for transmitter CTS input
+	RIDMAE    BAUD = 0x01 << 20  //+ Receiver Idle DMA Enable
+	RDMAE     BAUD = 0x01 << 21  //+ Receiver Full DMA Enable
+	TDMAE     BAUD = 0x01 << 23  //+ Transmitter DMA Enable
+	OSR       BAUD = 0x1F << 24  //+ Oversampling Ratio
+	OSR_0     BAUD = 0x00 << 24  //  Writing 0 to this field will result in an oversampling ratio of 16
+	OSR_3     BAUD = 0x03 << 24  //  Oversampling ratio of 4, requires BOTHEDGE to be set.
+	OSR_4     BAUD = 0x04 << 24  //  Oversampling ratio of 5, requires BOTHEDGE to be set.
+	OSR_5     BAUD = 0x05 << 24  //  Oversampling ratio of 6, requires BOTHEDGE to be set.
+	OSR_6     BAUD = 0x06 << 24  //  Oversampling ratio of 7, requires BOTHEDGE to be set.
+	OSR_7     BAUD = 0x07 << 24  //  Oversampling ratio of 8.
+	OSR_8     BAUD = 0x08 << 24  //  Oversampling ratio of 9.
+	OSR_9     BAUD = 0x09 << 24  //  Oversampling ratio of 10.
+	OSR_10    BAUD = 0x0A << 24  //  Oversampling ratio of 11.
+	OSR_11    BAUD = 0x0B << 24  //  Oversampling ratio of 12.
+	OSR_12    BAUD = 0x0C << 24  //  Oversampling ratio of 13.
+	OSR_13    BAUD = 0x0D << 24  //  Oversampling ratio of 14.
+	OSR_14    BAUD = 0x0E << 24  //  Oversampling ratio of 15.
+	OSR_15    BAUD = 0x0F << 24  //  Oversampling ratio of 16.
+	OSR_16    BAUD = 0x10 << 24  //  Oversampling ratio of 17.
+	OSR_17    BAUD = 0x11 << 24  //  Oversampling ratio of 18.
+	OSR_18    BAUD = 0x12 << 24  //  Oversampling ratio of 19.
+	OSR_19    BAUD = 0x13 << 24  //  Oversampling ratio of 20.
+	OSR_20    BAUD = 0x14 << 24  //  Oversampling ratio of 21.
+	OSR_21    BAUD = 0x15 << 24  //  Oversampling ratio of 22.
+	OSR_22    BAUD = 0x16 << 24  //  Oversampling ratio of 23.
+	OSR_23    BAUD = 0x17 << 24  //  Oversampling ratio of 24.
+	OSR_24    BAUD = 0x18 << 24  //  Oversampling ratio of 25.
+	OSR_25    BAUD = 0x19 << 24  //  Oversampling ratio of 26.
+	OSR_26    BAUD = 0x1A << 24  //  Oversampling ratio of 27.
+	OSR_27    BAUD = 0x1B << 24  //  Oversampling ratio of 28.
+	OSR_28    BAUD = 0x1C << 24  //  Oversampling ratio of 29.
+	OSR_29    BAUD = 0x1D << 24  //  Oversampling ratio of 30.
+	OSR_30    BAUD = 0x1E << 24  //  Oversampling ratio of 31.
+	OSR_31    BAUD = 0x1F << 24  //  Oversampling ratio of 32.
+	M10       BAUD = 0x01 << 29  //+ 10-bit Mode select
+	MAEN2     BAUD = 0x01 << 30  //+ Match Address Mode Enable 2
+	MAEN1     BAUD = 0x01 << 31  //+ Match Address Mode Enable 1
+
+	SBRn       = 0
+	SBNSn      = 13
+	RXEDGIEn   = 14
+	LBKDIEn    = 15
+	RESYNCDISn = 16
+	BOTHEDGEn  = 17
+	MATCFGn    = 18
+	RIDMAEn    = 20
+	RDMAEn     = 21
+	TDMAEn     = 23
+	OSRn       = 24
+	M10n       = 29
+	MAEN2n     = 30
+	MAEN1n     = 31
+)
+
+type STAT uint32
+
+const (
+	MA2F    STAT = 0x01 << 14 //+ Match 2 Flag
+	MA1F    STAT = 0x01 << 15 //+ Match 1 Flag
+	PF      STAT = 0x01 << 16 //+ Parity Error Flag
+	FE      STAT = 0x01 << 17 //+ Framing Error Flag
+	NF      STAT = 0x01 << 18 //+ Noise Flag
+	OR      STAT = 0x01 << 19 //+ Receiver Overrun Flag
+	IDLE    STAT = 0x01 << 20 //+ Idle Line Flag
+	RDRF    STAT = 0x01 << 21 //+ Receive Data Register Full Flag
+	TC      STAT = 0x01 << 22 //+ Transmission Complete Flag
+	TDRE    STAT = 0x01 << 23 //+ Transmit Data Register Empty Flag
+	RAF     STAT = 0x01 << 24 //+ Receiver Active Flag
+	LBKDE   STAT = 0x01 << 25 //+ LIN Break Detection Enable
+	BRK13   STAT = 0x01 << 26 //+ Break Character Generation Length
+	RWUID   STAT = 0x01 << 27 //+ Receive Wake Up Idle Detect
+	RXINV   STAT = 0x01 << 28 //+ Receive Data Inversion
+	MSBF    STAT = 0x01 << 29 //+ MSB First
+	RXEDGIF STAT = 0x01 << 30 //+ RXD Pin Active Edge Interrupt Flag
+	LBKDIF  STAT = 0x01 << 31 //+ LIN Break Detect Interrupt Flag
+
+	MA2Fn    = 14
+	MA1Fn    = 15
+	PFn      = 16
+	FEn      = 17
+	NFn      = 18
+	ORn      = 19
+	IDLEn    = 20
+	RDRFn    = 21
+	TCn      = 22
+	TDREn    = 23
+	RAFn     = 24
+	LBKDEn   = 25
+	BRK13n   = 26
+	RWUIDn   = 27
+	RXINVn   = 28
+	MSBFn    = 29
+	RXEDGIFn = 30
+	LBKDIFn  = 31
+)
+
+type CTRL uint32
+
+const (
+	PT        CTRL = 0x01 << 0  //+ Parity Type
+	PE        CTRL = 0x01 << 1  //+ Parity Enable
+	ILT       CTRL = 0x01 << 2  //+ Idle Line Type Select
+	WAKE      CTRL = 0x01 << 3  //+ Receiver Wakeup Method Select
+	M         CTRL = 0x01 << 4  //+ 9-Bit or 8-Bit Mode Select
+	RSRC      CTRL = 0x01 << 5  //+ Receiver Source Select
+	DOZEEN    CTRL = 0x01 << 6  //+ Doze Enable
+	LOOPS     CTRL = 0x01 << 7  //+ Loop Mode Select
+	IDLECFG   CTRL = 0x07 << 8  //+ Idle Configuration
+	IDLECFG_0 CTRL = 0x00 << 8  //  1 idle character
+	IDLECFG_1 CTRL = 0x01 << 8  //  2 idle characters
+	IDLECFG_2 CTRL = 0x02 << 8  //  4 idle characters
+	IDLECFG_3 CTRL = 0x03 << 8  //  8 idle characters
+	IDLECFG_4 CTRL = 0x04 << 8  //  16 idle characters
+	IDLECFG_5 CTRL = 0x05 << 8  //  32 idle characters
+	IDLECFG_6 CTRL = 0x06 << 8  //  64 idle characters
+	IDLECFG_7 CTRL = 0x07 << 8  //  128 idle characters
+	M7        CTRL = 0x01 << 11 //+ 7-Bit Mode Select
+	MA2IE     CTRL = 0x01 << 14 //+ Match 2 Interrupt Enable
+	MA1IE     CTRL = 0x01 << 15 //+ Match 1 Interrupt Enable
+	SBK       CTRL = 0x01 << 16 //+ Send Break
+	RWU       CTRL = 0x01 << 17 //+ Receiver Wakeup Control
+	RE        CTRL = 0x01 << 18 //+ Receiver Enable
+	TE        CTRL = 0x01 << 19 //+ Transmitter Enable
+	ILIE      CTRL = 0x01 << 20 //+ Idle Line Interrupt Enable
+	RIE       CTRL = 0x01 << 21 //+ Receiver Interrupt Enable
+	TCIE      CTRL = 0x01 << 22 //+ Transmission Complete Interrupt Enable for
+	TIE       CTRL = 0x01 << 23 //+ Transmit Interrupt Enable
+	PEIE      CTRL = 0x01 << 24 //+ Parity Error Interrupt Enable
+	FEIE      CTRL = 0x01 << 25 //+ Framing Error Interrupt Enable
+	NEIE      CTRL = 0x01 << 26 //+ Noise Error Interrupt Enable
+	ORIE      CTRL = 0x01 << 27 //+ Overrun Interrupt Enable
+	TXINV     CTRL = 0x01 << 28 //+ Transmit Data Inversion
+	TXDIR     CTRL = 0x01 << 29 //+ TXD Pin Direction in Single-Wire Mode
+	R9T8      CTRL = 0x01 << 30 //+ Receive Bit 9 / Transmit Bit 8
+	R8T9      CTRL = 0x01 << 31 //+ Receive Bit 8 / Transmit Bit 9
+
+	PTn      = 0
+	PEn      = 1
+	ILTn     = 2
+	WAKEn    = 3
+	Mn       = 4
+	RSRCn    = 5
+	DOZEENn  = 6
+	LOOPSn   = 7
+	IDLECFGn = 8
+	M7n      = 11
+	MA2IEn   = 14
+	MA1IEn   = 15
+	SBKn     = 16
+	RWUn     = 17
+	REn      = 18
+	TEn      = 19
+	ILIEn    = 20
+	RIEn     = 21
+	TCIEn    = 22
+	TIEn     = 23
+	PEIEn    = 24
+	FEIEn    = 25
+	NEIEn    = 26
+	ORIEn    = 27
+	TXINVn   = 28
+	TXDIRn   = 29
+	R9T8n    = 30
+	R8T9n    = 31
+)
+
+type DATA uint32
+
+const (
+	R0T0    DATA = 0x01 << 0  //+ R0T0
+	R1T1    DATA = 0x01 << 1  //+ R1T1
+	R2T2    DATA = 0x01 << 2  //+ R2T2
+	R3T3    DATA = 0x01 << 3  //+ R3T3
+	R4T4    DATA = 0x01 << 4  //+ R4T4
+	R5T5    DATA = 0x01 << 5  //+ R5T5
+	R6T6    DATA = 0x01 << 6  //+ R6T6
+	R7T7    DATA = 0x01 << 7  //+ R7T7
+	R8T8    DATA = 0x01 << 8  //+ R8T8
+	R9T9    DATA = 0x01 << 9  //+ R9T9
+	IDLINE  DATA = 0x01 << 11 //+ Idle Line
+	RXEMPT  DATA = 0x01 << 12 //+ Receive Buffer Empty
+	FRETSC  DATA = 0x01 << 13 //+ Frame Error / Transmit Special Character
+	PARITYE DATA = 0x01 << 14 //+ PARITYE
+	NOISY   DATA = 0x01 << 15 //+ NOISY
+
+	R0T0n    = 0
+	R1T1n    = 1
+	R2T2n    = 2
+	R3T3n    = 3
+	R4T4n    = 4
+	R5T5n    = 5
+	R6T6n    = 6
+	R7T7n    = 7
+	R8T8n    = 8
+	R9T9n    = 9
+	IDLINEn  = 11
+	RXEMPTn  = 12
+	FRETSCn  = 13
+	PARITYEn = 14
+	NOISYn   = 15
+)
+
+const (
+	MA1 uint32 = 0x3FF << 0  //+ Match Address 1
+	MA2 uint32 = 0x3FF << 16 //+ Match Address 2
+
+	MA1n = 0
+	MA2n = 16
+)
+
+type MODIR uint32
+
+const (
+	TXCTSE   MODIR = 0x01 << 0  //+ Transmitter clear-to-send enable
+	TXRTSE   MODIR = 0x01 << 1  //+ Transmitter request-to-send enable
+	TXRTSPOL MODIR = 0x01 << 2  //+ Transmitter request-to-send polarity
+	RXRTSE   MODIR = 0x01 << 3  //+ Receiver request-to-send enable
+	TXCTSC   MODIR = 0x01 << 4  //+ Transmit CTS Configuration
+	TXCTSSRC MODIR = 0x01 << 5  //+ Transmit CTS Source
+	RTSWATER MODIR = 0x03 << 8  //+ Receive RTS Configuration
+	TNP      MODIR = 0x03 << 16 //+ Transmitter narrow pulse
+	TNP_0    MODIR = 0x00 << 16 //  1/OSR.
+	TNP_1    MODIR = 0x01 << 16 //  2/OSR.
+	TNP_2    MODIR = 0x02 << 16 //  3/OSR.
+	TNP_3    MODIR = 0x03 << 16 //  4/OSR.
+	IREN     MODIR = 0x01 << 18 //+ Infrared enable
+
+	TXCTSEn   = 0
+	TXRTSEn   = 1
+	TXRTSPOLn = 2
+	RXRTSEn   = 3
+	TXCTSCn   = 4
+	TXCTSSRCn = 5
+	RTSWATERn = 8
+	TNPn      = 16
+	IRENn     = 18
+)
+
+type FIFO uint32
+
+const (
+	RXFIFOSIZE   FIFO = 0x07 << 0  //+ Receive FIFO Buffer Depth
+	RXFIFOSIZE_0 FIFO = 0x00 << 0  //  Receive FIFO/Buffer depth = 1 dataword.
+	RXFIFOSIZE_1 FIFO = 0x01 << 0  //  Receive FIFO/Buffer depth = 4 datawords.
+	RXFIFOSIZE_2 FIFO = 0x02 << 0  //  Receive FIFO/Buffer depth = 8 datawords.
+	RXFIFOSIZE_3 FIFO = 0x03 << 0  //  Receive FIFO/Buffer depth = 16 datawords.
+	RXFIFOSIZE_4 FIFO = 0x04 << 0  //  Receive FIFO/Buffer depth = 32 datawords.
+	RXFIFOSIZE_5 FIFO = 0x05 << 0  //  Receive FIFO/Buffer depth = 64 datawords.
+	RXFIFOSIZE_6 FIFO = 0x06 << 0  //  Receive FIFO/Buffer depth = 128 datawords.
+	RXFIFOSIZE_7 FIFO = 0x07 << 0  //  Receive FIFO/Buffer depth = 256 datawords.
+	RXFE         FIFO = 0x01 << 3  //+ Receive FIFO Enable
+	TXFIFOSIZE   FIFO = 0x07 << 4  //+ Transmit FIFO Buffer Depth
+	TXFIFOSIZE_0 FIFO = 0x00 << 4  //  Transmit FIFO/Buffer depth = 1 dataword.
+	TXFIFOSIZE_1 FIFO = 0x01 << 4  //  Transmit FIFO/Buffer depth = 4 datawords.
+	TXFIFOSIZE_2 FIFO = 0x02 << 4  //  Transmit FIFO/Buffer depth = 8 datawords.
+	TXFIFOSIZE_3 FIFO = 0x03 << 4  //  Transmit FIFO/Buffer depth = 16 datawords.
+	TXFIFOSIZE_4 FIFO = 0x04 << 4  //  Transmit FIFO/Buffer depth = 32 datawords.
+	TXFIFOSIZE_5 FIFO = 0x05 << 4  //  Transmit FIFO/Buffer depth = 64 datawords.
+	TXFIFOSIZE_6 FIFO = 0x06 << 4  //  Transmit FIFO/Buffer depth = 128 datawords.
+	TXFIFOSIZE_7 FIFO = 0x07 << 4  //  Transmit FIFO/Buffer depth = 256 datawords
+	TXFE         FIFO = 0x01 << 7  //+ Transmit FIFO Enable
+	RXUFE        FIFO = 0x01 << 8  //+ Receive FIFO Underflow Interrupt Enable
+	TXOFE        FIFO = 0x01 << 9  //+ Transmit FIFO Overflow Interrupt Enable
+	RXIDEN       FIFO = 0x07 << 10 //+ Receiver Idle Empty Enable
+	RXIDEN_0     FIFO = 0x00 << 10 //  Disable RDRF assertion due to partially filled FIFO when receiver is idle.
+	RXIDEN_1     FIFO = 0x01 << 10 //  Enable RDRF assertion due to partially filled FIFO when receiver is idle for 1 character.
+	RXIDEN_2     FIFO = 0x02 << 10 //  Enable RDRF assertion due to partially filled FIFO when receiver is idle for 2 characters.
+	RXIDEN_3     FIFO = 0x03 << 10 //  Enable RDRF assertion due to partially filled FIFO when receiver is idle for 4 characters.
+	RXIDEN_4     FIFO = 0x04 << 10 //  Enable RDRF assertion due to partially filled FIFO when receiver is idle for 8 characters.
+	RXIDEN_5     FIFO = 0x05 << 10 //  Enable RDRF assertion due to partially filled FIFO when receiver is idle for 16 characters.
+	RXIDEN_6     FIFO = 0x06 << 10 //  Enable RDRF assertion due to partially filled FIFO when receiver is idle for 32 characters.
+	RXIDEN_7     FIFO = 0x07 << 10 //  Enable RDRF assertion due to partially filled FIFO when receiver is idle for 64 characters.
+	RXFLUSH      FIFO = 0x01 << 14 //+ Receive FIFO/Buffer Flush
+	TXFLUSH      FIFO = 0x01 << 15 //+ Transmit FIFO/Buffer Flush
+	RXUF         FIFO = 0x01 << 16 //+ Receiver Buffer Underflow Flag
+	TXOF         FIFO = 0x01 << 17 //+ Transmitter Buffer Overflow Flag
+	RXFEMPT      FIFO = 0x01 << 22 //+ Receive Buffer/FIFO Empty
+	TXFEMPT      FIFO = 0x01 << 23 //+ Transmit Buffer/FIFO Empty
+
+	RXFIFOSIZEn = 0
+	RXFEn       = 3
+	TXFIFOSIZEn = 4
+	TXFEn       = 7
+	RXUFEn      = 8
+	TXOFEn      = 9
+	RXIDENn     = 10
+	RXFLUSHn    = 14
+	TXFLUSHn    = 15
+	RXUFn       = 16
+	TXOFn       = 17
+	RXFEMPTn    = 22
+	TXFEMPTn    = 23
+)
+
+const (
+	TXWATER uint32 = 0x03 << 0  //+ Transmit Watermark
+	TXCOUNT uint32 = 0x07 << 8  //+ Transmit Counter
+	RXWATER uint32 = 0x03 << 16 //+ Receive Watermark
+	RXCOUNT uint32 = 0x07 << 24 //+ Receive Counter
+
+	TXWATERn = 0
+	TXCOUNTn = 8
+	RXWATERn = 16
+	RXCOUNTn = 24
+)
