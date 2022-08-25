@@ -11,8 +11,8 @@ import (
 	"github.com/embeddedgo/imxrt/p/mmap"
 )
 
-func GPR(i int) *mmio.U32 {
-	return &(*[34]mmio.U32)(unsafe.Pointer(mmap.IOMUXC_GPR_BASE))[i]
+func GPR(i int) *mmio.R32[uint32] {
+	return &(*[34]mmio.R32[uint32])(unsafe.Pointer(mmap.IOMUXC_GPR_BASE))[i]
 }
 
 // GPR2 bits

@@ -6,9 +6,11 @@ package lpuart
 
 import (
 	"embedded/rtos"
+	"strings"
 	"time"
 
 	"github.com/embeddedgo/imxrt/hal/dma"
+	"github.com/embeddedgo/imxrt/hal/internal"
 )
 
 type Driver struct {
@@ -67,6 +69,8 @@ func (d *Driver) Setup(conf Config, baudrate int) {
 	d.p.GLOBAL.Store(RST)
 	d.p.GLOBAL.Store(0)
 	d.p.SetBaudrate(baudrate)
+	d.p.WATER.Store(1 << TXWATERn)
+	d.p.FIFO.Store(RXFE | TXFE)
 	d.SetConfig(conf)
 }
 
@@ -90,4 +94,82 @@ func (d *Driver) EnableTx() {
 func (d *Driver) DisableTx() {
 	// TODO: wait for transfer complete (empty FIFO or maybe TC)
 	d.p.CTRL.ClearBits(TE | DOZEEN)
+}
+
+type Error struct {
+	Rx STAT
+}
+
+func (e Error) Error() string {
+	var (
+		a [4]string
+		n int
+	)
+	if e.Rx&PF != 0 {
+		a[n] = "parity"
+		n++
+	}
+	if e.Rx&FE != 0 {
+		a[n] = "framing"
+		n++
+	}
+	if e.Rx&NF != 0 {
+		a[n] = "noise"
+		n++
+	}
+	if e.Rx&OR != 0 {
+		a[n] = "overrun"
+		n++
+	}
+	return "LPUART Rx " + strings.Join(a[:n], ",")
+}
+
+func (d *Driver) Read(buf []byte) (n int, err error) {
+	if len(buf) == 0 {
+		return
+	}
+	stat := d.p.STAT.Load()
+	if stat&(RDRF|OR) == 0 {
+		d.rxReady.Clear()
+		if d.rxReady.Sleep(d.timeoutRx) {
+			// todo
+		}
+		stat = d.p.STAT.Load()
+	}
+	if !d.rxDMA.IsValid() {
+		for n < len(buf) {
+			data := d.p.DATA.Load()
+			if data&(RXEMPT|FRETSC|PARITYE|NOISY) != 0 {
+				var e STAT
+				if data&(FRETSC|PARITYE|NOISY) != 0 {
+					e = STAT(data&FRETSC)<<(FEn-FRETSCn) |
+						STAT(data&PARITYE)<<(PFn-PARITYEn) |
+						STAT(data&NOISY)<<(NFn-NOISYn)
+				}
+				if data&RXEMPT != 0 && stat&OR != 0 {
+					// report and clear OR only if no more data in FIFO
+					e |= OR
+					d.p.STAT.Store(OR)
+				}
+				return
+			}
+			buf[n] = byte(data)
+			n++
+		}
+		return
+	}
+	return
+}
+
+func (d *Driver) ISR() {
+	ctrl := d.p.CTRL.Load()
+	stat := d.p.STAT.Load()
+	if ctrl&(RIE|ORIE) != 0 && stat&(RDRF|OR) != 0 {
+		internal.AtomicStoreBits(&d.p.CTRL, RIE|ORIE, 0)
+		d.rxReady.Wakeup()
+	}
+	if ctrl&TIE != 0 && stat&TDRE != 0 {
+		internal.AtomicStoreBits(&d.p.CTRL, TIE, 0)
+		d.txDone.Wakeup()
+	}
 }

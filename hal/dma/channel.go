@@ -103,6 +103,7 @@ const (
 func d(c Channel) *Controller { return (*Controller)(unsafe.Pointer(c.h &^ 31)) }
 func n(c Channel) uint        { return uint(c.h) & 31 }
 
+func (c Channel) IsValid() bool    { return c.h != 0 }
 func (c Channel) ReqEnabled() bool { return d(c).erq.Load()>>n(c)&1 != 0 }
 func (c Channel) EnableReq()       { d(c).serq.Store(uint8(n(c))) }
 func (c Channel) DisableReq()      { d(c).cerq.Store(uint8(n(c))) }

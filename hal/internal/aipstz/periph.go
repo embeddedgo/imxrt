@@ -21,9 +21,9 @@ const (
 )
 
 type Periph struct {
-	MPR   mmio.U32
+	MPR   mmio.R32[uint32]
 	_     [15]uint32
-	OPACR [5]mmio.U32
+	OPACR [5]mmio.R32[uint32]
 }
 
 func P(i int) *Periph {

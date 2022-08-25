@@ -18,16 +18,16 @@ const (
 )
 
 type CCGR_ struct {
-	U32 mmio.U32
+	R32 mmio.R32[uint32]
 }
 
 func (r *CCGR_) CG(i int) int8 {
-	return int8(r.U32.Load() >> uint(i*2) & 3)
+	return int8(r.R32.Load() >> uint(i*2) & 3)
 }
 
 func (r *CCGR_) SetCG(i int, cg int8) {
 	i *= 2
-	internal.AtomicStoreBits(&r.U32, 3<<uint(i), uint32(cg)<<uint(i))
+	internal.AtomicStoreBits(&r.R32, 3<<uint(i), uint32(cg)<<uint(i))
 }
 
 func CCGR(i int) *CCGR_ {

@@ -10,11 +10,14 @@ import (
 	"unsafe"
 )
 
-func AtomicStoreBits(r *mmio.U32, mask, bits uint32) {
+func AtomicStoreBits[T mmio.T32](r *mmio.R32[T], mask, bits T) {
+	bits &= mask
 	for {
 		old := r.Load()
 		if atomic.CompareAndSwapUint32(
-			(*uint32)(unsafe.Pointer(r)), old, old&^mask|bits&mask,
+			(*uint32)(unsafe.Pointer(r)),
+			uint32(old),
+			uint32(old&^mask|bits),
 		) {
 			return
 		}

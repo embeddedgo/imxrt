@@ -14,24 +14,32 @@ import (
 	"github.com/embeddedgo/imxrt/p/mmap"
 )
 
-type Bits struct{ mmio.U32 }
+type Shared struct{ mmio.R32[uint32] }
 
-func (b *Bits) StoreBits(mask, bits uint32) {
-	internal.AtomicStoreBits(&b.U32, mask, bits)
+func (b *Shared) StoreBits(mask, bits uint32) {
+	internal.AtomicStoreBits(&b.R32, mask, bits)
+}
+
+func (b *Shared) SetBits(mask uint32) {
+	internal.AtomicStoreBits(&b.R32, mask, mask)
+}
+
+func (b *Shared) ClearBits(mask uint32) {
+	internal.AtomicStoreBits(&b.R32, mask, 0)
 }
 
 type Port struct {
-	DR       Bits // Data register. Its bits are reflected on the output pins.
-	DirOut   Bits // Sets the connected pins to the output mode.
-	Sample   Bits // Samples input pins (also output pins if AltFunc.SION set)
-	IntCfg   [2]mmio.U32
-	IntEna   Bits // Enables connected pins as an interrupt source.
-	Pending  Bits // Interrupt pending register. Write to clear.
-	EdgeSel  Bits // Configures the edge detector (subset of IntCfg)
+	DR       Shared           // Data register. Its bits are reflected on the output pins.
+	DirOut   Shared           // Sets the connected pins to the output mode.
+	Sample   mmio.R32[uint32] // Samples input pins (also output pins if AltFunc.SION set)
+	IntCfg   [2]Shared        // Interrupt configuration (2 bits for one input)
+	IntEna   Shared           // Enables connected pins as an interrupt source.
+	Pending  Shared           // Interrupt pending register. Write to clear.
+	EdgeSel  Shared           // Configures the edge detector (subset of IntCfg)
 	_        [25]uint32
-	SetDR    Bits // Use to set bits in data register.
-	ClearDR  Bits // Use to clear bits in data register.
-	ToggleDR Bits // Use to toggle bits in data register.
+	SetDR    mmio.R32[uint32] // Use to set bits in data register.
+	ClearDR  mmio.R32[uint32] // Use to clear bits in data register.
+	ToggleDR mmio.R32[uint32] // Use to toggle bits in data register.
 }
 
 var portAddrs = [...]uintptr{

@@ -101,7 +101,7 @@ func (b Bit) IntConf() int {
 func (b Bit) SetIntConf(cfg int) {
 	n := uint(b.Num())
 	shift := n * 2 & 15
-	internal.AtomicStoreBits(&b.Port().IntCfg[n>>4], 3<<shift, uint32(cfg<<shift))
+	b.Port().IntCfg[n>>4].StoreBits(3<<shift, uint32(cfg<<shift))
 }
 
 // IntPending reports whether the interrupt coresponding to b is pending.
