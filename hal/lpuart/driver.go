@@ -10,27 +10,95 @@ import (
 	"time"
 
 	"github.com/embeddedgo/imxrt/hal/dma"
-	"github.com/embeddedgo/imxrt/hal/internal"
 )
 
+type Error uint32
+
+const (
+	EPARITY  = Error(PF)
+	EFRAMING = Error(FE)
+	ENOISE   = Error(NF)
+	EOVERRUN = Error(OR)
+)
+
+func (e Error) Error() string {
+	var (
+		a [4]string
+		n int
+	)
+	if e&EPARITY != 0 {
+		a[n] = "parity"
+		n++
+	}
+	if e&EFRAMING != 0 {
+		a[n] = "framing"
+		n++
+	}
+	if e&ENOISE != 0 {
+		a[n] = "noise"
+		n++
+	}
+	if e&EOVERRUN != 0 {
+		a[n] = "overrun"
+		n++
+	}
+	return "lpurat: " + strings.Join(a[:n], ",")
+}
+
+type DriverError uint8
+
+const (
+	// ErrBufOverflow is returned if one or more received bytes has been dropped
+	// because of the lack of free space in the driver's receive buffer.
+	ErrBufOverflow DriverError = iota + 1
+
+	// ErrTimeout is returned if timeout occured. It means that the read/write
+	// operation has been interrupted. In case of write you can not determine
+	// the exact number of bytes sent to the remote party.
+	ErrTimeout
+)
+
+// Error implements error interface.
+func (e DriverError) Error() string {
+	switch e {
+	case ErrBufOverflow:
+		return "lpuart: buffer overflow"
+	case ErrTimeout:
+		return "lpuart: timeout"
+	}
+	return ""
+}
+
 type Driver struct {
-	timeoutRx time.Duration
-	timeoutTx time.Duration
-	p         *Periph
-	rxDMA     dma.Channel
-	txDMA     dma.Channel
-	rxReady   rtos.Note
-	txDone    rtos.Note
+	p *Periph
+
+	// Rx fields
+	rxtimeout time.Duration
+	rxdma     dma.Channel
+	rxready   rtos.Note
+	rxbuf     []DATA // Rx ring buffer
+	nextr     uint32
+	nextw     uint32
+	rxwake    uint32
+	overflow  uint32
+
+	// Tx fields
+	txtimeout time.Duration
+	txdma     dma.Channel
+	txdata    string
+	txn       int
+	txmax     int
+	txdone    rtos.Note
 }
 
 // NewDriver returns a new driver for p.
 func NewDriver(p *Periph, rxdma, txdma dma.Channel) *Driver {
 	return &Driver{
-		timeoutRx: -1,
-		timeoutTx: -1,
 		p:         p,
-		rxDMA:     rxdma,
-		txDMA:     txdma,
+		rxtimeout: -1,
+		rxdma:     rxdma,
+		txtimeout: -1,
+		txdma:     txdma,
 	}
 }
 
@@ -59,7 +127,7 @@ func (d *Driver) SetConfig(conf Config) {
 		_        = -(uint(baudMask) & uint(ctrlMask)) // check colliding bits
 	)
 	d.p.BAUD.StoreBits(baudMask, BAUD(conf))
-	d.p.CTRL.StoreBits(ctrlMask, CTRL(conf))
+	d.p.CTRL.StoreBits(ctrlMask, CTRL(conf)|DOZEEN)
 }
 
 // Setup enables clock source, resets, and configures the LPUART peripheral. You
@@ -69,107 +137,27 @@ func (d *Driver) Setup(conf Config, baudrate int) {
 	d.p.GLOBAL.Store(RST)
 	d.p.GLOBAL.Store(0)
 	d.p.SetBaudrate(baudrate)
-	d.p.WATER.Store(1 << TXWATERn)
+	d.p.WATER.Store(0)
 	d.p.FIFO.Store(RXFE | TXFE)
 	d.SetConfig(conf)
-}
-
-func (d *Driver) EnableRx() {
-	// TODO: DMA, ...
-	d.p.CTRL.SetBits(RE | DOZEEN)
-}
-
-func (d *Driver) DisableRx() {
-	// TODO: ...
-	d.p.CTRL.ClearBits(RE | DOZEEN)
-}
-
-// EnableTx enables Tx part of the LPUART peripheral and setups Tx DMA channel.
-func (d *Driver) EnableTx() {
-	d.p.CTRL.SetBits(TE | DOZEEN)
-	// TODO: DMA
-}
-
-// DisableTx disables Tx part of the USART peripheral.
-func (d *Driver) DisableTx() {
-	// TODO: wait for transfer complete (empty FIFO or maybe TC)
-	d.p.CTRL.ClearBits(TE | DOZEEN)
-}
-
-type Error struct {
-	Rx STAT
-}
-
-func (e Error) Error() string {
-	var (
-		a [4]string
-		n int
-	)
-	if e.Rx&PF != 0 {
-		a[n] = "parity"
-		n++
-	}
-	if e.Rx&FE != 0 {
-		a[n] = "framing"
-		n++
-	}
-	if e.Rx&NF != 0 {
-		a[n] = "noise"
-		n++
-	}
-	if e.Rx&OR != 0 {
-		a[n] = "overrun"
-		n++
-	}
-	return "LPUART Rx " + strings.Join(a[:n], ",")
-}
-
-func (d *Driver) Read(buf []byte) (n int, err error) {
-	if len(buf) == 0 {
-		return
-	}
-	stat := d.p.STAT.Load()
-	if stat&(RDRF|OR) == 0 {
-		d.rxReady.Clear()
-		if d.rxReady.Sleep(d.timeoutRx) {
-			// todo
-		}
-		stat = d.p.STAT.Load()
-	}
-	if !d.rxDMA.IsValid() {
-		for n < len(buf) {
-			data := d.p.DATA.Load()
-			if data&(RXEMPT|FRETSC|PARITYE|NOISY) != 0 {
-				var e STAT
-				if data&(FRETSC|PARITYE|NOISY) != 0 {
-					e = STAT(data&FRETSC)<<(FEn-FRETSCn) |
-						STAT(data&PARITYE)<<(PFn-PARITYEn) |
-						STAT(data&NOISY)<<(NFn-NOISYn)
-				}
-				if data&RXEMPT != 0 && stat&OR != 0 {
-					// report and clear OR only if no more data in FIFO
-					e |= OR
-					d.p.STAT.Store(OR)
-				}
-				return
-			}
-			buf[n] = byte(data)
-			n++
-		}
-		return
-	}
-	return
+	d.txmax = 1 << (d.p.PARAM.LoadBits(TXFIFO) >> TXFIFOn)
 }
 
 func (d *Driver) ISR() {
 	ctrl := d.p.CTRL.Load()
 	stat := d.p.STAT.Load()
-	if ctrl&(RIE|ORIE) != 0 && stat&(RDRF|OR) != 0 {
-		internal.AtomicStoreBits(&d.p.CTRL, RIE|ORIE, 0)
-		d.rxReady.Wakeup()
+	if ctrl&RIE != 0 && stat&RDRF != 0 {
+		if d.rxdma.IsValid() {
+			// TODO:
+		} else {
+			readNoDMA(d)
+		}
 	}
 	if ctrl&TIE != 0 && stat&TDRE != 0 {
-		internal.AtomicStoreBits(&d.p.CTRL, TIE, 0)
-		d.txDone.Wakeup()
+		if d.rxdma.IsValid() {
+			// TODO:
+		} else {
+			writeNoDMA(d)
+		}
 	}
 }

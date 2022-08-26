@@ -9,8 +9,8 @@ import (
 	"embedded/rtos"
 	"fmt"
 
-	"github.com/embeddedgo/imxrt/devboard/fet1061/board/leds"
-	"github.com/embeddedgo/imxrt/devboard/fet1061/board/pins"
+	"github.com/embeddedgo/imxrt/devboard/teensy4/board/leds"
+	"github.com/embeddedgo/imxrt/devboard/teensy4/board/pins"
 	"github.com/embeddedgo/imxrt/hal/dma"
 	"github.com/embeddedgo/imxrt/hal/iomux"
 	"github.com/embeddedgo/imxrt/hal/irq"
@@ -24,8 +24,8 @@ var (
 
 func main() {
 	// Use pins
-	rx := pins.P23
 	tx := pins.P24
+	rx := pins.P25
 
 	// Configure pins
 	tx.Setup(iomux.Drive2)

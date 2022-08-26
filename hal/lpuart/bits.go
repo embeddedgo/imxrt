@@ -4,6 +4,7 @@
 
 package lpuart
 
+// VERID
 const (
 	FEATURE   uint32 = 0xFFFF << 0 //+ Feature Identification Number
 	FEATURE_1 uint32 = 0x01 << 0   //  Standard feature set.
@@ -16,6 +17,7 @@ const (
 	MAJORn   = 24
 )
 
+// PARAM
 const (
 	TXFIFO uint32 = 0xFF << 0 //+ Transmit FIFO Size
 	RXFIFO uint32 = 0xFF << 8 //+ Receive FIFO Size
@@ -224,7 +226,7 @@ const (
 	R8T9n    = 31
 )
 
-type DATA uint32
+type DATA uint16
 
 const (
 	R0T0    DATA = 0x01 << 0  //+ R0T0
@@ -260,6 +262,7 @@ const (
 	NOISYn   = 15
 )
 
+// MATCH
 const (
 	MA1 uint32 = 0x3FF << 0  //+ Match Address 1
 	MA2 uint32 = 0x3FF << 16 //+ Match Address 2
@@ -352,6 +355,7 @@ const (
 	TXFEMPTn    = 23
 )
 
+// WATER
 const (
 	TXWATER uint32 = 0x03 << 0  //+ Transmit Watermark
 	TXCOUNT uint32 = 0x07 << 8  //+ Transmit Counter

@@ -21,7 +21,7 @@ type Periph struct {
 	BAUD   mmio.R32[BAUD]
 	STAT   mmio.R32[STAT]
 	CTRL   mmio.R32[CTRL]
-	DATA   mmio.R32[DATA]
+	DATA   mmio.R16[DATA]
 	MATCH  mmio.R32[uint32]
 	MODIR  mmio.R32[MODIR]
 	FIFO   mmio.R32[FIFO]
