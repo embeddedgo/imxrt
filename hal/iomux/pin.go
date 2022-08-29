@@ -5,7 +5,7 @@
 package iomux
 
 // Pin represents an I/O pin (pad).
-type Pin int
+type Pin int16
 
 const (
 	EMC_00 Pin = iota
@@ -171,7 +171,7 @@ const (
 )
 
 // AltFunc represents a mux mode.
-type AltFunc uint8
+type AltFunc int8
 
 const (
 	ALT   AltFunc = 0xf << 0 // Mux mode select field

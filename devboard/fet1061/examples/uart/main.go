@@ -12,7 +12,6 @@ import (
 	"github.com/embeddedgo/imxrt/devboard/fet1061/board/leds"
 	"github.com/embeddedgo/imxrt/devboard/fet1061/board/pins"
 	"github.com/embeddedgo/imxrt/hal/dma"
-	"github.com/embeddedgo/imxrt/hal/iomux"
 	"github.com/embeddedgo/imxrt/hal/irq"
 	"github.com/embeddedgo/imxrt/hal/lpuart"
 )
@@ -23,19 +22,15 @@ var (
 )
 
 func main() {
-	// Use pins
+	// Used IO pins
 	rx := pins.P23
 	tx := pins.P24
-
-	// Configure pins
-	tx.Setup(iomux.Drive2)
-	tx.SetAltFunc(iomux.ALT2)
-	rx.Setup(0)
-	rx.SetAltFunc(iomux.ALT2)
 
 	// Setup LPUART driver
 	u = lpuart.NewDriver(lpuart.LPUART(1), dma.Channel{}, dma.Channel{})
 	u.Setup(lpuart.Word8b, 115200)
+	u.UsePin(rx, lpuart.RXD)
+	u.UsePin(tx, lpuart.TXD)
 	irq.LPUART1.Enable(rtos.IntPrioLow, 0)
 
 	// Enable both directions
@@ -43,7 +38,7 @@ func main() {
 	u.EnableTx()
 
 	// Print received data showing reading chunks
-	buf := make([]byte, 32)
+	buf := make([]byte, 80)
 	for {
 		n, err := u.Read(buf)
 		for err != nil {
@@ -56,6 +51,6 @@ func main() {
 
 //go:interrupthandler
 func LPUART1_Handler() {
-	leds.User.Toggle() // toggle onboard LED to see interrupts
+	leds.User.Toggle() // visualize UART interrupts
 	u.ISR()
 }
