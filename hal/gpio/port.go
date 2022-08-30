@@ -68,18 +68,18 @@ func (p *Port) Num() int {
 	return -1
 }
 
+var cgs = [...]uint8{
+	1<<4 | 13,
+	0<<4 | 15,
+	2<<4 | 13,
+	3<<4 | 6,
+	1<<4 | 15,
+}
+
 func cg(p *Port) (*ccm.CCGR_, int) {
-	switch uintptr(unsafe.Pointer(p)) {
-	case mmap.GPIO1_BASE:
-		return ccm.CCGR(1), 13
-	case mmap.GPIO2_BASE:
-		return ccm.CCGR(0), 15
-	case mmap.GPIO3_BASE:
-		return ccm.CCGR(2), 13
-	case mmap.GPIO4_BASE:
-		return ccm.CCGR(3), 6
-	case mmap.GPIO5_BASE:
-		return ccm.CCGR(1), 15
+	if n := p.Num() - 1; n < len(cgs) {
+		cg := cgs[n]
+		return ccm.CCGR(int(cg) >> 4), int(cg) & 15
 	}
 	return nil, 0
 }

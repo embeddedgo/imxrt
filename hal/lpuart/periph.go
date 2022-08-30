@@ -37,24 +37,26 @@ func LPUART(n int) *Periph {
 	return (*Periph)(unsafe.Pointer(base + uintptr(n)*step))
 }
 
+func num(p *Periph) int {
+	const step = mmap.LPUART2_BASE - mmap.LPUART1_BASE
+	return int((uintptr(unsafe.Pointer(p)) - mmap.LPUART1_BASE) / step)
+}
+
+var cgs = [...]uint8{
+	5<<4 | 12,
+	0<<4 | 14,
+	0<<4 | 6,
+	1<<4 | 12,
+	3<<4 | 1,
+	3<<4 | 3,
+	5<<4 | 13,
+	6<<4 | 7,
+}
+
 func cg(p *Periph) (*ccm.CCGR_, int) {
-	switch uintptr(unsafe.Pointer(p)) {
-	case mmap.LPUART1_BASE:
-		return ccm.CCGR(5), 12
-	case mmap.LPUART2_BASE:
-		return ccm.CCGR(0), 14
-	case mmap.LPUART3_BASE:
-		return ccm.CCGR(0), 6
-	case mmap.LPUART4_BASE:
-		return ccm.CCGR(1), 12
-	case mmap.LPUART5_BASE:
-		return ccm.CCGR(3), 1
-	case mmap.LPUART6_BASE:
-		return ccm.CCGR(3), 3
-	case mmap.LPUART7_BASE:
-		return ccm.CCGR(5), 13
-	case mmap.LPUART8_BASE:
-		return ccm.CCGR(6), 7
+	if n := num(p); n < len(cgs) {
+		cg := cgs[n]
+		return ccm.CCGR(int(cg) >> 4), int(cg) & 15
 	}
 	return nil, 0
 }
