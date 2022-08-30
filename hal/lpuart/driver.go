@@ -150,14 +150,14 @@ func (d *Driver) ISR() {
 		if d.rxdma.IsValid() {
 			// TODO:
 		} else {
-			readNoDMA(d)
+			isrRxNoDMA(d)
 		}
 	}
 	if ctrl&TIE != 0 && stat&TDRE != 0 {
 		if d.rxdma.IsValid() {
 			// TODO:
 		} else {
-			writeNoDMA(d)
+			isrTxNoDMA(d)
 		}
 	}
 }

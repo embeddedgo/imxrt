@@ -39,7 +39,7 @@ func main() {
 	buf := make([]byte, 80)
 	for {
 		n, err := u.Read(buf)
-		for err != nil {
+		if err != nil {
 			fmt.Fprintf(u, "error: %v\r\n", err)
 			continue
 		}
@@ -49,6 +49,6 @@ func main() {
 
 //go:interrupthandler
 func LPUART1_Handler() {
-	leds.User.Toggle() // visualize UART interrupts
 	u.ISR()
+	leds.User.Toggle() // visualize UART interrupts
 }

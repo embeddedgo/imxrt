@@ -23,7 +23,7 @@ func (d *Driver) DisableTx() {
 	d.p.CTRL.ClearBits(TE)
 }
 
-func writeNoDMA(d *Driver) {
+func isrTxNoDMA(d *Driver) {
 	txn := d.txn
 	stop := txn + d.txmax
 	txdata := d.txdata

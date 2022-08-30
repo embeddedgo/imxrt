@@ -39,11 +39,11 @@ func (d *Driver) DisableRx() {
 	d.rxbuf = nil
 }
 
-// readNoDMA reads from hardware FIFO until empty even if there is no space in
+// isrRxNoDMA reads from hardware FIFO until empty even if there is no space in
 // d.rxbuf. This simplifies the receiving code and makes it possible to
 // distinguish between the EOVERRUN (interrupt handler too slow or interrup
 // latency to high) and the ErrBufOverflow (reading goroutine too slow).
-func readNoDMA(d *Driver) {
+func isrRxNoDMA(d *Driver) {
 	nextw := d.nextw
 	nextr := atomic.LoadUint32(&d.nextr)
 	rxbuf := d.rxbuf

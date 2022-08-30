@@ -6,32 +6,23 @@
 package main
 
 import (
-	"embedded/rtos"
 	"fmt"
 
-	"github.com/embeddedgo/imxrt/devboard/teensy4/board/leds"
 	"github.com/embeddedgo/imxrt/devboard/teensy4/board/pins"
-	"github.com/embeddedgo/imxrt/hal/dma"
-	"github.com/embeddedgo/imxrt/hal/irq"
 	"github.com/embeddedgo/imxrt/hal/lpuart"
-)
-
-var (
-	u    *lpuart.Driver
-	note rtos.Note
+	"github.com/embeddedgo/imxrt/hal/lpuart/lpuart1"
 )
 
 func main() {
-	// Used pins
+	// Used IO pins
 	tx := pins.P24
 	rx := pins.P25
 
 	// Setup LPUART driver
-	u = lpuart.NewDriver(lpuart.LPUART(1), dma.Channel{}, dma.Channel{})
+	u := lpuart1.Driver()
 	u.Setup(lpuart.Word8b, 115200)
 	u.UsePin(rx, lpuart.RXD)
 	u.UsePin(tx, lpuart.TXD)
-	irq.LPUART1.Enable(rtos.IntPrioLow, 0)
 
 	// Enable both directions
 	u.EnableRx(64) // use 64 byte ring buffer
@@ -41,16 +32,10 @@ func main() {
 	buf := make([]byte, 80)
 	for {
 		n, err := u.Read(buf)
-		for err != nil {
+		if err != nil {
 			fmt.Fprintf(u, "error: %v\r\n", err)
 			continue
 		}
 		fmt.Fprintf(u, "%d: %s\r\n", n, buf[:n])
 	}
-}
-
-//go:interrupthandler
-func LPUART1_Handler() {
-	leds.User.Toggle() // visualize UART interrupts
-	u.ISR()
 }
