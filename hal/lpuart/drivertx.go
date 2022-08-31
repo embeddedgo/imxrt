@@ -15,7 +15,7 @@ func (d *Driver) EnableTx() {
 	d.p.CTRL.SetBits(TE)
 }
 
-// DisableTx disables Tx part of the USART peripheral.
+// DisableTx disables Tx part of the LPUART peripheral.
 func (d *Driver) DisableTx() {
 	for d.p.STAT.LoadBits(TC) == 0 {
 		runtime.Gosched()

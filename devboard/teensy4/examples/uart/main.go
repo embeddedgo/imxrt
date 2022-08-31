@@ -25,7 +25,7 @@ func main() {
 	u.UsePin(tx, lpuart.TXD)
 
 	// Enable both directions
-	u.EnableRx(64) // use 64 byte ring buffer
+	u.EnableRx(64) // use a 64-character ring buffer
 	u.EnableTx()
 
 	// Print received data showing reading chunks

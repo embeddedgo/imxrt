@@ -10,6 +10,7 @@ import (
 	"github.com/embeddedgo/imxrt/hal/dma"
 )
 
+// EnableRx enables receiving data into internal 64-character ring buffer.
 func (d *Driver) EnableRx(bufLen int) {
 	if d.rxbuf != nil {
 		panic("enabled before")
@@ -27,6 +28,7 @@ func (d *Driver) EnableRx(bufLen int) {
 	d.p.CTRL.SetBits(RE)
 }
 
+// DisableRx disables receiver.
 func (d *Driver) DisableRx() {
 	d.p.CTRL.SetBits(RIE)
 	d.p.CTRL.ClearBits(RE)
