@@ -16,11 +16,11 @@ import (
 
 type Controller struct {
 	CR     mmio.R32[CR]
-	es     mmio.U32
+	es     mmio.R32[uint32]
 	_      uint32
-	erq    mmio.U32
+	erq    mmio.R32[uint32]
 	_      uint32
-	eei    mmio.U32
+	eei    mmio.R32[uint32]
 	ceei   mmio.U8
 	seei   mmio.U8
 	cerq   mmio.U8
@@ -30,17 +30,19 @@ type Controller struct {
 	cerr   mmio.U8
 	cint   mmio.U8
 	_      uint32
-	int    mmio.U32
+	int    mmio.R32[uint32]
 	_      uint32
-	err    mmio.U32
+	err    mmio.R32[uint32]
 	_      uint32
-	hrs    mmio.U32
+	hrs    mmio.R32[uint32]
 	_      [3]uint32
-	ears   mmio.U32
+	ears   mmio.R32[uint32]
 	_      [46]uint32
 	dchpri [32]mmio.U8 // 3,2,1,0, 7,6,5,4, 11,10,9,8, ...
 	_      [952]uint32
 	tcd    [32]TCDIO
+	_      [2816]uint32
+	chcfg  [32]mmio.R32[uint32]
 }
 
 type TCDIO struct {
@@ -55,24 +57,6 @@ type TCDIO struct {
 	DLAST_SGA   mmio.R32[int32]
 	CSR         mmio.R16[CSR]
 	ELINK_BITER mmio.R16[uint16]
-}
-
-func DMA(n int) *Controller {
-	if n != 0 {
-		panic("wrong DMA number")
-	}
-	return (*Controller)(unsafe.Pointer(mmap.DMA0_BASE))
-}
-
-// EnableClock enables clock for DMA controller.
-// lp determines whether the clock remains on in low power WAIT mode.
-func (d *Controller) EnableClock(lp bool) {
-	ccm.CCGR(5).SetCG(3, ccm.ClkEn|int8(internal.BoolToInt(lp)<<1))
-}
-
-// DisableClock disables clock for DMA controller.
-func (d *Controller) DisableClock() {
-	ccm.CCGR(5).SetCG(3, 0)
 }
 
 type CR uint32
@@ -148,12 +132,31 @@ func (d *Controller) Err() Error {
 	return Error(d.es.Load())
 }
 
+func DMA(n int) *Controller {
+	if n != 0 {
+		panic("wrong DMA number")
+	}
+	return (*Controller)(unsafe.Pointer(mmap.DMA0_BASE))
+}
+
+// EnableClock enables clock for DMA controller.
+// lp determines whether the clock remains on in low power WAIT mode.
+func (d *Controller) EnableClock(lp bool) {
+	ccm.CCGR(5).SetCG(3, ccm.ClkEn|int8(internal.BoolToInt(lp)<<1))
+}
+
+// DisableClock disables clock for DMA controller.
+func (d *Controller) DisableClock() {
+	ccm.CCGR(5).SetCG(3, 0)
+}
+
 // Channel returns n-th channel of the controller. If you wont to obtain a
 // free channel use AllocChannel.
 func (d *Controller) Channel(n int) Channel {
 	return Channel{uintptr(unsafe.Pointer(d)) | uintptr(n&31)}
 }
 
+// BUG: only one controller supported but for example RT1170 has two
 var chanMask uint32 = 0xffff_ffff
 
 // AllocChannel allocates a free channel in the controller. If pit is true the

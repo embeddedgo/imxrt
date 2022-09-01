@@ -4,9 +4,7 @@
 
 package periph
 
-import (
-	"github.com/embeddedgo/imxrt/hal/iomux"
-)
+import "github.com/embeddedgo/imxrt/hal/iomux"
 
 func AltFunc(pins []iomux.Pin, afs []iomux.AltFunc, psig int, pin iomux.Pin) iomux.AltFunc {
 	i := uint(0)

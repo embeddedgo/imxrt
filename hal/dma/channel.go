@@ -104,6 +104,18 @@ const (
 func d(c Channel) *Controller { return (*Controller)(unsafe.Pointer(c.h &^ 31)) }
 func n(c Channel) uint        { return uint(c.h) & 31 }
 
+// Free frees the channel so the Controller.AllocChannel can allocate it next
+// time.
+func (c Channel) Free() {
+	mask := uint32(1) << n(c)
+	for {
+		chs := atomic.LoadUint32(&chanMask)
+		if atomic.CompareAndSwapUint32(&chanMask, chs, chs|mask) {
+			break
+		}
+	}
+}
+
 func (c Channel) IsValid() bool    { return c.h != 0 }
 func (c Channel) ReqEnabled() bool { return d(c).erq.Load()>>n(c)&1 != 0 }
 func (c Channel) EnableReq()       { d(c).serq.Store(uint8(n(c))) }
@@ -175,14 +187,164 @@ func (c Channel) TCD() *TCDIO {
 	return &d(c).tcd[n(c)]
 }
 
-// Free frees the channel so the Controller.AllocChannel can allocate it next
-// time.
-func (c Channel) Free() {
-	mask := uint32(1) << n(c)
-	for {
-		chs := atomic.LoadUint32(&chanMask)
-		if atomic.CompareAndSwapUint32(&chanMask, chs, chs|mask) {
-			break
-		}
-	}
+type Mux uint32
+
+const (
+	Src Mux = 0x7F << 0  //+ DMA Channel Source (Slot Number)
+	AE  Mux = 0x01 << 29 //+ DMA Channel Always Enable
+	PIT Mux = 0x01 << 30 //+ DMA Channel Trigger Enable
+	En  Mux = 0x01 << 31 //+ DMA Mux Channel Enable
+
+	// Sources (slots)
+	FLEXIO1_REQ01     Mux = 0
+	FLEXIO2_REQ01     Mux = 1
+	LPUART1_TX        Mux = 2
+	LPUART1_RX        Mux = 3
+	LPUART3_TX        Mux = 4
+	LPUART3_RX        Mux = 5
+	LPUART5_TX        Mux = 6
+	LPUART5_RX        Mux = 7
+	LPUART7_TX        Mux = 8
+	LPUART7_RX        Mux = 9
+	FLEXCAN3          Mux = 11
+	CSI               Mux = 12
+	LPSPI1_RX         Mux = 13
+	LPSPI1_TX         Mux = 14
+	LPSPI3_RX         Mux = 15
+	LPSPI3_TX         Mux = 16
+	LPI2C1            Mux = 17
+	LPI2C3            Mux = 18
+	SAI1_RX           Mux = 19
+	SAI1_TX           Mux = 20
+	SAI2_RX           Mux = 21
+	SAI2_TX           Mux = 22
+	ADC_ETC           Mux = 23
+	ADC1              Mux = 24
+	ACMP              Mux = 25
+	Reserved          Mux = 27
+	FLEXSPI_RX        Mux = 28
+	FLEXSPI_TX        Mux = 29
+	XBAR1_REQ0        Mux = 30
+	XBAR1_REQ1        Mux = 31
+	FLEXPWM1_CAPT0    Mux = 32
+	FLEXPWM1_CAPT1    Mux = 33
+	FLEXPWM1_CAPT2    Mux = 34
+	FLEXPWM1_CAPT3    Mux = 35
+	FLEXPWM1_VAL0     Mux = 36
+	FLEXPWM1_VAL1     Mux = 37
+	FLEXPWM1_VAL2     Mux = 38
+	FLEXPWM1_VAL3     Mux = 39
+	FLEXPWM3_CAPT0    Mux = 40
+	FLEXPWM3_CAPT1    Mux = 41
+	FLEXPWM3_CAPT2    Mux = 42
+	FLEXPWM3_CAPT3    Mux = 43
+	FLEXPWM3_VAL0     Mux = 44
+	FLEXPWM3_VAL1     Mux = 45
+	FLEXPWM3_VAL2     Mux = 46
+	FLEXPWM3_VAL3     Mux = 47
+	QTIMER1_T0_CAPT   Mux = 48
+	QTIMER1_T1_CAPT   Mux = 49
+	QTIMER1_T2_CAPT   Mux = 50
+	QTIMER1_T3_CAPT   Mux = 51
+	QTIMER1_T0_CMPLD1 Mux = 52
+	QTIMER1_T1_CMPLD2 Mux = 52
+	QTIMER1_T1_CMPLD1 Mux = 53
+	QTIMER1_T0_CMPLD2 Mux = 53
+	QTIMER1_T2_CMPLD1 Mux = 54
+	QTIMER1_T3_CMPLD2 Mux = 54
+	QTIMER1_T3_CMPLD1 Mux = 55
+	QTIMER1_T2_CMPLD2 Mux = 55
+	QTIMER3_T0_CAPT   Mux = 56
+	QTIMER3_T0_CMPLD1 Mux = 56
+	QTIMER3_T1_CMPLD2 Mux = 56
+	QTIMER3_T1_CAPT   Mux = 57
+	QTIMER3_T1_CMPLD1 Mux = 57
+	QTIMER3_T0_CMPLD2 Mux = 57
+	QTIMER3_T2_CAPT   Mux = 58
+	QTIMER3_T2_CMPLD1 Mux = 58
+	QTIMER3_T3_CMPLD2 Mux = 58
+	QTIMER3_T3_CAPT   Mux = 59
+	QTIMER3_T3_CMPLD1 Mux = 59
+	QTIMER3_T2_CMPLD2 Mux = 59
+	FLEXSPI2_RX       Mux = 60
+	FLEXSPI2_TX       Mux = 61
+	FLEXIO1_REQ23     Mux = 64
+	FLEXIO2_REQ23     Mux = 65
+	LPUART2_TX        Mux = 66
+	LPUART2_RX        Mux = 67
+	LPUART4_TX        Mux = 68
+	LPUART4_RX        Mux = 69
+	LPUART6_TX        Mux = 70
+	LPUART6_RX        Mux = 71
+	LPUART8_TX        Mux = 72
+	LPUART8_RX        Mux = 73
+	PXP               Mux = 75
+	LCDIF             Mux = 76
+	LPSPI2_RX         Mux = 77
+	LPSPI2_TX         Mux = 78
+	LPSPI4_RX         Mux = 79
+	LPSPI4_TX         Mux = 80
+	LPI2C2            Mux = 81
+	LPI2C4            Mux = 82
+	SAI3_RX           Mux = 83
+	SAI3_TX           Mux = 84
+	SPDIF_RX          Mux = 85
+	SPDIF_TX          Mux = 86
+	ADC2              Mux = 88
+	ACMP2             Mux = 89
+	ACMP4             Mux = 90
+	ENET_T0           Mux = 92
+	ENET_T1           Mux = 93
+	XBAR1_REQ2        Mux = 94
+	XBAR1_REQ3        Mux = 95
+	FLEXPWM2_CAPT0    Mux = 96
+	FLEXPWM2_CAPT1    Mux = 97
+	FLEXPWM2_CAPT2    Mux = 98
+	FLEXPWM2_CAPT3    Mux = 99
+	FLEXPWM2_VAL0     Mux = 100
+	FLEXPWM2_VAL1     Mux = 101
+	FLEXPWM2_VAL2     Mux = 102
+	FLEXPWM2_VAL3     Mux = 103
+	FLEXPWM4_CAPT0    Mux = 104
+	FLEXPWM4_CAPT1    Mux = 105
+	FLEXPWM4_CAPT2    Mux = 106
+	FLEXPWM4_CAPT3    Mux = 107
+	FLEXPWM4_VAL0     Mux = 108
+	FLEXPWM4_VAL1     Mux = 109
+	FLEXPWM4_VAL2     Mux = 110
+	FLEXPWM4_VAL3     Mux = 111
+	QTIMER2_T0_CAPT   Mux = 112
+	QTIMER2_T1_CAPT   Mux = 113
+	QTIMER2_T2_CAPT   Mux = 114
+	QTIMER2_T3_CAPT   Mux = 115
+	QTIMER2_T0_CMPLD1 Mux = 116
+	QTIMER2_T1_CMPLD2 Mux = 116
+	QTIMER2_T1_CMPLD1 Mux = 117
+	QTIMER2_T0_CMPLD2 Mux = 117
+	QTIMER2_T2_CMPLD1 Mux = 118
+	QTIMER2_T3_CMPLD2 Mux = 118
+	QTIMER2_T3_CMPLD1 Mux = 119
+	QTIMER2_T2_CMPLD2 Mux = 119
+	QTIMER4_T0_CAPT   Mux = 120
+	QTIMER4_T0_CMPLD1 Mux = 120
+	QTIMER4_T1_CMPLD2 Mux = 120
+	QTIMER4_T1_CAPT   Mux = 121
+	QTIMER4_T1_CMPLD1 Mux = 121
+	QTIMER4_T0_CMPLD2 Mux = 121
+	QTIMER4_T2_CAPT   Mux = 122
+	QTIMER4_T2_CMPLD1 Mux = 122
+	QTIMER4_T3_CMPLD2 Mux = 122
+	QTIMER4_T3_CAPT   Mux = 123
+	QTIMER4_T3_CMPLD1 Mux = 123
+	QTIMER4_T2_CMPLD2 Mux = 123
+	ENET2_T0          Mux = 124
+	ENET2_T1          Mux = 125
+)
+
+func (c Channel) Mux() Mux {
+	return Mux(d(c).chcfg[n(c)].Load())
+}
+
+func (c Channel) SetMux(mux Mux) {
+	d(c).chcfg[n(c)].Store(uint32(mux))
 }
