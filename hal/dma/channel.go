@@ -6,6 +6,7 @@ package dma
 
 import (
 	"embedded/mmio"
+	"sync/atomic"
 	"unsafe"
 )
 
@@ -172,4 +173,16 @@ func (c Channel) WriteTCD(tcd *TCD) {
 
 func (c Channel) TCD() *TCDIO {
 	return &d(c).tcd[n(c)]
+}
+
+// Free frees the channel so the Controller.AllocChannel can allocate it next
+// time.
+func (c Channel) Free() {
+	mask := uint32(1) << n(c)
+	for {
+		chs := atomic.LoadUint32(&chanMask)
+		if atomic.CompareAndSwapUint32(&chanMask, chs, chs|mask) {
+			break
+		}
+	}
 }

@@ -6,6 +6,7 @@ package dma
 
 import (
 	"embedded/mmio"
+	"sync/atomic"
 	"unsafe"
 
 	"github.com/embeddedgo/imxrt/hal/internal"
@@ -147,6 +148,37 @@ func (d *Controller) Err() Error {
 	return Error(d.es.Load())
 }
 
+// Channel returns n-th channel of the controller. If you wont to obtain a
+// free channel use AllocChannel.
 func (d *Controller) Channel(n int) Channel {
 	return Channel{uintptr(unsafe.Pointer(d)) | uintptr(n&31)}
+}
+
+var chanMask uint32 = 0xffff_ffff
+
+// AllocChannel allocates a free channel in the controller. If pit is true the
+// channel must have a periodic triggering capability. AllocChannel returns
+// invalid channel if there is no free channel to be allocated.
+// Use Channel.Free to free an unused channel.
+func (d *Controller) AllocChannel(pit bool) Channel {
+	for {
+		chs := atomic.LoadUint32(&chanMask)
+		n := 31
+		if pit {
+			// only first 4 channels have PIT capability
+			chs &= 15
+			n = 3
+		}
+		if chs == 0 {
+			return Channel{}
+		}
+		mask := uint32(1) << uint(n)
+		for chs&mask == 0 {
+			mask >>= 1
+			n--
+		}
+		if atomic.CompareAndSwapUint32(&chanMask, chs, chs&^mask) {
+			return d.Channel(n)
+		}
+	}
 }

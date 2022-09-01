@@ -43,7 +43,7 @@ func main() {
 	// Ungate the DMA clock and select a channel for further work.
 	d := dma.DMA(0)
 	d.EnableClock(true)
-	c := d.Channel(0)
+	c := d.AllocChannel(false)
 
 	// Prepare the Transfer Control Descriptor for our channel. As the
 	// CRS[START] bit is set, the transfer will start shortly after we write
