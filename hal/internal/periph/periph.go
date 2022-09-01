@@ -18,5 +18,13 @@ func AltFunc(pins []iomux.Pin, afs []iomux.AltFunc, psig int, pin iomux.Pin) iom
 			return afs[i] & 0x0f
 		}
 	}
-	panic("altfunc: (psig, pin) not found")
+	return -1
+}
+
+func Pins(pins []iomux.Pin, afs []iomux.AltFunc, psig int) []iomux.Pin {
+	i := uint(0)
+	for ; psig != 0; psig-- {
+		i += uint(afs[i]) >> 4
+	}
+	return pins[i : i+uint(afs[i]>>4)]
 }

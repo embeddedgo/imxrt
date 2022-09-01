@@ -18,16 +18,27 @@ const (
 	RXD
 )
 
+// Pins return IO pins that can be used for singal sig.
+func (p *Periph) Pins(sig Signal) []iomux.Pin {
+	return periph.Pins(pins[:], alts[:], num(p)*4+int(sig))
+}
+
 // UsePin is a helper function that can be used to configure IO pins as required
-// by USART peripheral. Only certain pins can be used (see datasheet).
-func (d *Driver) UsePin(pin iomux.Pin, sig Signal) {
+// by LPUART peripheral. Only certain pins can be used (see datasheet). UsePin
+// returns true on succes or false if it isn't possible to use a pin as a sig.
+// See also Periph.Pins.
+func (d *Driver) UsePin(pin iomux.Pin, sig Signal) bool {
+	af := periph.AltFunc(pins[:], alts[:], num(d.p)*4+int(sig), pin)
+	if af < 0 {
+		return false
+	}
 	var cfg iomux.Config
 	if sig <= TXD {
-		cfg = iomux.Drive2 // 75Ω @ 3V3, R = 130Ω @ 1V8
+		cfg = iomux.Drive2 // 75Ω @ 3.3V, 130Ω @ 1.8V
 	}
 	pin.Setup(cfg)
-	af := periph.AltFunc(pins[:], alts[:], num(d.p)*4+int(sig), pin)
 	pin.SetAltFunc(af)
+	return true
 }
 
 var pins = [...]iomux.Pin{
