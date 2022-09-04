@@ -2,8 +2,8 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-// Dma shows how to use the DMA controller to perform the simplest possible
-// memory to memory transfer.
+// Dma shows how to use the DMA controller to perform the memory to memory
+// transfer.
 package main
 
 import (
@@ -21,7 +21,7 @@ func main() {
 
 	// We use dma.Alloc instead of builtin make function because we need cache-
 	// aligned buffers. If you have ordinary (non cache-aligned) buffers you
-	// stil can use DMA with them but the beginning and end of the buffers may
+	// can still use DMA with them but the beginning and end of the buffers may
 	// require special treatment.
 	src := dma.Alloc[uint32](n)
 	dst := dma.Alloc[uint32](n)
@@ -45,9 +45,11 @@ func main() {
 	d.EnableClock(true)
 	c := d.AllocChannel(false)
 
-	// Prepare the Transfer Control Descriptor for our channel. As the
-	// CRS[START] bit is set, the transfer will start shortly after we write
-	// prepared TCD to the DMA local memory.
+	/// Example 1. Transfer all data in minor loop.
+
+	// Prepare a Transfer Control Descriptor. As the CRS[START] bit is set, the
+	// transfer will start immediately after we write the prepared TCD to the
+	// DMA local memory.
 	tcd := dma.TCD{
 		SADDR:       srcAddr,             // source address
 		SOFF:        4,                   // added to SADDR after each read
@@ -63,20 +65,24 @@ func main() {
 	}
 	c.WriteTCD(&tcd)
 
-	// Wait for the end of transfer. We don't use interrupts to simplify things.
-	for c.TCD().CSR.LoadBits(dma.DONE) == 0 {
-	}
+	waitAndCheck(c, dst)
 
-	// Blink slow if all went well, blink fast if something went wrong.
-	delay := time.Second / 2
-	for i := range dst {
-		if dst[i] != src[i] {
-			delay /= 4
-			break
-		}
-	}
+	// Blink slow if all went well.
 	for {
 		leds.User.Toggle()
-		time.Sleep(delay)
+		time.Sleep(time.Second / 2)
+	}
+}
+
+// WaitAndCheck waits for the end of transfer and checks the content of the dst
+// buffer. It blinks fast endlessly if there is no proper pattern in dst.
+func waitAndCheck(c dma.Channel, dst []uint32) {
+	for c.TCD().CSR.LoadBits(dma.DONE) == 0 {
+	}
+	for i, w := range dst {
+		for w != uint32(i<<16|i) {
+			leds.User.Toggle()
+			time.Sleep(time.Second / 8)
+		}
 	}
 }
