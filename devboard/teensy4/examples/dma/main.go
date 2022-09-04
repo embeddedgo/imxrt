@@ -11,7 +11,7 @@ import (
 	"time"
 	"unsafe"
 
-	"github.com/embeddedgo/imxrt/devboard/fet1061/board/leds"
+	"github.com/embeddedgo/imxrt/devboard/teensy4/board/leds"
 	"github.com/embeddedgo/imxrt/hal/dma"
 )
 

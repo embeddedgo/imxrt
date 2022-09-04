@@ -78,7 +78,7 @@ const (
 	START       CSR = 0x01 << 0  //+ Channel Start
 	INTMAJOR    CSR = 0x01 << 1  //+ Enable an interrupt when major iteration count completes
 	INTHALF     CSR = 0x01 << 2  //+ Enable an interrupt when major counter is half complete
-	DREQ        CSR = 0x01 << 3  //+ Disable Request
+	DREQ        CSR = 0x01 << 3  //+ Disable Request at the end of major loop.
 	ESG         CSR = 0x01 << 4  //+ Enable Scatter/Gather Processing
 	MAJORELINK  CSR = 0x01 << 5  //+ Enable channel-to-channel linking on major loop complete
 	ACTIVE      CSR = 0x01 << 6  //+ Channel Active
