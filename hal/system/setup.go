@@ -120,7 +120,7 @@ func Setup528_FlexSPI() {
 
 	// Gate all possible clocks, exceptions in comments
 	CCM.CCGR0.Store(0x0000_00cf) // flexspi_exsc, apis_tz1, apis_tz2
-	CCM.CCGR1.Store(0x0000_0000)
+	CCM.CCGR1.Store(0x000c_0000) // semc_exsc (why?)
 	CCM.CCGR2.Store(0x003f_0003) // ipmux3, impux2, ipmux1, ocram_exsc
 	CCM.CCGR3.Store(0x300c_0000) // ocram, flexram
 	CCM.CCGR4.Store(0x0000_f3ff) // sim_*, bee, iomux_gpr, ioumxc
