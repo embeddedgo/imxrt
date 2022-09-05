@@ -112,7 +112,6 @@ func (p *Periph) SetBaudrate(baud int) {
 	var baudBits BAUD
 	if osr < 8 {
 		baudBits = BOTHEDGE
-
 	}
 	baudBits |= BAUD((osr-1)<<OSRn | sbr)
 	p.BAUD.StoreBits(BOTHEDGE|OSR|SBR, baudBits)

@@ -8,6 +8,7 @@ import (
 	"sync/atomic"
 
 	"github.com/embeddedgo/imxrt/hal/dma"
+	"github.com/embeddedgo/imxrt/hal/internal"
 )
 
 // EnableRx enables receiving data into internal 64-character ring buffer.
@@ -18,24 +19,25 @@ func (d *Driver) EnableRx(bufLen int) {
 	if bufLen < 2 {
 		panic("bufLen < 2")
 	}
+	ctrl := RE
 	if d.rxdma.IsValid() {
 		d.rxbuf = dma.Alloc[DATA](bufLen)
 		// TODO: DMA version
 	} else {
 		d.rxbuf = make([]DATA, bufLen)
-		d.p.CTRL.SetBits(RIE)
+		ctrl |= RIE
 	}
-	d.p.CTRL.SetBits(RE)
+	internal.AtomicStoreBits(&d.p.CTRL, RE|RIE, ctrl)
 }
 
 // DisableRx disables receiver.
 func (d *Driver) DisableRx() {
-	d.p.CTRL.SetBits(RIE)
-	d.p.CTRL.ClearBits(RE)
-	for d.p.CTRL.LoadBits(RE) != 0 {
+	p := d.p
+	internal.AtomicStoreBits(&p.CTRL, RE|RIE, 0)
+	for p.CTRL.LoadBits(RE) != 0 {
 		// wait for receiver to finish receiving the last character
 	}
-	for d.p.DATA.Load()&RXEMPT == 0 {
+	for p.DATA.Load()&RXEMPT == 0 {
 		// empty the FIFO to ensure Rx ISR will no longer use the buffer
 	}
 	d.rxbuf = nil
@@ -45,7 +47,7 @@ func (d *Driver) DisableRx() {
 // d.rxbuf. This simplifies the receiving code and makes it possible to
 // distinguish between the EOVERRUN (interrupt handler too slow or interrup
 // latency to high) and the ErrBufOverflow (reading goroutine too slow).
-func isrRxNoDMA(d *Driver) {
+func rxISR(d *Driver) {
 	nextw := d.nextw
 	nextr := atomic.LoadUint32(&d.nextr)
 	rxbuf := d.rxbuf

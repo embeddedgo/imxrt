@@ -24,16 +24,24 @@ func main() {
 	rx := pins.P23
 	tx := pins.P24
 
+	// Setup DMA controller
+	d := dma.DMA(0)
+	d.EnableClock(true)
+	d.CR.SetBits(dma.ERCA | dma.ERGA | dma.HOE) // round robin, halt on error
+
 	// Setup LPUART driver
-	u = lpuart.NewDriver(lpuart.LPUART(1), dma.Channel{}, dma.Channel{})
+	u = lpuart.NewDriver(lpuart.LPUART(1), dma.Channel{}, d.Channel(0))
 	u.Setup(lpuart.Word8b, 115200)
 	u.UsePin(rx, lpuart.RXD)
 	u.UsePin(tx, lpuart.TXD)
 	irq.LPUART1.Enable(rtos.IntPrioLow, 0)
+	irq.DMA0_DMA16.Enable(rtos.IntPrioLow, 0)
 
 	// Enable both directions
 	u.EnableRx(64) // use a 64-character ring buffer
 	u.EnableTx()
+
+	u.WriteString("abcdefghijklmnoprtsuvwxyz+01234567890-ABCDEFGHIJKLMNOPRSTUVWXYZ\r\n")
 
 	// Print received data showing reading chunks
 	buf := make([]byte, 80)
@@ -50,5 +58,10 @@ func main() {
 //go:interrupthandler
 func LPUART1_Handler() {
 	u.ISR()
-	leds.User.Toggle() // visualize UART interrupts
+}
+
+//go:interrupthandler()
+func DMA0_DMA16_Handler() {
+	u.TxDMAISR()
+	leds.User.Toggle() // visualize DMA interrupts
 }

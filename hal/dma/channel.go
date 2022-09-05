@@ -22,10 +22,10 @@ type TCD struct {
 	SLAST       int
 	DADDR       unsafe.Pointer
 	DOFF        int16
-	ELINK_CITER uint16
+	ELINK_CITER int16
 	DLAST_SGA   int
 	CSR         CSR
-	ELINK_BITER uint16
+	ELINK_BITER int16
 }
 
 type ATTR uint16

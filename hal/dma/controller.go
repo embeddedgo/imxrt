@@ -53,10 +53,10 @@ type TCDIO struct {
 	SLAST       mmio.R32[int32]
 	DADDR       mmio.P32
 	DOFF        mmio.R16[int16]
-	ELINK_CITER mmio.R16[uint16]
+	ELINK_CITER mmio.R16[int16]
 	DLAST_SGA   mmio.R32[int32]
 	CSR         mmio.R16[CSR]
-	ELINK_BITER mmio.R16[uint16]
+	ELINK_BITER mmio.R16[int16]
 }
 
 type CR uint32

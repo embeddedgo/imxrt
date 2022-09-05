@@ -87,7 +87,7 @@ type Driver struct {
 	txdma     dma.Channel
 	txdata    string
 	txn       int
-	txmax     int
+	txlog2max uint
 	txdone    rtos.Note
 }
 
@@ -126,38 +126,49 @@ func (d *Driver) SetConfig(conf Config) {
 		ctrlMask = M7 | M | PE | PT
 		_        = -(uint(baudMask) & uint(ctrlMask)) // check colliding bits
 	)
-	d.p.BAUD.StoreBits(baudMask, BAUD(conf))
-	d.p.CTRL.StoreBits(ctrlMask, CTRL(conf)|DOZEEN)
+	p := d.p
+	p.BAUD.StoreBits(baudMask, BAUD(conf))
+	p.CTRL.StoreBits(ctrlMask, CTRL(conf))
 }
 
 // Setup enables clock source, resets, and configures the LPUART peripheral. You
 // still have to enable Tx and/or Rx before use it.
 func (d *Driver) Setup(conf Config, baudrate int) {
-	d.p.EnableClock(true)
-	d.p.GLOBAL.Store(RST)
-	d.p.GLOBAL.Store(0)
-	d.p.SetBaudrate(baudrate)
-	d.p.WATER.Store(0)
-	d.p.FIFO.Store(RXFE | TXFE)
+	p := d.p
+	p.EnableClock(true)
+	p.GLOBAL.Store(RST)
+	p.GLOBAL.Store(0)
+	p.WATER.Store(0)
+	p.FIFO.Store(RXFE | TXFE)
+	var dmae BAUD
+	if ch := d.rxdma; ch.IsValid() {
+		ch.DisableReq()
+		ch.DisableErrInt()
+		ch.ClearInt()
+		dmae = RDMAE
+	}
+	if ch := d.txdma; ch.IsValid() {
+		ch.DisableReq()
+		ch.DisableErrInt()
+		ch.ClearInt()
+		dmae = TDMAE
+	}
+	if dmae != 0 {
+		p.BAUD.StoreBits(TDMAE|RDMAE, dmae)
+	}
+	p.SetBaudrate(baudrate)
 	d.SetConfig(conf)
-	d.txmax = 1 << (d.p.PARAM.LoadBits(TXFIFO) >> TXFIFOn)
+	d.txlog2max = uint(d.p.PARAM.LoadBits(TXFIFO) >> TXFIFOn)
 }
 
 func (d *Driver) ISR() {
-	ctrl := d.p.CTRL.Load()
-	stat := d.p.STAT.Load()
+	p := d.p
+	ctrl := p.CTRL.Load()
+	stat := p.STAT.Load()
 	if ctrl&RIE != 0 && stat&RDRF != 0 {
-		if d.rxdma.IsValid() {
-			// TODO:
-		} else {
-			isrRxNoDMA(d)
-		}
+		rxISR(d)
 	}
 	if ctrl&TIE != 0 && stat&TDRE != 0 {
-		if d.rxdma.IsValid() {
-			// TODO:
-		} else {
-			isrTxNoDMA(d)
-		}
+		txISR(d)
 	}
 }
