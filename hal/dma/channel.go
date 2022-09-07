@@ -10,20 +10,23 @@ import (
 	"unsafe"
 )
 
+// A Channel represents a DMA+DMAMUX channel together with the corresponding
+// location in TCD memory.
 type Channel struct {
 	h uintptr
 }
 
+// A TCD represents a Transfer Control Descriptor
 type TCD struct {
 	SADDR       unsafe.Pointer
 	SOFF        int16
 	ATTR        ATTR
-	ML_NBYTES   int
-	SLAST       int
+	ML_NBYTES   uint32
+	SLAST       int32
 	DADDR       unsafe.Pointer
 	DOFF        int16
 	ELINK_CITER int16
-	DLAST_SGA   int
+	DLAST_SGA   int32
 	CSR         CSR
 	ELINK_BITER int16
 }
@@ -134,6 +137,8 @@ func (c Channel) ClearInt()   { d(c).cint.Store(uint8(n(c))) }
 func (c Channel) ClearDone() { d(c).cdne.Store(uint8(n(c))) }
 func (c Channel) Start()     { d(c).ssrt.Store(uint8(n(c))) }
 
+// A Prio contains channel priority and some additional flags used in
+// fixed-priority arbitration mode.
 type Prio uint8
 
 const (
@@ -148,15 +153,19 @@ const (
 	ECPn    = 7
 )
 
+// Prio returns the current channel priority.
 func (c Channel) Prio() Prio {
 	n := n(c)
 	return Prio(d(c).dchpri[n&^3|(3-n&3)].Load())
 }
+
+// SetPrio sets the channel priority.
 func (c Channel) SetPrio(prio Prio) {
 	n := n(c)
 	d(c).dchpri[n&^3|(3-n&3)].Store(uint8(prio))
 }
 
+// ReadTCD reads a transfer controll descriptor from TCD memory.
 func (c Channel) ReadTCD(tcd *TCD) {
 	tcda := (*[8]uint32)(unsafe.Pointer(tcd))
 	tcdio := (*[8]mmio.U32)(unsafe.Pointer(&d(c).tcd[n(c)]))
@@ -170,6 +179,9 @@ func (c Channel) ReadTCD(tcd *TCD) {
 	tcda[7] = tcdio[7].Load()
 }
 
+// WriteTCD writes a transfer controll descriptor to the TCD memory. The eDMA
+// memory controller probably informs the eDMA engine if the CSR[START] bit is
+// set so the engine can start channel immediately.
 func (c Channel) WriteTCD(tcd *TCD) {
 	tcda := (*[8]uint32)(unsafe.Pointer(tcd))
 	tcdio := (*[8]mmio.U32)(unsafe.Pointer(&d(c).tcd[n(c)]))
@@ -183,10 +195,13 @@ func (c Channel) WriteTCD(tcd *TCD) {
 	tcdio[7].Store(tcda[7])
 }
 
+// TCD returns the pointer to the corresponding TCD memory. You can use it to
+// alter TCD fields in place.
 func (c Channel) TCD() *TCDIO {
 	return &d(c).tcd[n(c)]
 }
 
+// A Mux represents a configuration of DMAMUX for a DMA channel.
 type Mux uint32
 
 const (

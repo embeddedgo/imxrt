@@ -16,9 +16,9 @@ import (
 
 // EnableTx enables Tx part of the LPUART peripheral and setups Tx DMA channel.
 func (d *Driver) EnableTx() {
-	if c := d.txdma; c.IsValid() {
-		c.DisableReq()
-		c.SetMux((dma.LPUART1_TX + dma.Mux(num(d.p))) | dma.En)
+	if txdma := d.txdma; txdma.IsValid() {
+		txdma.DisableReq()
+		txdma.SetMux((dma.LPUART1_TX + dma.Mux(num(d.p))*2) | dma.En)
 	}
 	internal.AtomicStoreBits(&d.p.CTRL, TE, TE)
 }
@@ -55,9 +55,9 @@ func txISR(d *Driver) {
 }
 
 func (d *Driver) TxDMAISR() {
-	ch := d.txdma
-	if ch.IsInt() {
-		ch.ClearInt()
+	txdma := d.txdma
+	if txdma.IsInt() {
+		txdma.ClearInt()
 		d.txdone.Wakeup()
 	}
 }
@@ -85,6 +85,7 @@ func writeStringDMA(d *Driver, s string) error {
 	if m > 32767 {
 		m = 32767
 	}
+	txdma := d.txdma
 	tcd := dma.TCD{
 		SADDR:       ptr,
 		SOFF:        4,
@@ -92,20 +93,24 @@ func writeStringDMA(d *Driver, s string) error {
 		ML_NBYTES:   1 << d.txlog2max,
 		DADDR:       unsafe.Pointer(d.p.DATA.Addr()),
 		ELINK_CITER: int16(m),
-		ELINK_BITER: int16(m),
 		CSR:         dma.DREQ | dma.INTMAJOR,
+		ELINK_BITER: int16(m),
 	}
-	d.txdma.WriteTCD(&tcd)
+	txdma.WriteTCD(&tcd)
+	tcdio := txdma.TCD()
 	for {
-		d.txdma.EnableReq()
+		d.txdone.Clear()
+		txdma.EnableReq()
 		if !d.txdone.Sleep(d.txtimeout) {
-			// TODO: cancel transfer
+			txdma.DisableReq()
+			for tcdio.CSR.LoadBits(dma.ACTIVE) != 0 {
+				runtime.Gosched()
+			}
 			return ErrTimeout
 		}
 		if n -= m; n == 0 {
 			break
 		}
-		tcdio := d.txdma.TCD()
 		m = n
 		if m >= 32767 {
 			m = 32767
@@ -127,6 +132,7 @@ func dmaOffsets(s string) (start, end int) {
 	return
 }
 
+// WriteString implements the io.StringWriter interface.
 func (d *Driver) WriteString(s string) (n int, err error) {
 	switch {
 	case len(s) == 0:
@@ -158,6 +164,7 @@ func (d *Driver) WriteString(s string) (n int, err error) {
 	return
 }
 
+// Write implements the io.Writer interface.
 func (d *Driver) Write(p []byte) (int, error) {
 	return d.WriteString(*(*string)(unsafe.Pointer(&p)))
 }

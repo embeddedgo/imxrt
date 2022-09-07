@@ -9,6 +9,7 @@ package main
 import (
 	"embedded/rtos"
 	"fmt"
+	"time"
 
 	"github.com/embeddedgo/imxrt/devboard/fet1061/board/leds"
 	"github.com/embeddedgo/imxrt/devboard/fet1061/board/pins"
@@ -29,7 +30,7 @@ func main() {
 	d.EnableClock(true)
 
 	// Setup LPUART driver
-	u = lpuart.NewDriver(lpuart.LPUART(1), dma.Channel{}, d.Channel(0))
+	u = lpuart.NewDriver(lpuart.LPUART(1), d.Channel(1), d.Channel(0))
 	u.Setup(lpuart.Word8b, 115200)
 	u.UsePin(rx, lpuart.RXD)
 	u.UsePin(tx, lpuart.TXD)
@@ -40,7 +41,16 @@ func main() {
 	u.EnableRx(64) // use a 64-character ring buffer
 	u.EnableTx()
 
+	t0 := time.Now()
 	u.WriteString(akermanianSteppe)
+	t1 := time.Now()
+	sps := float64(len(akermanianSteppe)) * float64(time.Second) / float64(t1.Sub(t0))
+	bps := sps * 8
+	baud := sps * 10 // 1b start + 8b data + 1b stop
+	fmt.Fprintf(
+		u, "%d bytes @ %.0f b/s (%.0f baud)\r\n",
+		len(akermanianSteppe), bps, baud,
+	)
 
 	// Print received data showing reading chunks
 	buf := make([]byte, 80)
@@ -59,14 +69,17 @@ func LPUART1_Handler() {
 	u.ISR()
 }
 
-//go:interrupthandler()
+//go:interrupthandler
 func DMA0_DMA16_Handler() {
 	u.TxDMAISR()
 	leds.User.Toggle() // visualize DMA interrupts
 }
 
-// The Akkerman Steppe translated to English by Leo Yankevich
+//
 const akermanianSteppe = "\r\n" +
+	"The Akkerman Steppe poem by Adam Mickiewicz translated to\r\n" +
+	"English by Leo Yankevich.\r\n" +
+	"\r\n" +
 	"I launch myself across the dry and open narrows,\r\n" +
 	"My carriage plunging into green as if a ketch,\r\n" +
 	"Floundering through the meadow flowers in the stretch.\r\n" +
@@ -84,4 +97,4 @@ const akermanianSteppe = "\r\n" +
 	"Where on its underside a viper writhes through stalks.\r\n" +
 	"Amid the hush I lean my ears down grassy lanes\r\n" +
 	"And listen for a voice from home. Nobody talks.\r\n" +
-	"\r\n"
+	"\r\n\r\n"

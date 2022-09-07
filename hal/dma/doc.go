@@ -5,10 +5,11 @@
 // Package dma provides interface to the eDMA controller. The interface is based
 // on two main types: Controller and Channel.
 //
-// Controller represents an instance of eDMA engine together with the
-// corresponding DMAMUX. Each controller provides 32 channels.
+// Controller represents an instance of eDMA module (DMA engine and TCD memory)
+// together with the corresponding DMAMUX. Each controller provides 32 channels.
 //
-// Channel represents a DMA channel. You can select a specific channel using the
+// Channel represents a DMA+DMAMUX channel together with the corresponding
+// location in TCD memory. You can select a specific channel using the
 // Controller.Channel method but the prefered way to obtain a channel is to use
 // Controller.AllocChannel which arbitrarily allocate an unused one.
 //

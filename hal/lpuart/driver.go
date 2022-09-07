@@ -62,7 +62,7 @@ const (
 func (e DriverError) Error() string {
 	switch e {
 	case ErrBufOverflow:
-		return "lpuart: buffer overflow"
+		return "lpuart: Rx buffer overflow"
 	case ErrTimeout:
 		return "lpuart: timeout"
 	}
@@ -77,10 +77,11 @@ type Driver struct {
 	rxdma     dma.Channel
 	rxready   rtos.Note
 	rxbuf     []DATA // Rx ring buffer
-	nextr     uint32
-	nextw     uint32
+	nextr     uint32 // 30 LSBits: index in rxbuf, 2 MSBits: loop count
+	nextw     uint32 // 30 LSBits: index in rxbuf, 2 MSBits: loop count
 	rxwake    uint32
-	overflow  uint32
+	rxfirst   DATA
+	rxdman    uint8
 
 	// Tx fields
 	txtimeout time.Duration
@@ -97,6 +98,7 @@ func NewDriver(p *Periph, rxdma, txdma dma.Channel) *Driver {
 		p:         p,
 		rxtimeout: -1,
 		rxdma:     rxdma,
+		rxfirst:   RXEMPT,
 		txtimeout: -1,
 		txdma:     txdma,
 	}
@@ -136,24 +138,25 @@ func (d *Driver) SetConfig(conf Config) {
 func (d *Driver) Setup(conf Config, baudrate int) {
 	p := d.p
 	p.EnableClock(true)
-	p.GLOBAL.Store(RST)
+	p.GLOBAL.Store(RST) // reset
 	p.GLOBAL.Store(0)
 	p.WATER.Store(0)
 	p.FIFO.Store(RXFE | TXFE)
 	var dmae BAUD
-	if ch := d.rxdma; ch.IsValid() {
-		ch.DisableReq()
-		ch.DisableErrInt()
-		ch.ClearInt()
+	if rxdma := d.rxdma; rxdma.IsValid() {
+		rxdma.DisableReq()
+		rxdma.DisableErrInt()
+		rxdma.ClearInt()
 		dmae = RDMAE
 	}
-	if ch := d.txdma; ch.IsValid() {
-		ch.DisableReq()
-		ch.DisableErrInt()
-		ch.ClearInt()
-		dmae = TDMAE
+	if txdma := d.txdma; txdma.IsValid() {
+		txdma.DisableReq()
+		txdma.DisableErrInt()
+		txdma.ClearInt()
+		dmae |= TDMAE
 	}
 	if dmae != 0 {
+		// Enable DMA requests. Gates IRQ (undocumented?).
 		p.BAUD.StoreBits(TDMAE|RDMAE, dmae)
 	}
 	p.SetBaudrate(baudrate)

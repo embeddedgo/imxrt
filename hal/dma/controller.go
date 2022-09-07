@@ -14,6 +14,8 @@ import (
 	"github.com/embeddedgo/imxrt/p/mmap"
 )
 
+// A Controller represents an eDMA module together with the corresponding
+// DMAMUX.
 type Controller struct {
 	CR     mmio.R32[CR]
 	es     mmio.R32[uint32]
@@ -59,11 +61,12 @@ func DMA(n int) *Controller {
 	return (*Controller)(unsafe.Pointer(mmap.DMA0_BASE))
 }
 
+// TCDIO represents a location in TCD memory as set of MMIO registers.
 type TCDIO struct {
 	SADDR       mmio.P32
 	SOFF        mmio.R16[int16]
 	ATTR        mmio.R16[ATTR]
-	ML_NBYTES   mmio.R32[int32]
+	ML_NBYTES   mmio.R32[uint32]
 	SLAST       mmio.R32[int32]
 	DADDR       mmio.P32
 	DOFF        mmio.R16[int16]
