@@ -38,11 +38,9 @@ func main() {
 	// Make sure all the values we wrote down in src are in place.
 	rtos.CacheMaint(rtos.DCacheClean, srcAddr, n*4)
 
-	// Ungate the DMA clock and configure the controller to use round robin
-	// arbitration and halt on any error.
+	// Ungate the DMA clock.
 	d := dma.DMA(0)
 	d.EnableClock(true)
-	d.CR.SetBits(dma.ERCA | dma.ERGA | dma.HOE)
 
 	// Allocate a free DMA channel. Because the priorities for all channels
 	// (even unused) must be unique in fixed arbitration mode AllocChannel is

@@ -24,10 +24,9 @@ func main() {
 	rx := pins.P23
 	tx := pins.P24
 
-	// Setup DMA controller
+	// Enable DMA controller
 	d := dma.DMA(0)
 	d.EnableClock(true)
-	d.CR.SetBits(dma.ERCA | dma.ERGA | dma.HOE) // round robin, halt on error
 
 	// Setup LPUART driver
 	u = lpuart.NewDriver(lpuart.LPUART(1), dma.Channel{}, d.Channel(0))
@@ -41,7 +40,7 @@ func main() {
 	u.EnableRx(64) // use a 64-character ring buffer
 	u.EnableTx()
 
-	u.WriteString("abcdefghijklmnoprtsuvwxyz+01234567890-ABCDEFGHIJKLMNOPRSTUVWXYZ\r\n")
+	u.WriteString(akermanianSteppe)
 
 	// Print received data showing reading chunks
 	buf := make([]byte, 80)
@@ -65,3 +64,24 @@ func DMA0_DMA16_Handler() {
 	u.TxDMAISR()
 	leds.User.Toggle() // visualize DMA interrupts
 }
+
+// The Akkerman Steppe translated to English by Leo Yankevich
+const akermanianSteppe = "\r\n" +
+	"I launch myself across the dry and open narrows,\r\n" +
+	"My carriage plunging into green as if a ketch,\r\n" +
+	"Floundering through the meadow flowers in the stretch.\r\n" +
+	"I pass an archipelago of coral yarrows.\r\n" +
+	"\r\n" +
+	"It's dusk now, not a road in sight, nor ancient barrows.\r\n" +
+	"I look up at the sky and look for stars to catch.\r\n" +
+	"There distant clouds glint-there tomorrow starts to etch;\r\n" +
+	"The Dnieper glimmers; Akkerman's lamp shines and harrows.\r\n" +
+	"\r\n" +
+	"I stand in stillness, hear the migratory cranes,\r\n" +
+	"Their necks and wings beyond the reach of preying hawks;\r\n" +
+	"Hear where the sooty copper glides across the plains,\r\n" +
+	"\r\n" +
+	"Where on its underside a viper writhes through stalks.\r\n" +
+	"Amid the hush I lean my ears down grassy lanes\r\n" +
+	"And listen for a voice from home. Nobody talks.\r\n" +
+	"\r\n"

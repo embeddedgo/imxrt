@@ -45,6 +45,20 @@ type Controller struct {
 	chcfg  [32]mmio.R32[uint32]
 }
 
+func init() {
+	d := DMA(0)
+	d.EnableClock(true)
+	d.CR.Store(GRP1PRI | ERCA | ERGA | HOE)
+	d.DisableClock()
+}
+
+func DMA(n int) *Controller {
+	if n != 0 {
+		panic("wrong DMA number")
+	}
+	return (*Controller)(unsafe.Pointer(mmap.DMA0_BASE))
+}
+
 type TCDIO struct {
 	SADDR       mmio.P32
 	SOFF        mmio.R16[int16]
@@ -130,13 +144,6 @@ func (e Error) Error() string {
 
 func (d *Controller) Err() Error {
 	return Error(d.es.Load())
-}
-
-func DMA(n int) *Controller {
-	if n != 0 {
-		panic("wrong DMA number")
-	}
-	return (*Controller)(unsafe.Pointer(mmap.DMA0_BASE))
 }
 
 // EnableClock enables clock for DMA controller.
