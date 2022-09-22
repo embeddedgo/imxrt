@@ -232,17 +232,44 @@ dataInBuffer:
 	if uint(n) > uint(len(d.rxbuf)) {
 		// Discard buffered data. Does it make sense to salvage something?
 		d.nextr = nextw
-		d.nextw = nextw // repurpose d.nextw for cache maintanence pointer
+		d.nextw = nextw // reset the cache maintanence pointer
 		return 0, ErrBufOverflow
 	}
 	if m > n {
 		m = n
 	}
-	if d.nextw != nextw {
+	// To avoid unnecessary cache maintenance operations check if the reading
+	// applies to the buffer area for which the cache may be invalid.
+	if ir += m; ir >= len(d.rxbuf) {
+		ir -= len(d.rxbuf)
+		nr = (nr + 1) & nmask
+	}
+	im, nm := int(d.nextw&imask), int(d.nextw>>nshift)
+	if uint((nm-nr)&nmask*len(d.rxbuf)+(im-ir)) > uint(len(d.rxbuf)) {
 		d.nextw = nextw
-		ptr, size := unsafe.Pointer(&d.rxbuf[0]), len(d.rxbuf)*2
-		rtos.CacheMaint(rtos.DCacheInval, ptr, size)
-
+		n := iw - im
+		switch {
+		case n > 0:
+			ptr := unsafe.Pointer(&d.rxbuf[im])
+			rtos.CacheMaint(rtos.DCacheInval, ptr, n*2)
+		case n < 0:
+			ptr := unsafe.Pointer(&d.rxbuf[0])
+			if n > -64*dma.CacheLineSize/2 {
+				n = len(d.rxbuf) // invalidate the entire buffer at once
+			} else {
+				n = iw // first, invalidate the bottom part of the buffer
+			}
+			rtos.CacheMaint(rtos.DCacheInval, ptr, n*2)
+			if n == len(d.rxbuf) {
+				break
+			}
+			ptr = unsafe.Pointer(&d.rxbuf[im]) // then, the top part
+			n = len(d.rxbuf) - im
+			rtos.CacheMaint(rtos.DCacheInval, ptr, n*2)
+		default: // n == 0
+			// iw points to new data, cannot be equal im, undetected overflow
+			return 0, ErrBufOverflow
+		}
 	}
 	return iw, nil
 }
