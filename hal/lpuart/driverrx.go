@@ -13,9 +13,15 @@ import (
 	"github.com/embeddedgo/imxrt/hal/internal"
 )
 
+const (
+	nshift = 24 // must be >= 16, because of the size of Driver.rxdman
+	imask  = uint32(0xffff_ffff) >> (32 - nshift)
+	nmask  = int(uint32(0xffff_ffff) >> nshift)
+)
+
 // EnableRx enables receiving data into internal ring buffer of size bufLen
-// characters. The minimum size of the buffer is 2 characters. If DMA is used
-// the buffer size is limited to 3276 characters.
+// characters. The minimum size of the buffer is 2 characters. The buffer size
+// is limited to 16M characters in no-DMA mode and 32767 characters in DMA mode.
 func (d *Driver) EnableRx(bufLen int) {
 	if d.rxbuf != nil {
 		panic("enabled before")
@@ -66,11 +72,18 @@ func (d *Driver) DisableRx() {
 	d.rxbuf = nil
 }
 
-const (
-	nshift = 28
-	imask  = uint32(0xffff_ffff) >> (32 - nshift)
-	nmask  = int(uint32(0xffff_ffff) >> nshift)
-)
+// Len returns the number of buffered characters in the Rx ring buffre or -1
+// if it detected the overflow condition.
+func (d *Driver) Len() int {
+	ir, nr := int(d.nextr&imask), int(d.nextr>>nshift)
+	nextw := getNextwDMA(d)
+	iw, nw := int(nextw&imask), int(nextw>>nshift)
+	n := (nw-nr)&nmask*len(d.rxbuf) + (iw - ir)
+	if uint(n) > uint(len(d.rxbuf)) {
+		n = -1
+	}
+	return n
+}
 
 func rxISR(d *Driver) {
 	wake := atomic.CompareAndSwapUint32(&d.rxwake, 1, 0)
@@ -92,7 +105,7 @@ func rxISR(d *Driver) {
 		return
 	}
 	if wake {
-		// Use d.rxfirst also in non-DMA mode (works well, preserves symmetry).
+		// Use d.rxfirst also in no-DMA mode (works well, preserves symmetry).
 		d.rxfirst = d.p.DATA.Load()
 		d.rxready.Wakeup()
 	}
@@ -145,7 +158,8 @@ func waitRxData(d *Driver) (int, error) {
 dataInBuffer:
 	iw, nw := int(nextw&imask), int(nextw>>nshift)
 	ir, nr := int(nextr&imask), int(nextr>>nshift)
-	if n := (nw - nr) & nmask; n == 0 && iw < ir || n == 1 && iw > ir || n > 1 {
+	n := (nw-nr)&nmask*len(d.rxbuf) + (iw - ir) // number of buffered words
+	if uint(n) > uint(len(d.rxbuf)) {
 		// Discard buffered data. Does it make sense to salvage something?
 		d.nextr = nextw
 		return 0, ErrBufOverflow
@@ -169,7 +183,7 @@ func getNextwDMA(d *Driver) uint32 {
 	if irq {
 		// Use INTMAJOR to detect CITER wrapping.
 		rxdma.ClearInt()
-		d.rxdman++ // approximate the non-DMA nw
+		d.rxdman++ // approximate the no-DMA nw
 	}
 	return uint32(len(d.rxbuf)-citer) | uint32(d.rxdman)<<nshift
 }
@@ -214,14 +228,13 @@ func waitRxDataDMA(d *Driver, m int) (int, error) {
 dataInBuffer:
 	iw, nw := int(nextw&imask), int(nextw>>nshift)
 	ir, nr := int(nextr&imask), int(nextr>>nshift)
-	n := (nw - nr) & nmask
-	if n == 0 && iw < ir || n == 1 && iw > ir || n > 1 {
+	n := (nw-nr)&nmask*len(d.rxbuf) + (iw - ir) // number of buffered words
+	if uint(n) > uint(len(d.rxbuf)) {
 		// Discard buffered data. Does it make sense to salvage something?
 		d.nextr = nextw
 		d.nextw = nextw // repurpose d.nextw for cache maintanence pointer
 		return 0, ErrBufOverflow
 	}
-	n = n*len(buf) + (iw - ir) // number of buffered words
 	if m > n {
 		m = n
 	}

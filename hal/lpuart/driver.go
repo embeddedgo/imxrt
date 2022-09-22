@@ -69,6 +69,23 @@ func (e DriverError) Error() string {
 	return ""
 }
 
+// A Driver is a driver to the LPUART peripheral. It provides standard io.Reader
+// and io.Writer interface that can be used to read/write stream of 8-bit
+// characters. It also provides couple of methods to configure and manage the
+// underlying LPURAR peripheral for typical applications and to handle stream of
+// 9 and 10 bit characters. For more complex scenarios you can directly access
+// all LPUART registers.
+//
+// The receiver, if enabled, continuously writes received data to the internal
+// ring buffer which minimizes the risk of data loss. All provided reading
+// methods read from this buffer. The detection of a buffer overflow is based on
+// a best-effort strategy. You cannot rely on it, nor can you rely on error
+// detection provided by hardware. Both provide qualitative, not quantitative,
+// information.
+//
+// The sending and receiving subsystems of the driver are completly independent.
+// Each of them can be independently turned on, off, and used by different
+// goroutines. Each one can be also configured in DMA or no-DMA mode.
 type Driver struct {
 	p *Periph
 
@@ -81,7 +98,7 @@ type Driver struct {
 	nextw     uint32 // 30 LSBits: index in rxbuf, 2 MSBits: loop count
 	rxwake    uint32
 	rxfirst   DATA
-	rxdman    uint8
+	rxdman    uint16
 
 	// Tx fields
 	txtimeout time.Duration
