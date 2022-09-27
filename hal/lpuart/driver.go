@@ -97,8 +97,8 @@ type Driver struct {
 	nextr     uint32 // 30 LSBits: index in rxbuf, 2 MSBits: loop count
 	nextw     uint32 // 30 LSBits: index in rxbuf, 2 MSBits: loop count
 	rxwake    uint32
+	rxdman    uint32
 	rxfirst   DATA
-	rxdman    uint16
 
 	// Tx fields
 	txtimeout time.Duration

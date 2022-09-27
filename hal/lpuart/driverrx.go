@@ -14,7 +14,7 @@ import (
 )
 
 const (
-	nshift = 24 // must be >= 16, because of the size of Driver.rxdman
+	nshift = 24
 	imask  = uint32(0xffff_ffff) >> (32 - nshift)
 	nmask  = int(uint32(0xffff_ffff) >> nshift)
 )
@@ -167,25 +167,28 @@ dataInBuffer:
 	return iw, nil
 }
 
+func (d *Driver) RxDMAISR() {
+	atomic.StoreUint32(&d.rxdman, d.rxdman+1) // must be before ClearInt
+	d.rxdma.ClearInt()
+}
+
 func getNextwDMA(d *Driver) uint32 {
 	var citer int
 	rxdma := d.rxdma
 	tcd := rxdma.TCD()
 	irq := rxdma.IsInt()
+	rxdman := atomic.LoadUint32(&d.rxdman) // must be after IsInt
 	for {
 		citer = int(tcd.ELINK_CITER.Load())
 		irq1 := rxdma.IsInt()
-		if irq == irq1 {
+		rxdman1 := atomic.LoadUint32(&d.rxdman) // must be after IsInt
+		if !irq && !irq1 && rxdman == rxdman1 {
 			break
 		}
 		irq = irq1
+		rxdman = rxdman1
 	}
-	if irq {
-		// Use INTMAJOR to detect CITER wrapping.
-		rxdma.ClearInt()
-		d.rxdman++ // approximate the no-DMA nw
-	}
-	return uint32(len(d.rxbuf)-citer) | uint32(d.rxdman)<<nshift
+	return uint32(len(d.rxbuf)-citer) | rxdman<<nshift
 }
 
 func disableIRQenableDMAifnoISR(d *Driver) (noisr bool) {

@@ -55,11 +55,8 @@ func txISR(d *Driver) {
 }
 
 func (d *Driver) TxDMAISR() {
-	txdma := d.txdma
-	if txdma.IsInt() {
-		txdma.ClearInt()
-		d.txdone.Wakeup()
-	}
+	d.txdma.ClearInt()
+	d.txdone.Wakeup()
 }
 
 func writeString(d *Driver, s string) error {
@@ -138,6 +135,8 @@ func (d *Driver) WriteString(s string) (n int, err error) {
 	case len(s) == 0:
 		return
 	case len(s) >= 32 && d.txdma.IsValid():
+		// DMA can handle only cache-aligned transfers, because of the required
+		// cache maintenance operations that must don't overlap accidentally.
 		if dmaStart, dmaEnd := dmaOffsets(s); dmaStart < dmaEnd {
 			if dmaStart != 0 {
 				err = writeString(d, s[:dmaStart])

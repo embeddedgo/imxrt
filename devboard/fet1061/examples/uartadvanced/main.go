@@ -2,8 +2,10 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-// Uart-details demonstrates how to use LPUART peripheral using hal/lpuart
-// package directly.
+// Uartadvanced demonstrates how to use the LPUART peripheral including all
+// details like interrupts and DMA. In practice, using DMA with small
+// 64-character Rx buffer, small portions of Tx data and slow 115200 speed is
+// rather overkill, mainly because of required cache maintenance operations.
 package main
 
 import (
@@ -14,6 +16,7 @@ import (
 	"github.com/embeddedgo/imxrt/devboard/fet1061/board/leds"
 	"github.com/embeddedgo/imxrt/devboard/fet1061/board/pins"
 	"github.com/embeddedgo/imxrt/hal/dma"
+	"github.com/embeddedgo/imxrt/hal/dma/dmairq"
 	"github.com/embeddedgo/imxrt/hal/irq"
 	"github.com/embeddedgo/imxrt/hal/lpuart"
 )
@@ -25,20 +28,23 @@ func main() {
 	rx := pins.P23
 	tx := pins.P24
 
-	// Enable DMA controller
+	// Enable DMA controller and allocate two channels for the LPUART driver.
 	d := dma.DMA(0)
 	d.EnableClock(true)
+	rxdma := d.AllocChannel(false)
+	txdma := d.AllocChannel(false)
 
 	// Setup LPUART driver
-	u = lpuart.NewDriver(lpuart.LPUART(1), d.Channel(1), d.Channel(0))
+	u = lpuart.NewDriver(lpuart.LPUART(1), rxdma, txdma)
 	u.Setup(lpuart.Word8b, 115200)
 	u.UsePin(rx, lpuart.RXD)
 	u.UsePin(tx, lpuart.TXD)
 	irq.LPUART1.Enable(rtos.IntPrioLow, 0)
-	irq.DMA0_DMA16.Enable(rtos.IntPrioLow, 0)
+	dmairq.SetISR(rxdma, u.RxDMAISR)
+	dmairq.SetISR(txdma, u.TxDMAISR)
 
 	// Enable both directions
-	u.EnableRx(64) // use a 64-character ring buffer
+	u.EnableRx(64) // 64-character ring buffer
 	u.EnableTx()
 
 	t0 := time.Now()
@@ -67,15 +73,9 @@ func main() {
 //go:interrupthandler
 func LPUART1_Handler() {
 	u.ISR()
+	leds.User.Toggle() // visualize LPUART interrupts
 }
 
-//go:interrupthandler
-func DMA0_DMA16_Handler() {
-	u.TxDMAISR()
-	leds.User.Toggle() // visualize DMA interrupts
-}
-
-//
 const akermanianSteppe = "\r\n" +
 	"The Akkerman Steppe poem by Adam Mickiewicz translated to\r\n" +
 	"English by Leo Yankevich.\r\n" +

@@ -104,38 +104,26 @@ const (
 	BWCn         = 14
 )
 
-func d(c Channel) *Controller { return (*Controller)(unsafe.Pointer(c.h &^ 31)) }
-func n(c Channel) uint        { return uint(c.h) & 31 }
+func (c Channel) IsValid() bool      { return c.h != 0 }
+func (c Channel) Contr() *Controller { return (*Controller)(unsafe.Pointer(c.h &^ 31)) }
+func (c Channel) Num() int           { return int(c.h) & 31 }
 
-// Free frees the channel so the Controller.AllocChannel can allocate it next
-// time.
-func (c Channel) Free() {
-	mask := uint32(1) << n(c)
-	for {
-		chs := atomic.LoadUint32(&chanMask)
-		if atomic.CompareAndSwapUint32(&chanMask, chs, chs|mask) {
-			break
-		}
-	}
-}
+func (c Channel) ReqEnabled() bool { return c.Contr().erq.Load()>>uint(c.Num())&1 != 0 }
+func (c Channel) EnableReq()       { c.Contr().serq.Store(uint8(c.Num())) }
+func (c Channel) DisableReq()      { c.Contr().cerq.Store(uint8(c.Num())) }
+func (c Channel) IsReq() bool      { return c.Contr().hrs.Load()>>uint(c.Num())&1 != 0 }
 
-func (c Channel) IsValid() bool    { return c.h != 0 }
-func (c Channel) ReqEnabled() bool { return d(c).erq.Load()>>n(c)&1 != 0 }
-func (c Channel) EnableReq()       { d(c).serq.Store(uint8(n(c))) }
-func (c Channel) DisableReq()      { d(c).cerq.Store(uint8(n(c))) }
-func (c Channel) IsReq() bool      { return d(c).hrs.Load()>>n(c)&1 != 0 }
+func (c Channel) IsErr() bool         { return c.Contr().err.Load()>>uint(c.Num())&1 != 0 }
+func (c Channel) ClearErr()           { c.Contr().cerr.Store(uint8(c.Num())) }
+func (c Channel) ErrIntEnabled() bool { return c.Contr().eei.Load()>>uint(c.Num())&1 != 0 }
+func (c Channel) EnableErrInt()       { c.Contr().seei.Store(uint8(c.Num())) }
+func (c Channel) DisableErrInt()      { c.Contr().ceei.Store(uint8(c.Num())) }
 
-func (c Channel) IsErr() bool         { return d(c).err.Load()>>n(c)&1 != 0 }
-func (c Channel) ClearErr()           { d(c).cerr.Store(uint8(n(c))) }
-func (c Channel) ErrIntEnabled() bool { return d(c).eei.Load()>>n(c)&1 != 0 }
-func (c Channel) EnableErrInt()       { d(c).seei.Store(uint8(n(c))) }
-func (c Channel) DisableErrInt()      { d(c).ceei.Store(uint8(n(c))) }
+func (c Channel) IsInt() bool { return c.Contr().int.Load()>>uint(c.Num())&1 != 0 }
+func (c Channel) ClearInt()   { c.Contr().cint.Store(uint8(c.Num())) }
 
-func (c Channel) IsInt() bool { return d(c).int.Load()>>n(c)&1 != 0 }
-func (c Channel) ClearInt()   { d(c).cint.Store(uint8(n(c))) }
-
-func (c Channel) ClearDone() { d(c).cdne.Store(uint8(n(c))) }
-func (c Channel) Start()     { d(c).ssrt.Store(uint8(n(c))) }
+func (c Channel) ClearDone() { c.Contr().cdne.Store(uint8(c.Num())) }
+func (c Channel) Start()     { c.Contr().ssrt.Store(uint8(c.Num())) }
 
 // A Prio contains channel priority and some additional flags used in
 // fixed-priority arbitration mode.
@@ -155,20 +143,20 @@ const (
 
 // Prio returns the current channel priority.
 func (c Channel) Prio() Prio {
-	n := n(c)
-	return Prio(d(c).dchpri[n&^3|(3-n&3)].Load())
+	n := c.Num()
+	return Prio(c.Contr().dchpri[n&^3|(3-n&3)].Load())
 }
 
 // SetPrio sets the channel priority.
 func (c Channel) SetPrio(prio Prio) {
-	n := n(c)
-	d(c).dchpri[n&^3|(3-n&3)].Store(uint8(prio))
+	n := c.Num()
+	c.Contr().dchpri[n&^3|(3-n&3)].Store(uint8(prio))
 }
 
 // ReadTCD reads a transfer controll descriptor from TCD memory.
 func (c Channel) ReadTCD(tcd *TCD) {
 	tcda := (*[8]uint32)(unsafe.Pointer(tcd))
-	tcdio := (*[8]mmio.U32)(unsafe.Pointer(&d(c).tcd[n(c)]))
+	tcdio := (*[8]mmio.U32)(unsafe.Pointer(&c.Contr().tcd[c.Num()]))
 	tcda[0] = tcdio[0].Load()
 	tcda[1] = tcdio[1].Load()
 	tcda[2] = tcdio[2].Load()
@@ -184,7 +172,7 @@ func (c Channel) ReadTCD(tcd *TCD) {
 // set so the engine can start channel immediately.
 func (c Channel) WriteTCD(tcd *TCD) {
 	tcda := (*[8]uint32)(unsafe.Pointer(tcd))
-	tcdio := (*[8]mmio.U32)(unsafe.Pointer(&d(c).tcd[n(c)]))
+	tcdio := (*[8]mmio.U32)(unsafe.Pointer(&c.Contr().tcd[c.Num()]))
 	tcdio[0].Store(tcda[0])
 	tcdio[1].Store(tcda[1])
 	tcdio[2].Store(tcda[2])
@@ -198,7 +186,19 @@ func (c Channel) WriteTCD(tcd *TCD) {
 // TCD returns the pointer to the corresponding TCD memory. You can use it to
 // alter TCD fields in place.
 func (c Channel) TCD() *TCDIO {
-	return &d(c).tcd[n(c)]
+	return &c.Contr().tcd[c.Num()]
+}
+
+// Free frees the channel so the Controller.AllocChannel can allocate it next
+// time.
+func (c Channel) Free() {
+	mask := uint32(1) << uint(c.Num())
+	for {
+		chs := atomic.LoadUint32(&chanMask)
+		if atomic.CompareAndSwapUint32(&chanMask, chs, chs|mask) {
+			break
+		}
+	}
 }
 
 // A Mux represents a configuration of DMAMUX for a DMA channel.
@@ -357,9 +357,9 @@ const (
 )
 
 func (c Channel) Mux() Mux {
-	return Mux(d(c).chcfg[n(c)].Load())
+	return Mux(c.Contr().chcfg[c.Num()].Load())
 }
 
 func (c Channel) SetMux(mux Mux) {
-	d(c).chcfg[n(c)].Store(uint32(mux))
+	c.Contr().chcfg[c.Num()].Store(uint32(mux))
 }

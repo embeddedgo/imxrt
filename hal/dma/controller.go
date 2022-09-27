@@ -16,6 +16,7 @@ import (
 
 // A Controller represents an eDMA module together with the corresponding
 // DMAMUX.
+// TODO: expose all registers
 type Controller struct {
 	CR     mmio.R32[CR]
 	es     mmio.R32[uint32]
