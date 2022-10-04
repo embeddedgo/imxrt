@@ -33,7 +33,7 @@ func (d *Driver) EnableRx(bufLen int) {
 		if bufLen > 32767 {
 			bufLen = 32767
 		}
-		d.rxbuf = dma.Alloc[DATA](bufLen)
+		d.rxbuf = dma.Alloc[uint16](bufLen)
 		ptr, size := unsafe.Pointer(&d.rxbuf[0]), len(d.rxbuf)*2
 		rtos.CacheMaint(rtos.DCacheCleanInval, ptr, size)
 		tcd := dma.TCD{
@@ -54,7 +54,7 @@ func (d *Driver) EnableRx(bufLen int) {
 		if bufLen > 1<<nshift {
 			bufLen = 1 << nshift
 		}
-		d.rxbuf = make([]DATA, bufLen)
+		d.rxbuf = make([]uint16, bufLen)
 	}
 	internal.AtomicStoreBits(&d.p.CTRL, RE|RIE, RE|RIE)
 }
@@ -279,7 +279,7 @@ dataInBuffer:
 
 const dataErrMask = FRETSC | PARITYE | NOISY
 
-func dataError(w DATA) error {
+func dataError(w uint16) error {
 	return Error(w&FRETSC)<<(FEn-FRETSCn) | Error(w&PARITYE)<<(PFn-PARITYEn) |
 		Error(w&NOISY)<<(NFn-NOISYn)
 }
@@ -312,6 +312,35 @@ func (d *Driver) ReadByte() (byte, error) {
 	}
 	return byte(w), err
 }
+
+// ReadWord16 works like ReadByte but returns all bits that can be read from
+// DATA register (up to 10 data bits and 5 status/error flags). Because of this
+// the error flags are not returned in error.
+func (d *Driver) ReadWord16() (uint16, error) {
+	var err error
+	if d.rxdma.IsValid() {
+		_, err = waitRxDataDMA(d, 1)
+	} else {
+		_, err = waitRxData(d)
+	}
+	if err != nil {
+		return 0, err
+	}
+	w := d.rxfirst
+	if w&RXEMPT == 0 {
+		d.rxfirst = RXEMPT
+	} else {
+		ir, nr := int(d.nextr&imask), int(d.nextr>>nshift)
+		w = d.rxbuf[ir]
+		if ir++; ir == len(d.rxbuf) {
+			ir = 0
+			nr++
+		}
+		d.nextr = uint32(nr<<nshift | ir)
+	}
+	return w, nil
+}
+
 
 // Read implements the io.Reader interface.
 func (d *Driver) Read(buf []byte) (int, error) {

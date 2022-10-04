@@ -93,12 +93,12 @@ type Driver struct {
 	rxtimeout time.Duration
 	rxdma     dma.Channel
 	rxready   rtos.Note
-	rxbuf     []DATA // Rx ring buffer
-	nextr     uint32 // 30 LSBits: index in rxbuf, 2 MSBits: loop count
-	nextw     uint32 // 30 LSBits: index in rxbuf, 2 MSBits: loop count
+	rxbuf     []uint16 // Rx ring buffer
+	nextr     uint32   // 30 LSBits: index in rxbuf, 2 MSBits: loop count
+	nextw     uint32   // 30 LSBits: index in rxbuf, 2 MSBits: loop count
 	rxwake    uint32
 	rxdman    uint32
-	rxfirst   DATA
+	rxfirst   uint16
 
 	// Tx fields
 	txtimeout time.Duration

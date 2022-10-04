@@ -14,18 +14,18 @@ import (
 	"github.com/embeddedgo/imxrt/hal/irq"
 )
 
-var handlers [32]uintptr
+var handlers [32]unsafe.Pointer // func()
 
 func setISR(c dma.Channel, isr func()) {
-	h := *(*uintptr)(unsafe.Pointer(&isr))
-	atomic.StoreUintptr(&handlers[c.Num()], h)
+	h := *(*unsafe.Pointer)(unsafe.Pointer(&isr))
+	atomic.StorePointer(&handlers[c.Num()], h)
 }
 
 func dispatch(cn int) {
 	d := dma.DMA(0)
 	for {
 		if d.Channel(cn).IsInt() {
-			if h := atomic.LoadUintptr(&handlers[cn]); h != 0 {
+			if h := atomic.LoadPointer(&handlers[cn]); h != nil {
 				(*(*func())(unsafe.Pointer(&h)))()
 			}
 		}
@@ -35,9 +35,9 @@ func dispatch(cn int) {
 	}
 }
 
-// TODO: Avoid 16 separate handlers below if we move exception vectors to ITCM
-// (take ~1280 bytes of flash/cache). Use one ISR for all 16 IRQs and getIRQ
-// from getirq.s to obtain the interrupt number.
+// TODO: Avoid 16 separate handlers below if we move exception vectors to ITCM.
+// Currently they takes ~1280 bytes of Flash and pollute I-Cache. Use one ISR
+// for all 16 IRQs and getIRQ from getirq.s to obtain the interrupt number.
 
 //go:interrupthandler
 func _DMA0_DMA16_Handler() { dispatch(0) }

@@ -226,35 +226,16 @@ const (
 	R8T9n    = 31
 )
 
-type DATA uint16
-
+// DATA
 const (
-	R0T0    DATA = 0x01 << 0  //+ R0T0
-	R1T1    DATA = 0x01 << 1  //+ R1T1
-	R2T2    DATA = 0x01 << 2  //+ R2T2
-	R3T3    DATA = 0x01 << 3  //+ R3T3
-	R4T4    DATA = 0x01 << 4  //+ R4T4
-	R5T5    DATA = 0x01 << 5  //+ R5T5
-	R6T6    DATA = 0x01 << 6  //+ R6T6
-	R7T7    DATA = 0x01 << 7  //+ R7T7
-	R8T8    DATA = 0x01 << 8  //+ R8T8
-	R9T9    DATA = 0x01 << 9  //+ R9T9
-	IDLINE  DATA = 0x01 << 11 //+ Idle Line
-	RXEMPT  DATA = 0x01 << 12 //+ Receive Buffer Empty
-	FRETSC  DATA = 0x01 << 13 //+ Frame Error / Transmit Special Character
-	PARITYE DATA = 0x01 << 14 //+ PARITYE
-	NOISY   DATA = 0x01 << 15 //+ NOISY
+	DATA    uint16 = 0x3ff << 0 //+ Data bits
+	IDLINE  uint16 = 0x01 << 11 //+ Idle Line
+	RXEMPT  uint16 = 0x01 << 12 //+ Receive Buffer Empty
+	FRETSC  uint16 = 0x01 << 13 //+ Frame Error / Transmit Special Character
+	PARITYE uint16 = 0x01 << 14 //+ PARITYE
+	NOISY   uint16 = 0x01 << 15 //+ NOISY
 
-	R0T0n    = 0
-	R1T1n    = 1
-	R2T2n    = 2
-	R3T3n    = 3
-	R4T4n    = 4
-	R5T5n    = 5
-	R6T6n    = 6
-	R7T7n    = 7
-	R8T8n    = 8
-	R9T9n    = 9
+	DATAn    = 0
 	IDLINEn  = 11
 	RXEMPTn  = 12
 	FRETSCn  = 13

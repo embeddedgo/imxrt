@@ -44,7 +44,7 @@ func txISR(d *Driver) {
 	}
 	dr := &d.p.DATA
 	for txn < stop {
-		dr.Store(DATA(txdata[txn]))
+		dr.Store(uint16(txdata[txn]))
 		txn++
 	}
 	d.txn = txn
@@ -183,6 +183,6 @@ func (d *Driver) WriteByte(b byte) error {
 		}
 		runtime.Gosched()
 	}
-	d.p.DATA.Store(DATA(b))
+	d.p.DATA.Store(uint16(b))
 	return nil
 }
