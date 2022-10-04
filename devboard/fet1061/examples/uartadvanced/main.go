@@ -67,6 +67,25 @@ func main() {
 			continue
 		}
 		fmt.Fprintf(u, "%d: %s\r\n", n, buf[:n])
+		if buf[0] == '*' {
+			break
+		}
+	}
+
+	u.WriteString("\r\n\r\n*** Receive data as 16-bit words ***\r\n\r\n")
+
+	buf16 := make([]uint16, 80)
+	for {
+		n, err := u.Read16(buf16)
+		if err != nil {
+			fmt.Fprintf(u, "error: %v\r\n", err)
+			continue
+		}
+		fmt.Fprintf(u, "%d: %x\r\n   ", n, buf16[:n])
+		for _, w := range buf16[:n] {
+			u.WriteByte(byte(w))
+		}
+		u.WriteString("\r\n")
 	}
 }
 

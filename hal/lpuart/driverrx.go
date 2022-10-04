@@ -129,7 +129,7 @@ func rxISR(d *Driver) {
 	atomic.StoreUint32(&d.nextw, uint32(nw<<nshift|iw))
 }
 
-func waitRxData(d *Driver) (int, error) {
+func waitRxData(d *Driver) (uint32, error) {
 	nextr := d.nextr
 	nextw := atomic.LoadUint32(&d.nextw)
 	if nextw != nextr {
@@ -164,7 +164,7 @@ dataInBuffer:
 		d.nextr = nextw
 		return 0, ErrBufOverflow
 	}
-	return iw, nil
+	return nextw, nil
 }
 
 func (d *Driver) RxDMAISR() {
@@ -201,7 +201,7 @@ func disableIRQenableDMAifnoISR(d *Driver) (noisr bool) {
 	return
 }
 
-func waitRxDataDMA(d *Driver, m int) (int, error) {
+func waitRxDataDMA(d *Driver, m int) (uint32, error) {
 	nextr := d.nextr
 	nextw := getNextwDMA(d)
 	if nextw != nextr {
@@ -274,7 +274,7 @@ dataInBuffer:
 			return 0, ErrBufOverflow
 		}
 	}
-	return iw, nil
+	return nextw, nil
 }
 
 const dataErrMask = FRETSC | PARITYE | NOISY
@@ -314,7 +314,7 @@ func (d *Driver) ReadByte() (byte, error) {
 }
 
 // ReadWord16 works like ReadByte but returns all bits that can be read from
-// DATA register (up to 10 data bits and 5 status/error flags). Because of this
+// DATA register (up to 10 data bits and 4 status/error flags). Because of this
 // the error flags are not returned in error.
 func (d *Driver) ReadWord16() (uint16, error) {
 	var err error
@@ -341,25 +341,20 @@ func (d *Driver) ReadWord16() (uint16, error) {
 	return w, nil
 }
 
-
 // Read implements the io.Reader interface.
-func (d *Driver) Read(buf []byte) (int, error) {
+func (d *Driver) Read(buf []byte) (n int, err error) {
 	if len(buf) == 0 {
-		return 0, nil
+		return
 	}
-	var (
-		iw  int
-		err error
-	)
+	var nextw uint32
 	if d.rxdma.IsValid() {
-		iw, err = waitRxDataDMA(d, len(buf))
+		nextw, err = waitRxDataDMA(d, len(buf))
 	} else {
-		iw, err = waitRxData(d)
+		nextw, err = waitRxData(d)
 	}
 	if err != nil {
-		return 0, err
+		return
 	}
-	n := 0
 	if w := d.rxfirst; w&RXEMPT == 0 {
 		d.rxfirst = RXEMPT
 		buf[n] = byte(w)
@@ -368,9 +363,13 @@ func (d *Driver) Read(buf []byte) (int, error) {
 			err = dataError(w)
 			return n, err
 		}
+		if d.nextr == nextw || n == len(buf) {
+			return
+		}
 	}
+	iw := int(nextw & imask)
 	ir, nr := int(d.nextr&imask), int(d.nextr>>nshift)
-	for ir != iw && n != len(buf) {
+	for {
 		w := d.rxbuf[ir]
 		buf[n] = byte(w)
 		n++
@@ -382,7 +381,58 @@ func (d *Driver) Read(buf []byte) (int, error) {
 			err = dataError(w)
 			break
 		}
+		if ir == iw || n == len(buf) {
+			break
+		}
 	}
 	d.nextr = uint32(nr<<nshift | ir)
 	return n, err
+}
+
+// Read16 works like Read but transfers 16-bit words that contain all bits
+// read from DATA register (up to 10 data bits and 4 status/error flags per
+// word). Because of this Read16 does not stop on the detected error flag like
+// Read does and these flags are not returned in err.
+func (d *Driver) Read16(buf []uint16) (n int, err error) {
+	if len(buf) == 0 {
+		return
+	}
+	var nextw uint32
+	if d.rxdma.IsValid() {
+		nextw, err = waitRxDataDMA(d, len(buf))
+	} else {
+		nextw, err = waitRxData(d)
+	}
+	if err != nil {
+		return
+	}
+	if w := d.rxfirst; w&RXEMPT == 0 {
+		d.rxfirst = RXEMPT
+		buf[n] = w
+		n++
+		if d.nextr == nextw || n == len(buf) {
+			return
+		}
+	}
+	iw := int(nextw & imask)
+	ir, nr := int(d.nextr&imask), int(d.nextr>>nshift)
+	switch {
+	case ir < iw:
+		m := copy(buf[n:], d.rxbuf[ir:iw])
+		n += m
+		ir += m
+	default:
+		m := copy(buf[n:], d.rxbuf[ir:])
+		n += m
+		ir += m
+		if n == len(buf) || iw == 0 {
+			break
+		}
+		m = copy(buf[n:], d.rxbuf[:iw])
+		n += m
+		ir = m
+		nr++
+	}
+	d.nextr = uint32(nr<<nshift | ir)
+	return n, nil
 }
