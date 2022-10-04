@@ -14,7 +14,7 @@ import (
 	"github.com/embeddedgo/imxrt/hal/internal"
 )
 
-// EnableTx enables Tx part of the LPUART peripheral and setups Tx DMA channel.
+// EnableTx enables Tx part of the LPUART peripheral.
 func (d *Driver) EnableTx() {
 	if txdma := d.txdma; txdma.IsValid() {
 		txdma.DisableReq()
@@ -23,8 +23,7 @@ func (d *Driver) EnableTx() {
 	internal.AtomicStoreBits(&d.p.CTRL, TE, TE)
 }
 
-// DisableTx disables Tx part of the LPUART peripheral. While Tx is disabled the
-// Tx DMA channel can be used for other things.
+// DisableTx disables Tx part of the LPUART peripheral.
 func (d *Driver) DisableTx() {
 	for d.p.STAT.LoadBits(TC) == 0 {
 		runtime.Gosched()
@@ -36,19 +35,34 @@ func (d *Driver) DisableTx() {
 }
 
 func txISR(d *Driver) {
-	txn := d.txn
-	stop := txn + 1<<d.txlog2max
-	txdata := d.txdata
-	if stop > len(txdata) {
-		stop = len(txdata)
-	}
 	dr := &d.p.DATA
-	for txn < stop {
-		dr.Store(uint16(txdata[txn]))
-		txn++
+	ptr := d.txd
+	n := d.txn
+	m := n
+	if m < 0 {
+		m = -m
 	}
-	d.txn = txn
-	if txn == len(txdata) {
+	if m > 1<<d.txlog2max {
+		m = 1 << d.txlog2max
+	}
+	if n >= 0 {
+		n -= m
+		for m != 0 {
+			dr.Store(uint16(*(*byte)(ptr)))
+			ptr = unsafe.Add(ptr, 1)
+			m--
+		}
+	} else {
+		n += m
+		for m != 0 {
+			dr.Store(*(*uint16)(ptr))
+			ptr = unsafe.Add(ptr, 2)
+			m--
+		}
+	}
+	d.txd = ptr
+	d.txn = n
+	if n == 0 {
 		internal.AtomicStoreBits(&d.p.CTRL, TIE, 0)
 		d.txdone.Wakeup()
 	}
@@ -59,12 +73,20 @@ func (d *Driver) TxDMAISR() {
 	d.txdone.Wakeup()
 }
 
-func writeString(d *Driver, s string) error {
-	if len(s) == 1 {
-		return d.WriteByte(s[0])
+func write(d *Driver, s string, s16 []uint16) error {
+	if len(s) != 0 {
+		if len(s) == 1 {
+			return d.WriteWord16(uint16(s[0]))
+		}
+		d.txd = *(*unsafe.Pointer)(unsafe.Pointer(&s))
+		d.txn = len(s)
+	} else {
+		if len(s16) == 1 {
+			return d.WriteWord16(s16[0])
+		}
+		d.txd = unsafe.Pointer(&s16[0])
+		d.txn = -len(s16)
 	}
-	d.txdata = s
-	d.txn = 0
 	d.txdone.Clear()
 	internal.AtomicStoreBits(&d.p.CTRL, TIE, TIE)
 	if !d.txdone.Sleep(d.txtimeout) {
@@ -74,10 +96,24 @@ func writeString(d *Driver, s string) error {
 	return nil
 }
 
-func writeStringDMA(d *Driver, s string) error {
-	ptr := *(*unsafe.Pointer)(unsafe.Pointer(&s))
-	rtos.CacheMaint(rtos.DCacheClean, ptr, len(s))
-	n := len(s) >> d.txlog2max // number of minor loops (major loop iterations)
+// writeDMA only works with aligned multiples of 32 bytes
+func writeDMA(d *Driver, s string, s16 []uint16) error {
+	var (
+		ptr  unsafe.Pointer
+		n    int
+		attr dma.ATTR
+	)
+	if len(s) != 0 {
+		ptr = *(*unsafe.Pointer)(unsafe.Pointer(&s))
+		n = len(s)
+		attr = dma.S32b | dma.D8b
+	} else {
+		ptr = unsafe.Pointer(&s16[0])
+		n = len(s16) * 2
+		attr = dma.S32b | dma.D16b
+	}
+	rtos.CacheMaint(rtos.DCacheClean, ptr, n)
+	n >>= d.txlog2max // number of minor loops (major loop iterations)
 	m := n
 	if m > 32767 {
 		m = 32767
@@ -86,7 +122,7 @@ func writeStringDMA(d *Driver, s string) error {
 	tcd := dma.TCD{
 		SADDR:       ptr,
 		SOFF:        4,
-		ATTR:        dma.S32b | dma.D8b,
+		ATTR:        attr,
 		ML_NBYTES:   1 << d.txlog2max,
 		DADDR:       unsafe.Pointer(d.p.DATA.Addr()),
 		ELINK_CITER: int16(m),
@@ -120,12 +156,12 @@ func writeStringDMA(d *Driver, s string) error {
 }
 
 // dmaOffsets calculates a part of the string that is cache aligned
-func dmaOffsets(s string) (start, end int) {
+func dmaOffsets(p unsafe.Pointer, size int) (start, end uintptr) {
 	const alignMask = dma.CacheLineSize - 1
-	ptr := *(*uintptr)(unsafe.Pointer(&s))
-	start = -int(ptr&alignMask) & alignMask
-	ptr += uintptr(len(s))
-	end = len(s) - int(ptr&alignMask)
+	ptr := uintptr(p)
+	start = -ptr & alignMask
+	ptr += uintptr(size)
+	end = uintptr(size) - ptr&alignMask
 	return
 }
 
@@ -137,25 +173,26 @@ func (d *Driver) WriteString(s string) (n int, err error) {
 	case len(s) >= 32 && d.txdma.IsValid():
 		// DMA can handle only cache-aligned transfers, because of the required
 		// cache maintenance operations that must don't overlap accidentally.
-		if dmaStart, dmaEnd := dmaOffsets(s); dmaStart < dmaEnd {
+		dmaStart, dmaEnd := dmaOffsets(*(*unsafe.Pointer)(unsafe.Pointer(&s)), len(s))
+		if dmaStart < dmaEnd {
 			if dmaStart != 0 {
-				err = writeString(d, s[:dmaStart])
+				err = write(d, s[:dmaStart], nil)
 				if err != nil {
 					break
 				}
 			}
-			err = writeStringDMA(d, s[dmaStart:dmaEnd])
+			err = writeDMA(d, s[dmaStart:dmaEnd], nil)
 			if err != nil {
 				break
 			}
-			if dmaEnd != len(s) {
-				err = writeString(d, s[dmaEnd:])
+			if dmaEnd != uintptr(len(s)) {
+				err = write(d, s[dmaEnd:], nil)
 			}
 			break
 		}
 		fallthrough
 	default:
-		err = writeString(d, s)
+		err = write(d, s, nil)
 	}
 	if err == nil {
 		n = len(s)
@@ -168,7 +205,45 @@ func (d *Driver) Write(p []byte) (int, error) {
 	return d.WriteString(*(*string)(unsafe.Pointer(&p)))
 }
 
-func (d *Driver) WriteByte(b byte) error {
+// Write16 works like Write but writes 16-bit words to the DATA register.
+func (d *Driver) Write16(s []uint16) (n int, err error) {
+	switch {
+	case len(s) == 0:
+		return
+	case len(s) >= 16 && d.txdma.IsValid():
+		// DMA can handle only cache-aligned transfers, because of the required
+		// cache maintenance operations that must don't overlap accidentally.
+		dmaStart, dmaEnd := dmaOffsets(unsafe.Pointer(&s[0]), len(s)*2)
+		dmaStart /= 2
+		dmaEnd /= 2
+		if dmaStart < dmaEnd {
+			if dmaStart != 0 {
+				err = write(d, "", s[:dmaStart])
+				if err != nil {
+					break
+				}
+			}
+			err = writeDMA(d, "", s[dmaStart:dmaEnd])
+			if err != nil {
+				break
+			}
+			if dmaEnd != uintptr(len(s)) {
+				err = write(d, "", s[dmaEnd:])
+			}
+			break
+		}
+		fallthrough
+	default:
+		err = write(d, "", s)
+	}
+	if err == nil {
+		n = len(s)
+	}
+	return
+}
+
+// WriteWord16 works like WriteByte but writes 16-bit word to the DATA register.
+func (d *Driver) WriteWord16(w uint16) error {
 	var start time.Time
 	for int(d.p.WATER.LoadBits(TXCOUNT)>>TXCOUNTn) == 1<<d.txlog2max {
 		if d.txtimeout >= 0 {
@@ -183,6 +258,12 @@ func (d *Driver) WriteByte(b byte) error {
 		}
 		runtime.Gosched()
 	}
-	d.p.DATA.Store(uint16(b))
+	d.p.DATA.Store(w)
 	return nil
 }
+
+// WriteByte implements the io.ByteWriter interface.
+func (d *Driver) WriteByte(b byte) error {
+	return d.WriteWord16(uint16(b))
+}
+

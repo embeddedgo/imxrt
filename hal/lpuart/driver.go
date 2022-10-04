@@ -8,6 +8,7 @@ import (
 	"embedded/rtos"
 	"strings"
 	"time"
+	"unsafe"
 
 	"github.com/embeddedgo/imxrt/hal/dma"
 )
@@ -103,7 +104,8 @@ type Driver struct {
 	// Tx fields
 	txtimeout time.Duration
 	txdma     dma.Channel
-	txdata    string
+	txd       unsafe.Pointer
+	txi       int
 	txn       int
 	txlog2max uint
 	txdone    rtos.Note
