@@ -59,7 +59,8 @@ func (d *Driver) EnableRx(bufLen int) {
 	internal.AtomicStoreBits(&d.p.CTRL, RE|RIE, RE|RIE)
 }
 
-// DisableRx disables receiver.
+// DisableRx disables receiver and discards all data in Rx buffer. Disabled
+// driver cannot be used to read data.
 func (d *Driver) DisableRx() {
 	p := d.p
 	internal.AtomicStoreBits(&p.CTRL, RE|RIE, 0)
@@ -69,7 +70,27 @@ func (d *Driver) DisableRx() {
 	for p.DATA.Load()&RXEMPT == 0 {
 		// empty the FIFO to ensure the Rx ISR will no longer use the buffer
 	}
+	if rxdma := d.rxdma; rxdma.IsValid() {
+		rxdma.DisableReq()
+		for rxdma.IsReq() {
+		}
+		d.rxdman = 0
+	}
+	d.nextr = 0
+	d.nextw = 0
+	d.rxfirst = RXEMPT
 	d.rxbuf = nil
+}
+
+// DiscardRx discards all rceived data.
+func (d *Driver) DiscardRx() {
+	rxbuf := d.rxbuf
+	d.DisableRx()
+	d.rxbuf = rxbuf
+	if d.rxdma.IsValid() {
+		d.nextr = uint32(len(d.rxbuf) - int(d.rxdma.TCD().ELINK_CITER.Load()))
+	}
+	internal.AtomicStoreBits(&d.p.CTRL, RE|RIE, RE|RIE)
 }
 
 // Len returns the number of buffered characters in the Rx ring buffre or -1

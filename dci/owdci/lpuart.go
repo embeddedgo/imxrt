@@ -1,0 +1,135 @@
+// Copyright 2022 The Embedded Go Authors. All rights reserved.
+// Use of this source code is governed by a BSD-style
+// license that can be found in the LICENSE file.
+
+// Package owdci provides implementation of onewire.DCI interface.
+package owdci
+
+import (
+	"io"
+	"time"
+
+	"github.com/embeddedgo/imxrt/hal/lpuart"
+	"github.com/embeddedgo/onewire"
+)
+
+// LPUART wraps an lpuart.Driver to implements the onewire.DCI.
+type LPUART lpuart.Driver
+
+func lpuartDrv(dci *LPUART) *lpuart.Driver { return (*lpuart.Driver)(dci) }
+
+// SetupLPUART configures d to be used as onewire.DCI.
+func SetupLPUART(d *lpuart.Driver) *LPUART {
+	d.Setup(lpuart.Word8b, 115200)
+	d.Periph().CTRL.SetBits(lpuart.LOOPS | lpuart.RSRC | lpuart.TXDIR)
+	d.EnableRx(64)
+	d.EnableTx()
+	return (*LPUART)(d)
+}
+
+func (dci *LPUART) Reset() error {
+	d := lpuartDrv(dci)
+	p := d.Periph()
+	p.SetBaudrate(9600)
+	err := d.WriteByte(0xf0)
+	if err != nil {
+		return err
+	}
+	d.SetReadTimeout(time.Second)
+	r, err := d.ReadByte()
+	if err != nil {
+		return err
+	}
+	if r == 0xf0 {
+		return onewire.ErrNoResponse
+	}
+	p.SetBaudrate(115200)
+	return nil
+}
+
+func sendRecvSlot(d *lpuart.Driver, slot byte) (byte, error) {
+	if err := d.WriteByte(slot); err != nil {
+		d.DiscardRx()
+		return 0, err
+	}
+	d.SetReadTimeout(time.Second)
+	b, err := d.ReadByte()
+	if err != nil {
+		d.DiscardRx()
+	}
+	return b, err
+}
+
+func sendRecv(d *lpuart.Driver, slots *[8]byte) error {
+	if _, err := d.Write(slots[:]); err != nil {
+		d.DiscardRx()
+		return err
+	}
+	d.SetReadTimeout(time.Second)
+	_, err := io.ReadFull(d, slots[:])
+	if err != nil {
+		d.DiscardRx()
+	}
+	return err
+}
+
+func (dci *LPUART) ReadBit() (byte, error) {
+	slot, err := sendRecvSlot(lpuartDrv(dci), 0xff)
+	if err != nil {
+		return 0, err
+	}
+	return slot & 1, nil
+}
+
+func (dci *LPUART) WriteBit(bit byte) error {
+	if bit != 0 {
+		bit = 0xff
+	}
+	d := lpuartDrv(dci)
+	slot, err := sendRecvSlot(d, bit)
+	if err != nil {
+		return err
+	}
+	if slot != bit {
+		d.DiscardRx()
+		return onewire.ErrBusFault
+	}
+	return nil
+}
+
+func (dci *LPUART) ReadByte() (byte, error) {
+	slots := [8]byte{0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff}
+	err := sendRecv(lpuartDrv(dci), &slots)
+	var v int
+	for i, slot := range slots {
+		v += int(slot&1) << uint(i)
+	}
+	return byte(v), err
+}
+
+func (dci *LPUART) WriteByte(b byte) error {
+	var slots [8]byte
+	v := int(b)
+	for i := range slots {
+		if v&1 != 0 {
+			slots[i] = 0xff
+		}
+		v >>= 1
+	}
+	d := lpuartDrv(dci)
+	if err := sendRecv(d, &slots); err != nil {
+		return err
+	}
+	v = int(b)
+	for i, slot := range slots {
+		r := v & (1 << uint(i))
+		if r != 0 {
+			r = 0xff
+		}
+		if int(slot) != r {
+			d.DiscardRx()
+			return onewire.ErrBusFault
+		}
+	}
+	return nil
+}

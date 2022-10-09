@@ -183,6 +183,16 @@ func (d *Driver) Setup(conf Config, baudrate int) {
 	d.txlog2max = uint(d.p.PARAM.LoadBits(TXFIFO) >> TXFIFOn)
 }
 
+// SetReadTimeout sets the read timeout used by Read* functions.
+func (d *Driver) SetReadTimeout(timeout time.Duration) {
+	d.rxtimeout = timeout
+}
+
+// SetWriteTimeout sets the write timeout used by Write* functions.
+func (d *Driver) SetWriteTimeout(timeout time.Duration) {
+	d.txtimeout = timeout
+}
+
 func (d *Driver) ISR() {
 	p := d.p
 	ctrl := p.CTRL.Load()
