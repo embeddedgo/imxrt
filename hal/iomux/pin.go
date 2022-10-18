@@ -162,10 +162,10 @@ const (
 	Pull Config = 1 << 13 // Use pull mode instead of keep mode
 
 	PullSel  Config = 3 << 14 // Select pull direction and strength
-	Down100k Config = 0 << 14 // 100KΩ pull-down
-	Up47K    Config = 1 << 14 //  47KΩ pull-up
-	Up100K   Config = 2 << 14 // 100KΩ pull up
-	Up22K    Config = 3 << 14 //  22KΩ pull up
+	Down100k Config = 0 << 14 // 100kΩ pull-down
+	Up47k    Config = 1 << 14 //  47kΩ pull-up
+	Up100k   Config = 2 << 14 // 100kΩ pull up
+	Up22k    Config = 3 << 14 //  22kΩ pull up
 
 	Hys Config = 1 << 16 //+ Enable hysteresis mode
 )

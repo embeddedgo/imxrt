@@ -5,17 +5,23 @@
 package lpuart
 
 import (
+	"embedded/mmio"
+	"unsafe"
+
 	"github.com/embeddedgo/imxrt/hal/internal/periph"
 	"github.com/embeddedgo/imxrt/hal/iomux"
 )
 
-type Signal uint8
+type Signal int8
+
+// Do not reorder CTSn, RXD, TXD constants. The order  reflects the sequence of
+// select registers and is used by periph.AltFunc function.
 
 const (
-	RTSn Signal = iota
-	TXD
-	CTSn
+	CTSn Signal = iota
 	RXD
+	TXD
+	RTSn
 )
 
 // Pins return IO pins that can be used for singal sig.
@@ -28,115 +34,133 @@ func (p *Periph) Pins(sig Signal) []iomux.Pin {
 // returns true on succes or false if it isn't possible to use a pin as a sig.
 // See also Periph.Pins.
 func (d *Driver) UsePin(pin iomux.Pin, sig Signal) bool {
-	af := periph.AltFunc(pins[:], alts[:], num(d.p)*4+int(sig), pin)
+	af, s, daisy := periph.AltFunc(pins[:], alts[:], num(d.p)*4+int(sig), pin)
 	if af < 0 {
 		return false
 	}
 	var cfg iomux.Config
-	if sig <= TXD {
+	if sig >= TXD {
 		cfg = iomux.Drive2 // 75Ω @ 3.3V, 130Ω @ 1.8V
 	}
 	pin.Setup(cfg)
 	pin.SetAltFunc(af)
+	if s >= 0 {
+		iosel := (*[15]mmio.R32[int32])(unsafe.Pointer(uintptr(0x401F852C)))
+		iosel[s].Store(int32(daisy))
+	}
 	return true
 }
 
+const daisyBase = 0x401F_852C
+
 var pins = [...]iomux.Pin{
 	// LPUART1
-	/* RTS */ iomux.AD_B0_15,
-	/* TXD */ iomux.AD_B0_12,
 	/* CTS */ iomux.AD_B0_14,
 	/* RXD */ iomux.AD_B0_13,
+	/* TXD */ iomux.AD_B0_12,
+	/* RTS */ iomux.AD_B0_15,
 
 	// LPUART2
-	/* RTS */ iomux.AD_B1_01,
-	/* TXD */ iomux.SD_B1_11, iomux.AD_B1_02,
 	/* CTS */ iomux.AD_B1_00,
-	/* RXD */ iomux.AD_B1_03, iomux.SD_B1_10,
+	/* RXD */ iomux.SD_B1_10, iomux.AD_B1_03,
+	/* TXD */ iomux.SD_B1_11, iomux.AD_B1_02,
+	/* RTS */ iomux.AD_B1_01,
 
 	// LPUART3
-	/* RTS */ iomux.AD_B1_05, iomux.EMC_16,
-	/* TXD */ iomux.AD_B1_06, iomux.B0_08, iomux.EMC_13,
 	/* CTS */ iomux.EMC_15, iomux.AD_B1_04,
-	/* RXD */ iomux.EMC_14, iomux.B0_09, iomux.AD_B1_07,
+	/* RXD */ iomux.AD_B1_07, iomux.EMC_14, iomux.B0_09,
+	/* TXD */ iomux.AD_B1_06, iomux.EMC_13, iomux.B0_08,
+	/* RTS */ iomux.AD_B1_05, iomux.EMC_16,
 
 	// LPUART4
-	/* RTS */ iomux.AD_B1_05, iomux.EMC_16,
-	/* TXD */ iomux.AD_B1_06, iomux.B0_08, iomux.EMC_13,
-	/* CTS */ iomux.EMC_15, iomux.AD_B1_04,
-	/* RXD */ iomux.EMC_14, iomux.B0_09, iomux.AD_B1_07,
+	/* CTS */ iomux.EMC_17,
+	/* RXD */ iomux.SD_B1_01, iomux.EMC_20, iomux.B1_01,
+	/* TXD */ iomux.SD_B1_00, iomux.EMC_19, iomux.B1_00,
+	/* RTS */ iomux.EMC_18,
 
 	// LPUART5
-	/* RTS */ iomux.EMC_27,
-	/* TXD */ iomux.EMC_23, iomux.B1_12,
 	/* CTS */ iomux.EMC_28,
-	/* RXD */ iomux.B1_13, iomux.EMC_24,
+	/* RXD */ iomux.EMC_24, iomux.B1_13,
+	/* TXD */ iomux.EMC_23, iomux.B1_12,
+	/* RTS */ iomux.EMC_27,
 
 	// LPUART6
-	/* RTS */ iomux.EMC_29,
-	/* TXD */ iomux.EMC_25, iomux.AD_B0_02,
 	/* CTS */ iomux.EMC_30,
-	/* RXD */ iomux.AD_B0_03, iomux.EMC_26,
+	/* RXD */ iomux.EMC_26, iomux.AD_B0_03,
+	/* TXD */ iomux.EMC_25, iomux.AD_B0_02,
+	/* RTS */ iomux.EMC_29,
 
 	// LPUART7
-	/* RTS */ iomux.SD_B1_07,
-	/* TXD */ iomux.SD_B1_08, iomux.EMC_31,
 	/* CTS */ iomux.SD_B1_06,
-	/* RXD */ iomux.EMC_32, iomux.SD_B1_09,
+	/* RXD */ iomux.SD_B1_09, iomux.EMC_32,
+	/* TXD */ iomux.SD_B1_08, iomux.EMC_31,
+	/* RTS */ iomux.SD_B1_07,
 
 	// LPUART8
-	/* RTS */ iomux.SD_B0_03,
-	/* TXD */ iomux.EMC_38, iomux.AD_B1_10, iomux.SD_B0_04,
 	/* CTS */ iomux.SD_B0_02,
 	/* RXD */ iomux.SD_B0_05, iomux.AD_B1_11, iomux.EMC_39,
+	/* TXD */ iomux.SD_B0_04, iomux.AD_B1_10, iomux.EMC_38,
+	/* RTS */ iomux.SD_B0_03,
 }
+
+const (
+	// no select register (one level of I/O muxing)
+	_1 = 0x10
+	_2 = 0x20
+	_3 = 0x30
+
+	// select register exists (two levels of I/O muxing)
+	s1 = -1<<7 + _1
+	s2 = -1<<7 + _2
+	s3 = -1<<7 + _3
+)
 
 var alts = [...]iomux.AltFunc{
 	// LPUART1
-	0x10 + iomux.ALT2,
-	0x10 + iomux.ALT2,
-	0x10 + iomux.ALT2,
-	0x10 + iomux.ALT2,
+	_1 + iomux.ALT2,
+	_1 + iomux.ALT2,
+	_1 + iomux.ALT2,
+	_1 + iomux.ALT2,
 
 	// LPUART2
-	0x10 + iomux.ALT2,
-	0x20 + iomux.ALT2, iomux.ALT2,
-	0x10 + iomux.ALT2,
-	0x20 + iomux.ALT2, iomux.ALT2,
+	_1 + iomux.ALT2,
+	s2 + iomux.ALT2, iomux.ALT2,
+	s2 + iomux.ALT2, iomux.ALT2,
+	_1 + iomux.ALT2,
 
 	// LPUART3
-	0x20 + iomux.ALT2, iomux.ALT3,
-	0x30 + iomux.ALT2, iomux.ALT3, iomux.ALT2,
-	0x20 + iomux.ALT2, iomux.ALT2,
-	0x30 + iomux.ALT2, iomux.ALT3, iomux.ALT2,
+	s2 + iomux.ALT2, iomux.ALT2,
+	s3 + iomux.ALT2, iomux.ALT2, iomux.ALT3,
+	s3 + iomux.ALT2, iomux.ALT2, iomux.ALT3,
+	_2 + iomux.ALT2, iomux.ALT2,
 
 	// LPUART4
-	0x20 + iomux.ALT2, iomux.ALT3,
-	0x30 + iomux.ALT2, iomux.ALT3, iomux.ALT2,
-	0x20 + iomux.ALT2, iomux.ALT2,
-	0x30 + iomux.ALT2, iomux.ALT3, iomux.ALT2,
+	_1 + iomux.ALT2,
+	s3 + iomux.ALT4, iomux.ALT2, iomux.ALT2,
+	s3 + iomux.ALT4, iomux.ALT2, iomux.ALT2,
+	_1 + iomux.ALT2,
 
 	// LPUART5
-	0x10 + iomux.ALT2,
-	0x20 + iomux.ALT2, iomux.ALT1,
-	0x10 + iomux.ALT2,
-	0x20 + iomux.ALT1, iomux.ALT2,
+	_1 + iomux.ALT2,
+	s2 + iomux.ALT2, iomux.ALT1,
+	s2 + iomux.ALT2, iomux.ALT1,
+	_1 + iomux.ALT2,
 
 	// LPUART6
-	0x10 + iomux.ALT2,
-	0x20 + iomux.ALT2, iomux.ALT2,
-	0x10 + iomux.ALT2,
-	0x20 + iomux.ALT2, iomux.ALT2,
+	_1 + iomux.ALT2,
+	s2 + iomux.ALT2, iomux.ALT2,
+	s2 + iomux.ALT2, iomux.ALT2,
+	_1 + iomux.ALT2,
 
 	// LPUART7
-	0x10 + iomux.ALT2,
-	0x20 + iomux.ALT2, iomux.ALT2,
-	0x10 + iomux.ALT2,
-	0x20 + iomux.ALT2, iomux.ALT2,
+	_1 + iomux.ALT2,
+	s2 + iomux.ALT2, iomux.ALT2,
+	s2 + iomux.ALT2, iomux.ALT2,
+	_1 + iomux.ALT2,
 
 	// LPUART8
-	0x10 + iomux.ALT2,
-	0x30 + iomux.ALT2, iomux.ALT2, iomux.ALT2,
-	0x10 + iomux.ALT2,
-	0x30 + iomux.ALT2, iomux.ALT2, iomux.ALT2,
+	_1 + iomux.ALT2,
+	s3 + iomux.ALT2, iomux.ALT2, iomux.ALT2,
+	s3 + iomux.ALT2, iomux.ALT2, iomux.ALT2,
+	_1 + iomux.ALT2,
 }

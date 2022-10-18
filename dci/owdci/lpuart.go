@@ -21,7 +21,6 @@ func lpuartDrv(dci *LPUART) *lpuart.Driver { return (*lpuart.Driver)(dci) }
 // SetupLPUART configures d to be used as onewire.DCI.
 func SetupLPUART(d *lpuart.Driver) *LPUART {
 	d.Setup(lpuart.Word8b, 115200)
-	d.Periph().CTRL.SetBits(lpuart.LOOPS | lpuart.RSRC | lpuart.TXDIR)
 	d.EnableRx(64)
 	d.EnableTx()
 	return (*LPUART)(d)
@@ -73,24 +72,25 @@ func sendRecv(d *lpuart.Driver, slots *[8]byte) error {
 	return err
 }
 
-func (dci *LPUART) ReadBit() (byte, error) {
+func (dci *LPUART) ReadBit() (int, error) {
 	slot, err := sendRecvSlot(lpuartDrv(dci), 0xff)
 	if err != nil {
 		return 0, err
 	}
-	return slot & 1, nil
+	return int(slot) & 1, nil
 }
 
-func (dci *LPUART) WriteBit(bit byte) error {
-	if bit != 0 {
-		bit = 0xff
+func (dci *LPUART) WriteBit(bit int) error {
+	var b byte
+	if bit&1 != 0 {
+		b = 0xff
 	}
 	d := lpuartDrv(dci)
-	slot, err := sendRecvSlot(d, bit)
+	slot, err := sendRecvSlot(d, b)
 	if err != nil {
 		return err
 	}
-	if slot != bit {
+	if slot != b {
 		d.DiscardRx()
 		return onewire.ErrBusFault
 	}
