@@ -19,6 +19,7 @@ import (
 	"github.com/embeddedgo/imxrt/hal/lpuart"
 	"github.com/embeddedgo/imxrt/hal/lpuart/lpuart1"
 	"github.com/embeddedgo/imxrt/hal/lpuart/lpuart2"
+	"github.com/embeddedgo/onewire"
 )
 
 func main() {
@@ -45,85 +46,73 @@ func main() {
 	owRx.Setup(pullUp22k)
 	owTx.Setup(iomux.Drive2 | iomux.OpenDrain | pullUp22k)
 
-	dci := owdci.SetupLPUART(ow)
+	owm := onewire.Master{owdci.SetupLPUART(ow)}
 
+	dtypes := []onewire.Type{onewire.DS18S20, onewire.DS18B20, onewire.DS1822}
+
+	// This algorithm configures and starts conversion simultaneously on all
+	// temperature sensors on the bus. It is fast, but doesn't work in case of
+	// parasite power mode.
+
+start:
 	for {
-		fmt.Fprint(con, "Reset...")
-		err := dci.Reset()
-		if !printErr(con, err) {
-			printOK(con)
+		fmt.Fprint(con, "\r\nConfigure all DS18B20, DS1822 to 10bit resolution: ")
+		if printErr(con, owm.SkipROM()) {
+			continue start
 		}
+		if printErr(con, owm.WriteScratchpad(127, -128, onewire.T12bit)) {
+			continue start
+		}
+		printOK(con)
+
+		fmt.Fprint(con, "Sending ConvertT command (SkipROM addressing): ")
+		if printErr(con, owm.SkipROM()) {
+			continue start
+		}
+		if printErr(con, owm.ConvertT()) {
+			continue start
+		}
+		printOK(con)
+
+		fmt.Fprint(con, "Waiting until all devices finish the conversion: ")
+		for {
+			time.Sleep(50 * time.Millisecond)
+			b, err := owm.ReadBit()
+			if printErr(con, err) {
+				continue start
+			}
+			fmt.Fprint(con, ". ")
+			if b != 0 {
+				printOK(con)
+				break
+			}
+		}
+		fmt.Fprint(con, "Searching for temperature sensors: ")
+		for _, typ := range dtypes {
+			s := onewire.NewSearch(typ, false)
+			for owm.SearchNext(s) {
+				d := s.Dev()
+				fmt.Fprintf(con, "\r\n %v: ", d)
+				if printErr(con, owm.MatchROM(d)) {
+					continue start
+				}
+				s, err := owm.ReadScratchpad()
+				if printErr(con, err) {
+					continue start
+				}
+				t, err := s.Temp(typ)
+				if printErr(con, err) {
+					continue start
+				}
+				fmt.Fprintf(con, "%6.2f °C", t)
+			}
+			if printErr(con, s.Err()) {
+				continue start
+			}
+		}
+		fmt.Fprint(con, "\r\nDone.\r\n\r\n")
 		time.Sleep(2 * time.Second)
 	}
-	/*
-	   	owm := onewire.Master{owdci.SetupLPUART(ow)}
-
-	   	dtypes := []onewire.Type{onewire.DS18S20, onewire.DS18B20, onewire.DS1822}
-
-	   	// This algorithm configures and starts conversion simultaneously on all
-	   	// temperature sensors on the bus. It is fast, but doesn't work in case of
-	   	// parasite power mode.
-
-	   start:
-	   	for {
-	   		fmt.Fprint(con, "\r\nConfigure all DS18B20, DS1822 to 10bit resolution: ")
-	   		if printErr(con, owm.SkipROM()) {
-	   			continue start
-	   		}
-	   		if printErr(con, owm.WriteScratchpad(127, -128, onewire.T12bit)) {
-	   			continue start
-	   		}
-	   		printOK(con)
-
-	   		fmt.Fprint(con, "Sending ConvertT command (SkipROM addressing): ")
-	   		if printErr(con, owm.SkipROM()) {
-	   			continue start
-	   		}
-	   		if printErr(con, owm.ConvertT()) {
-	   			continue start
-	   		}
-	   		printOK(con)
-
-	   		fmt.Fprint(con, "Waiting until all devices finish the conversion: ")
-	   		for {
-	   			time.Sleep(50 * time.Millisecond)
-	   			b, err := owm.ReadBit()
-	   			if printErr(con, err) {
-	   				continue start
-	   			}
-	   			fmt.Fprint(con, ". ")
-	   			if b != 0 {
-	   				printOK(con)
-	   				break
-	   			}
-	   		}
-	   		fmt.Fprint(con, "Searching for temperature sensors: ")
-	   		for _, typ := range dtypes {
-	   			s := onewire.NewSearch(typ, false)
-	   			for owm.SearchNext(s) {
-	   				d := s.Dev()
-	   				fmt.Fprintf(con, "\r\n %v : ", d)
-	   				if printErr(con, owm.MatchROM(d)) {
-	   					continue start
-	   				}
-	   				s, err := owm.ReadScratchpad()
-	   				if printErr(con, err) {
-	   					continue start
-	   				}
-	   				t, err := s.Temp(typ)
-	   				if printErr(con, err) {
-	   					continue start
-	   				}
-	   				fmt.Printf("%6.2f C", t)
-	   			}
-	   			if printErr(con, s.Err()) {
-	   				continue start
-	   			}
-	   		}
-	   		fmt.Fprint(con, "\r\nDone.\r\n")
-	   		time.Sleep(2 * time.Second)
-	   	}
-	*/
 }
 
 func printErr(w io.Writer, err error) bool {
@@ -131,6 +120,7 @@ func printErr(w io.Writer, err error) bool {
 		return false
 	}
 	fmt.Fprintf(w, "Error: %v\r\n", err)
+	time.Sleep(2 * time.Second)
 	return true
 }
 

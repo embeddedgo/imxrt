@@ -6,7 +6,6 @@
 package owdci
 
 import (
-	"io"
 	"time"
 
 	"github.com/embeddedgo/imxrt/hal/lpuart"
@@ -46,6 +45,17 @@ func (dci *LPUART) Reset() error {
 	return nil
 }
 
+func ignoreNoise(err error) error {
+	e, ok := err.(lpuart.Error)
+	if !ok {
+		return err
+	}
+	if e != lpuart.ENOISE {
+		return e &^ lpuart.ENOISE
+	}
+	return nil
+}
+
 func sendRecvSlot(d *lpuart.Driver, slot byte) (byte, error) {
 	if err := d.WriteByte(slot); err != nil {
 		d.DiscardRx()
@@ -54,7 +64,9 @@ func sendRecvSlot(d *lpuart.Driver, slot byte) (byte, error) {
 	d.SetReadTimeout(time.Second)
 	b, err := d.ReadByte()
 	if err != nil {
-		d.DiscardRx()
+		if err = ignoreNoise(err); err != nil {
+			d.DiscardRx()
+		}
 	}
 	return b, err
 }
@@ -65,11 +77,17 @@ func sendRecv(d *lpuart.Driver, slots *[8]byte) error {
 		return err
 	}
 	d.SetReadTimeout(time.Second)
-	_, err := io.ReadFull(d, slots[:])
-	if err != nil {
-		d.DiscardRx()
+	for n := 0; n < len(slots); {
+		m, err := d.Read(slots[n:])
+		n += m
+		if err != nil {
+			if err = ignoreNoise(err); err != nil {
+				d.DiscardRx()
+				return err
+			}
+		}
 	}
-	return err
+	return nil
 }
 
 func (dci *LPUART) ReadBit() (int, error) {
