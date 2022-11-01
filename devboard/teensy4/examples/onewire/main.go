@@ -34,31 +34,91 @@ func main() {
 
 	// 1-Wire driver
 	ow := lpuart2.Driver()
-	ow.Setup(lpuart.Word8b, 115200)
-	//ow.Periph().CTRL.SetBits(lpuart.LOOPS)
 	ow.UsePin(owTx, lpuart.TXD)
 	ow.UsePin(owRx, lpuart.RXD)
-	//owTx.Setup(iomux.Drive2 | iomux.OpenDrain | iomux.PK | iomux.Pull | iomux.Up22K)
-	//owRx.Setup(iomux.Pull | iomux.PK| iomux.Up22K)
-	ow.EnableRx(64)
-	ow.EnableTx()
+	// Override UsePin settings
+	pullUp22k := iomux.PK | iomux.Pull | iomux.Up22k
+	owRx.Setup(pullUp22k)
+	owTx.Setup(iomux.Drive2 | iomux.OpenDrain | pullUp22k)
 
-	//owdci.SetupLPUART(ow)
+	owm := onewire.Master{owdci.SetupLPUART(ow)}
 
-	//owRx.Setup(iomux.Drive2)
-	//bit := gpio.UsePin(owRx, false)
-	//bit.Port().EnableClock(true)
-	//bit.SetDirOut(true)
+	dtypes := []onewire.Type{onewire.DS18S20, onewire.DS18B20, onewire.DS1822}
 
-	c := byte('a')
+	// This algorithm configures and starts conversion simultaneously on all
+	// temperature sensors on the bus. It is fast but doesn't work in case of
+	// if the parasite power bus configuration is used.
+
+start:
 	for {
-		fmt.Fprintf(con, "gen: %c -> ow\r\n", c)
-		ow.WriteByte(c)
-		b, err := ow.ReadByte()
-		fmt.Fprintf(con, "read: ow -> %c %v\r\n", b, err)
-		if c++; c > 'z' {
-			c = 'a'
+		fmt.Fprint(con, "\r\nConfigure all DS18B20, DS1822 to 10bit resolution: ")
+		if printErr(con, owm.SkipROM()) {
+			continue start
 		}
-		//time.Sleep(time.Second)
+		if printErr(con, owm.WriteScratchpad(127, -128, onewire.T12bit)) {
+			continue start
+		}
+		printOK(con)
+
+		fmt.Fprint(con, "Sending ConvertT command (SkipROM addressing): ")
+		if printErr(con, owm.SkipROM()) {
+			continue start
+		}
+		if printErr(con, owm.ConvertT()) {
+			continue start
+		}
+		printOK(con)
+
+		fmt.Fprint(con, "Waiting until all devices finish the conversion: ")
+		for {
+			time.Sleep(50 * time.Millisecond)
+			b, err := owm.ReadBit()
+			if printErr(con, err) {
+				continue start
+			}
+			fmt.Fprint(con, ". ")
+			if b != 0 {
+				printOK(con)
+				break
+			}
+		}
+		fmt.Fprint(con, "Searching for temperature sensors: ")
+		for _, typ := range dtypes {
+			s := onewire.NewSearch(typ, false)
+			for owm.SearchNext(s) {
+				d := s.Dev()
+				fmt.Fprintf(con, "\r\n %v: ", d)
+				if printErr(con, owm.MatchROM(d)) {
+					continue start
+				}
+				s, err := owm.ReadScratchpad()
+				if printErr(con, err) {
+					continue start
+				}
+				t, err := s.Temp(typ)
+				if printErr(con, err) {
+					continue start
+				}
+				fmt.Fprintf(con, "%6.2f °C", t)
+			}
+			if printErr(con, s.Err()) {
+				continue start
+			}
+		}
+		fmt.Fprint(con, "\r\nDone.\r\n\r\n")
+		time.Sleep(2 * time.Second)
 	}
+}
+
+func printErr(w io.Writer, err error) bool {
+	if err == nil {
+		return false
+	}
+	fmt.Fprintf(w, "Error: %v\r\n", err)
+	time.Sleep(2 * time.Second)
+	return true
+}
+
+func printOK(w io.Writer) {
+	fmt.Fprintf(w, "OK.\r\n")
 }

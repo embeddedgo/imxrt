@@ -25,6 +25,17 @@ func SetupLPUART(d *lpuart.Driver) *LPUART {
 	return (*LPUART)(d)
 }
 
+func ignoreNoise(err error) error {
+	e, ok := err.(lpuart.Error)
+	if !ok {
+		return err
+	}
+	if e != lpuart.ENOISE {
+		return e &^ lpuart.ENOISE
+	}
+	return nil
+}
+
 func (dci *LPUART) Reset() error {
 	d := lpuartDrv(dci)
 	p := d.Periph()
@@ -36,23 +47,14 @@ func (dci *LPUART) Reset() error {
 	d.SetReadTimeout(time.Second)
 	r, err := d.ReadByte()
 	if err != nil {
-		return err
+		if err = ignoreNoise(err); err != nil {
+			return err
+		}
 	}
 	if r == 0xf0 {
 		return onewire.ErrNoResponse
 	}
 	p.SetBaudrate(115200)
-	return nil
-}
-
-func ignoreNoise(err error) error {
-	e, ok := err.(lpuart.Error)
-	if !ok {
-		return err
-	}
-	if e != lpuart.ENOISE {
-		return e &^ lpuart.ENOISE
-	}
 	return nil
 }
 

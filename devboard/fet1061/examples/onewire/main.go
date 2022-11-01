@@ -51,8 +51,8 @@ func main() {
 	dtypes := []onewire.Type{onewire.DS18S20, onewire.DS18B20, onewire.DS1822}
 
 	// This algorithm configures and starts conversion simultaneously on all
-	// temperature sensors on the bus. It is fast, but doesn't work in case of
-	// parasite power mode.
+	// temperature sensors on the bus. It is fast but doesn't work in case of
+	// if the parasite power bus configuration is used.
 
 start:
 	for {
