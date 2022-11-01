@@ -10,11 +10,16 @@ package main
 
 import (
 	"fmt"
+	"io"
+	"time"
 
+	"github.com/embeddedgo/imxrt/dci/owdci"
 	"github.com/embeddedgo/imxrt/devboard/teensy4/board/pins"
+	"github.com/embeddedgo/imxrt/hal/iomux"
 	"github.com/embeddedgo/imxrt/hal/lpuart"
 	"github.com/embeddedgo/imxrt/hal/lpuart/lpuart1"
 	"github.com/embeddedgo/imxrt/hal/lpuart/lpuart2"
+	"github.com/embeddedgo/onewire"
 )
 
 func main() {
@@ -51,7 +56,7 @@ func main() {
 
 start:
 	for {
-		fmt.Fprint(con, "\r\nConfigure all DS18B20, DS1822 to 10bit resolution: ")
+		fmt.Fprint(con, "\r\nConfigure all DS18x20, DS1822 to 10bit resolution: ")
 		if printErr(con, owm.SkipROM()) {
 			continue start
 		}

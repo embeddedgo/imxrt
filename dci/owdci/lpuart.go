@@ -6,6 +6,7 @@
 package owdci
 
 import (
+	"runtime"
 	"time"
 
 	"github.com/embeddedgo/imxrt/hal/lpuart"
@@ -20,41 +21,52 @@ func lpuartDrv(dci *LPUART) *lpuart.Driver { return (*lpuart.Driver)(dci) }
 // SetupLPUART configures d to be used as onewire.DCI.
 func SetupLPUART(d *lpuart.Driver) *LPUART {
 	d.Setup(lpuart.Word8b, 115200)
-	d.EnableRx(64)
+	d.EnableRx(32)
 	d.EnableTx()
 	return (*LPUART)(d)
 }
 
-func ignoreNoise(err error) error {
-	e, ok := err.(lpuart.Error)
-	if !ok {
-		return err
+func checkErr(d *lpuart.Driver, err error) error {
+	if err == nil {
+		return nil
 	}
-	if e != lpuart.ENOISE {
-		return e &^ lpuart.ENOISE
+	if e, ok := err.(lpuart.Error); ok {
+		if e == lpuart.ENOISE {
+			return nil
+		}
+		err = e &^ lpuart.ENOISE
 	}
-	return nil
+	d.DiscardRx()
+	return err
 }
 
 func (dci *LPUART) Reset() error {
 	d := lpuartDrv(dci)
 	p := d.Periph()
+	p.CTRL.ClearBits(lpuart.TE | lpuart.RE)
+	for p.CTRL.LoadBits(lpuart.TE|lpuart.RE) != 0 {
+		runtime.Gosched()
+	}
 	p.SetBaudrate(9600)
+	p.CTRL.SetBits(lpuart.TE | lpuart.RE)
 	err := d.WriteByte(0xf0)
 	if err != nil {
 		return err
 	}
 	d.SetReadTimeout(time.Second)
 	r, err := d.ReadByte()
-	if err != nil {
-		if err = ignoreNoise(err); err != nil {
-			return err
-		}
+	if err = checkErr(d, err); err != nil {
+		return err
 	}
 	if r == 0xf0 {
 		return onewire.ErrNoResponse
 	}
+	p.CTRL.ClearBits(lpuart.TE | lpuart.RE)
+	for p.CTRL.LoadBits(lpuart.TE|lpuart.RE) != 0 {
+		runtime.Gosched()
+	}
 	p.SetBaudrate(115200)
+	p.CTRL.SetBits(lpuart.TE | lpuart.RE)
 	return nil
 }
 
@@ -65,12 +77,7 @@ func sendRecvSlot(d *lpuart.Driver, slot byte) (byte, error) {
 	}
 	d.SetReadTimeout(time.Second)
 	b, err := d.ReadByte()
-	if err != nil {
-		if err = ignoreNoise(err); err != nil {
-			d.DiscardRx()
-		}
-	}
-	return b, err
+	return b, checkErr(d, err)
 }
 
 func sendRecv(d *lpuart.Driver, slots *[8]byte) error {
@@ -82,11 +89,8 @@ func sendRecv(d *lpuart.Driver, slots *[8]byte) error {
 	for n := 0; n < len(slots); {
 		m, err := d.Read(slots[n:])
 		n += m
-		if err != nil {
-			if err = ignoreNoise(err); err != nil {
-				d.DiscardRx()
-				return err
-			}
+		if err = checkErr(d, err); err != nil {
+			return err
 		}
 	}
 	return nil

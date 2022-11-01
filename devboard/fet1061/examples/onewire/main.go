@@ -56,7 +56,7 @@ func main() {
 
 start:
 	for {
-		fmt.Fprint(con, "\r\nConfigure all DS18B20, DS1822 to 10bit resolution: ")
+		fmt.Fprint(con, "\r\nConfigure all DS18x20, DS1822 to 10bit resolution: ")
 		if printErr(con, owm.SkipROM()) {
 			continue start
 		}
