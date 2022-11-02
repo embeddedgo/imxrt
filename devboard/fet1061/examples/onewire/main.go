@@ -10,8 +10,9 @@ package main
 
 import (
 	"fmt"
-	"io"
 	"time"
+
+	"github.com/embeddedgo/imxrt/p/src"
 
 	"github.com/embeddedgo/imxrt/dci/owdci"
 	"github.com/embeddedgo/imxrt/devboard/fet1061/board/pins"
@@ -19,6 +20,7 @@ import (
 	"github.com/embeddedgo/imxrt/hal/lpuart"
 	"github.com/embeddedgo/imxrt/hal/lpuart/lpuart1"
 	"github.com/embeddedgo/imxrt/hal/lpuart/lpuart2"
+	"github.com/embeddedgo/imxrt/hal/system/console/uartcon"
 	"github.com/embeddedgo/onewire"
 )
 
@@ -30,12 +32,9 @@ func main() {
 	conTx := pins.P24
 
 	// Serial console
-	con := lpuart1.Driver()
-	con.Setup(lpuart.Word8b, 115200)
-	con.UsePin(conRx, lpuart.RXD)
-	con.UsePin(conTx, lpuart.TXD)
-	con.EnableRx(64)
-	con.EnableTx()
+	uartcon.Setup(lpuart1.Driver(), conRx, conTx, lpuart.Word8b, 115200, "UART1")
+
+	fmt.Printf("\n*** Start: %b\n\n", src.SRC().SRSR.Load())
 
 	// 1-Wire driver
 	ow := lpuart2.Driver()
@@ -56,74 +55,71 @@ func main() {
 
 start:
 	for {
-		fmt.Fprint(con, "\r\nConfigure all DS18x20, DS1822 to 10bit resolution: ")
-		if printErr(con, owm.SkipROM()) {
+		//fmt.Print("\nConfigure all DS18x20, DS1822 to 10bit resolution: ")
+		if printErr(owm.SkipROM()) {
 			continue start
 		}
-		if printErr(con, owm.WriteScratchpad(127, -128, onewire.T12bit)) {
+		if printErr(owm.WriteScratchpad(127, -128, onewire.T12bit)) {
 			continue start
 		}
-		printOK(con)
+		//fmt.Println("OK.")
 
-		fmt.Fprint(con, "Sending ConvertT command (SkipROM addressing): ")
-		if printErr(con, owm.SkipROM()) {
+		//fmt.Print("Sending ConvertT command (SkipROM addressing): ")
+		if printErr(owm.SkipROM()) {
 			continue start
 		}
-		if printErr(con, owm.ConvertT()) {
+		if printErr(owm.ConvertT()) {
 			continue start
 		}
-		printOK(con)
+		//fmt.Println("OK.")
 
-		fmt.Fprint(con, "Waiting until all devices finish the conversion: ")
+		//fmt.Print("Waiting until all devices finish the conversion: ")
 		for {
 			time.Sleep(50 * time.Millisecond)
 			b, err := owm.ReadBit()
-			if printErr(con, err) {
+			if printErr(err) {
 				continue start
 			}
-			fmt.Fprint(con, ". ")
+			//fmt.Print(". ")
 			if b != 0 {
-				printOK(con)
+				//fmt.Println("OK.")
 				break
 			}
 		}
-		fmt.Fprint(con, "Searching for temperature sensors: ")
+		//fmt.Print("Searching for temperature sensors: ")
 		for _, typ := range dtypes {
 			s := onewire.NewSearch(typ, false)
 			for owm.SearchNext(s) {
 				d := s.Dev()
-				fmt.Fprintf(con, "\r\n %v: ", d)
-				if printErr(con, owm.MatchROM(d)) {
+				//fmt.Printf("\n %v: ", d)
+				if printErr(owm.MatchROM(d)) {
 					continue start
 				}
 				s, err := owm.ReadScratchpad()
-				if printErr(con, err) {
+				if printErr(err) {
 					continue start
 				}
 				t, err := s.Temp(typ)
-				if printErr(con, err) {
+				if printErr(err) {
 					continue start
 				}
-				fmt.Fprintf(con, "%6.2f °C", t)
+				_ = t
+				//fmt.Printf("%6.2f °C", t)
 			}
-			if printErr(con, s.Err()) {
+			if printErr(s.Err()) {
 				continue start
 			}
 		}
-		fmt.Fprint(con, "\r\nDone.\r\n\r\n")
-		time.Sleep(2 * time.Second)
+		//fmt.Print("\nDone.\n\n")
+		//time.Sleep(2 * time.Second)
 	}
 }
 
-func printErr(w io.Writer, err error) bool {
+func printErr(err error) bool {
 	if err == nil {
 		return false
 	}
-	fmt.Fprintf(w, "Error: %v\r\n", err)
+	fmt.Printf("Error: %v\n", err)
 	time.Sleep(2 * time.Second)
 	return true
-}
-
-func printOK(w io.Writer) {
-	fmt.Fprintf(w, "OK.\r\n")
 }
