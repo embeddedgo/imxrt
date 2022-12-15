@@ -8,6 +8,8 @@ import (
 	"github.com/embeddedgo/imxrt/p/ccm"
 	"github.com/embeddedgo/imxrt/p/ccm_analog"
 	"github.com/embeddedgo/imxrt/p/wdog"
+
+	_ "github.com/embeddedgo/imxrt/hal/internal/umreg" // user mode peripherals
 )
 
 // Setup528_FlexSPI setups the CCM to run the ARM Core (AHB clock) from PLL_528

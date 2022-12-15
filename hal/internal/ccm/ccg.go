@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
+// Package ccm provides simple interface to the CCGR registrs. As a side effect
+// it also access to the peripheral registers in user mode.
 package ccm
 
 import (
@@ -10,7 +12,12 @@ import (
 
 	"github.com/embeddedgo/imxrt/hal/internal"
 	"github.com/embeddedgo/imxrt/p/mmap"
+
+	_ "github.com/embeddedgo/imxrt/hal/internal/umreg" // user mode peripherals
 )
+
+// We assume that every HAL package imports this package for clock management
+// so it enables user mode peripherals
 
 const (
 	ClkEn int8 = 1 << 0 // enable clock

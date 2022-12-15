@@ -2,7 +2,11 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-package ccm
+// Package umreg containt init function that enables user mode code to access
+// peripheral registers.
+//
+// TODO: There must be a clearer way to do this.
+package umreg
 
 import (
 	"embedded/rtos"
@@ -11,10 +15,6 @@ import (
 	"github.com/embeddedgo/imxrt/hal/internal/aipstz"
 )
 
-// Enable full access to all peripherals in user mode. We assume that every HAL
-// package imports this package for clock management so it should be run before
-// any other HAL function that access registers, in particular, befor any other
-// init function.
 func init() {
 	runtime.LockOSThread()
 	pl, _ := rtos.SetPrivLevel(0)

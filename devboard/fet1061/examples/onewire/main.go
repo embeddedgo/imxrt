@@ -28,9 +28,9 @@ func main() {
 	owRx := pins.P13
 
 	if src.SRC().SRSR.Load() == 3 {
-		for i := 0; i < 8; i++ {
+		for {
 			leds.User.Toggle()
-			time.Sleep(time.Second / 2)
+			time.Sleep(time.Second / 4)
 		}
 	}
 
@@ -77,7 +77,6 @@ start:
 				break
 			}
 		}
-		//fmt.Print("Searching for temperature sensors: ")
 		for _, typ := range dtypes {
 			s := onewire.NewSearch(typ, false)
 			for owm.SearchNext(s) {
@@ -111,7 +110,7 @@ func printErr(err error) bool {
 	}
 	for i := 0; i < 4; i++ {
 		leds.User.Toggle()
-		time.Sleep(time.Second / 4)
+		time.Sleep(time.Second / 8)
 	}
 	return true
 }
