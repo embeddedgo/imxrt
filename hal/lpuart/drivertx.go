@@ -36,33 +36,30 @@ func (d *Driver) DisableTx() {
 
 func txISR(d *Driver) {
 	dr := &d.p.DATA
-	ptr := d.txd
 	n := d.txn
-	m := n
-	if m < 0 {
-		m = -m
+	if n < 0 {
+		n = -n
 	}
+	m := n - d.txi
 	if m > 1<<d.txlog2max {
 		m = 1 << d.txlog2max
 	}
-	if n >= 0 {
-		n -= m
-		for m != 0 {
-			dr.Store(uint16(*(*byte)(ptr)))
-			ptr = unsafe.Add(ptr, 1)
-			m--
+	if d.txn >= 0 {
+		addr := uintptr(d.txd) + uintptr(d.txi)
+		end := addr + uintptr(m)
+		for addr < end {
+			dr.Store(uint16(*(*byte)(unsafe.Pointer(addr))))
+			addr++
 		}
 	} else {
-		n += m
-		for m != 0 {
-			dr.Store(*(*uint16)(ptr))
-			ptr = unsafe.Add(ptr, 2)
-			m--
+		addr := uintptr(d.txd) + uintptr(d.txi)*2
+		end := addr + uintptr(m)*2
+		for addr < end {
+			dr.Store((*(*uint16)(unsafe.Pointer(addr))))
+			addr++
 		}
 	}
-	d.txd = ptr
-	d.txn = n
-	if n == 0 {
+	if d.txi += m; d.txi == n {
 		internal.AtomicStoreBits(&d.p.CTRL, TIE, 0)
 		d.txdone.Wakeup()
 	}
@@ -73,7 +70,7 @@ func (d *Driver) TxDMAISR() {
 	d.txdone.Wakeup()
 }
 
-func write(d *Driver, s string, s16 []uint16) error {
+func write(d *Driver, s string, s16 []uint16) (err error) {
 	if len(s) != 0 {
 		if len(s) == 1 {
 			return d.WriteWord16(uint16(s[0]))
@@ -91,9 +88,11 @@ func write(d *Driver, s string, s16 []uint16) error {
 	internal.AtomicStoreBits(&d.p.CTRL, TIE, TIE)
 	if !d.txdone.Sleep(d.txtimeout) {
 		internal.AtomicStoreBits(&d.p.CTRL, TIE, 0)
-		return ErrTimeout
+		err = ErrTimeout
 	}
-	return nil
+	d.txd = nil
+	d.txi = 0
+	return
 }
 
 // writeDMA only works with aligned multiples of 32 bytes
@@ -266,4 +265,3 @@ func (d *Driver) WriteWord16(w uint16) error {
 func (d *Driver) WriteByte(b byte) error {
 	return d.WriteWord16(uint16(b))
 }
-

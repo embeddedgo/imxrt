@@ -2,10 +2,15 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-// Uartadvanced demonstrates how to use the LPUART peripheral including all
-// details like interrupts and DMA. In practice, using DMA with small
-// 64-character Rx buffer, small portions of Tx data and slow 115200 speed is
-// rather overkill, mainly because of required cache maintenance operations.
+// Uartadvanced demonstrates how to use the LPUART driver in very custom way
+// including details like configuring interrupts and DMA channels. There are
+// lpuart/lpuartN packages that provide ready to use drivers configured in
+// non-DMA mode. They are sufficient for most typical applications.
+//
+// This example shows how to setup a DMA enabled driver. In practice, using DMA
+// with small 64-character Rx buffer, small portions of Tx data and slow 115200
+// speed is rather overkill, mainly because of the required cache maintenance
+// operations.
 package main
 
 import (
