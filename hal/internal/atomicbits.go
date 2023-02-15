@@ -10,6 +10,7 @@ import (
 	"unsafe"
 )
 
+//go:nosplit
 func AtomicStoreBits[T mmio.T32](r *mmio.R32[T], mask, bits T) {
 	bits &= mask
 	for {
@@ -25,6 +26,7 @@ func AtomicStoreBits[T mmio.T32](r *mmio.R32[T], mask, bits T) {
 }
 
 /*
+//go:nosplit
 func AtomicCompareAndSwapBits[T mmio.T32](r *mmio.R32[T], mask, old, new T) bool {
 	old &= mask
 	new &= mask
