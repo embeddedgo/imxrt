@@ -8,7 +8,7 @@ import (
 	"os"
 )
 
-func dieErr(err error) {
+func fatalErr(err error) {
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)
@@ -18,7 +18,7 @@ func dieErr(err error) {
 func usage() {
 	fmt.Fprint(
 		os.Stderr,
-		"\nUsage:\n  imxrtmbr [options]\n\nOptoins:\n",
+		"\nUsage:\n  imxrtmbr [options] MBR_FILE\n\nOptoins:\n",
 	)
 	flag.PrintDefaults()
 }
@@ -30,6 +30,11 @@ func main() {
 	flag.UintVar(&imgSize, "image", 0, "program image size in bytes (0 means all the remaining flash space)")
 	flag.Usage = usage
 	flag.Parse()
+
+	if flag.NArg() != 1 {
+		usage()
+		return
+	}
 
 	if flashSize == 0 {
 		fmt.Fprintln(os.Stderr, "flash size not set")
@@ -45,14 +50,17 @@ func main() {
 	bootData.Length = uint32(imgSize)
 
 	f, err := os.Create("mbr.bin")
-	dieErr(err)
+	fatalErr(err)
 	w := bufio.NewWriter(f)
-	dieErr(binary.Write(w, binary.LittleEndian, flashConfig))
+	fatalErr(binary.Write(w, binary.LittleEndian, flashConfig))
 	for i := 512; i < 4096; i++ {
-		dieErr(w.WriteByte(0xff))
+		fatalErr(w.WriteByte(0xff))
 	}
-	dieErr(binary.Write(w, binary.LittleEndian, ivt))
-	dieErr(binary.Write(w, binary.LittleEndian, bootData))
-	dieErr(w.Flush())
-	dieErr(f.Close())
+	fatalErr(binary.Write(w, binary.LittleEndian, ivt))
+	fatalErr(binary.Write(w, binary.LittleEndian, bootData))
+	for i := 4140; i < 8192; i++ {
+		fatalErr(w.WriteByte(0xff))
+	}
+	fatalErr(w.Flush())
+	fatalErr(f.Close())
 }
