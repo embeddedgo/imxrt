@@ -23,6 +23,8 @@ func usage() {
 	flag.PrintDefaults()
 }
 
+const mbrSize = 8192
+
 func main() {
 	var flashSize, imgSize uint
 
@@ -43,22 +45,35 @@ func main() {
 	}
 	flashSize *= MiB
 	if imgSize == 0 {
-		imgSize = flashSize - 8192
+		imgSize = flashSize - mbrSize
 	}
 
 	flashConfig.MemCfg.SFlashA1Size = uint32(flashSize)
 	bootData.Length = uint32(imgSize)
+	bootData.Plugin = 1
 
-	f, err := os.Create("mbr.bin")
+	f, err := os.Create(flag.Arg(0))
 	fatalErr(err)
 	w := bufio.NewWriter(f)
 	fatalErr(binary.Write(w, binary.LittleEndian, flashConfig))
-	for i := 512; i < 4096; i++ {
+	for a := baseAddr + flashConfigSize; a < ivtAddr; a++ {
 		fatalErr(w.WriteByte(0xff))
 	}
-	fatalErr(binary.Write(w, binary.LittleEndian, ivt))
+	fatalErr(binary.Write(w, binary.LittleEndian, pluginIVT))
 	fatalErr(binary.Write(w, binary.LittleEndian, bootData))
-	for i := 4140; i < 8192; i++ {
+	for a := bootDataAddr + bootDataSize; a < dcdAddr; a++ {
+		fatalErr(w.WriteByte(0xff))
+	}
+	fatalErr(binary.Write(w, binary.BigEndian, dcd))
+	for a := dcdAddr + len(dcd)*4; a < pluginAddr; a++ {
+		fatalErr(w.WriteByte(0xff))
+	}
+	fatalErr(binary.Write(w, binary.LittleEndian, plugin))
+	for a := pluginAddr + len(plugin)*2; a < stage2IVTAddr; a++ {
+		fatalErr(w.WriteByte(0xff))
+	}
+	fatalErr(binary.Write(w, binary.LittleEndian, stage2IVT))
+	for a := stage2IVTAddr + ivtSize; a < mbrEndAddr; a++ {
 		fatalErr(w.WriteByte(0xff))
 	}
 	fatalErr(w.Flush())

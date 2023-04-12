@@ -65,6 +65,8 @@ const (
 	MiB = 1 << 20
 )
 
+const flashConfigSize = 512
+
 var flashConfig = &SerialNORConfigBlock{
 	MemCfg: FlexSPIConfigBlock{
 		Tag:              0x42464346,
