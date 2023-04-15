@@ -1,3 +1,7 @@
+// Copyright 2023 The Embedded Go Authors. All rights reserved.
+// Use of this source code is governed by a BSD-style
+// license that can be found in the LICENSE file.
+
 package main
 
 import (
@@ -18,7 +22,7 @@ func fatalErr(err error) {
 func usage() {
 	fmt.Fprint(
 		os.Stderr,
-		"\nUsage:\n  imxrtmbr [options] MBR_FILE\n\nOptoins:\n",
+		"\nUsage:\n  imxrtmbr [options] MBR_FILE\n\nOptions:\n",
 	)
 	flag.PrintDefaults()
 }
@@ -26,10 +30,20 @@ func usage() {
 const mbrSize = 8192
 
 func main() {
-	var flashSize, imgSize uint
+	var flashSize, imageSize, flexRAMCfg uint
 
-	flag.UintVar(&flashSize, "flash", 0, "flash size in megabytes (MiB)")
-	flag.UintVar(&imgSize, "image", 0, "program image size in bytes (0 means all the remaining flash space)")
+	flag.UintVar(
+		&flashSize, "flash", 0,
+		"flash size (KiB)",
+	)
+	flag.UintVar(
+		&imageSize, "image", 0,
+		"program image size (KiB), 0 means all the remaining flash space",
+	)
+	flag.UintVar(
+		&flexRAMCfg, "flexram", 0,
+		"FlexRAM configuration (the value to write to the GPR17)",
+	)
 	flag.Usage = usage
 	flag.Parse()
 
@@ -43,14 +57,13 @@ func main() {
 		usage()
 		os.Exit(1)
 	}
-	flashSize *= MiB
-	if imgSize == 0 {
-		imgSize = flashSize - mbrSize
+	flashSize *= KiB
+	imageSize *= KiB
+	if imageSize == 0 {
+		imageSize = flashSize - mbrSize
 	}
 
 	flashConfig.MemCfg.SFlashA1Size = uint32(flashSize)
-	bootData.Length = uint32(imgSize)
-	bootData.Plugin = 1
 
 	f, err := os.Create(flag.Arg(0))
 	fatalErr(err)
@@ -59,22 +72,34 @@ func main() {
 	for a := baseAddr + flashConfigSize; a < ivtAddr; a++ {
 		fatalErr(w.WriteByte(0xff))
 	}
-	fatalErr(binary.Write(w, binary.LittleEndian, pluginIVT))
-	fatalErr(binary.Write(w, binary.LittleEndian, bootData))
-	for a := bootDataAddr + bootDataSize; a < dcdAddr; a++ {
-		fatalErr(w.WriteByte(0xff))
-	}
-	fatalErr(binary.Write(w, binary.BigEndian, dcd))
-	for a := dcdAddr + len(dcd)*4; a < pluginAddr; a++ {
-		fatalErr(w.WriteByte(0xff))
-	}
-	fatalErr(binary.Write(w, binary.LittleEndian, plugin))
-	for a := pluginAddr + len(plugin)*2; a < stage2IVTAddr; a++ {
-		fatalErr(w.WriteByte(0xff))
-	}
-	fatalErr(binary.Write(w, binary.LittleEndian, stage2IVT))
-	for a := stage2IVTAddr + ivtSize; a < mbrEndAddr; a++ {
-		fatalErr(w.WriteByte(0xff))
+	if flexRAMCfg == 0 {
+		bootData.Length = uint32(imageSize)
+		fatalErr(binary.Write(w, binary.LittleEndian, regularIVT))
+		fatalErr(binary.Write(w, binary.LittleEndian, bootData))
+		for a := bootDataAddr + bootDataSize; a < mbrEndAddr; a++ {
+			fatalErr(w.WriteByte(0xff))
+		}
+	} else {
+		bootData.Length = uint32(pluginAddr + len(plugin)*2 - baseAddr)
+		bootData.Plugin = 1
+		imageSize -= stage2IVTAddr - baseAddr
+		pluginImageSize[0] = uint16(imageSize)
+		pluginImageSize[1] = uint16(imageSize >> 16)
+		pluginFlexRAMCfg[0] = uint16(flexRAMCfg)
+		pluginFlexRAMCfg[1] = uint16(flexRAMCfg >> 16)
+		fatalErr(binary.Write(w, binary.LittleEndian, pluginIVT))
+		fatalErr(binary.Write(w, binary.LittleEndian, bootData))
+		for a := bootDataAddr + bootDataSize; a < pluginAddr; a++ {
+			fatalErr(w.WriteByte(0xff))
+		}
+		fatalErr(binary.Write(w, binary.LittleEndian, plugin))
+		for a := pluginAddr + len(plugin)*2; a < stage2IVTAddr; a++ {
+			fatalErr(w.WriteByte(0xff))
+		}
+		fatalErr(binary.Write(w, binary.LittleEndian, stage2IVT))
+		for a := stage2IVTAddr + ivtSize; a < mbrEndAddr; a++ {
+			fatalErr(w.WriteByte(0xff))
+		}
 	}
 	fatalErr(w.Flush())
 	fatalErr(f.Close())

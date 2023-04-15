@@ -1,3 +1,7 @@
+// Copyright 2023 The Embedded Go Authors. All rights reserved.
+// Use of this source code is governed by a BSD-style
+// license that can be found in the LICENSE file.
+
 package main
 
 // IMXRT1060RM_rev3.pdf, Table 9-15. FlexSPI Configuration block
@@ -60,10 +64,7 @@ type SerialNORConfigBlock struct {
 	_                    [44]uint8
 }
 
-const (
-	KiB = 1 << 10
-	MiB = 1 << 20
-)
+const KiB = 1 << 10
 
 const flashConfigSize = 512
 
