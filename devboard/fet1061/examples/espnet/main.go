@@ -67,7 +67,7 @@ func main() {
 		}
 	*/
 
-	ls, err := espnet.ListenDev(dev, "tcp", 1111)
+	ls, err := espnet.ListenDev(dev, "tcp", ":1111")
 	fatalErr(err)
 
 	fmt.Println("listen on:", ls.Addr().String())
