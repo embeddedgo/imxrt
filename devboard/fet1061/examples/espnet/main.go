@@ -52,25 +52,23 @@ func main() {
 	u.EnableRx(256)
 	u.EnableTx()
 
-	fmt.Println("\n* Ready *\n\n")
-
 	dev := espat.NewDevice("esp0", u, u)
-	dev.Init(false)
+	fatalErr(dev.Init(true))
 	fatalErr(espnet.SetPasvRecv(dev, true))
 
-	/*
-		for msg := range dev.Async() {
-			fmt.Println(msg)
-			if msg == "WIFI GOT IP" {
-				break
-			}
+	println("waiting for an IP address...")
+	for msg := range dev.Async() {
+		fatalErr(msg.Err)
+		println(msg.Str)
+		if msg.Str == "WIFI GOT IP" {
+			break
 		}
-	*/
+	}
 
 	ls, err := espnet.ListenDev(dev, "tcp", ":1111")
 	fatalErr(err)
 
-	fmt.Println("listen on:", ls.Addr().String())
+	println("listen on:", ls.Addr().String())
 	for {
 		c, err := ls.Accept()
 		fatalErr(err)
@@ -79,18 +77,16 @@ func main() {
 }
 
 func handle(c net.Conn) {
-	fmt.Println("connected:", c.RemoteAddr().String())
-	defer fmt.Println("closed:   ", c.RemoteAddr().String())
-
+	var buf [64]byte
+	println("connected:", c.RemoteAddr().String())
 	_, err := io.WriteString(c, "Echo Server\n\n")
 	if logErr(err) {
 		return
 	}
-	var buf [64]byte
 	for {
 		n, err := c.Read(buf[:])
 		if err == io.EOF {
-			return
+			break
 		}
 		if logErr(err) {
 			return
@@ -100,4 +96,6 @@ func handle(c net.Conn) {
 			return
 		}
 	}
+	c.Close()
+	println("closed:  ", c.RemoteAddr().String())
 }
