@@ -26,7 +26,7 @@ import (
 //
 // All this means that SysTick timer is almost useless as a system timer but can
 // be used for testing or educational purposes. In order for it to be usable,
-// Setup prevents entering Wait mode after WFE/WFI CLPCR.LPM to LPM_RUN.
+// Setup prevents entering Wait mode after WFE/WFI by setting CLPCR.LPM=LPM_RUN.
 func Setup(periodns int64) {
 	runtime.LockOSThread()
 	pl, _ := rtos.SetPrivLevel(0)
