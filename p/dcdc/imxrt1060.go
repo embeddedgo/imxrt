@@ -5,14 +5,19 @@
 // Package dcdc provides access to the registers of the DCDC peripheral.
 //
 // Instances:
-//  DCDC  DCDC_BASE  -  DCDC*
+//
+//	DCDC  DCDC_BASE  -  DCDC*
+//
 // Registers:
-//  0x000 32  REG0  DCDC Register 0
-//  0x004 32  REG1  DCDC Register 1
-//  0x008 32  REG2  DCDC Register 2
-//  0x00C 32  REG3  DCDC Register 3
+//
+//	0x000 32  REG0  DCDC Register 0
+//	0x004 32  REG1  DCDC Register 1
+//	0x008 32  REG2  DCDC Register 2
+//	0x00C 32  REG3  DCDC Register 3
+//
 // Import:
-//  github.com/embeddedgo/imxrt/p/mmap
+//
+//	github.com/embeddedgo/imxrt/p/mmap
 package dcdc
 
 const (

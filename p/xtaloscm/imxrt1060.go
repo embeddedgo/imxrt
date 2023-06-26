@@ -5,30 +5,35 @@
 // Package xtaloscm provides access to the registers of the XTALOSC24M peripheral.
 //
 // Instances:
-//  XTALOSC24M  XTALOSC24M_BASE  -  -  XTALOSC24M
+//
+//	XTALOSC24M  XTALOSC24M_BASE  -  -  XTALOSC24M
+//
 // Registers:
-//  0x150 32  MISC0            Miscellaneous Register 0
-//  0x154 32  MISC0_SET        Miscellaneous Register 0
-//  0x158 32  MISC0_CLR        Miscellaneous Register 0
-//  0x15C 32  MISC0_TOG        Miscellaneous Register 0
-//  0x270 32  LOWPWR_CTRL      XTAL OSC (LP) Control Register
-//  0x274 32  LOWPWR_CTRL_SET  XTAL OSC (LP) Control Register
-//  0x278 32  LOWPWR_CTRL_CLR  XTAL OSC (LP) Control Register
-//  0x27C 32  LOWPWR_CTRL_TOG  XTAL OSC (LP) Control Register
-//  0x2A0 32  OSC_CONFIG0      XTAL OSC Configuration 0 Register
-//  0x2A4 32  OSC_CONFIG0_SET  XTAL OSC Configuration 0 Register
-//  0x2A8 32  OSC_CONFIG0_CLR  XTAL OSC Configuration 0 Register
-//  0x2AC 32  OSC_CONFIG0_TOG  XTAL OSC Configuration 0 Register
-//  0x2B0 32  OSC_CONFIG1      XTAL OSC Configuration 1 Register
-//  0x2B4 32  OSC_CONFIG1_SET  XTAL OSC Configuration 1 Register
-//  0x2B8 32  OSC_CONFIG1_CLR  XTAL OSC Configuration 1 Register
-//  0x2BC 32  OSC_CONFIG1_TOG  XTAL OSC Configuration 1 Register
-//  0x2C0 32  OSC_CONFIG2      XTAL OSC Configuration 2 Register
-//  0x2C4 32  OSC_CONFIG2_SET  XTAL OSC Configuration 2 Register
-//  0x2C8 32  OSC_CONFIG2_CLR  XTAL OSC Configuration 2 Register
-//  0x2CC 32  OSC_CONFIG2_TOG  XTAL OSC Configuration 2 Register
+//
+//	0x150 32  MISC0            Miscellaneous Register 0
+//	0x154 32  MISC0_SET        Miscellaneous Register 0
+//	0x158 32  MISC0_CLR        Miscellaneous Register 0
+//	0x15C 32  MISC0_TOG        Miscellaneous Register 0
+//	0x270 32  LOWPWR_CTRL      XTAL OSC (LP) Control Register
+//	0x274 32  LOWPWR_CTRL_SET  XTAL OSC (LP) Control Register
+//	0x278 32  LOWPWR_CTRL_CLR  XTAL OSC (LP) Control Register
+//	0x27C 32  LOWPWR_CTRL_TOG  XTAL OSC (LP) Control Register
+//	0x2A0 32  OSC_CONFIG0      XTAL OSC Configuration 0 Register
+//	0x2A4 32  OSC_CONFIG0_SET  XTAL OSC Configuration 0 Register
+//	0x2A8 32  OSC_CONFIG0_CLR  XTAL OSC Configuration 0 Register
+//	0x2AC 32  OSC_CONFIG0_TOG  XTAL OSC Configuration 0 Register
+//	0x2B0 32  OSC_CONFIG1      XTAL OSC Configuration 1 Register
+//	0x2B4 32  OSC_CONFIG1_SET  XTAL OSC Configuration 1 Register
+//	0x2B8 32  OSC_CONFIG1_CLR  XTAL OSC Configuration 1 Register
+//	0x2BC 32  OSC_CONFIG1_TOG  XTAL OSC Configuration 1 Register
+//	0x2C0 32  OSC_CONFIG2      XTAL OSC Configuration 2 Register
+//	0x2C4 32  OSC_CONFIG2_SET  XTAL OSC Configuration 2 Register
+//	0x2C8 32  OSC_CONFIG2_CLR  XTAL OSC Configuration 2 Register
+//	0x2CC 32  OSC_CONFIG2_TOG  XTAL OSC Configuration 2 Register
+//
 // Import:
-//  github.com/embeddedgo/imxrt/p/mmap
+//
+//	github.com/embeddedgo/imxrt/p/mmap
 package xtaloscm
 
 const (

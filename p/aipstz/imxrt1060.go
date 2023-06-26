@@ -5,15 +5,20 @@
 // Package aipstz provides access to the registers of the AIPSTZ peripheral.
 //
 // Instances:
-//  AIPSTZ1  AIPSTZ1_BASE  -  -  AIPSTZ Control Registers
-//  AIPSTZ2  AIPSTZ2_BASE  -  -  AIPSTZ Control Registers
-//  AIPSTZ3  AIPSTZ3_BASE  -  -  AIPSTZ Control Registers
-//  AIPSTZ4  AIPSTZ4_BASE  -  -  AIPSTZ Control Registers
+//
+//	AIPSTZ1  AIPSTZ1_BASE  -  -  AIPSTZ Control Registers
+//	AIPSTZ2  AIPSTZ2_BASE  -  -  AIPSTZ Control Registers
+//	AIPSTZ3  AIPSTZ3_BASE  -  -  AIPSTZ Control Registers
+//	AIPSTZ4  AIPSTZ4_BASE  -  -  AIPSTZ Control Registers
+//
 // Registers:
-//  0x000 32  MPR       Master Priviledge Registers
-//  0x040 32  OPACR[5]  Off-Platform Peripheral Access Control Registers
+//
+//	0x000 32  MPR       Master Priviledge Registers
+//	0x040 32  OPACR[5]  Off-Platform Peripheral Access Control Registers
+//
 // Import:
-//  github.com/embeddedgo/imxrt/p/mmap
+//
+//	github.com/embeddedgo/imxrt/p/mmap
 package aipstz
 
 const (

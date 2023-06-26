@@ -5,57 +5,62 @@
 // Package usb provides access to the registers of the USB peripheral.
 //
 // Instances:
-//  USB1  USB1_BASE  -  USB_OTG1*
-//  USB2  USB2_BASE  -  USB_OTG2*
+//
+//	USB1  USB1_BASE  -  USB_OTG1*
+//	USB2  USB2_BASE  -  USB_OTG2*
+//
 // Registers:
-//  0x000 32  ID                Identification register
-//  0x004 32  HWGENERAL         Hardware General
-//  0x008 32  HWHOST            Host Hardware Parameters
-//  0x00C 32  HWDEVICE          Device Hardware Parameters
-//  0x010 32  HWTXBUF           TX Buffer Hardware Parameters
-//  0x014 32  HWRXBUF           RX Buffer Hardware Parameters
-//  0x080 32  GPTIMER0LD        General Purpose Timer #0 Load
-//  0x084 32  GPTIMER0CTRL      General Purpose Timer #0 Controller
-//  0x088 32  GPTIMER1LD        General Purpose Timer #1 Load
-//  0x08C 32  GPTIMER1CTRL      General Purpose Timer #1 Controller
-//  0x090 32  SBUSCFG           System Bus Config
-//  0x100  8  CAPLENGTH         Capability Registers Length
-//  0x102 16  HCIVERSION        Host Controller Interface Version
-//  0x104 32  HCSPARAMS         Host Controller Structural Parameters
-//  0x108 32  HCCPARAMS         Host Controller Capability Parameters
-//  0x120 16  DCIVERSION        Device Controller Interface Version
-//  0x124 32  DCCPARAMS         Device Controller Capability Parameters
-//  0x140 32  USBCMD            USB Command Register
-//  0x144 32  USBSTS            USB Status Register
-//  0x148 32  USBINTR           Interrupt Enable Register
-//  0x14C 32  FRINDEX           USB Frame Index
-//  0x154 32  DEVICEADDR        Device Address
-//  0x154 32  PERIODICLISTBASE  Frame List Base Address
-//  0x158 32  ENDPTLISTADDR     Endpoint List Address
-//  0x158 32  ASYNCLISTADDR     Next Asynch. Address
-//  0x160 32  BURSTSIZE         Programmable Burst Size
-//  0x164 32  TXFILLTUNING      TX FIFO Fill Tuning
-//  0x178 32  ENDPTNAK          Endpoint NAK
-//  0x17C 32  ENDPTNAKEN        Endpoint NAK Enable
-//  0x180 32  CONFIGFLAG        Configure Flag Register
-//  0x184 32  PORTSC1           Port Status & Control
-//  0x1A4 32  OTGSC             On-The-Go Status & control
-//  0x1A8 32  USBMODE           USB Device Mode
-//  0x1AC 32  ENDPTSETUPSTAT    Endpoint Setup Status
-//  0x1B0 32  ENDPTPRIME        Endpoint Prime
-//  0x1B4 32  ENDPTFLUSH        Endpoint Flush
-//  0x1B8 32  ENDPTSTAT         Endpoint Status
-//  0x1BC 32  ENDPTCOMPLETE     Endpoint Complete
-//  0x1C0 32  ENDPTCTRL0        Endpoint Control0
-//  0x1C4 32  ENDPTCTRL1        Endpoint Control 1
-//  0x1C8 32  ENDPTCTRL2        Endpoint Control 2
-//  0x1CC 32  ENDPTCTRL3        Endpoint Control 3
-//  0x1D0 32  ENDPTCTRL4        Endpoint Control 4
-//  0x1D4 32  ENDPTCTRL5        Endpoint Control 5
-//  0x1D8 32  ENDPTCTRL6        Endpoint Control 6
-//  0x1DC 32  ENDPTCTRL7        Endpoint Control 7
+//
+//	0x000 32  ID                Identification register
+//	0x004 32  HWGENERAL         Hardware General
+//	0x008 32  HWHOST            Host Hardware Parameters
+//	0x00C 32  HWDEVICE          Device Hardware Parameters
+//	0x010 32  HWTXBUF           TX Buffer Hardware Parameters
+//	0x014 32  HWRXBUF           RX Buffer Hardware Parameters
+//	0x080 32  GPTIMER0LD        General Purpose Timer #0 Load
+//	0x084 32  GPTIMER0CTRL      General Purpose Timer #0 Controller
+//	0x088 32  GPTIMER1LD        General Purpose Timer #1 Load
+//	0x08C 32  GPTIMER1CTRL      General Purpose Timer #1 Controller
+//	0x090 32  SBUSCFG           System Bus Config
+//	0x100  8  CAPLENGTH         Capability Registers Length
+//	0x102 16  HCIVERSION        Host Controller Interface Version
+//	0x104 32  HCSPARAMS         Host Controller Structural Parameters
+//	0x108 32  HCCPARAMS         Host Controller Capability Parameters
+//	0x120 16  DCIVERSION        Device Controller Interface Version
+//	0x124 32  DCCPARAMS         Device Controller Capability Parameters
+//	0x140 32  USBCMD            USB Command Register
+//	0x144 32  USBSTS            USB Status Register
+//	0x148 32  USBINTR           Interrupt Enable Register
+//	0x14C 32  FRINDEX           USB Frame Index
+//	0x154 32  DEVICEADDR        Device Address
+//	0x154 32  PERIODICLISTBASE  Frame List Base Address
+//	0x158 32  ASYNCLISTADDR     Next Asynch. Address
+//	0x158 32  ENDPTLISTADDR     Endpoint List Address
+//	0x160 32  BURSTSIZE         Programmable Burst Size
+//	0x164 32  TXFILLTUNING      TX FIFO Fill Tuning
+//	0x178 32  ENDPTNAK          Endpoint NAK
+//	0x17C 32  ENDPTNAKEN        Endpoint NAK Enable
+//	0x180 32  CONFIGFLAG        Configure Flag Register
+//	0x184 32  PORTSC1           Port Status & Control
+//	0x1A4 32  OTGSC             On-The-Go Status & control
+//	0x1A8 32  USBMODE           USB Device Mode
+//	0x1AC 32  ENDPTSETUPSTAT    Endpoint Setup Status
+//	0x1B0 32  ENDPTPRIME        Endpoint Prime
+//	0x1B4 32  ENDPTFLUSH        Endpoint Flush
+//	0x1B8 32  ENDPTSTAT         Endpoint Status
+//	0x1BC 32  ENDPTCOMPLETE     Endpoint Complete
+//	0x1C0 32  ENDPTCTRL0        Endpoint Control0
+//	0x1C4 32  ENDPTCTRL1        Endpoint Control 1
+//	0x1C8 32  ENDPTCTRL2        Endpoint Control 2
+//	0x1CC 32  ENDPTCTRL3        Endpoint Control 3
+//	0x1D0 32  ENDPTCTRL4        Endpoint Control 4
+//	0x1D4 32  ENDPTCTRL5        Endpoint Control 5
+//	0x1D8 32  ENDPTCTRL6        Endpoint Control 6
+//	0x1DC 32  ENDPTCTRL7        Endpoint Control 7
+//
 // Import:
-//  github.com/embeddedgo/imxrt/p/mmap
+//
+//	github.com/embeddedgo/imxrt/p/mmap
 package usb
 
 const (
@@ -420,19 +425,19 @@ const (
 )
 
 const (
-	EPBASE ENDPTLISTADDR = 0x1FFFFF << 11 //+ Endpoint List Pointer(Low)
-)
-
-const (
-	EPBASEn = 11
-)
-
-const (
 	ASYBASE ASYNCLISTADDR = 0x7FFFFFF << 5 //+ Link Pointer Low (LPL)
 )
 
 const (
 	ASYBASEn = 5
+)
+
+const (
+	EPBASE ENDPTLISTADDR = 0x1FFFFF << 11 //+ Endpoint List Pointer(Low)
+)
+
+const (
+	EPBASEn = 11
 )
 
 const (

@@ -5,18 +5,23 @@
 // Package pgc provides access to the registers of the PGC peripheral.
 //
 // Instances:
-//  PGC  PGC_BASE  -  -
+//
+//	PGC  PGC_BASE  -  -
+//
 // Registers:
-//  0x220 32  MEGA_CTRL    PGC Mega Control Register
-//  0x224 32  MEGA_PUPSCR  PGC Mega Power Up Sequence Control Register
-//  0x228 32  MEGA_PDNSCR  PGC Mega Pull Down Sequence Control Register
-//  0x22C 32  MEGA_SR      PGC Mega Power Gating Controller Status Register
-//  0x2A0 32  CPU_CTRL     PGC CPU Control Register
-//  0x2A4 32  CPU_PUPSCR   PGC CPU Power Up Sequence Control Register
-//  0x2A8 32  CPU_PDNSCR   PGC CPU Pull Down Sequence Control Register
-//  0x2AC 32  CPU_SR       PGC CPU Power Gating Controller Status Register
+//
+//	0x220 32  MEGA_CTRL    PGC Mega Control Register
+//	0x224 32  MEGA_PUPSCR  PGC Mega Power Up Sequence Control Register
+//	0x228 32  MEGA_PDNSCR  PGC Mega Pull Down Sequence Control Register
+//	0x22C 32  MEGA_SR      PGC Mega Power Gating Controller Status Register
+//	0x2A0 32  CPU_CTRL     PGC CPU Control Register
+//	0x2A4 32  CPU_PUPSCR   PGC CPU Power Up Sequence Control Register
+//	0x2A8 32  CPU_PDNSCR   PGC CPU Pull Down Sequence Control Register
+//	0x2AC 32  CPU_SR       PGC CPU Power Gating Controller Status Register
+//
 // Import:
-//  github.com/embeddedgo/imxrt/p/mmap
+//
+//	github.com/embeddedgo/imxrt/p/mmap
 package pgc
 
 const (

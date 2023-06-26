@@ -5,14 +5,19 @@
 // Package iomuxc_snvs_gpr provides access to the registers of the IOMUXC_SNVS_GPR peripheral.
 //
 // Instances:
-//  IOMUXC_SNVS_GPR  IOMUXC_SNVS_GPR_BASE  -  -  IOMUXC
+//
+//	IOMUXC_SNVS_GPR  IOMUXC_SNVS_GPR_BASE  -  -  IOMUXC
+//
 // Registers:
-//  0x000 32  GPR0  GPR0 General Purpose Register
-//  0x004 32  GPR1  GPR1 General Purpose Register
-//  0x008 32  GPR2  GPR2 General Purpose Register
-//  0x00C 32  GPR3  GPR3 General Purpose Register
+//
+//	0x000 32  GPR0  GPR0 General Purpose Register
+//	0x004 32  GPR1  GPR1 General Purpose Register
+//	0x008 32  GPR2  GPR2 General Purpose Register
+//	0x00C 32  GPR3  GPR3 General Purpose Register
+//
 // Import:
-//  github.com/embeddedgo/imxrt/p/mmap
+//
+//	github.com/embeddedgo/imxrt/p/mmap
 package iomuxc_snvs_gpr
 
 const (

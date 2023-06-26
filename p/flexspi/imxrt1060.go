@@ -5,45 +5,50 @@
 // Package flexspi provides access to the registers of the FLEXSPI peripheral.
 //
 // Instances:
-//  FLEXSPI   FLEXSPI_BASE   -  FLEXSPI
-//  FLEXSPI2  FLEXSPI2_BASE  -  FLEXSPI2*
+//
+//	FLEXSPI   FLEXSPI_BASE   -  FLEXSPI
+//	FLEXSPI2  FLEXSPI2_BASE  -  FLEXSPI2*
+//
 // Registers:
-//  0x000 32  MCR0          Module Control Register 0
-//  0x004 32  MCR1          Module Control Register 1
-//  0x008 32  MCR2          Module Control Register 2
-//  0x00C 32  AHBCR         AHB Bus Control Register
-//  0x010 32  INTEN         Interrupt Enable Register
-//  0x014 32  INTR          Interrupt Register
-//  0x018 32  LUTKEY        LUT Key Register
-//  0x01C 32  LUTCR         LUT Control Register
-//  0x020 32  AHBRXBUF0CR0  AHB RX Buffer 0 Control Register 0
-//  0x024 32  AHBRXBUF1CR0  AHB RX Buffer 1 Control Register 0
-//  0x028 32  AHBRXBUF2CR0  AHB RX Buffer 2 Control Register 0
-//  0x02C 32  AHBRXBUF3CR0  AHB RX Buffer 3 Control Register 0
-//  0x060 32  FLSHA1CR0     Flash A1 Control Register 0
-//  0x064 32  FLSHA2CR0     Flash A2 Control Register 0
-//  0x068 32  FLSHB1CR0     Flash B1 Control Register 0
-//  0x06C 32  FLSHB2CR0     Flash B2 Control Register 0
-//  0x070 32  FLSHCR1[4]    Flash A1 Control Register 1
-//  0x080 32  FLSHCR2[4]    Flash A1 Control Register 2
-//  0x094 32  FLSHCR4       Flash Control Register 4
-//  0x0A0 32  IPCR0         IP Control Register 0
-//  0x0A4 32  IPCR1         IP Control Register 1
-//  0x0B0 32  IPCMD         IP Command Register
-//  0x0B8 32  IPRXFCR       IP RX FIFO Control Register
-//  0x0BC 32  IPTXFCR       IP TX FIFO Control Register
-//  0x0C0 32  DLLCR[2]      DLL Control Register 0
-//  0x0E0 32  STS0          Status Register 0
-//  0x0E4 32  STS1          Status Register 1
-//  0x0E8 32  STS2          Status Register 2
-//  0x0EC 32  AHBSPNDSTS    AHB Suspend Status Register
-//  0x0F0 32  IPRXFSTS      IP RX FIFO Status Register
-//  0x0F4 32  IPTXFSTS      IP TX FIFO Status Register
-//  0x100 32  RFDR[32]      IP RX FIFO Data Register 0
-//  0x180 32  TFDR[32]      IP TX FIFO Data Register 0
-//  0x200 32  LUT[64]       LUT 0
+//
+//	0x000 32  MCR0          Module Control Register 0
+//	0x004 32  MCR1          Module Control Register 1
+//	0x008 32  MCR2          Module Control Register 2
+//	0x00C 32  AHBCR         AHB Bus Control Register
+//	0x010 32  INTEN         Interrupt Enable Register
+//	0x014 32  INTR          Interrupt Register
+//	0x018 32  LUTKEY        LUT Key Register
+//	0x01C 32  LUTCR         LUT Control Register
+//	0x020 32  AHBRXBUF0CR0  AHB RX Buffer 0 Control Register 0
+//	0x024 32  AHBRXBUF1CR0  AHB RX Buffer 1 Control Register 0
+//	0x028 32  AHBRXBUF2CR0  AHB RX Buffer 2 Control Register 0
+//	0x02C 32  AHBRXBUF3CR0  AHB RX Buffer 3 Control Register 0
+//	0x060 32  FLSHA1CR0     Flash A1 Control Register 0
+//	0x064 32  FLSHA2CR0     Flash A2 Control Register 0
+//	0x068 32  FLSHB1CR0     Flash B1 Control Register 0
+//	0x06C 32  FLSHB2CR0     Flash B2 Control Register 0
+//	0x070 32  FLSHCR1[4]    Flash A1 Control Register 1
+//	0x080 32  FLSHCR2[4]    Flash A1 Control Register 2
+//	0x094 32  FLSHCR4       Flash Control Register 4
+//	0x0A0 32  IPCR0         IP Control Register 0
+//	0x0A4 32  IPCR1         IP Control Register 1
+//	0x0B0 32  IPCMD         IP Command Register
+//	0x0B8 32  IPRXFCR       IP RX FIFO Control Register
+//	0x0BC 32  IPTXFCR       IP TX FIFO Control Register
+//	0x0C0 32  DLLCR[2]      DLL Control Register 0
+//	0x0E0 32  STS0          Status Register 0
+//	0x0E4 32  STS1          Status Register 1
+//	0x0E8 32  STS2          Status Register 2
+//	0x0EC 32  AHBSPNDSTS    AHB Suspend Status Register
+//	0x0F0 32  IPRXFSTS      IP RX FIFO Status Register
+//	0x0F4 32  IPTXFSTS      IP TX FIFO Status Register
+//	0x100 32  RFDR[32]      IP RX FIFO Data Register 0
+//	0x180 32  TFDR[32]      IP TX FIFO Data Register 0
+//	0x200 32  LUT[64]       LUT 0
+//
 // Import:
-//  github.com/embeddedgo/imxrt/p/mmap
+//
+//	github.com/embeddedgo/imxrt/p/mmap
 package flexspi
 
 const (

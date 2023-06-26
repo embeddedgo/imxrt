@@ -5,30 +5,35 @@
 // Package lpspi provides access to the registers of the LPSPI peripheral.
 //
 // Instances:
-//  LPSPI1  LPSPI1_BASE  -  LPSPI1*
-//  LPSPI2  LPSPI2_BASE  -  LPSPI2*
-//  LPSPI3  LPSPI3_BASE  -  LPSPI3*
-//  LPSPI4  LPSPI4_BASE  -  LPSPI4*
+//
+//	LPSPI1  LPSPI1_BASE  -  LPSPI1*
+//	LPSPI2  LPSPI2_BASE  -  LPSPI2*
+//	LPSPI3  LPSPI3_BASE  -  LPSPI3*
+//	LPSPI4  LPSPI4_BASE  -  LPSPI4*
+//
 // Registers:
-//  0x000 32  VERID  Version ID Register
-//  0x004 32  PARAM  Parameter Register
-//  0x010 32  CR     Control Register
-//  0x014 32  SR     Status Register
-//  0x018 32  IER    Interrupt Enable Register
-//  0x01C 32  DER    DMA Enable Register
-//  0x020 32  CFGR0  Configuration Register 0
-//  0x024 32  CFGR1  Configuration Register 1
-//  0x030 32  DMR0   Data Match Register 0
-//  0x034 32  DMR1   Data Match Register 1
-//  0x040 32  CCR    Clock Configuration Register
-//  0x058 32  FCR    FIFO Control Register
-//  0x05C 32  FSR    FIFO Status Register
-//  0x060 32  TCR    Transmit Command Register
-//  0x064 32  TDR    Transmit Data Register
-//  0x070 32  RSR    Receive Status Register
-//  0x074 32  RDR    Receive Data Register
+//
+//	0x000 32  VERID  Version ID Register
+//	0x004 32  PARAM  Parameter Register
+//	0x010 32  CR     Control Register
+//	0x014 32  SR     Status Register
+//	0x018 32  IER    Interrupt Enable Register
+//	0x01C 32  DER    DMA Enable Register
+//	0x020 32  CFGR0  Configuration Register 0
+//	0x024 32  CFGR1  Configuration Register 1
+//	0x030 32  DMR0   Data Match Register 0
+//	0x034 32  DMR1   Data Match Register 1
+//	0x040 32  CCR    Clock Configuration Register
+//	0x058 32  FCR    FIFO Control Register
+//	0x05C 32  FSR    FIFO Status Register
+//	0x060 32  TCR    Transmit Command Register
+//	0x064 32  TDR    Transmit Data Register
+//	0x070 32  RSR    Receive Status Register
+//	0x074 32  RDR    Receive Data Register
+//
 // Import:
-//  github.com/embeddedgo/imxrt/p/mmap
+//
+//	github.com/embeddedgo/imxrt/p/mmap
 package lpspi
 
 const (

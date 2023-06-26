@@ -5,13 +5,18 @@
 // Package usbnc provides access to the registers of the USBNC peripheral.
 //
 // Instances:
-//  USBNC1  USBNC1_BASE  -  -  USB
-//  USBNC2  USBNC2_BASE  -  -  USB
+//
+//	USBNC1  USBNC1_BASE  -  -  USB
+//	USBNC2  USBNC2_BASE  -  -  USB
+//
 // Registers:
-//  0x800 32  USB_OTG1_CTRL        USB OTG1 Control Register
-//  0x818 32  USB_OTG1_PHY_CTRL_0  OTG1 UTMI PHY Control 0 Register
+//
+//	0x800 32  USB_OTG1_CTRL        USB OTG1 Control Register
+//	0x818 32  USB_OTG1_PHY_CTRL_0  OTG1 UTMI PHY Control 0 Register
+//
 // Import:
-//  github.com/embeddedgo/imxrt/p/mmap
+//
+//	github.com/embeddedgo/imxrt/p/mmap
 package usbnc
 
 const (

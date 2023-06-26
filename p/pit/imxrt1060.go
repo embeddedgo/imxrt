@@ -5,14 +5,19 @@
 // Package pit provides access to the registers of the PIT peripheral.
 //
 // Instances:
-//  PIT  PIT_BASE  -  PIT*
+//
+//	PIT  PIT_BASE  -  PIT*
+//
 // Registers:
-//  0x000 32  MCR                              PIT Module Control Register
-//  0x0E0 32  LTMR64H                          PIT Upper Lifetime Timer Register
-//  0x0E4 32  LTMR64L                          PIT Lower Lifetime Timer Register
-//  0x100 32  TIMER{LDVAL,CVAL,TCTRL,TFLG}[4]  Timer Load Value Register; Current Timer Value Register; Timer Control Register; Timer Flag Register
+//
+//	0x000 32  MCR                              PIT Module Control Register
+//	0x0E0 32  LTMR64H                          PIT Upper Lifetime Timer Register
+//	0x0E4 32  LTMR64L                          PIT Lower Lifetime Timer Register
+//	0x100 32  TIMER{LDVAL,CVAL,TCTRL,TFLG}[4]  Timer Load Value Register; Current Timer Value Register; Timer Control Register; Timer Flag Register
+//
 // Import:
-//  github.com/embeddedgo/imxrt/p/mmap
+//
+//	github.com/embeddedgo/imxrt/p/mmap
 package pit
 
 const (

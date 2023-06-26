@@ -5,29 +5,34 @@
 // Package lpuart provides access to the registers of the LPUART peripheral.
 //
 // Instances:
-//  LPUART1  LPUART1_BASE  -  LPUART1*
-//  LPUART2  LPUART2_BASE  -  LPUART2*
-//  LPUART3  LPUART3_BASE  -  LPUART3*
-//  LPUART4  LPUART4_BASE  -  LPUART4*
-//  LPUART5  LPUART5_BASE  -  LPUART5*
-//  LPUART6  LPUART6_BASE  -  LPUART6*
-//  LPUART7  LPUART7_BASE  -  LPUART7*
-//  LPUART8  LPUART8_BASE  -  LPUART8*
+//
+//	LPUART1  LPUART1_BASE  -  LPUART1*
+//	LPUART2  LPUART2_BASE  -  LPUART2*
+//	LPUART3  LPUART3_BASE  -  LPUART3*
+//	LPUART4  LPUART4_BASE  -  LPUART4*
+//	LPUART5  LPUART5_BASE  -  LPUART5*
+//	LPUART6  LPUART6_BASE  -  LPUART6*
+//	LPUART7  LPUART7_BASE  -  LPUART7*
+//	LPUART8  LPUART8_BASE  -  LPUART8*
+//
 // Registers:
-//  0x000 32  VERID   Version ID Register
-//  0x004 32  PARAM   Parameter Register
-//  0x008 32  GLOBAL  LPUART Global Register
-//  0x00C 32  PINCFG  LPUART Pin Configuration Register
-//  0x010 32  BAUD    LPUART Baud Rate Register
-//  0x014 32  STAT    LPUART Status Register
-//  0x018 32  CTRL    LPUART Control Register
-//  0x01C 32  DATA    LPUART Data Register
-//  0x020 32  MATCH   LPUART Match Address Register
-//  0x024 32  MODIR   LPUART Modem IrDA Register
-//  0x028 32  FIFO    LPUART FIFO Register
-//  0x02C 32  WATER   LPUART Watermark Register
+//
+//	0x000 32  VERID   Version ID Register
+//	0x004 32  PARAM   Parameter Register
+//	0x008 32  GLOBAL  LPUART Global Register
+//	0x00C 32  PINCFG  LPUART Pin Configuration Register
+//	0x010 32  BAUD    LPUART Baud Rate Register
+//	0x014 32  STAT    LPUART Status Register
+//	0x018 32  CTRL    LPUART Control Register
+//	0x01C 32  DATA    LPUART Data Register
+//	0x020 32  MATCH   LPUART Match Address Register
+//	0x024 32  MODIR   LPUART Modem IrDA Register
+//	0x028 32  FIFO    LPUART FIFO Register
+//	0x02C 32  WATER   LPUART Watermark Register
+//
 // Import:
-//  github.com/embeddedgo/imxrt/p/mmap
+//
+//	github.com/embeddedgo/imxrt/p/mmap
 package lpuart
 
 const (

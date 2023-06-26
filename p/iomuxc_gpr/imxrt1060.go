@@ -5,45 +5,50 @@
 // Package iomuxc_gpr provides access to the registers of the IOMUXC_GPR peripheral.
 //
 // Instances:
-//  IOMUXC_GPR  IOMUXC_GPR_BASE  -  -
+//
+//	IOMUXC_GPR  IOMUXC_GPR_BASE  -  -
+//
 // Registers:
-//  0x000 32  GPR0   GPR0 General Purpose Register
-//  0x004 32  GPR1   GPR1 General Purpose Register
-//  0x008 32  GPR2   GPR2 General Purpose Register
-//  0x00C 32  GPR3   GPR3 General Purpose Register
-//  0x010 32  GPR4   GPR4 General Purpose Register
-//  0x014 32  GPR5   GPR5 General Purpose Register
-//  0x018 32  GPR6   GPR6 General Purpose Register
-//  0x01C 32  GPR7   GPR7 General Purpose Register
-//  0x020 32  GPR8   GPR8 General Purpose Register
-//  0x024 32  GPR9   GPR9 General Purpose Register
-//  0x028 32  GPR10  GPR10 General Purpose Register
-//  0x02C 32  GPR11  GPR11 General Purpose Register
-//  0x030 32  GPR12  GPR12 General Purpose Register
-//  0x034 32  GPR13  GPR13 General Purpose Register
-//  0x038 32  GPR14  GPR14 General Purpose Register
-//  0x03C 32  GPR15  GPR15 General Purpose Register
-//  0x040 32  GPR16  GPR16 General Purpose Register
-//  0x044 32  GPR17  GPR17 General Purpose Register
-//  0x048 32  GPR18  GPR18 General Purpose Register
-//  0x04C 32  GPR19  GPR19 General Purpose Register
-//  0x050 32  GPR20  GPR20 General Purpose Register
-//  0x054 32  GPR21  GPR21 General Purpose Register
-//  0x058 32  GPR22  GPR22 General Purpose Register
-//  0x05C 32  GPR23  GPR23 General Purpose Register
-//  0x060 32  GPR24  GPR24 General Purpose Register
-//  0x064 32  GPR25  GPR25 General Purpose Register
-//  0x068 32  GPR26  GPR26 General Purpose Register
-//  0x06C 32  GPR27  GPR27 General Purpose Register
-//  0x070 32  GPR28  GPR28 General Purpose Register
-//  0x074 32  GPR29  GPR29 General Purpose Register
-//  0x078 32  GPR30  GPR30 General Purpose Register
-//  0x07C 32  GPR31  GPR31 General Purpose Register
-//  0x080 32  GPR32  GPR32 General Purpose Register
-//  0x084 32  GPR33  GPR33 General Purpose Register
-//  0x088 32  GPR34  GPR34 General Purpose Register
+//
+//	0x000 32  GPR0   GPR0 General Purpose Register
+//	0x004 32  GPR1   GPR1 General Purpose Register
+//	0x008 32  GPR2   GPR2 General Purpose Register
+//	0x00C 32  GPR3   GPR3 General Purpose Register
+//	0x010 32  GPR4   GPR4 General Purpose Register
+//	0x014 32  GPR5   GPR5 General Purpose Register
+//	0x018 32  GPR6   GPR6 General Purpose Register
+//	0x01C 32  GPR7   GPR7 General Purpose Register
+//	0x020 32  GPR8   GPR8 General Purpose Register
+//	0x024 32  GPR9   GPR9 General Purpose Register
+//	0x028 32  GPR10  GPR10 General Purpose Register
+//	0x02C 32  GPR11  GPR11 General Purpose Register
+//	0x030 32  GPR12  GPR12 General Purpose Register
+//	0x034 32  GPR13  GPR13 General Purpose Register
+//	0x038 32  GPR14  GPR14 General Purpose Register
+//	0x03C 32  GPR15  GPR15 General Purpose Register
+//	0x040 32  GPR16  GPR16 General Purpose Register
+//	0x044 32  GPR17  GPR17 General Purpose Register
+//	0x048 32  GPR18  GPR18 General Purpose Register
+//	0x04C 32  GPR19  GPR19 General Purpose Register
+//	0x050 32  GPR20  GPR20 General Purpose Register
+//	0x054 32  GPR21  GPR21 General Purpose Register
+//	0x058 32  GPR22  GPR22 General Purpose Register
+//	0x05C 32  GPR23  GPR23 General Purpose Register
+//	0x060 32  GPR24  GPR24 General Purpose Register
+//	0x064 32  GPR25  GPR25 General Purpose Register
+//	0x068 32  GPR26  GPR26 General Purpose Register
+//	0x06C 32  GPR27  GPR27 General Purpose Register
+//	0x070 32  GPR28  GPR28 General Purpose Register
+//	0x074 32  GPR29  GPR29 General Purpose Register
+//	0x078 32  GPR30  GPR30 General Purpose Register
+//	0x07C 32  GPR31  GPR31 General Purpose Register
+//	0x080 32  GPR32  GPR32 General Purpose Register
+//	0x084 32  GPR33  GPR33 General Purpose Register
+//	0x088 32  GPR34  GPR34 General Purpose Register
+//
 // Import:
-//  github.com/embeddedgo/imxrt/p/mmap
+//
+//	github.com/embeddedgo/imxrt/p/mmap
 package iomuxc_gpr
 
 const (

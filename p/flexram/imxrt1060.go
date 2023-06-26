@@ -5,14 +5,19 @@
 // Package flexram provides access to the registers of the FLEXRAM peripheral.
 //
 // Instances:
-//  FLEXRAM  FLEXRAM_BASE  -  FLEXRAM*
+//
+//	FLEXRAM  FLEXRAM_BASE  -  FLEXRAM*
+//
 // Registers:
-//  0x000 32  TCM_CTRL     TCM CRTL Register
-//  0x010 32  INT_STATUS   Interrupt Status Register
-//  0x014 32  INT_STAT_EN  Interrupt Status Enable Register
-//  0x018 32  INT_SIG_EN   Interrupt Enable Register
+//
+//	0x000 32  TCM_CTRL     TCM CRTL Register
+//	0x010 32  INT_STATUS   Interrupt Status Register
+//	0x014 32  INT_STAT_EN  Interrupt Status Enable Register
+//	0x018 32  INT_SIG_EN   Interrupt Enable Register
+//
 // Import:
-//  github.com/embeddedgo/imxrt/p/mmap
+//
+//	github.com/embeddedgo/imxrt/p/mmap
 package flexram
 
 const (

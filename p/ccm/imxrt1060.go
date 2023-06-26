@@ -5,39 +5,44 @@
 // Package ccm provides access to the registers of the CCM peripheral.
 //
 // Instances:
-//  CCM  CCM_BASE  -  CCM_1*,CCM_2*
+//
+//	CCM  CCM_BASE  -  CCM_1*,CCM_2*
+//
 // Registers:
-//  0x000 32  CCR        CCM Control Register
-//  0x008 32  CSR        CCM Status Register
-//  0x00C 32  CCSR       CCM Clock Switcher Register
-//  0x010 32  CACRR      CCM Arm Clock Root Register
-//  0x014 32  CBCDR      CCM Bus Clock Divider Register
-//  0x018 32  CBCMR      CCM Bus Clock Multiplexer Register
-//  0x01C 32  CSCMR1     CCM Serial Clock Multiplexer Register 1
-//  0x020 32  CSCMR2     CCM Serial Clock Multiplexer Register 2
-//  0x024 32  CSCDR1     CCM Serial Clock Divider Register 1
-//  0x028 32  CS1CDR     CCM Clock Divider Register
-//  0x02C 32  CS2CDR     CCM Clock Divider Register
-//  0x030 32  CDCDR      CCM D1 Clock Divider Register
-//  0x038 32  CSCDR2     CCM Serial Clock Divider Register 2
-//  0x03C 32  CSCDR3     CCM Serial Clock Divider Register 3
-//  0x048 32  CDHIPR     CCM Divider Handshake In-Process Register
-//  0x054 32  CLPCR      CCM Low Power Control Register
-//  0x058 32  CISR(CIR)  CCM Interrupt Status Register
-//  0x05C 32  CIMR(CIR)  CCM Interrupt Mask Register
-//  0x060 32  CCOSR      CCM Clock Output Source Register
-//  0x064 32  CGPR       CCM General Purpose Register
-//  0x068 32  CCGR0      CCM Clock Gating Register 0
-//  0x06C 32  CCGR1      CCM Clock Gating Register 1
-//  0x070 32  CCGR2      CCM Clock Gating Register 2
-//  0x074 32  CCGR3      CCM Clock Gating Register 3
-//  0x078 32  CCGR4      CCM Clock Gating Register 4
-//  0x07C 32  CCGR5      CCM Clock Gating Register 5
-//  0x080 32  CCGR6      CCM Clock Gating Register 6
-//  0x084 32  CCGR7      CCM Clock Gating Register 7
-//  0x088 32  CMEOR      CCM Module Enable Overide Register
+//
+//	0x000 32  CCR        CCM Control Register
+//	0x008 32  CSR        CCM Status Register
+//	0x00C 32  CCSR       CCM Clock Switcher Register
+//	0x010 32  CACRR      CCM Arm Clock Root Register
+//	0x014 32  CBCDR      CCM Bus Clock Divider Register
+//	0x018 32  CBCMR      CCM Bus Clock Multiplexer Register
+//	0x01C 32  CSCMR1     CCM Serial Clock Multiplexer Register 1
+//	0x020 32  CSCMR2     CCM Serial Clock Multiplexer Register 2
+//	0x024 32  CSCDR1     CCM Serial Clock Divider Register 1
+//	0x028 32  CS1CDR     CCM Clock Divider Register
+//	0x02C 32  CS2CDR     CCM Clock Divider Register
+//	0x030 32  CDCDR      CCM D1 Clock Divider Register
+//	0x038 32  CSCDR2     CCM Serial Clock Divider Register 2
+//	0x03C 32  CSCDR3     CCM Serial Clock Divider Register 3
+//	0x048 32  CDHIPR     CCM Divider Handshake In-Process Register
+//	0x054 32  CLPCR      CCM Low Power Control Register
+//	0x058 32  CISR(CIR)  CCM Interrupt Status Register
+//	0x05C 32  CIMR(CIR)  CCM Interrupt Mask Register
+//	0x060 32  CCOSR      CCM Clock Output Source Register
+//	0x064 32  CGPR       CCM General Purpose Register
+//	0x068 32  CCGR0      CCM Clock Gating Register 0
+//	0x06C 32  CCGR1      CCM Clock Gating Register 1
+//	0x070 32  CCGR2      CCM Clock Gating Register 2
+//	0x074 32  CCGR3      CCM Clock Gating Register 3
+//	0x078 32  CCGR4      CCM Clock Gating Register 4
+//	0x07C 32  CCGR5      CCM Clock Gating Register 5
+//	0x080 32  CCGR6      CCM Clock Gating Register 6
+//	0x084 32  CCGR7      CCM Clock Gating Register 7
+//	0x088 32  CMEOR      CCM Module Enable Overide Register
+//
 // Import:
-//  github.com/embeddedgo/imxrt/p/mmap
+//
+//	github.com/embeddedgo/imxrt/p/mmap
 package ccm
 
 const (

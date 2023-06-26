@@ -5,59 +5,64 @@
 // Package dma provides access to the registers of the DMA peripheral.
 //
 // Instances:
-//  DMA0  DMA0_BASE  -  DMA0_DMA16*,DMA1_DMA17*,DMA2_DMA18*,DMA3_DMA19*,DMA4_DMA20*,DMA5_DMA21*,DMA6_DMA22*,DMA7_DMA23*,DMA8_DMA24*,DMA9_DMA25*,DMA10_DMA26*,DMA11_DMA27*,DMA12_DMA28*,DMA13_DMA29*,DMA14_DMA30*,DMA15_DMA31*,DMA_ERROR*
+//
+//	DMA0  DMA0_BASE  -  DMA0_DMA16*,DMA1_DMA17*,DMA2_DMA18*,DMA3_DMA19*,DMA4_DMA20*,DMA5_DMA21*,DMA6_DMA22*,DMA7_DMA23*,DMA8_DMA24*,DMA9_DMA25*,DMA10_DMA26*,DMA11_DMA27*,DMA12_DMA28*,DMA13_DMA29*,DMA14_DMA30*,DMA15_DMA31*,DMA_ERROR*
+//
 // Registers:
-//  0x000  32  CR                                                                                        Control Register
-//  0x004  32  ES                                                                                        Error Status Register
-//  0x00C  32  ERQ                                                                                       Enable Request Register
-//  0x014  32  EEI                                                                                       Enable Error Interrupt Register
-//  0x018   8  CEEI(CTRL)                                                                                Clear Enable Error Interrupt Register
-//  0x019   8  SEEI(CTRL)                                                                                Set Enable Error Interrupt Register
-//  0x01A   8  CERQ(CTRL)                                                                                Clear Enable Request Register
-//  0x01B   8  SERQ(CTRL)                                                                                Set Enable Request Register
-//  0x01C   8  CDNE(CTRL)                                                                                Clear DONE Status Bit Register
-//  0x01D   8  SSRT(CTRL)                                                                                Set START Bit Register
-//  0x01E   8  CERR(CTRL)                                                                                Clear Error Register
-//  0x01F   8  CINT(CTRL)                                                                                Clear Interrupt Request Register
-//  0x024  32  INT                                                                                       Interrupt Request Register
-//  0x02C  32  ERR                                                                                       Error Register
-//  0x034  32  HRS                                                                                       Hardware Request Status Register
-//  0x044  32  EARS                                                                                      Enable Asynchronous Request in Stop Register
-//  0x100   8  DCHPRI3(DCHPR)                                                                            Channel n Priority Register
-//  0x101   8  DCHPRI2(DCHPR)                                                                            Channel n Priority Register
-//  0x102   8  DCHPRI1(DCHPR)                                                                            Channel n Priority Register
-//  0x103   8  DCHPRI0(DCHPR)                                                                            Channel n Priority Register
-//  0x104   8  DCHPRI7(DCHPR)                                                                            Channel n Priority Register
-//  0x105   8  DCHPRI6(DCHPR)                                                                            Channel n Priority Register
-//  0x106   8  DCHPRI5(DCHPR)                                                                            Channel n Priority Register
-//  0x107   8  DCHPRI4(DCHPR)                                                                            Channel n Priority Register
-//  0x108   8  DCHPRI11(DCHPR)                                                                           Channel n Priority Register
-//  0x109   8  DCHPRI10(DCHPR)                                                                           Channel n Priority Register
-//  0x10A   8  DCHPRI9(DCHPR)                                                                            Channel n Priority Register
-//  0x10B   8  DCHPRI8(DCHPR)                                                                            Channel n Priority Register
-//  0x10C   8  DCHPRI15(DCHPR)                                                                           Channel n Priority Register
-//  0x10D   8  DCHPRI14(DCHPR)                                                                           Channel n Priority Register
-//  0x10E   8  DCHPRI13(DCHPR)                                                                           Channel n Priority Register
-//  0x10F   8  DCHPRI12(DCHPR)                                                                           Channel n Priority Register
-//  0x110   8  DCHPRI19(DCHPR)                                                                           Channel n Priority Register
-//  0x111   8  DCHPRI18(DCHPR)                                                                           Channel n Priority Register
-//  0x112   8  DCHPRI17(DCHPR)                                                                           Channel n Priority Register
-//  0x113   8  DCHPRI16(DCHPR)                                                                           Channel n Priority Register
-//  0x114   8  DCHPRI23(DCHPR)                                                                           Channel n Priority Register
-//  0x115   8  DCHPRI22(DCHPR)                                                                           Channel n Priority Register
-//  0x116   8  DCHPRI21(DCHPR)                                                                           Channel n Priority Register
-//  0x117   8  DCHPRI20(DCHPR)                                                                           Channel n Priority Register
-//  0x118   8  DCHPRI27(DCHPR)                                                                           Channel n Priority Register
-//  0x119   8  DCHPRI26(DCHPR)                                                                           Channel n Priority Register
-//  0x11A   8  DCHPRI25(DCHPR)                                                                           Channel n Priority Register
-//  0x11B   8  DCHPRI24(DCHPR)                                                                           Channel n Priority Register
-//  0x11C   8  DCHPRI31(DCHPR)                                                                           Channel n Priority Register
-//  0x11D   8  DCHPRI30(DCHPR)                                                                           Channel n Priority Register
-//  0x11E   8  DCHPRI29(DCHPR)                                                                           Channel n Priority Register
-//  0x11F   8  DCHPRI28(DCHPR)                                                                           Channel n Priority Register
-//  0x1000 32  TCD{SADDR,ATTR_SOFF,ML_NBYTES,SLAST,DADDR,ELINK_CITER_DOFF,DLASTSGA,ELINK_BITER_CSR}[32]  Transfer Control Descriptors
+//
+//	0x000  32  CR                                                                                              Control Register
+//	0x004  32  ES                                                                                              Error Status Register
+//	0x00C  32  ERQ                                                                                             Enable Request Register
+//	0x014  32  EEI                                                                                             Enable Error Interrupt Register
+//	0x018   8  CEEI(CTRL)                                                                                      Clear Enable Error Interrupt Register
+//	0x019   8  SEEI(CTRL)                                                                                      Set Enable Error Interrupt Register
+//	0x01A   8  CERQ(CTRL)                                                                                      Clear Enable Request Register
+//	0x01B   8  SERQ(CTRL)                                                                                      Set Enable Request Register
+//	0x01C   8  CDNE(CTRL)                                                                                      Clear DONE Status Bit Register
+//	0x01D   8  SSRT(CTRL)                                                                                      Set START Bit Register
+//	0x01E   8  CERR(CTRL)                                                                                      Clear Error Register
+//	0x01F   8  CINT(CTRL)                                                                                      Clear Interrupt Request Register
+//	0x024  32  INT                                                                                             Interrupt Request Register
+//	0x02C  32  ERR                                                                                             Error Register
+//	0x034  32  HRS                                                                                             Hardware Request Status Register
+//	0x044  32  EARS                                                                                            Enable Asynchronous Request in Stop Register
+//	0x100   8  DCHPRI3(DCHPR)                                                                                  Channel n Priority Register
+//	0x101   8  DCHPRI2(DCHPR)                                                                                  Channel n Priority Register
+//	0x102   8  DCHPRI1(DCHPR)                                                                                  Channel n Priority Register
+//	0x103   8  DCHPRI0(DCHPR)                                                                                  Channel n Priority Register
+//	0x104   8  DCHPRI7(DCHPR)                                                                                  Channel n Priority Register
+//	0x105   8  DCHPRI6(DCHPR)                                                                                  Channel n Priority Register
+//	0x106   8  DCHPRI5(DCHPR)                                                                                  Channel n Priority Register
+//	0x107   8  DCHPRI4(DCHPR)                                                                                  Channel n Priority Register
+//	0x108   8  DCHPRI11(DCHPR)                                                                                 Channel n Priority Register
+//	0x109   8  DCHPRI10(DCHPR)                                                                                 Channel n Priority Register
+//	0x10A   8  DCHPRI9(DCHPR)                                                                                  Channel n Priority Register
+//	0x10B   8  DCHPRI8(DCHPR)                                                                                  Channel n Priority Register
+//	0x10C   8  DCHPRI15(DCHPR)                                                                                 Channel n Priority Register
+//	0x10D   8  DCHPRI14(DCHPR)                                                                                 Channel n Priority Register
+//	0x10E   8  DCHPRI13(DCHPR)                                                                                 Channel n Priority Register
+//	0x10F   8  DCHPRI12(DCHPR)                                                                                 Channel n Priority Register
+//	0x110   8  DCHPRI19(DCHPR)                                                                                 Channel n Priority Register
+//	0x111   8  DCHPRI18(DCHPR)                                                                                 Channel n Priority Register
+//	0x112   8  DCHPRI17(DCHPR)                                                                                 Channel n Priority Register
+//	0x113   8  DCHPRI16(DCHPR)                                                                                 Channel n Priority Register
+//	0x114   8  DCHPRI23(DCHPR)                                                                                 Channel n Priority Register
+//	0x115   8  DCHPRI22(DCHPR)                                                                                 Channel n Priority Register
+//	0x116   8  DCHPRI21(DCHPR)                                                                                 Channel n Priority Register
+//	0x117   8  DCHPRI20(DCHPR)                                                                                 Channel n Priority Register
+//	0x118   8  DCHPRI27(DCHPR)                                                                                 Channel n Priority Register
+//	0x119   8  DCHPRI26(DCHPR)                                                                                 Channel n Priority Register
+//	0x11A   8  DCHPRI25(DCHPR)                                                                                 Channel n Priority Register
+//	0x11B   8  DCHPRI24(DCHPR)                                                                                 Channel n Priority Register
+//	0x11C   8  DCHPRI31(DCHPR)                                                                                 Channel n Priority Register
+//	0x11D   8  DCHPRI30(DCHPR)                                                                                 Channel n Priority Register
+//	0x11E   8  DCHPRI29(DCHPR)                                                                                 Channel n Priority Register
+//	0x11F   8  DCHPRI28(DCHPR)                                                                                 Channel n Priority Register
+//	0x1000 32  TCD{SADDR,ATTR_SOFF,NBYTES_MLNO,ML_NBYTES,DADDR,ELINK_CITER_DOFF,DLASTSGA,ELINK_BITER_CSR}[32]  Transfer Control Descriptors
+//
 // Import:
-//  github.com/embeddedgo/imxrt/p/mmap
+//
+//	github.com/embeddedgo/imxrt/p/mmap
 package dma
 
 const (
@@ -597,6 +602,14 @@ const (
 	DMODn  = 19
 	SSIZEn = 24
 	SMODn  = 27
+)
+
+const (
+	NBYTES NBYTES_MLNO = 0xFFFFFFFF << 0 //+ Minor Byte Transfer Count
+)
+
+const (
+	NBYTESn = 0
 )
 
 const (

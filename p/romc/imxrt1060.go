@@ -5,16 +5,21 @@
 // Package romc provides access to the registers of the ROMC peripheral.
 //
 // Instances:
-//  ROMC  ROMC_BASE  -  -
+//
+//	ROMC  ROMC_BASE  -  -
+//
 // Registers:
-//  0x0D4 32  ROMPATCH[8]   ROMC Data Registers
-//  0x0F4 32  ROMPATCHCNTL  ROMC Control Register
-//  0x0F8 32  ROMPATCHENH   ROMC Enable Register High
-//  0x0FC 32  ROMPATCHENL   ROMC Enable Register Low
-//  0x100 32  ROMPATCH[16]  ROMC Address Registers
-//  0x208 32  ROMPATCHSR    ROMC Status Register
+//
+//	0x0D4 32  ROMPATCH[8]   ROMC Data Registers
+//	0x0F4 32  ROMPATCHCNTL  ROMC Control Register
+//	0x0F8 32  ROMPATCHENH   ROMC Enable Register High
+//	0x0FC 32  ROMPATCHENL   ROMC Enable Register Low
+//	0x100 32  ROMPATCH[16]  ROMC Address Registers
+//	0x208 32  ROMPATCHSR    ROMC Status Register
+//
 // Import:
-//  github.com/embeddedgo/imxrt/p/mmap
+//
+//	github.com/embeddedgo/imxrt/p/mmap
 package romc
 
 const (

@@ -5,21 +5,26 @@
 // Package gpc provides access to the registers of the GPC peripheral.
 //
 // Instances:
-//  GPC  GPC_BASE  -  GPC*
+//
+//	GPC  GPC_BASE  -  GPC*
+//
 // Registers:
-//  0x000 32  CNTR  GPC Interface control register
-//  0x008 32  IMR1  IRQ masking register 1
-//  0x00C 32  IMR2  IRQ masking register 2
-//  0x010 32  IMR3  IRQ masking register 3
-//  0x014 32  IMR4  IRQ masking register 4
-//  0x018 32  ISR1  IRQ status resister 1
-//  0x01C 32  ISR2  IRQ status resister 2
-//  0x020 32  ISR3  IRQ status resister 3
-//  0x024 32  ISR4  IRQ status resister 4
-//  0x034 32  IMR5  IRQ masking register 5
-//  0x038 32  ISR5  IRQ status resister 5
+//
+//	0x000 32  CNTR  GPC Interface control register
+//	0x008 32  IMR1  IRQ masking register 1
+//	0x00C 32  IMR2  IRQ masking register 2
+//	0x010 32  IMR3  IRQ masking register 3
+//	0x014 32  IMR4  IRQ masking register 4
+//	0x018 32  ISR1  IRQ status resister 1
+//	0x01C 32  ISR2  IRQ status resister 2
+//	0x020 32  ISR3  IRQ status resister 3
+//	0x024 32  ISR4  IRQ status resister 4
+//	0x034 32  IMR5  IRQ masking register 5
+//	0x038 32  ISR5  IRQ status resister 5
+//
 // Import:
-//  github.com/embeddedgo/imxrt/p/mmap
+//
+//	github.com/embeddedgo/imxrt/p/mmap
 package gpc
 
 const (

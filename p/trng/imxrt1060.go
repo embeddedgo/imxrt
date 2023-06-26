@@ -5,51 +5,56 @@
 // Package trng provides access to the registers of the TRNG peripheral.
 //
 // Instances:
-//  TRNG  TRNG_BASE  -  TRNG*
+//
+//	TRNG  TRNG_BASE  -  TRNG*
+//
 // Registers:
-//  0x000 32  MCTL        Miscellaneous Control Register
-//  0x004 32  SCMISC      Statistical Check Miscellaneous Register
-//  0x008 32  PKRRNG      Poker Range Register
-//  0x00C 32  PKRMAX      Poker Maximum Limit Register
-//  0x00C 32  PKRSQ       Poker Square Calculation Result Register
-//  0x010 32  SDCTL       Seed Control Register
-//  0x014 32  SBLIM       Sparse Bit Limit Register
-//  0x014 32  TOTSAM      Total Samples Register
-//  0x018 32  FRQMIN      Frequency Count Minimum Limit Register
-//  0x01C 32  FRQCNT      Frequency Count Register
-//  0x01C 32  FRQMAX      Frequency Count Maximum Limit Register
-//  0x020 32  SCMC        Statistical Check Monobit Count Register
-//  0x020 32  SCML        Statistical Check Monobit Limit Register
-//  0x024 32  SCR1C       Statistical Check Run Length 1 Count Register
-//  0x024 32  SCR1L       Statistical Check Run Length 1 Limit Register
-//  0x028 32  SCR2C       Statistical Check Run Length 2 Count Register
-//  0x028 32  SCR2L       Statistical Check Run Length 2 Limit Register
-//  0x02C 32  SCR3C       Statistical Check Run Length 3 Count Register
-//  0x02C 32  SCR3L       Statistical Check Run Length 3 Limit Register
-//  0x030 32  SCR4C       Statistical Check Run Length 4 Count Register
-//  0x030 32  SCR4L       Statistical Check Run Length 4 Limit Register
-//  0x034 32  SCR5C       Statistical Check Run Length 5 Count Register
-//  0x034 32  SCR5L       Statistical Check Run Length 5 Limit Register
-//  0x038 32  SCR6PC      Statistical Check Run Length 6+ Count Register
-//  0x038 32  SCR6PL      Statistical Check Run Length 6+ Limit Register
-//  0x03C 32  STATUS      Status Register
-//  0x040 32  ENT[16]     Entropy Read Register
-//  0x080 32  PKRCNT10    Statistical Check Poker Count 1 and 0 Register
-//  0x084 32  PKRCNT32    Statistical Check Poker Count 3 and 2 Register
-//  0x088 32  PKRCNT54    Statistical Check Poker Count 5 and 4 Register
-//  0x08C 32  PKRCNT76    Statistical Check Poker Count 7 and 6 Register
-//  0x090 32  PKRCNT98    Statistical Check Poker Count 9 and 8 Register
-//  0x094 32  PKRCNTBA    Statistical Check Poker Count B and A Register
-//  0x098 32  PKRCNTDC    Statistical Check Poker Count D and C Register
-//  0x09C 32  PKRCNTFE    Statistical Check Poker Count F and E Register
-//  0x0A0 32  SEC_CFG     Security Configuration Register
-//  0x0A4 32  INT_CTRL    Interrupt Control Register
-//  0x0A8 32  INT_MASK    Mask Register
-//  0x0AC 32  INT_STATUS  Interrupt Status Register
-//  0x0F0 32  VID1        Version ID Register (MS)
-//  0x0F4 32  VID2        Version ID Register (LS)
+//
+//	0x000 32  MCTL        Miscellaneous Control Register
+//	0x004 32  SCMISC      Statistical Check Miscellaneous Register
+//	0x008 32  PKRRNG      Poker Range Register
+//	0x00C 32  PKRMAX      Poker Maximum Limit Register
+//	0x00C 32  PKRSQ       Poker Square Calculation Result Register
+//	0x010 32  SDCTL       Seed Control Register
+//	0x014 32  SBLIM       Sparse Bit Limit Register
+//	0x014 32  TOTSAM      Total Samples Register
+//	0x018 32  FRQMIN      Frequency Count Minimum Limit Register
+//	0x01C 32  FRQCNT      Frequency Count Register
+//	0x01C 32  FRQMAX      Frequency Count Maximum Limit Register
+//	0x020 32  SCMC        Statistical Check Monobit Count Register
+//	0x020 32  SCML        Statistical Check Monobit Limit Register
+//	0x024 32  SCR1C       Statistical Check Run Length 1 Count Register
+//	0x024 32  SCR1L       Statistical Check Run Length 1 Limit Register
+//	0x028 32  SCR2C       Statistical Check Run Length 2 Count Register
+//	0x028 32  SCR2L       Statistical Check Run Length 2 Limit Register
+//	0x02C 32  SCR3C       Statistical Check Run Length 3 Count Register
+//	0x02C 32  SCR3L       Statistical Check Run Length 3 Limit Register
+//	0x030 32  SCR4C       Statistical Check Run Length 4 Count Register
+//	0x030 32  SCR4L       Statistical Check Run Length 4 Limit Register
+//	0x034 32  SCR5C       Statistical Check Run Length 5 Count Register
+//	0x034 32  SCR5L       Statistical Check Run Length 5 Limit Register
+//	0x038 32  SCR6PC      Statistical Check Run Length 6+ Count Register
+//	0x038 32  SCR6PL      Statistical Check Run Length 6+ Limit Register
+//	0x03C 32  STATUS      Status Register
+//	0x040 32  ENT[16]     Entropy Read Register
+//	0x080 32  PKRCNT10    Statistical Check Poker Count 1 and 0 Register
+//	0x084 32  PKRCNT32    Statistical Check Poker Count 3 and 2 Register
+//	0x088 32  PKRCNT54    Statistical Check Poker Count 5 and 4 Register
+//	0x08C 32  PKRCNT76    Statistical Check Poker Count 7 and 6 Register
+//	0x090 32  PKRCNT98    Statistical Check Poker Count 9 and 8 Register
+//	0x094 32  PKRCNTBA    Statistical Check Poker Count B and A Register
+//	0x098 32  PKRCNTDC    Statistical Check Poker Count D and C Register
+//	0x09C 32  PKRCNTFE    Statistical Check Poker Count F and E Register
+//	0x0A0 32  SEC_CFG     Security Configuration Register
+//	0x0A4 32  INT_CTRL    Interrupt Control Register
+//	0x0A8 32  INT_MASK    Mask Register
+//	0x0AC 32  INT_STATUS  Interrupt Status Register
+//	0x0F0 32  VID1        Version ID Register (MS)
+//	0x0F4 32  VID2        Version ID Register (LS)
+//
 // Import:
-//  github.com/embeddedgo/imxrt/p/mmap
+//
+//	github.com/embeddedgo/imxrt/p/mmap
 package trng
 
 const (

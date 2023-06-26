@@ -5,25 +5,30 @@
 // Package csi provides access to the registers of the CSI peripheral.
 //
 // Instances:
-//  CSI  CSI_BASE  -  CSI*
+//
+//	CSI  CSI_BASE  -  CSI*
+//
 // Registers:
-//  0x000 32  CSICR1             CSI Control Register 1
-//  0x004 32  CSICR2             CSI Control Register 2
-//  0x008 32  CSICR3             CSI Control Register 3
-//  0x00C 32  CSISTATFIFO        CSI Statistic FIFO Register
-//  0x010 32  CSIRFIFO           CSI RX FIFO Register
-//  0x014 32  CSIRXCNT           CSI RX Count Register
-//  0x018 32  CSISR              CSI Status Register
-//  0x020 32  CSIDMASA_STATFIFO  CSI DMA Start Address Register - for STATFIFO
-//  0x024 32  CSIDMATS_STATFIFO  CSI DMA Transfer Size Register - for STATFIFO
-//  0x028 32  CSIDMASA_FB1       CSI DMA Start Address Register - for Frame Buffer1
-//  0x02C 32  CSIDMASA_FB2       CSI DMA Transfer Size Register - for Frame Buffer2
-//  0x030 32  CSIFBUF_PARA       CSI Frame Buffer Parameter Register
-//  0x034 32  CSIIMAG_PARA       CSI Image Parameter Register
-//  0x048 32  CSICR18            CSI Control Register 18
-//  0x04C 32  CSICR19            CSI Control Register 19
+//
+//	0x000 32  CSICR1             CSI Control Register 1
+//	0x004 32  CSICR2             CSI Control Register 2
+//	0x008 32  CSICR3             CSI Control Register 3
+//	0x00C 32  CSISTATFIFO        CSI Statistic FIFO Register
+//	0x010 32  CSIRFIFO           CSI RX FIFO Register
+//	0x014 32  CSIRXCNT           CSI RX Count Register
+//	0x018 32  CSISR              CSI Status Register
+//	0x020 32  CSIDMASA_STATFIFO  CSI DMA Start Address Register - for STATFIFO
+//	0x024 32  CSIDMATS_STATFIFO  CSI DMA Transfer Size Register - for STATFIFO
+//	0x028 32  CSIDMASA_FB1       CSI DMA Start Address Register - for Frame Buffer1
+//	0x02C 32  CSIDMASA_FB2       CSI DMA Transfer Size Register - for Frame Buffer2
+//	0x030 32  CSIFBUF_PARA       CSI Frame Buffer Parameter Register
+//	0x034 32  CSIIMAG_PARA       CSI Image Parameter Register
+//	0x048 32  CSICR18            CSI Control Register 18
+//	0x04C 32  CSICR19            CSI Control Register 19
+//
 // Import:
-//  github.com/embeddedgo/imxrt/p/mmap
+//
+//	github.com/embeddedgo/imxrt/p/mmap
 package csi
 
 const (

@@ -5,11 +5,16 @@
 // Package dmamux provides access to the registers of the DMAMUX peripheral.
 //
 // Instances:
-//  DMAMUX  DMAMUX_BASE  -  -  DMA_CH_MUX
+//
+//	DMAMUX  DMAMUX_BASE  -  -  DMA_CH_MUX
+//
 // Registers:
-//  0x000 32  CHCFG[32]  Channel 0 Configuration Register
+//
+//	0x000 32  CHCFG[32]  Channel 0 Configuration Register
+//
 // Import:
-//  github.com/embeddedgo/imxrt/p/mmap
+//
+//	github.com/embeddedgo/imxrt/p/mmap
 package dmamux
 
 const (

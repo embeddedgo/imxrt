@@ -5,14 +5,19 @@
 // Package kpp provides access to the registers of the KPP peripheral.
 //
 // Instances:
-//  KPP  KPP_BASE  -  KPP*  KPP Registers
+//
+//	KPP  KPP_BASE  -  KPP*  KPP Registers
+//
 // Registers:
-//  0x000 16  KPCR  Keypad Control Register
-//  0x002 16  KPSR  Keypad Status Register
-//  0x004 16  KDDR  Keypad Data Direction Register
-//  0x006 16  KPDR  Keypad Data Register
+//
+//	0x000 16  KPCR  Keypad Control Register
+//	0x002 16  KPSR  Keypad Status Register
+//	0x004 16  KDDR  Keypad Data Direction Register
+//	0x006 16  KPDR  Keypad Data Register
+//
 // Import:
-//  github.com/embeddedgo/imxrt/p/mmap
+//
+//	github.com/embeddedgo/imxrt/p/mmap
 package kpp
 
 const (

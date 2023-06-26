@@ -5,22 +5,27 @@
 // Package tempmon provides access to the registers of the TEMPMON peripheral.
 //
 // Instances:
-//  TEMPMON  TEMPMON_BASE  -  TEMP_LOW_HIGH*,TEMP_PANIC*  Temperature Monitor
+//
+//	TEMPMON  TEMPMON_BASE  -  TEMP_LOW_HIGH*,TEMP_PANIC*  Temperature Monitor
+//
 // Registers:
-//  0x180 32  TEMPSENSE0      Tempsensor Control Register 0
-//  0x184 32  TEMPSENSE0_SET  Tempsensor Control Register 0
-//  0x188 32  TEMPSENSE0_CLR  Tempsensor Control Register 0
-//  0x18C 32  TEMPSENSE0_TOG  Tempsensor Control Register 0
-//  0x190 32  TEMPSENSE1      Tempsensor Control Register 1
-//  0x194 32  TEMPSENSE1_SET  Tempsensor Control Register 1
-//  0x198 32  TEMPSENSE1_CLR  Tempsensor Control Register 1
-//  0x19C 32  TEMPSENSE1_TOG  Tempsensor Control Register 1
-//  0x290 32  TEMPSENSE2      Tempsensor Control Register 2
-//  0x294 32  TEMPSENSE2_SET  Tempsensor Control Register 2
-//  0x298 32  TEMPSENSE2_CLR  Tempsensor Control Register 2
-//  0x29C 32  TEMPSENSE2_TOG  Tempsensor Control Register 2
+//
+//	0x180 32  TEMPSENSE0      Tempsensor Control Register 0
+//	0x184 32  TEMPSENSE0_SET  Tempsensor Control Register 0
+//	0x188 32  TEMPSENSE0_CLR  Tempsensor Control Register 0
+//	0x18C 32  TEMPSENSE0_TOG  Tempsensor Control Register 0
+//	0x190 32  TEMPSENSE1      Tempsensor Control Register 1
+//	0x194 32  TEMPSENSE1_SET  Tempsensor Control Register 1
+//	0x198 32  TEMPSENSE1_CLR  Tempsensor Control Register 1
+//	0x19C 32  TEMPSENSE1_TOG  Tempsensor Control Register 1
+//	0x290 32  TEMPSENSE2      Tempsensor Control Register 2
+//	0x294 32  TEMPSENSE2_SET  Tempsensor Control Register 2
+//	0x298 32  TEMPSENSE2_CLR  Tempsensor Control Register 2
+//	0x29C 32  TEMPSENSE2_TOG  Tempsensor Control Register 2
+//
 // Import:
-//  github.com/embeddedgo/imxrt/p/mmap
+//
+//	github.com/embeddedgo/imxrt/p/mmap
 package tempmon
 
 const (

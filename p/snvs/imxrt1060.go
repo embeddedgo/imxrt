@@ -5,41 +5,46 @@
 // Package snvs provides access to the registers of the SNVS peripheral.
 //
 // Instances:
-//  SNVS  SNVS_BASE  -  SNVS_HP_WRAPPER*,SNVS_HP_WRAPPER_TZ*,SNVS_LP_WRAPPER*
+//
+//	SNVS  SNVS_BASE  -  SNVS_HP_WRAPPER*,SNVS_HP_WRAPPER_TZ*,SNVS_LP_WRAPPER*
+//
 // Registers:
-//  0x000 32  HPLR                 SNVS_HP Lock Register
-//  0x004 32  HPCOMR               SNVS_HP Command Register
-//  0x008 32  HPCR                 SNVS_HP Control Register
-//  0x00C 32  HPSICR               SNVS_HP Security Interrupt Control Register
-//  0x010 32  HPSVCR               SNVS_HP Security Violation Control Register
-//  0x014 32  HPSR                 SNVS_HP Status Register
-//  0x018 32  HPSVSR               SNVS_HP Security Violation Status Register
-//  0x01C 32  HPHACIVR             SNVS_HP High Assurance Counter IV Register
-//  0x020 32  HPHACR               SNVS_HP High Assurance Counter Register
-//  0x024 32  HPRTCMR              SNVS_HP Real Time Counter MSB Register
-//  0x028 32  HPRTCLR              SNVS_HP Real Time Counter LSB Register
-//  0x02C 32  HPTAMR               SNVS_HP Time Alarm MSB Register
-//  0x030 32  HPTALR               SNVS_HP Time Alarm LSB Register
-//  0x034 32  LPLR                 SNVS_LP Lock Register
-//  0x038 32  LPCR                 SNVS_LP Control Register
-//  0x03C 32  LPMKCR               SNVS_LP Master Key Control Register
-//  0x040 32  LPSVCR               SNVS_LP Security Violation Control Register
-//  0x048 32  LPTDCR               SNVS_LP Tamper Detectors Configuration Register
-//  0x04C 32  LPSR                 SNVS_LP Status Register
-//  0x050 32  LPSRTCMR             SNVS_LP Secure Real Time Counter MSB Register
-//  0x054 32  LPSRTCLR             SNVS_LP Secure Real Time Counter LSB Register
-//  0x058 32  LPTAR                SNVS_LP Time Alarm Register
-//  0x05C 32  LPSMCMR              SNVS_LP Secure Monotonic Counter MSB Register
-//  0x060 32  LPSMCLR              SNVS_LP Secure Monotonic Counter LSB Register
-//  0x064 32  LPPGDR               SNVS_LP Power Glitch Detector Register
-//  0x068 32  LPGPR0_legacy_alias  SNVS_LP General Purpose Register 0 (legacy alias)
-//  0x06C 32  LPZMKR[8]            SNVS_LP Zeroizable Master Key Register
-//  0x090 32  LPGPR_alias[4]       SNVS_LP General Purpose Registers 0 .. 3
-//  0x100 32  LPGPR[8]             SNVS_LP General Purpose Registers 0 .. 7
-//  0xBF8 32  HPVIDR1              SNVS_HP Version ID Register 1
-//  0xBFC 32  HPVIDR2              SNVS_HP Version ID Register 2
+//
+//	0x000 32  HPLR                 SNVS_HP Lock Register
+//	0x004 32  HPCOMR               SNVS_HP Command Register
+//	0x008 32  HPCR                 SNVS_HP Control Register
+//	0x00C 32  HPSICR               SNVS_HP Security Interrupt Control Register
+//	0x010 32  HPSVCR               SNVS_HP Security Violation Control Register
+//	0x014 32  HPSR                 SNVS_HP Status Register
+//	0x018 32  HPSVSR               SNVS_HP Security Violation Status Register
+//	0x01C 32  HPHACIVR             SNVS_HP High Assurance Counter IV Register
+//	0x020 32  HPHACR               SNVS_HP High Assurance Counter Register
+//	0x024 32  HPRTCMR              SNVS_HP Real Time Counter MSB Register
+//	0x028 32  HPRTCLR              SNVS_HP Real Time Counter LSB Register
+//	0x02C 32  HPTAMR               SNVS_HP Time Alarm MSB Register
+//	0x030 32  HPTALR               SNVS_HP Time Alarm LSB Register
+//	0x034 32  LPLR                 SNVS_LP Lock Register
+//	0x038 32  LPCR                 SNVS_LP Control Register
+//	0x03C 32  LPMKCR               SNVS_LP Master Key Control Register
+//	0x040 32  LPSVCR               SNVS_LP Security Violation Control Register
+//	0x048 32  LPTDCR               SNVS_LP Tamper Detectors Configuration Register
+//	0x04C 32  LPSR                 SNVS_LP Status Register
+//	0x050 32  LPSRTCMR             SNVS_LP Secure Real Time Counter MSB Register
+//	0x054 32  LPSRTCLR             SNVS_LP Secure Real Time Counter LSB Register
+//	0x058 32  LPTAR                SNVS_LP Time Alarm Register
+//	0x05C 32  LPSMCMR              SNVS_LP Secure Monotonic Counter MSB Register
+//	0x060 32  LPSMCLR              SNVS_LP Secure Monotonic Counter LSB Register
+//	0x064 32  LPPGDR               SNVS_LP Power Glitch Detector Register
+//	0x068 32  LPGPR0_legacy_alias  SNVS_LP General Purpose Register 0 (legacy alias)
+//	0x06C 32  LPZMKR[8]            SNVS_LP Zeroizable Master Key Register
+//	0x090 32  LPGPR_alias[4]       SNVS_LP General Purpose Registers 0 .. 3
+//	0x100 32  LPGPR[8]             SNVS_LP General Purpose Registers 0 .. 7
+//	0xBF8 32  HPVIDR1              SNVS_HP Version ID Register 1
+//	0xBFC 32  HPVIDR2              SNVS_HP Version ID Register 2
+//
 // Import:
-//  github.com/embeddedgo/imxrt/p/mmap
+//
+//	github.com/embeddedgo/imxrt/p/mmap
 package snvs
 
 const (

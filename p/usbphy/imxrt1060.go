@@ -5,38 +5,43 @@
 // Package usbphy provides access to the registers of the USBPHY peripheral.
 //
 // Instances:
-//  USBPHY1  USBPHY1_BASE  -  USB_PHY1*  USBPHY Register Reference Index
-//  USBPHY2  USBPHY2_BASE  -  USB_PHY2*  USBPHY Register Reference Index
+//
+//	USBPHY1  USBPHY1_BASE  -  USB_PHY1*  USBPHY Register Reference Index
+//	USBPHY2  USBPHY2_BASE  -  USB_PHY2*  USBPHY Register Reference Index
+//
 // Registers:
-//  0x000 32  PWD            USB PHY Power-Down Register
-//  0x004 32  PWD_SET        USB PHY Power-Down Register
-//  0x008 32  PWD_CLR        USB PHY Power-Down Register
-//  0x00C 32  PWD_TOG        USB PHY Power-Down Register
-//  0x010 32  TX             USB PHY Transmitter Control Register
-//  0x014 32  TX_SET         USB PHY Transmitter Control Register
-//  0x018 32  TX_CLR         USB PHY Transmitter Control Register
-//  0x01C 32  TX_TOG         USB PHY Transmitter Control Register
-//  0x020 32  RX             USB PHY Receiver Control Register
-//  0x024 32  RX_SET         USB PHY Receiver Control Register
-//  0x028 32  RX_CLR         USB PHY Receiver Control Register
-//  0x02C 32  RX_TOG         USB PHY Receiver Control Register
-//  0x030 32  CTRL           USB PHY General Control Register
-//  0x034 32  CTRL_SET       USB PHY General Control Register
-//  0x038 32  CTRL_CLR       USB PHY General Control Register
-//  0x03C 32  CTRL_TOG       USB PHY General Control Register
-//  0x040 32  STATUS         USB PHY Status Register
-//  0x050 32  DEBUG          USB PHY Debug Register
-//  0x054 32  DEBUG_SET      USB PHY Debug Register
-//  0x058 32  DEBUG_CLR      USB PHY Debug Register
-//  0x05C 32  DEBUG_TOG      USB PHY Debug Register
-//  0x060 32  DEBUG0_STATUS  UTMI Debug Status Register 0
-//  0x070 32  DEBUG1         UTMI Debug Status Register 1
-//  0x074 32  DEBUG1_SET     UTMI Debug Status Register 1
-//  0x078 32  DEBUG1_CLR     UTMI Debug Status Register 1
-//  0x07C 32  DEBUG1_TOG     UTMI Debug Status Register 1
-//  0x080 32  VERSION        UTMI RTL Version
+//
+//	0x000 32  PWD            USB PHY Power-Down Register
+//	0x004 32  PWD_SET        USB PHY Power-Down Register
+//	0x008 32  PWD_CLR        USB PHY Power-Down Register
+//	0x00C 32  PWD_TOG        USB PHY Power-Down Register
+//	0x010 32  TX             USB PHY Transmitter Control Register
+//	0x014 32  TX_SET         USB PHY Transmitter Control Register
+//	0x018 32  TX_CLR         USB PHY Transmitter Control Register
+//	0x01C 32  TX_TOG         USB PHY Transmitter Control Register
+//	0x020 32  RX             USB PHY Receiver Control Register
+//	0x024 32  RX_SET         USB PHY Receiver Control Register
+//	0x028 32  RX_CLR         USB PHY Receiver Control Register
+//	0x02C 32  RX_TOG         USB PHY Receiver Control Register
+//	0x030 32  CTRL           USB PHY General Control Register
+//	0x034 32  CTRL_SET       USB PHY General Control Register
+//	0x038 32  CTRL_CLR       USB PHY General Control Register
+//	0x03C 32  CTRL_TOG       USB PHY General Control Register
+//	0x040 32  STATUS         USB PHY Status Register
+//	0x050 32  DEBUG          USB PHY Debug Register
+//	0x054 32  DEBUG_SET      USB PHY Debug Register
+//	0x058 32  DEBUG_CLR      USB PHY Debug Register
+//	0x05C 32  DEBUG_TOG      USB PHY Debug Register
+//	0x060 32  DEBUG0_STATUS  UTMI Debug Status Register 0
+//	0x070 32  DEBUG1         UTMI Debug Status Register 1
+//	0x074 32  DEBUG1_SET     UTMI Debug Status Register 1
+//	0x078 32  DEBUG1_CLR     UTMI Debug Status Register 1
+//	0x07C 32  DEBUG1_TOG     UTMI Debug Status Register 1
+//	0x080 32  VERSION        UTMI RTL Version
+//
 // Import:
-//  github.com/embeddedgo/imxrt/p/mmap
+//
+//	github.com/embeddedgo/imxrt/p/mmap
 package usbphy
 
 const (

@@ -13,7 +13,7 @@ import (
 
 type Periph struct {
 	WCR  mmio.R16[WCR]
-	WSR  mmio.R16[WSR]
+	WSR  mmio.R16[uint16]
 	WRSR mmio.R16[WRSR]
 	WICR mmio.R16[WICR]
 	WMCR mmio.R16[WMCR]
@@ -37,8 +37,6 @@ func WDA_(p *Periph) mmio.RM16[WCR]   { return mmio.RM16[WCR]{&p.WCR, WDA} }
 func SRE_(p *Periph) mmio.RM16[WCR]   { return mmio.RM16[WCR]{&p.WCR, SRE} }
 func WDW_(p *Periph) mmio.RM16[WCR]   { return mmio.RM16[WCR]{&p.WCR, WDW} }
 func WT_(p *Periph) mmio.RM16[WCR]    { return mmio.RM16[WCR]{&p.WCR, WT} }
-
-type WSR uint16
 
 type WRSR uint16
 

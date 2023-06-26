@@ -5,65 +5,70 @@
 // Package ccm_analog provides access to the registers of the CCM_ANALOG peripheral.
 //
 // Instances:
-//  CCM_ANALOG  CCM_ANALOG_BASE  -  -
+//
+//	CCM_ANALOG  CCM_ANALOG_BASE  -  -
+//
 // Registers:
-//  0x000 32  PLL_ARM                  Analog ARM PLL control Register
-//  0x004 32  PLL_ARM_SET(PLL_ARM)     Analog ARM PLL control Register
-//  0x008 32  PLL_ARM_CLR(PLL_ARM)     Analog ARM PLL control Register
-//  0x00C 32  PLL_ARM_TOG(PLL_ARM)     Analog ARM PLL control Register
-//  0x010 32  PLL_USB1(PLL_USB)        Analog USB1 480MHz PLL Control Register
-//  0x014 32  PLL_USB1_SET(PLL_USB)    Analog USB1 480MHz PLL Control Register
-//  0x018 32  PLL_USB1_CLR(PLL_USB)    Analog USB1 480MHz PLL Control Register
-//  0x01C 32  PLL_USB1_TOG(PLL_USB)    Analog USB1 480MHz PLL Control Register
-//  0x020 32  PLL_USB2(PLL_USB)        Analog USB2 480MHz PLL Control Register
-//  0x024 32  PLL_USB2_SET(PLL_USB)    Analog USB2 480MHz PLL Control Register
-//  0x028 32  PLL_USB2_CLR(PLL_USB)    Analog USB2 480MHz PLL Control Register
-//  0x02C 32  PLL_USB2_TOG(PLL_USB)    Analog USB2 480MHz PLL Control Register
-//  0x030 32  PLL_SYS                  Analog System PLL Control Register
-//  0x034 32  PLL_SYS_SET(PLL_SYS)     Analog System PLL Control Register
-//  0x038 32  PLL_SYS_CLR(PLL_SYS)     Analog System PLL Control Register
-//  0x03C 32  PLL_SYS_TOG(PLL_SYS)     Analog System PLL Control Register
-//  0x040 32  PLL_SYS_SS               528MHz System PLL Spread Spectrum Register
-//  0x050 32  PLL_SYS_NUM              Numerator of 528MHz System PLL Fractional Loop Divider Register
-//  0x060 32  PLL_SYS_DENOM            Denominator of 528MHz System PLL Fractional Loop Divider Register
-//  0x070 32  PLL_AUDIO(PLL_AV)        Analog Audio PLL control Register
-//  0x074 32  PLL_AUDIO_SET(PLL_AV)    Analog Audio PLL control Register
-//  0x078 32  PLL_AUDIO_CLR(PLL_AV)    Analog Audio PLL control Register
-//  0x07C 32  PLL_AUDIO_TOG(PLL_AV)    Analog Audio PLL control Register
-//  0x080 32  PLL_AUDIO_NUM(PLL_AV)    Numerator of Audio PLL Fractional Loop Divider Register
-//  0x090 32  PLL_AUDIO_DENOM(PLL_AV)  Denominator of Audio PLL Fractional Loop Divider Register
-//  0x0A0 32  PLL_VIDEO(PLL_AV)        Analog Video PLL control Register
-//  0x0A4 32  PLL_VIDEO_SET(PLL_AV)    Analog Video PLL control Register
-//  0x0A8 32  PLL_VIDEO_CLR(PLL_AV)    Analog Video PLL control Register
-//  0x0AC 32  PLL_VIDEO_TOG(PLL_AV)    Analog Video PLL control Register
-//  0x0B0 32  PLL_VIDEO_NUM(PLL_AV)    Numerator of Video PLL Fractional Loop Divider Register
-//  0x0C0 32  PLL_VIDEO_DENOM(PLL_AV)  Denominator of Video PLL Fractional Loop Divider Register
-//  0x0E0 32  PLL_ENET                 Analog ENET PLL Control Register
-//  0x0E4 32  PLL_ENET_SET(PLL_ENET)   Analog ENET PLL Control Register
-//  0x0E8 32  PLL_ENET_CLR(PLL_ENET)   Analog ENET PLL Control Register
-//  0x0EC 32  PLL_ENET_TOG(PLL_ENET)   Analog ENET PLL Control Register
-//  0x0F0 32  PFD_480(PFD)             480MHz Clock (PLL3) Phase Fractional Divider Control Register
-//  0x0F4 32  PFD_480_SET(PFD)         480MHz Clock (PLL3) Phase Fractional Divider Control Register
-//  0x0F8 32  PFD_480_CLR(PFD)         480MHz Clock (PLL3) Phase Fractional Divider Control Register
-//  0x0FC 32  PFD_480_TOG(PFD)         480MHz Clock (PLL3) Phase Fractional Divider Control Register
-//  0x100 32  PFD_528(PFD)             528MHz Clock (PLL2) Phase Fractional Divider Control Register
-//  0x104 32  PFD_528_SET(PFD)         528MHz Clock (PLL2) Phase Fractional Divider Control Register
-//  0x108 32  PFD_528_CLR(PFD)         528MHz Clock (PLL2) Phase Fractional Divider Control Register
-//  0x10C 32  PFD_528_TOG(PFD)         528MHz Clock (PLL2) Phase Fractional Divider Control Register
-//  0x150 32  MISC0                    Miscellaneous Register 0
-//  0x154 32  MISC0_SET(MISC0)         Miscellaneous Register 0
-//  0x158 32  MISC0_CLR(MISC0)         Miscellaneous Register 0
-//  0x15C 32  MISC0_TOG(MISC0)         Miscellaneous Register 0
-//  0x160 32  MISC1                    Miscellaneous Register 1
-//  0x164 32  MISC1_SET(MISC1)         Miscellaneous Register 1
-//  0x168 32  MISC1_CLR(MISC1)         Miscellaneous Register 1
-//  0x16C 32  MISC1_TOG(MISC1)         Miscellaneous Register 1
-//  0x170 32  MISC2                    Miscellaneous Register 2
-//  0x174 32  MISC2_SET(MISC2)         Miscellaneous Register 2
-//  0x178 32  MISC2_CLR(MISC2)         Miscellaneous Register 2
-//  0x17C 32  MISC2_TOG(MISC2)         Miscellaneous Register 2
+//
+//	0x000 32  PLL_ARM                  Analog ARM PLL control Register
+//	0x004 32  PLL_ARM_SET(PLL_ARM)     Analog ARM PLL control Register
+//	0x008 32  PLL_ARM_CLR(PLL_ARM)     Analog ARM PLL control Register
+//	0x00C 32  PLL_ARM_TOG(PLL_ARM)     Analog ARM PLL control Register
+//	0x010 32  PLL_USB1(PLL_USB)        Analog USB1 480MHz PLL Control Register
+//	0x014 32  PLL_USB1_SET(PLL_USB)    Analog USB1 480MHz PLL Control Register
+//	0x018 32  PLL_USB1_CLR(PLL_USB)    Analog USB1 480MHz PLL Control Register
+//	0x01C 32  PLL_USB1_TOG(PLL_USB)    Analog USB1 480MHz PLL Control Register
+//	0x020 32  PLL_USB2(PLL_USB)        Analog USB2 480MHz PLL Control Register
+//	0x024 32  PLL_USB2_SET(PLL_USB)    Analog USB2 480MHz PLL Control Register
+//	0x028 32  PLL_USB2_CLR(PLL_USB)    Analog USB2 480MHz PLL Control Register
+//	0x02C 32  PLL_USB2_TOG(PLL_USB)    Analog USB2 480MHz PLL Control Register
+//	0x030 32  PLL_SYS                  Analog System PLL Control Register
+//	0x034 32  PLL_SYS_SET(PLL_SYS)     Analog System PLL Control Register
+//	0x038 32  PLL_SYS_CLR(PLL_SYS)     Analog System PLL Control Register
+//	0x03C 32  PLL_SYS_TOG(PLL_SYS)     Analog System PLL Control Register
+//	0x040 32  PLL_SYS_SS               528MHz System PLL Spread Spectrum Register
+//	0x050 32  PLL_SYS_NUM              Numerator of 528MHz System PLL Fractional Loop Divider Register
+//	0x060 32  PLL_SYS_DENOM            Denominator of 528MHz System PLL Fractional Loop Divider Register
+//	0x070 32  PLL_AUDIO(PLL_AV)        Analog Audio PLL control Register
+//	0x074 32  PLL_AUDIO_SET(PLL_AV)    Analog Audio PLL control Register
+//	0x078 32  PLL_AUDIO_CLR(PLL_AV)    Analog Audio PLL control Register
+//	0x07C 32  PLL_AUDIO_TOG(PLL_AV)    Analog Audio PLL control Register
+//	0x080 32  PLL_AUDIO_NUM(PLL_AV)    Numerator of Audio PLL Fractional Loop Divider Register
+//	0x090 32  PLL_AUDIO_DENOM(PLL_AV)  Denominator of Audio PLL Fractional Loop Divider Register
+//	0x0A0 32  PLL_VIDEO(PLL_AV)        Analog Video PLL control Register
+//	0x0A4 32  PLL_VIDEO_SET(PLL_AV)    Analog Video PLL control Register
+//	0x0A8 32  PLL_VIDEO_CLR(PLL_AV)    Analog Video PLL control Register
+//	0x0AC 32  PLL_VIDEO_TOG(PLL_AV)    Analog Video PLL control Register
+//	0x0B0 32  PLL_VIDEO_NUM(PLL_AV)    Numerator of Video PLL Fractional Loop Divider Register
+//	0x0C0 32  PLL_VIDEO_DENOM(PLL_AV)  Denominator of Video PLL Fractional Loop Divider Register
+//	0x0E0 32  PLL_ENET                 Analog ENET PLL Control Register
+//	0x0E4 32  PLL_ENET_SET(PLL_ENET)   Analog ENET PLL Control Register
+//	0x0E8 32  PLL_ENET_CLR(PLL_ENET)   Analog ENET PLL Control Register
+//	0x0EC 32  PLL_ENET_TOG(PLL_ENET)   Analog ENET PLL Control Register
+//	0x0F0 32  PFD_480(PFD)             480MHz Clock (PLL3) Phase Fractional Divider Control Register
+//	0x0F4 32  PFD_480_SET(PFD)         480MHz Clock (PLL3) Phase Fractional Divider Control Register
+//	0x0F8 32  PFD_480_CLR(PFD)         480MHz Clock (PLL3) Phase Fractional Divider Control Register
+//	0x0FC 32  PFD_480_TOG(PFD)         480MHz Clock (PLL3) Phase Fractional Divider Control Register
+//	0x100 32  PFD_528(PFD)             528MHz Clock (PLL2) Phase Fractional Divider Control Register
+//	0x104 32  PFD_528_SET(PFD)         528MHz Clock (PLL2) Phase Fractional Divider Control Register
+//	0x108 32  PFD_528_CLR(PFD)         528MHz Clock (PLL2) Phase Fractional Divider Control Register
+//	0x10C 32  PFD_528_TOG(PFD)         528MHz Clock (PLL2) Phase Fractional Divider Control Register
+//	0x150 32  MISC0                    Miscellaneous Register 0
+//	0x154 32  MISC0_SET(MISC0)         Miscellaneous Register 0
+//	0x158 32  MISC0_CLR(MISC0)         Miscellaneous Register 0
+//	0x15C 32  MISC0_TOG(MISC0)         Miscellaneous Register 0
+//	0x160 32  MISC1                    Miscellaneous Register 1
+//	0x164 32  MISC1_SET(MISC1)         Miscellaneous Register 1
+//	0x168 32  MISC1_CLR(MISC1)         Miscellaneous Register 1
+//	0x16C 32  MISC1_TOG(MISC1)         Miscellaneous Register 1
+//	0x170 32  MISC2                    Miscellaneous Register 2
+//	0x174 32  MISC2_SET(MISC2)         Miscellaneous Register 2
+//	0x178 32  MISC2_CLR(MISC2)         Miscellaneous Register 2
+//	0x17C 32  MISC2_TOG(MISC2)         Miscellaneous Register 2
+//
 // Import:
-//  github.com/embeddedgo/imxrt/p/mmap
+//
+//	github.com/embeddedgo/imxrt/p/mmap
 package ccm_analog
 
 const (

@@ -5,28 +5,33 @@
 // Package spdif provides access to the registers of the SPDIF peripheral.
 //
 // Instances:
-//  SPDIF  SPDIF_BASE  -  SPDIF*
+//
+//	SPDIF  SPDIF_BASE  -  SPDIF*
+//
 // Registers:
-//  0x000 32  SCR     SPDIF Configuration Register
-//  0x004 32  SRCD    CDText Control Register
-//  0x008 32  SRPC    PhaseConfig Register
-//  0x00C 32  SIE     InterruptEn Register
-//  0x010 32  SIC     InterruptClear Register
-//  0x010 32  SIS     InterruptStat Register
-//  0x014 32  SRL     SPDIFRxLeft Register
-//  0x018 32  SRR     SPDIFRxRight Register
-//  0x01C 32  SRCSH   SPDIFRxCChannel_h Register
-//  0x020 32  SRCSL   SPDIFRxCChannel_l Register
-//  0x024 32  SRU     UchannelRx Register
-//  0x028 32  SRQ     QchannelRx Register
-//  0x02C 32  STL     SPDIFTxLeft Register
-//  0x030 32  STR     SPDIFTxRight Register
-//  0x034 32  STCSCH  SPDIFTxCChannelCons_h Register
-//  0x038 32  STCSCL  SPDIFTxCChannelCons_l Register
-//  0x044 32  SRFM    FreqMeas Register
-//  0x050 32  STC     SPDIFTxClk Register
+//
+//	0x000 32  SCR     SPDIF Configuration Register
+//	0x004 32  SRCD    CDText Control Register
+//	0x008 32  SRPC    PhaseConfig Register
+//	0x00C 32  SIE     InterruptEn Register
+//	0x010 32  SIC     InterruptClear Register
+//	0x010 32  SIS     InterruptStat Register
+//	0x014 32  SRL     SPDIFRxLeft Register
+//	0x018 32  SRR     SPDIFRxRight Register
+//	0x01C 32  SRCSH   SPDIFRxCChannel_h Register
+//	0x020 32  SRCSL   SPDIFRxCChannel_l Register
+//	0x024 32  SRU     UchannelRx Register
+//	0x028 32  SRQ     QchannelRx Register
+//	0x02C 32  STL     SPDIFTxLeft Register
+//	0x030 32  STR     SPDIFTxRight Register
+//	0x034 32  STCSCH  SPDIFTxCChannelCons_h Register
+//	0x038 32  STCSCL  SPDIFTxCChannelCons_l Register
+//	0x044 32  SRFM    FreqMeas Register
+//	0x050 32  STC     SPDIFTxClk Register
+//
 // Import:
-//  github.com/embeddedgo/imxrt/p/mmap
+//
+//	github.com/embeddedgo/imxrt/p/mmap
 package spdif
 
 const (

@@ -5,19 +5,24 @@
 // Package xbarb provides access to the registers of the XBARB peripheral.
 //
 // Instances:
-//  XBARB2  XBARB2_BASE  -  -  Crossbar Switch
-//  XBARB3  XBARB3_BASE  -  -  Crossbar Switch
+//
+//	XBARB2  XBARB2_BASE  -  -  Crossbar Switch
+//	XBARB3  XBARB3_BASE  -  -  Crossbar Switch
+//
 // Registers:
-//  0x000 16  SEL0  Crossbar B Select Register 0
-//  0x002 16  SEL1  Crossbar B Select Register 1
-//  0x004 16  SEL2  Crossbar B Select Register 2
-//  0x006 16  SEL3  Crossbar B Select Register 3
-//  0x008 16  SEL4  Crossbar B Select Register 4
-//  0x00A 16  SEL5  Crossbar B Select Register 5
-//  0x00C 16  SEL6  Crossbar B Select Register 6
-//  0x00E 16  SEL7  Crossbar B Select Register 7
+//
+//	0x000 16  SEL0  Crossbar B Select Register 0
+//	0x002 16  SEL1  Crossbar B Select Register 1
+//	0x004 16  SEL2  Crossbar B Select Register 2
+//	0x006 16  SEL3  Crossbar B Select Register 3
+//	0x008 16  SEL4  Crossbar B Select Register 4
+//	0x00A 16  SEL5  Crossbar B Select Register 5
+//	0x00C 16  SEL6  Crossbar B Select Register 6
+//	0x00E 16  SEL7  Crossbar B Select Register 7
+//
 // Import:
-//  github.com/embeddedgo/imxrt/p/mmap
+//
+//	github.com/embeddedgo/imxrt/p/mmap
 package xbarb
 
 const (

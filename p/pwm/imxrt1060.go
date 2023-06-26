@@ -5,196 +5,201 @@
 // Package pwm provides access to the registers of the PWM peripheral.
 //
 // Instances:
-//  PWM1  PWM1_BASE  -  PWM1_0*,PWM1_1*,PWM1_2*,PWM1_3*,PWM1_FAULT*
-//  PWM2  PWM2_BASE  -  PWM2_0*,PWM2_1*,PWM2_2*,PWM2_3*,PWM2_FAULT*
-//  PWM3  PWM3_BASE  -  PWM3_0*,PWM3_1*,PWM3_2*,PWM3_3*,PWM3_FAULT*
-//  PWM4  PWM4_BASE  -  PWM4_0*,PWM4_1*,PWM4_2*,PWM4_3*,PWM4_FAULT*
+//
+//	PWM1  PWM1_BASE  -  PWM1_0*,PWM1_1*,PWM1_2*,PWM1_3*,PWM1_FAULT*
+//	PWM2  PWM2_BASE  -  PWM2_0*,PWM2_1*,PWM2_2*,PWM2_3*,PWM2_FAULT*
+//	PWM3  PWM3_BASE  -  PWM3_0*,PWM3_1*,PWM3_2*,PWM3_3*,PWM3_FAULT*
+//	PWM4  PWM4_BASE  -  PWM4_0*,PWM4_1*,PWM4_2*,PWM4_3*,PWM4_FAULT*
+//
 // Registers:
-//  0x000 16  SM0CNT        Counter Register
-//  0x002 16  SM0INIT       Initial Count Register
-//  0x004 16  SM0CTRL2      Control 2 Register
-//  0x006 16  SM0CTRL       Control Register
-//  0x00A 16  SM0VAL0       Value Register 0
-//  0x00C 16  SM0FRACVAL1   Fractional Value Register 1
-//  0x00E 16  SM0VAL1       Value Register 1
-//  0x010 16  SM0FRACVAL2   Fractional Value Register 2
-//  0x012 16  SM0VAL2       Value Register 2
-//  0x014 16  SM0FRACVAL3   Fractional Value Register 3
-//  0x016 16  SM0VAL3       Value Register 3
-//  0x018 16  SM0FRACVAL4   Fractional Value Register 4
-//  0x01A 16  SM0VAL4       Value Register 4
-//  0x01C 16  SM0FRACVAL5   Fractional Value Register 5
-//  0x01E 16  SM0VAL5       Value Register 5
-//  0x020 16  SM0FRCTRL     Fractional Control Register
-//  0x022 16  SM0OCTRL      Output Control Register
-//  0x024 16  SM0STS        Status Register
-//  0x026 16  SM0INTEN      Interrupt Enable Register
-//  0x028 16  SM0DMAEN      DMA Enable Register
-//  0x02A 16  SM0TCTRL      Output Trigger Control Register
-//  0x02C 16  SM0DISMAP0    Fault Disable Mapping Register 0
-//  0x02E 16  SM0DISMAP1    Fault Disable Mapping Register 1
-//  0x030 16  SM0DTCNT0     Deadtime Count Register 0
-//  0x032 16  SM0DTCNT1     Deadtime Count Register 1
-//  0x034 16  SM0CAPTCTRLA  Capture Control A Register
-//  0x036 16  SM0CAPTCOMPA  Capture Compare A Register
-//  0x038 16  SM0CAPTCTRLB  Capture Control B Register
-//  0x03A 16  SM0CAPTCOMPB  Capture Compare B Register
-//  0x03C 16  SM0CAPTCTRLX  Capture Control X Register
-//  0x03E 16  SM0CAPTCOMPX  Capture Compare X Register
-//  0x040 16  SM0CVAL0      Capture Value 0 Register
-//  0x042 16  SM0CVAL0CYC   Capture Value 0 Cycle Register
-//  0x044 16  SM0CVAL1      Capture Value 1 Register
-//  0x046 16  SM0CVAL1CYC   Capture Value 1 Cycle Register
-//  0x048 16  SM0CVAL2      Capture Value 2 Register
-//  0x04A 16  SM0CVAL2CYC   Capture Value 2 Cycle Register
-//  0x04C 16  SM0CVAL3      Capture Value 3 Register
-//  0x04E 16  SM0CVAL3CYC   Capture Value 3 Cycle Register
-//  0x050 16  SM0CVAL4      Capture Value 4 Register
-//  0x052 16  SM0CVAL4CYC   Capture Value 4 Cycle Register
-//  0x054 16  SM0CVAL5      Capture Value 5 Register
-//  0x056 16  SM0CVAL5CYC   Capture Value 5 Cycle Register
-//  0x060 16  SM1CNT        Counter Register
-//  0x062 16  SM1INIT       Initial Count Register
-//  0x064 16  SM1CTRL2      Control 2 Register
-//  0x066 16  SM1CTRL       Control Register
-//  0x06A 16  SM1VAL0       Value Register 0
-//  0x06C 16  SM1FRACVAL1   Fractional Value Register 1
-//  0x06E 16  SM1VAL1       Value Register 1
-//  0x070 16  SM1FRACVAL2   Fractional Value Register 2
-//  0x072 16  SM1VAL2       Value Register 2
-//  0x074 16  SM1FRACVAL3   Fractional Value Register 3
-//  0x076 16  SM1VAL3       Value Register 3
-//  0x078 16  SM1FRACVAL4   Fractional Value Register 4
-//  0x07A 16  SM1VAL4       Value Register 4
-//  0x07C 16  SM1FRACVAL5   Fractional Value Register 5
-//  0x07E 16  SM1VAL5       Value Register 5
-//  0x080 16  SM1FRCTRL     Fractional Control Register
-//  0x082 16  SM1OCTRL      Output Control Register
-//  0x084 16  SM1STS        Status Register
-//  0x086 16  SM1INTEN      Interrupt Enable Register
-//  0x088 16  SM1DMAEN      DMA Enable Register
-//  0x08A 16  SM1TCTRL      Output Trigger Control Register
-//  0x08C 16  SM1DISMAP0    Fault Disable Mapping Register 0
-//  0x08E 16  SM1DISMAP1    Fault Disable Mapping Register 1
-//  0x090 16  SM1DTCNT0     Deadtime Count Register 0
-//  0x092 16  SM1DTCNT1     Deadtime Count Register 1
-//  0x094 16  SM1CAPTCTRLA  Capture Control A Register
-//  0x096 16  SM1CAPTCOMPA  Capture Compare A Register
-//  0x098 16  SM1CAPTCTRLB  Capture Control B Register
-//  0x09A 16  SM1CAPTCOMPB  Capture Compare B Register
-//  0x09C 16  SM1CAPTCTRLX  Capture Control X Register
-//  0x09E 16  SM1CAPTCOMPX  Capture Compare X Register
-//  0x0A0 16  SM1CVAL0      Capture Value 0 Register
-//  0x0A2 16  SM1CVAL0CYC   Capture Value 0 Cycle Register
-//  0x0A4 16  SM1CVAL1      Capture Value 1 Register
-//  0x0A6 16  SM1CVAL1CYC   Capture Value 1 Cycle Register
-//  0x0A8 16  SM1CVAL2      Capture Value 2 Register
-//  0x0AA 16  SM1CVAL2CYC   Capture Value 2 Cycle Register
-//  0x0AC 16  SM1CVAL3      Capture Value 3 Register
-//  0x0AE 16  SM1CVAL3CYC   Capture Value 3 Cycle Register
-//  0x0B0 16  SM1CVAL4      Capture Value 4 Register
-//  0x0B2 16  SM1CVAL4CYC   Capture Value 4 Cycle Register
-//  0x0B4 16  SM1CVAL5      Capture Value 5 Register
-//  0x0B6 16  SM1CVAL5CYC   Capture Value 5 Cycle Register
-//  0x0C0 16  SM2CNT        Counter Register
-//  0x0C2 16  SM2INIT       Initial Count Register
-//  0x0C4 16  SM2CTRL2      Control 2 Register
-//  0x0C6 16  SM2CTRL       Control Register
-//  0x0CA 16  SM2VAL0       Value Register 0
-//  0x0CC 16  SM2FRACVAL1   Fractional Value Register 1
-//  0x0CE 16  SM2VAL1       Value Register 1
-//  0x0D0 16  SM2FRACVAL2   Fractional Value Register 2
-//  0x0D2 16  SM2VAL2       Value Register 2
-//  0x0D4 16  SM2FRACVAL3   Fractional Value Register 3
-//  0x0D6 16  SM2VAL3       Value Register 3
-//  0x0D8 16  SM2FRACVAL4   Fractional Value Register 4
-//  0x0DA 16  SM2VAL4       Value Register 4
-//  0x0DC 16  SM2FRACVAL5   Fractional Value Register 5
-//  0x0DE 16  SM2VAL5       Value Register 5
-//  0x0E0 16  SM2FRCTRL     Fractional Control Register
-//  0x0E2 16  SM2OCTRL      Output Control Register
-//  0x0E4 16  SM2STS        Status Register
-//  0x0E6 16  SM2INTEN      Interrupt Enable Register
-//  0x0E8 16  SM2DMAEN      DMA Enable Register
-//  0x0EA 16  SM2TCTRL      Output Trigger Control Register
-//  0x0EC 16  SM2DISMAP0    Fault Disable Mapping Register 0
-//  0x0EE 16  SM2DISMAP1    Fault Disable Mapping Register 1
-//  0x0F0 16  SM2DTCNT0     Deadtime Count Register 0
-//  0x0F2 16  SM2DTCNT1     Deadtime Count Register 1
-//  0x0F4 16  SM2CAPTCTRLA  Capture Control A Register
-//  0x0F6 16  SM2CAPTCOMPA  Capture Compare A Register
-//  0x0F8 16  SM2CAPTCTRLB  Capture Control B Register
-//  0x0FA 16  SM2CAPTCOMPB  Capture Compare B Register
-//  0x0FC 16  SM2CAPTCTRLX  Capture Control X Register
-//  0x0FE 16  SM2CAPTCOMPX  Capture Compare X Register
-//  0x100 16  SM2CVAL0      Capture Value 0 Register
-//  0x102 16  SM2CVAL0CYC   Capture Value 0 Cycle Register
-//  0x104 16  SM2CVAL1      Capture Value 1 Register
-//  0x106 16  SM2CVAL1CYC   Capture Value 1 Cycle Register
-//  0x108 16  SM2CVAL2      Capture Value 2 Register
-//  0x10A 16  SM2CVAL2CYC   Capture Value 2 Cycle Register
-//  0x10C 16  SM2CVAL3      Capture Value 3 Register
-//  0x10E 16  SM2CVAL3CYC   Capture Value 3 Cycle Register
-//  0x110 16  SM2CVAL4      Capture Value 4 Register
-//  0x112 16  SM2CVAL4CYC   Capture Value 4 Cycle Register
-//  0x114 16  SM2CVAL5      Capture Value 5 Register
-//  0x116 16  SM2CVAL5CYC   Capture Value 5 Cycle Register
-//  0x120 16  SM3CNT        Counter Register
-//  0x122 16  SM3INIT       Initial Count Register
-//  0x124 16  SM3CTRL2      Control 2 Register
-//  0x126 16  SM3CTRL       Control Register
-//  0x12A 16  SM3VAL0       Value Register 0
-//  0x12C 16  SM3FRACVAL1   Fractional Value Register 1
-//  0x12E 16  SM3VAL1       Value Register 1
-//  0x130 16  SM3FRACVAL2   Fractional Value Register 2
-//  0x132 16  SM3VAL2       Value Register 2
-//  0x134 16  SM3FRACVAL3   Fractional Value Register 3
-//  0x136 16  SM3VAL3       Value Register 3
-//  0x138 16  SM3FRACVAL4   Fractional Value Register 4
-//  0x13A 16  SM3VAL4       Value Register 4
-//  0x13C 16  SM3FRACVAL5   Fractional Value Register 5
-//  0x13E 16  SM3VAL5       Value Register 5
-//  0x140 16  SM3FRCTRL     Fractional Control Register
-//  0x142 16  SM3OCTRL      Output Control Register
-//  0x144 16  SM3STS        Status Register
-//  0x146 16  SM3INTEN      Interrupt Enable Register
-//  0x148 16  SM3DMAEN      DMA Enable Register
-//  0x14A 16  SM3TCTRL      Output Trigger Control Register
-//  0x14C 16  SM3DISMAP0    Fault Disable Mapping Register 0
-//  0x14E 16  SM3DISMAP1    Fault Disable Mapping Register 1
-//  0x150 16  SM3DTCNT0     Deadtime Count Register 0
-//  0x152 16  SM3DTCNT1     Deadtime Count Register 1
-//  0x154 16  SM3CAPTCTRLA  Capture Control A Register
-//  0x156 16  SM3CAPTCOMPA  Capture Compare A Register
-//  0x158 16  SM3CAPTCTRLB  Capture Control B Register
-//  0x15A 16  SM3CAPTCOMPB  Capture Compare B Register
-//  0x15C 16  SM3CAPTCTRLX  Capture Control X Register
-//  0x15E 16  SM3CAPTCOMPX  Capture Compare X Register
-//  0x160 16  SM3CVAL0      Capture Value 0 Register
-//  0x162 16  SM3CVAL0CYC   Capture Value 0 Cycle Register
-//  0x164 16  SM3CVAL1      Capture Value 1 Register
-//  0x166 16  SM3CVAL1CYC   Capture Value 1 Cycle Register
-//  0x168 16  SM3CVAL2      Capture Value 2 Register
-//  0x16A 16  SM3CVAL2CYC   Capture Value 2 Cycle Register
-//  0x16C 16  SM3CVAL3      Capture Value 3 Register
-//  0x16E 16  SM3CVAL3CYC   Capture Value 3 Cycle Register
-//  0x170 16  SM3CVAL4      Capture Value 4 Register
-//  0x172 16  SM3CVAL4CYC   Capture Value 4 Cycle Register
-//  0x174 16  SM3CVAL5      Capture Value 5 Register
-//  0x176 16  SM3CVAL5CYC   Capture Value 5 Cycle Register
-//  0x180 16  OUTEN         Output Enable Register
-//  0x182 16  MASK          Mask Register
-//  0x184 16  SWCOUT        Software Controlled Output Register
-//  0x186 16  DTSRCSEL      PWM Source Select Register
-//  0x188 16  MCTRL         Master Control Register
-//  0x18A 16  MCTRL2        Master Control 2 Register
-//  0x18C 16  FCTRL0        Fault Control Register
-//  0x18E 16  FSTS0         Fault Status Register
-//  0x190 16  FFILT0        Fault Filter Register
-//  0x192 16  FTST0         Fault Test Register
-//  0x194 16  FCTRL20       Fault Control 2 Register
+//
+//	0x000 16  SM0CNT        Counter Register
+//	0x002 16  SM0INIT       Initial Count Register
+//	0x004 16  SM0CTRL2      Control 2 Register
+//	0x006 16  SM0CTRL       Control Register
+//	0x00A 16  SM0VAL0       Value Register 0
+//	0x00C 16  SM0FRACVAL1   Fractional Value Register 1
+//	0x00E 16  SM0VAL1       Value Register 1
+//	0x010 16  SM0FRACVAL2   Fractional Value Register 2
+//	0x012 16  SM0VAL2       Value Register 2
+//	0x014 16  SM0FRACVAL3   Fractional Value Register 3
+//	0x016 16  SM0VAL3       Value Register 3
+//	0x018 16  SM0FRACVAL4   Fractional Value Register 4
+//	0x01A 16  SM0VAL4       Value Register 4
+//	0x01C 16  SM0FRACVAL5   Fractional Value Register 5
+//	0x01E 16  SM0VAL5       Value Register 5
+//	0x020 16  SM0FRCTRL     Fractional Control Register
+//	0x022 16  SM0OCTRL      Output Control Register
+//	0x024 16  SM0STS        Status Register
+//	0x026 16  SM0INTEN      Interrupt Enable Register
+//	0x028 16  SM0DMAEN      DMA Enable Register
+//	0x02A 16  SM0TCTRL      Output Trigger Control Register
+//	0x02C 16  SM0DISMAP0    Fault Disable Mapping Register 0
+//	0x02E 16  SM0DISMAP1    Fault Disable Mapping Register 1
+//	0x030 16  SM0DTCNT0     Deadtime Count Register 0
+//	0x032 16  SM0DTCNT1     Deadtime Count Register 1
+//	0x034 16  SM0CAPTCTRLA  Capture Control A Register
+//	0x036 16  SM0CAPTCOMPA  Capture Compare A Register
+//	0x038 16  SM0CAPTCTRLB  Capture Control B Register
+//	0x03A 16  SM0CAPTCOMPB  Capture Compare B Register
+//	0x03C 16  SM0CAPTCTRLX  Capture Control X Register
+//	0x03E 16  SM0CAPTCOMPX  Capture Compare X Register
+//	0x040 16  SM0CVAL0      Capture Value 0 Register
+//	0x042 16  SM0CVAL0CYC   Capture Value 0 Cycle Register
+//	0x044 16  SM0CVAL1      Capture Value 1 Register
+//	0x046 16  SM0CVAL1CYC   Capture Value 1 Cycle Register
+//	0x048 16  SM0CVAL2      Capture Value 2 Register
+//	0x04A 16  SM0CVAL2CYC   Capture Value 2 Cycle Register
+//	0x04C 16  SM0CVAL3      Capture Value 3 Register
+//	0x04E 16  SM0CVAL3CYC   Capture Value 3 Cycle Register
+//	0x050 16  SM0CVAL4      Capture Value 4 Register
+//	0x052 16  SM0CVAL4CYC   Capture Value 4 Cycle Register
+//	0x054 16  SM0CVAL5      Capture Value 5 Register
+//	0x056 16  SM0CVAL5CYC   Capture Value 5 Cycle Register
+//	0x060 16  SM1CNT        Counter Register
+//	0x062 16  SM1INIT       Initial Count Register
+//	0x064 16  SM1CTRL2      Control 2 Register
+//	0x066 16  SM1CTRL       Control Register
+//	0x06A 16  SM1VAL0       Value Register 0
+//	0x06C 16  SM1FRACVAL1   Fractional Value Register 1
+//	0x06E 16  SM1VAL1       Value Register 1
+//	0x070 16  SM1FRACVAL2   Fractional Value Register 2
+//	0x072 16  SM1VAL2       Value Register 2
+//	0x074 16  SM1FRACVAL3   Fractional Value Register 3
+//	0x076 16  SM1VAL3       Value Register 3
+//	0x078 16  SM1FRACVAL4   Fractional Value Register 4
+//	0x07A 16  SM1VAL4       Value Register 4
+//	0x07C 16  SM1FRACVAL5   Fractional Value Register 5
+//	0x07E 16  SM1VAL5       Value Register 5
+//	0x080 16  SM1FRCTRL     Fractional Control Register
+//	0x082 16  SM1OCTRL      Output Control Register
+//	0x084 16  SM1STS        Status Register
+//	0x086 16  SM1INTEN      Interrupt Enable Register
+//	0x088 16  SM1DMAEN      DMA Enable Register
+//	0x08A 16  SM1TCTRL      Output Trigger Control Register
+//	0x08C 16  SM1DISMAP0    Fault Disable Mapping Register 0
+//	0x08E 16  SM1DISMAP1    Fault Disable Mapping Register 1
+//	0x090 16  SM1DTCNT0     Deadtime Count Register 0
+//	0x092 16  SM1DTCNT1     Deadtime Count Register 1
+//	0x094 16  SM1CAPTCTRLA  Capture Control A Register
+//	0x096 16  SM1CAPTCOMPA  Capture Compare A Register
+//	0x098 16  SM1CAPTCTRLB  Capture Control B Register
+//	0x09A 16  SM1CAPTCOMPB  Capture Compare B Register
+//	0x09C 16  SM1CAPTCTRLX  Capture Control X Register
+//	0x09E 16  SM1CAPTCOMPX  Capture Compare X Register
+//	0x0A0 16  SM1CVAL0      Capture Value 0 Register
+//	0x0A2 16  SM1CVAL0CYC   Capture Value 0 Cycle Register
+//	0x0A4 16  SM1CVAL1      Capture Value 1 Register
+//	0x0A6 16  SM1CVAL1CYC   Capture Value 1 Cycle Register
+//	0x0A8 16  SM1CVAL2      Capture Value 2 Register
+//	0x0AA 16  SM1CVAL2CYC   Capture Value 2 Cycle Register
+//	0x0AC 16  SM1CVAL3      Capture Value 3 Register
+//	0x0AE 16  SM1CVAL3CYC   Capture Value 3 Cycle Register
+//	0x0B0 16  SM1CVAL4      Capture Value 4 Register
+//	0x0B2 16  SM1CVAL4CYC   Capture Value 4 Cycle Register
+//	0x0B4 16  SM1CVAL5      Capture Value 5 Register
+//	0x0B6 16  SM1CVAL5CYC   Capture Value 5 Cycle Register
+//	0x0C0 16  SM2CNT        Counter Register
+//	0x0C2 16  SM2INIT       Initial Count Register
+//	0x0C4 16  SM2CTRL2      Control 2 Register
+//	0x0C6 16  SM2CTRL       Control Register
+//	0x0CA 16  SM2VAL0       Value Register 0
+//	0x0CC 16  SM2FRACVAL1   Fractional Value Register 1
+//	0x0CE 16  SM2VAL1       Value Register 1
+//	0x0D0 16  SM2FRACVAL2   Fractional Value Register 2
+//	0x0D2 16  SM2VAL2       Value Register 2
+//	0x0D4 16  SM2FRACVAL3   Fractional Value Register 3
+//	0x0D6 16  SM2VAL3       Value Register 3
+//	0x0D8 16  SM2FRACVAL4   Fractional Value Register 4
+//	0x0DA 16  SM2VAL4       Value Register 4
+//	0x0DC 16  SM2FRACVAL5   Fractional Value Register 5
+//	0x0DE 16  SM2VAL5       Value Register 5
+//	0x0E0 16  SM2FRCTRL     Fractional Control Register
+//	0x0E2 16  SM2OCTRL      Output Control Register
+//	0x0E4 16  SM2STS        Status Register
+//	0x0E6 16  SM2INTEN      Interrupt Enable Register
+//	0x0E8 16  SM2DMAEN      DMA Enable Register
+//	0x0EA 16  SM2TCTRL      Output Trigger Control Register
+//	0x0EC 16  SM2DISMAP0    Fault Disable Mapping Register 0
+//	0x0EE 16  SM2DISMAP1    Fault Disable Mapping Register 1
+//	0x0F0 16  SM2DTCNT0     Deadtime Count Register 0
+//	0x0F2 16  SM2DTCNT1     Deadtime Count Register 1
+//	0x0F4 16  SM2CAPTCTRLA  Capture Control A Register
+//	0x0F6 16  SM2CAPTCOMPA  Capture Compare A Register
+//	0x0F8 16  SM2CAPTCTRLB  Capture Control B Register
+//	0x0FA 16  SM2CAPTCOMPB  Capture Compare B Register
+//	0x0FC 16  SM2CAPTCTRLX  Capture Control X Register
+//	0x0FE 16  SM2CAPTCOMPX  Capture Compare X Register
+//	0x100 16  SM2CVAL0      Capture Value 0 Register
+//	0x102 16  SM2CVAL0CYC   Capture Value 0 Cycle Register
+//	0x104 16  SM2CVAL1      Capture Value 1 Register
+//	0x106 16  SM2CVAL1CYC   Capture Value 1 Cycle Register
+//	0x108 16  SM2CVAL2      Capture Value 2 Register
+//	0x10A 16  SM2CVAL2CYC   Capture Value 2 Cycle Register
+//	0x10C 16  SM2CVAL3      Capture Value 3 Register
+//	0x10E 16  SM2CVAL3CYC   Capture Value 3 Cycle Register
+//	0x110 16  SM2CVAL4      Capture Value 4 Register
+//	0x112 16  SM2CVAL4CYC   Capture Value 4 Cycle Register
+//	0x114 16  SM2CVAL5      Capture Value 5 Register
+//	0x116 16  SM2CVAL5CYC   Capture Value 5 Cycle Register
+//	0x120 16  SM3CNT        Counter Register
+//	0x122 16  SM3INIT       Initial Count Register
+//	0x124 16  SM3CTRL2      Control 2 Register
+//	0x126 16  SM3CTRL       Control Register
+//	0x12A 16  SM3VAL0       Value Register 0
+//	0x12C 16  SM3FRACVAL1   Fractional Value Register 1
+//	0x12E 16  SM3VAL1       Value Register 1
+//	0x130 16  SM3FRACVAL2   Fractional Value Register 2
+//	0x132 16  SM3VAL2       Value Register 2
+//	0x134 16  SM3FRACVAL3   Fractional Value Register 3
+//	0x136 16  SM3VAL3       Value Register 3
+//	0x138 16  SM3FRACVAL4   Fractional Value Register 4
+//	0x13A 16  SM3VAL4       Value Register 4
+//	0x13C 16  SM3FRACVAL5   Fractional Value Register 5
+//	0x13E 16  SM3VAL5       Value Register 5
+//	0x140 16  SM3FRCTRL     Fractional Control Register
+//	0x142 16  SM3OCTRL      Output Control Register
+//	0x144 16  SM3STS        Status Register
+//	0x146 16  SM3INTEN      Interrupt Enable Register
+//	0x148 16  SM3DMAEN      DMA Enable Register
+//	0x14A 16  SM3TCTRL      Output Trigger Control Register
+//	0x14C 16  SM3DISMAP0    Fault Disable Mapping Register 0
+//	0x14E 16  SM3DISMAP1    Fault Disable Mapping Register 1
+//	0x150 16  SM3DTCNT0     Deadtime Count Register 0
+//	0x152 16  SM3DTCNT1     Deadtime Count Register 1
+//	0x154 16  SM3CAPTCTRLA  Capture Control A Register
+//	0x156 16  SM3CAPTCOMPA  Capture Compare A Register
+//	0x158 16  SM3CAPTCTRLB  Capture Control B Register
+//	0x15A 16  SM3CAPTCOMPB  Capture Compare B Register
+//	0x15C 16  SM3CAPTCTRLX  Capture Control X Register
+//	0x15E 16  SM3CAPTCOMPX  Capture Compare X Register
+//	0x160 16  SM3CVAL0      Capture Value 0 Register
+//	0x162 16  SM3CVAL0CYC   Capture Value 0 Cycle Register
+//	0x164 16  SM3CVAL1      Capture Value 1 Register
+//	0x166 16  SM3CVAL1CYC   Capture Value 1 Cycle Register
+//	0x168 16  SM3CVAL2      Capture Value 2 Register
+//	0x16A 16  SM3CVAL2CYC   Capture Value 2 Cycle Register
+//	0x16C 16  SM3CVAL3      Capture Value 3 Register
+//	0x16E 16  SM3CVAL3CYC   Capture Value 3 Cycle Register
+//	0x170 16  SM3CVAL4      Capture Value 4 Register
+//	0x172 16  SM3CVAL4CYC   Capture Value 4 Cycle Register
+//	0x174 16  SM3CVAL5      Capture Value 5 Register
+//	0x176 16  SM3CVAL5CYC   Capture Value 5 Cycle Register
+//	0x180 16  OUTEN         Output Enable Register
+//	0x182 16  MASK          Mask Register
+//	0x184 16  SWCOUT        Software Controlled Output Register
+//	0x186 16  DTSRCSEL      PWM Source Select Register
+//	0x188 16  MCTRL         Master Control Register
+//	0x18A 16  MCTRL2        Master Control 2 Register
+//	0x18C 16  FCTRL0        Fault Control Register
+//	0x18E 16  FSTS0         Fault Status Register
+//	0x190 16  FFILT0        Fault Filter Register
+//	0x192 16  FTST0         Fault Test Register
+//	0x194 16  FCTRL20       Fault Control 2 Register
+//
 // Import:
-//  github.com/embeddedgo/imxrt/p/mmap
+//
+//	github.com/embeddedgo/imxrt/p/mmap
 package pwm
 
 const (

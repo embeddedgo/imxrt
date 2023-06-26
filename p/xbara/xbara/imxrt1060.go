@@ -5,78 +5,83 @@
 // Package xbara provides access to the registers of the XBARA peripheral.
 //
 // Instances:
-//  XBARA1  XBARA1_BASE  -  -  Crossbar Switch
+//
+//	XBARA1  XBARA1_BASE  -  -  Crossbar Switch
+//
 // Registers:
-//  0x000 16  SEL0   Crossbar A Select Register 0
-//  0x002 16  SEL1   Crossbar A Select Register 1
-//  0x004 16  SEL2   Crossbar A Select Register 2
-//  0x006 16  SEL3   Crossbar A Select Register 3
-//  0x008 16  SEL4   Crossbar A Select Register 4
-//  0x00A 16  SEL5   Crossbar A Select Register 5
-//  0x00C 16  SEL6   Crossbar A Select Register 6
-//  0x00E 16  SEL7   Crossbar A Select Register 7
-//  0x010 16  SEL8   Crossbar A Select Register 8
-//  0x012 16  SEL9   Crossbar A Select Register 9
-//  0x014 16  SEL10  Crossbar A Select Register 10
-//  0x016 16  SEL11  Crossbar A Select Register 11
-//  0x018 16  SEL12  Crossbar A Select Register 12
-//  0x01A 16  SEL13  Crossbar A Select Register 13
-//  0x01C 16  SEL14  Crossbar A Select Register 14
-//  0x01E 16  SEL15  Crossbar A Select Register 15
-//  0x020 16  SEL16  Crossbar A Select Register 16
-//  0x022 16  SEL17  Crossbar A Select Register 17
-//  0x024 16  SEL18  Crossbar A Select Register 18
-//  0x026 16  SEL19  Crossbar A Select Register 19
-//  0x028 16  SEL20  Crossbar A Select Register 20
-//  0x02A 16  SEL21  Crossbar A Select Register 21
-//  0x02C 16  SEL22  Crossbar A Select Register 22
-//  0x02E 16  SEL23  Crossbar A Select Register 23
-//  0x030 16  SEL24  Crossbar A Select Register 24
-//  0x032 16  SEL25  Crossbar A Select Register 25
-//  0x034 16  SEL26  Crossbar A Select Register 26
-//  0x036 16  SEL27  Crossbar A Select Register 27
-//  0x038 16  SEL28  Crossbar A Select Register 28
-//  0x03A 16  SEL29  Crossbar A Select Register 29
-//  0x03C 16  SEL30  Crossbar A Select Register 30
-//  0x03E 16  SEL31  Crossbar A Select Register 31
-//  0x040 16  SEL32  Crossbar A Select Register 32
-//  0x042 16  SEL33  Crossbar A Select Register 33
-//  0x044 16  SEL34  Crossbar A Select Register 34
-//  0x046 16  SEL35  Crossbar A Select Register 35
-//  0x048 16  SEL36  Crossbar A Select Register 36
-//  0x04A 16  SEL37  Crossbar A Select Register 37
-//  0x04C 16  SEL38  Crossbar A Select Register 38
-//  0x04E 16  SEL39  Crossbar A Select Register 39
-//  0x050 16  SEL40  Crossbar A Select Register 40
-//  0x052 16  SEL41  Crossbar A Select Register 41
-//  0x054 16  SEL42  Crossbar A Select Register 42
-//  0x056 16  SEL43  Crossbar A Select Register 43
-//  0x058 16  SEL44  Crossbar A Select Register 44
-//  0x05A 16  SEL45  Crossbar A Select Register 45
-//  0x05C 16  SEL46  Crossbar A Select Register 46
-//  0x05E 16  SEL47  Crossbar A Select Register 47
-//  0x060 16  SEL48  Crossbar A Select Register 48
-//  0x062 16  SEL49  Crossbar A Select Register 49
-//  0x064 16  SEL50  Crossbar A Select Register 50
-//  0x066 16  SEL51  Crossbar A Select Register 51
-//  0x068 16  SEL52  Crossbar A Select Register 52
-//  0x06A 16  SEL53  Crossbar A Select Register 53
-//  0x06C 16  SEL54  Crossbar A Select Register 54
-//  0x06E 16  SEL55  Crossbar A Select Register 55
-//  0x070 16  SEL56  Crossbar A Select Register 56
-//  0x072 16  SEL57  Crossbar A Select Register 57
-//  0x074 16  SEL58  Crossbar A Select Register 58
-//  0x076 16  SEL59  Crossbar A Select Register 59
-//  0x078 16  SEL60  Crossbar A Select Register 60
-//  0x07A 16  SEL61  Crossbar A Select Register 61
-//  0x07C 16  SEL62  Crossbar A Select Register 62
-//  0x07E 16  SEL63  Crossbar A Select Register 63
-//  0x080 16  SEL64  Crossbar A Select Register 64
-//  0x082 16  SEL65  Crossbar A Select Register 65
-//  0x084 16  CTRL0  Crossbar A Control Register 0
-//  0x086 16  CTRL1  Crossbar A Control Register 1
+//
+//	0x000 16  SEL0   Crossbar A Select Register 0
+//	0x002 16  SEL1   Crossbar A Select Register 1
+//	0x004 16  SEL2   Crossbar A Select Register 2
+//	0x006 16  SEL3   Crossbar A Select Register 3
+//	0x008 16  SEL4   Crossbar A Select Register 4
+//	0x00A 16  SEL5   Crossbar A Select Register 5
+//	0x00C 16  SEL6   Crossbar A Select Register 6
+//	0x00E 16  SEL7   Crossbar A Select Register 7
+//	0x010 16  SEL8   Crossbar A Select Register 8
+//	0x012 16  SEL9   Crossbar A Select Register 9
+//	0x014 16  SEL10  Crossbar A Select Register 10
+//	0x016 16  SEL11  Crossbar A Select Register 11
+//	0x018 16  SEL12  Crossbar A Select Register 12
+//	0x01A 16  SEL13  Crossbar A Select Register 13
+//	0x01C 16  SEL14  Crossbar A Select Register 14
+//	0x01E 16  SEL15  Crossbar A Select Register 15
+//	0x020 16  SEL16  Crossbar A Select Register 16
+//	0x022 16  SEL17  Crossbar A Select Register 17
+//	0x024 16  SEL18  Crossbar A Select Register 18
+//	0x026 16  SEL19  Crossbar A Select Register 19
+//	0x028 16  SEL20  Crossbar A Select Register 20
+//	0x02A 16  SEL21  Crossbar A Select Register 21
+//	0x02C 16  SEL22  Crossbar A Select Register 22
+//	0x02E 16  SEL23  Crossbar A Select Register 23
+//	0x030 16  SEL24  Crossbar A Select Register 24
+//	0x032 16  SEL25  Crossbar A Select Register 25
+//	0x034 16  SEL26  Crossbar A Select Register 26
+//	0x036 16  SEL27  Crossbar A Select Register 27
+//	0x038 16  SEL28  Crossbar A Select Register 28
+//	0x03A 16  SEL29  Crossbar A Select Register 29
+//	0x03C 16  SEL30  Crossbar A Select Register 30
+//	0x03E 16  SEL31  Crossbar A Select Register 31
+//	0x040 16  SEL32  Crossbar A Select Register 32
+//	0x042 16  SEL33  Crossbar A Select Register 33
+//	0x044 16  SEL34  Crossbar A Select Register 34
+//	0x046 16  SEL35  Crossbar A Select Register 35
+//	0x048 16  SEL36  Crossbar A Select Register 36
+//	0x04A 16  SEL37  Crossbar A Select Register 37
+//	0x04C 16  SEL38  Crossbar A Select Register 38
+//	0x04E 16  SEL39  Crossbar A Select Register 39
+//	0x050 16  SEL40  Crossbar A Select Register 40
+//	0x052 16  SEL41  Crossbar A Select Register 41
+//	0x054 16  SEL42  Crossbar A Select Register 42
+//	0x056 16  SEL43  Crossbar A Select Register 43
+//	0x058 16  SEL44  Crossbar A Select Register 44
+//	0x05A 16  SEL45  Crossbar A Select Register 45
+//	0x05C 16  SEL46  Crossbar A Select Register 46
+//	0x05E 16  SEL47  Crossbar A Select Register 47
+//	0x060 16  SEL48  Crossbar A Select Register 48
+//	0x062 16  SEL49  Crossbar A Select Register 49
+//	0x064 16  SEL50  Crossbar A Select Register 50
+//	0x066 16  SEL51  Crossbar A Select Register 51
+//	0x068 16  SEL52  Crossbar A Select Register 52
+//	0x06A 16  SEL53  Crossbar A Select Register 53
+//	0x06C 16  SEL54  Crossbar A Select Register 54
+//	0x06E 16  SEL55  Crossbar A Select Register 55
+//	0x070 16  SEL56  Crossbar A Select Register 56
+//	0x072 16  SEL57  Crossbar A Select Register 57
+//	0x074 16  SEL58  Crossbar A Select Register 58
+//	0x076 16  SEL59  Crossbar A Select Register 59
+//	0x078 16  SEL60  Crossbar A Select Register 60
+//	0x07A 16  SEL61  Crossbar A Select Register 61
+//	0x07C 16  SEL62  Crossbar A Select Register 62
+//	0x07E 16  SEL63  Crossbar A Select Register 63
+//	0x080 16  SEL64  Crossbar A Select Register 64
+//	0x082 16  SEL65  Crossbar A Select Register 65
+//	0x084 16  CTRL0  Crossbar A Control Register 0
+//	0x086 16  CTRL1  Crossbar A Control Register 1
+//
 // Import:
-//  github.com/embeddedgo/imxrt/p/mmap
+//
+//	github.com/embeddedgo/imxrt/p/mmap
 package xbara
 
 const (

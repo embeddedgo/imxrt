@@ -5,60 +5,65 @@
 // Package scb provides access to the registers of the SystemControl peripheral.
 //
 // Instances:
-//  SystemControl  SystemControl_BASE  -  -  System Control Block
+//
+//	SystemControl  SystemControl_BASE  -  -  System Control Block
+//
 // Registers:
-//  0x008 32  ACTLR       Auxiliary Control Register,
-//  0xD00 32  CPUID       CPUID Base Register
-//  0xD04 32  ICSR        Interrupt Control and State Register
-//  0xD08 32  VTOR        Vector Table Offset Register
-//  0xD0C 32  AIRCR       Application Interrupt and Reset Control Register
-//  0xD10 32  SCR         System Control Register
-//  0xD14 32  CCR         Configuration and Control Register
-//  0xD18 32  SHPR1       System Handler Priority Register 1
-//  0xD1C 32  SHPR2       System Handler Priority Register 2
-//  0xD20 32  SHPR3       System Handler Priority Register 3
-//  0xD24 32  SHCSR       System Handler Control and State Register
-//  0xD28 32  CFSR        Configurable Fault Status Register
-//  0xD2C 32  HFSR        HardFault Status register
-//  0xD30 32  DFSR        Debug Fault Status Register
-//  0xD34 32  MMFAR       MemManage Fault Address Register
-//  0xD38 32  BFAR        BusFault Address Register
-//  0xD40 32  ID_PFR0     Processor Feature Register 0
-//  0xD44 32  ID_PFR1     Processor Feature Register 1
-//  0xD48 32  ID_DFR0     Debug Feature Register
-//  0xD4C 32  ID_AFR0     Auxiliary Feature Register
-//  0xD50 32  ID_MMFR0    Memory Model Feature Register 0
-//  0xD54 32  ID_MMFR1    Memory Model Feature Register 1
-//  0xD58 32  ID_MMFR2    Memory Model Feature Register 2
-//  0xD5C 32  ID_MMFR3    Memory Model Feature Register 3
-//  0xD60 32  ID_ISAR0    Instruction Set Attributes Register 0
-//  0xD64 32  ID_ISAR1    Instruction Set Attributes Register 1
-//  0xD68 32  ID_ISAR2    Instruction Set Attributes Register 2
-//  0xD6C 32  ID_ISAR3    Instruction Set Attributes Register 3
-//  0xD70 32  ID_ISAR4    Instruction Set Attributes Register 4
-//  0xD78 32  CLIDR       Cache Level ID register
-//  0xD7C 32  CTR         Cache Type register
-//  0xD80 32  CCSIDR      Cache Size ID Register
-//  0xD84 32  CSSELR      Cache Size Selection Register
-//  0xD88 32  CPACR       Coprocessor Access Control Register
-//  0xF00 32  STIR        Instruction cache invalidate all to Point of Unification (PoU)
-//  0xF50 32  ICIALLU     Instruction cache invalidate all to Point of Unification (PoU)
-//  0xF58 32  ICIMVAU     Instruction cache invalidate by address to PoU
-//  0xF5C 32  DCIMVAC     Data cache invalidate by address to Point of Coherency (PoC)
-//  0xF60 32  DCISW       Data cache invalidate by set/way
-//  0xF64 32  DCCMVAU     Data cache by address to PoU
-//  0xF68 32  DCCMVAC     Data cache clean by address to PoC
-//  0xF6C 32  DCCSW       Data cache clean by set/way
-//  0xF70 32  DCCIMVAC    Data cache clean and invalidate by address to PoC
-//  0xF74 32  DCCISW      Data cache clean and invalidate by set/way
-//  0xF90 32  CM7_ITCMCR  Instruction Tightly-Coupled Memory Control Register
-//  0xF94 32  CM7_DTCMCR  Data Tightly-Coupled Memory Control Register
-//  0xF98 32  CM7_AHBPCR  AHBP Control Register
-//  0xF9C 32  CM7_CACR    L1 Cache Control Register
-//  0xFA0 32  CM7_AHBSCR  AHB Slave Control Register
-//  0xFA8 32  CM7_ABFSR   Auxiliary Bus Fault Status Register
+//
+//	0x008 32  ACTLR       Auxiliary Control Register,
+//	0xD00 32  CPUID       CPUID Base Register
+//	0xD04 32  ICSR        Interrupt Control and State Register
+//	0xD08 32  VTOR        Vector Table Offset Register
+//	0xD0C 32  AIRCR       Application Interrupt and Reset Control Register
+//	0xD10 32  SCR         System Control Register
+//	0xD14 32  CCR         Configuration and Control Register
+//	0xD18 32  SHPR1       System Handler Priority Register 1
+//	0xD1C 32  SHPR2       System Handler Priority Register 2
+//	0xD20 32  SHPR3       System Handler Priority Register 3
+//	0xD24 32  SHCSR       System Handler Control and State Register
+//	0xD28 32  CFSR        Configurable Fault Status Register
+//	0xD2C 32  HFSR        HardFault Status register
+//	0xD30 32  DFSR        Debug Fault Status Register
+//	0xD34 32  MMFAR       MemManage Fault Address Register
+//	0xD38 32  BFAR        BusFault Address Register
+//	0xD40 32  ID_PFR0     Processor Feature Register 0
+//	0xD44 32  ID_PFR1     Processor Feature Register 1
+//	0xD48 32  ID_DFR0     Debug Feature Register
+//	0xD4C 32  ID_AFR0     Auxiliary Feature Register
+//	0xD50 32  ID_MMFR0    Memory Model Feature Register 0
+//	0xD54 32  ID_MMFR1    Memory Model Feature Register 1
+//	0xD58 32  ID_MMFR2    Memory Model Feature Register 2
+//	0xD5C 32  ID_MMFR3    Memory Model Feature Register 3
+//	0xD60 32  ID_ISAR0    Instruction Set Attributes Register 0
+//	0xD64 32  ID_ISAR1    Instruction Set Attributes Register 1
+//	0xD68 32  ID_ISAR2    Instruction Set Attributes Register 2
+//	0xD6C 32  ID_ISAR3    Instruction Set Attributes Register 3
+//	0xD70 32  ID_ISAR4    Instruction Set Attributes Register 4
+//	0xD78 32  CLIDR       Cache Level ID register
+//	0xD7C 32  CTR         Cache Type register
+//	0xD80 32  CCSIDR      Cache Size ID Register
+//	0xD84 32  CSSELR      Cache Size Selection Register
+//	0xD88 32  CPACR       Coprocessor Access Control Register
+//	0xF00 32  STIR        Instruction cache invalidate all to Point of Unification (PoU)
+//	0xF50 32  ICIALLU     Instruction cache invalidate all to Point of Unification (PoU)
+//	0xF58 32  ICIMVAU     Instruction cache invalidate by address to PoU
+//	0xF5C 32  DCIMVAC     Data cache invalidate by address to Point of Coherency (PoC)
+//	0xF60 32  DCISW       Data cache invalidate by set/way
+//	0xF64 32  DCCMVAU     Data cache by address to PoU
+//	0xF68 32  DCCMVAC     Data cache clean by address to PoC
+//	0xF6C 32  DCCSW       Data cache clean by set/way
+//	0xF70 32  DCCIMVAC    Data cache clean and invalidate by address to PoC
+//	0xF74 32  DCCISW      Data cache clean and invalidate by set/way
+//	0xF90 32  CM7_ITCMCR  Instruction Tightly-Coupled Memory Control Register
+//	0xF94 32  CM7_DTCMCR  Data Tightly-Coupled Memory Control Register
+//	0xF98 32  CM7_AHBPCR  AHBP Control Register
+//	0xF9C 32  CM7_CACR    L1 Cache Control Register
+//	0xFA0 32  CM7_AHBSCR  AHB Slave Control Register
+//	0xFA8 32  CM7_ABFSR   Auxiliary Bus Fault Status Register
+//
 // Import:
-//  github.com/embeddedgo/imxrt/p/mmap
+//
+//	github.com/embeddedgo/imxrt/p/mmap
 package scb
 
 const (

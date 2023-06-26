@@ -5,19 +5,24 @@
 // Package acmp provides access to the registers of the CMP peripheral.
 //
 // Instances:
-//  CMP1  CMP1_BASE  -  ACMP1*  High-Speed Comparator (CMP), Voltage Reference (VREF) Digital-to-Analog Converter (DAC), and Analog Mux (ANMUX)
-//  CMP2  CMP2_BASE  -  ACMP2*  High-Speed Comparator (CMP), Voltage Reference (VREF) Digital-to-Analog Converter (DAC), and Analog Mux (ANMUX)
-//  CMP3  CMP3_BASE  -  ACMP3*  High-Speed Comparator (CMP), Voltage Reference (VREF) Digital-to-Analog Converter (DAC), and Analog Mux (ANMUX)
-//  CMP4  CMP4_BASE  -  ACMP4*  High-Speed Comparator (CMP), Voltage Reference (VREF) Digital-to-Analog Converter (DAC), and Analog Mux (ANMUX)
+//
+//	CMP1  CMP1_BASE  -  ACMP1*  High-Speed Comparator (CMP), Voltage Reference (VREF) Digital-to-Analog Converter (DAC), and Analog Mux (ANMUX)
+//	CMP2  CMP2_BASE  -  ACMP2*  High-Speed Comparator (CMP), Voltage Reference (VREF) Digital-to-Analog Converter (DAC), and Analog Mux (ANMUX)
+//	CMP3  CMP3_BASE  -  ACMP3*  High-Speed Comparator (CMP), Voltage Reference (VREF) Digital-to-Analog Converter (DAC), and Analog Mux (ANMUX)
+//	CMP4  CMP4_BASE  -  ACMP4*  High-Speed Comparator (CMP), Voltage Reference (VREF) Digital-to-Analog Converter (DAC), and Analog Mux (ANMUX)
+//
 // Registers:
-//  0x000  8  CR0    CMP Control Register 0
-//  0x001  8  CR1    CMP Control Register 1
-//  0x002  8  FPR    CMP Filter Period Register
-//  0x003  8  SCR    CMP Status and Control Register
-//  0x004  8  DACCR  DAC Control Register
-//  0x005  8  MUXCR  MUX Control Register
+//
+//	0x000  8  CR0    CMP Control Register 0
+//	0x001  8  CR1    CMP Control Register 1
+//	0x002  8  FPR    CMP Filter Period Register
+//	0x003  8  SCR    CMP Status and Control Register
+//	0x004  8  DACCR  DAC Control Register
+//	0x005  8  MUXCR  MUX Control Register
+//
 // Import:
-//  github.com/embeddedgo/imxrt/p/mmap
+//
+//	github.com/embeddedgo/imxrt/p/mmap
 package acmp
 
 const (

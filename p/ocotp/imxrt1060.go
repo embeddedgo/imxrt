@@ -5,91 +5,96 @@
 // Package ocotp provides access to the registers of the OCOTP peripheral.
 //
 // Instances:
-//  OCOTP  OCOTP_BASE  -  -
+//
+//	OCOTP  OCOTP_BASE  -  -
+//
 // Registers:
-//  0x000 32  CTRL            OTP Controller Control Register
-//  0x004 32  CTRL_SET        OTP Controller Control Register
-//  0x008 32  CTRL_CLR        OTP Controller Control Register
-//  0x00C 32  CTRL_TOG        OTP Controller Control Register
-//  0x010 32  TIMING          OTP Controller Timing Register
-//  0x020 32  DATA            OTP Controller Write Data Register
-//  0x030 32  READ_CTRL       OTP Controller Write Data Register
-//  0x040 32  READ_FUSE_DATA  OTP Controller Read Data Register
-//  0x050 32  SW_STICKY       Sticky bit Register
-//  0x060 32  SCS             Software Controllable Signals Register
-//  0x064 32  SCS_SET         Software Controllable Signals Register
-//  0x068 32  SCS_CLR         Software Controllable Signals Register
-//  0x06C 32  SCS_TOG         Software Controllable Signals Register
-//  0x070 32  CRC_ADDR        OTP Controller CRC test address
-//  0x080 32  CRC_VALUE       OTP Controller CRC Value Register
-//  0x090 32  VERSION         OTP Controller Version Register
-//  0x100 32  TIMING2         OTP Controller Timing Register
-//  0x400 32  LOCK            Value of OTP Bank0 Word0 (Lock controls)
-//  0x410 32  CFG0            Value of OTP Bank0 Word1 (Configuration and Manufacturing Info.)
-//  0x420 32  CFG1            Value of OTP Bank0 Word2 (Configuration and Manufacturing Info.)
-//  0x430 32  CFG2            Value of OTP Bank0 Word3 (Configuration and Manufacturing Info.)
-//  0x440 32  CFG3            Value of OTP Bank0 Word4 (Configuration and Manufacturing Info.)
-//  0x450 32  CFG4            Value of OTP Bank0 Word5 (Configuration and Manufacturing Info.)
-//  0x460 32  CFG5            Value of OTP Bank0 Word6 (Configuration and Manufacturing Info.)
-//  0x470 32  CFG6            Value of OTP Bank0 Word7 (Configuration and Manufacturing Info.)
-//  0x480 32  MEM0            Value of OTP Bank1 Word0 (Memory Related Info.)
-//  0x490 32  MEM1            Value of OTP Bank1 Word1 (Memory Related Info.)
-//  0x4A0 32  MEM2            Value of OTP Bank1 Word2 (Memory Related Info.)
-//  0x4B0 32  MEM3            Value of OTP Bank1 Word3 (Memory Related Info.)
-//  0x4C0 32  MEM4            Value of OTP Bank1 Word4 (Memory Related Info.)
-//  0x4D0 32  ANA0            Value of OTP Bank1 Word5 (Memory Related Info.)
-//  0x4E0 32  ANA1            Value of OTP Bank1 Word6 (General Purpose Customer Defined Info.)
-//  0x4F0 32  ANA2            Value of OTP Bank1 Word7 (General Purpose Customer Defined Info.)
-//  0x500 32  OTPMK0          Value of OTP Bank2 Word0 (OTPMK Key)
-//  0x510 32  OTPMK1          Value of OTP Bank2 Word1 (OTPMK Key)
-//  0x520 32  OTPMK2          Value of OTP Bank2 Word2 (OTPMK Key)
-//  0x530 32  OTPMK3          Value of OTP Bank2 Word3 (OTPMK Key)
-//  0x540 32  OTPMK4          Value of OTP Bank2 Word4 (OTPMK Key)
-//  0x550 32  OTPMK5          Value of OTP Bank2 Word5 (OTPMK Key)
-//  0x560 32  OTPMK6          Value of OTP Bank2 Word6 (OTPMK Key)
-//  0x570 32  OTPMK7          Value of OTP Bank2 Word7 (OTPMK Key)
-//  0x580 32  SRK0            Shadow Register for OTP Bank3 Word0 (SRK Hash)
-//  0x590 32  SRK1            Shadow Register for OTP Bank3 Word1 (SRK Hash)
-//  0x5A0 32  SRK2            Shadow Register for OTP Bank3 Word2 (SRK Hash)
-//  0x5B0 32  SRK3            Shadow Register for OTP Bank3 Word3 (SRK Hash)
-//  0x5C0 32  SRK4            Shadow Register for OTP Bank3 Word4 (SRK Hash)
-//  0x5D0 32  SRK5            Shadow Register for OTP Bank3 Word5 (SRK Hash)
-//  0x5E0 32  SRK6            Shadow Register for OTP Bank3 Word6 (SRK Hash)
-//  0x5F0 32  SRK7            Shadow Register for OTP Bank3 Word7 (SRK Hash)
-//  0x600 32  SJC_RESP0       Value of OTP Bank4 Word0 (Secure JTAG Response Field)
-//  0x610 32  SJC_RESP1       Value of OTP Bank4 Word1 (Secure JTAG Response Field)
-//  0x620 32  MAC0            Value of OTP Bank4 Word2 (MAC Address)
-//  0x630 32  MAC1            Value of OTP Bank4 Word3 (MAC Address)
-//  0x640 32  MAC2            Value of OTP Bank4 Word4 (MAC2 Address)
-//  0x650 32  OTPMK_CRC32     Value of OTP Bank4 Word5 (CRC Key)
-//  0x660 32  GP1             Value of OTP Bank4 Word6 (General Purpose Customer Defined Info)
-//  0x670 32  GP2             Value of OTP Bank4 Word7 (General Purpose Customer Defined Info)
-//  0x680 32  SW_GP1          Value of OTP Bank5 Word0 (SW GP1)
-//  0x690 32  SW_GP20         Value of OTP Bank5 Word1 (SW GP2)
-//  0x6A0 32  SW_GP21         Value of OTP Bank5 Word2 (SW GP2)
-//  0x6B0 32  SW_GP22         Value of OTP Bank5 Word3 (SW GP2)
-//  0x6C0 32  SW_GP23         Value of OTP Bank5 Word4 (SW GP2)
-//  0x6D0 32  MISC_CONF0      Value of OTP Bank5 Word5 (Misc Conf)
-//  0x6E0 32  MISC_CONF1      Value of OTP Bank5 Word6 (Misc Conf)
-//  0x6F0 32  SRK_REVOKE      Value of OTP Bank5 Word7 (SRK Revoke)
-//  0x800 32  ROM_PATCH0      Value of OTP Bank6 Word0 (ROM Patch)
-//  0x810 32  ROM_PATCH1      Value of OTP Bank6 Word1 (ROM Patch)
-//  0x820 32  ROM_PATCH2      Value of OTP Bank6 Word2 (ROM Patch)
-//  0x830 32  ROM_PATCH3      Value of OTP Bank6 Word3 (ROM Patch)
-//  0x840 32  ROM_PATCH4      Value of OTP Bank6 Word4 (ROM Patch)
-//  0x850 32  ROM_PATCH5      Value of OTP Bank6 Word5 (ROM Patch)
-//  0x860 32  ROM_PATCH6      Value of OTP Bank6 Word6 (ROM Patch)
-//  0x870 32  ROM_PATCH7      Value of OTP Bank6 Word7 (ROM Patch)
-//  0x880 32  GP30            Value of OTP Bank7 Word0 (GP3)
-//  0x890 32  GP31            Value of OTP Bank7 Word1 (GP3)
-//  0x8A0 32  GP32            Value of OTP Bank7 Word2 (GP3)
-//  0x8B0 32  GP33            Value of OTP Bank7 Word3 (GP3)
-//  0x8C0 32  GP40            Value of OTP Bank7 Word4 (GP4)
-//  0x8D0 32  GP41            Value of OTP Bank7 Word5 (GP4)
-//  0x8E0 32  GP42            Value of OTP Bank7 Word6 (GP4)
-//  0x8F0 32  GP43            Value of OTP Bank7 Word7 (GP4)
+//
+//	0x000 32  CTRL            OTP Controller Control Register
+//	0x004 32  CTRL_SET        OTP Controller Control Register
+//	0x008 32  CTRL_CLR        OTP Controller Control Register
+//	0x00C 32  CTRL_TOG        OTP Controller Control Register
+//	0x010 32  TIMING          OTP Controller Timing Register
+//	0x020 32  DATA            OTP Controller Write Data Register
+//	0x030 32  READ_CTRL       OTP Controller Write Data Register
+//	0x040 32  READ_FUSE_DATA  OTP Controller Read Data Register
+//	0x050 32  SW_STICKY       Sticky bit Register
+//	0x060 32  SCS             Software Controllable Signals Register
+//	0x064 32  SCS_SET         Software Controllable Signals Register
+//	0x068 32  SCS_CLR         Software Controllable Signals Register
+//	0x06C 32  SCS_TOG         Software Controllable Signals Register
+//	0x070 32  CRC_ADDR        OTP Controller CRC test address
+//	0x080 32  CRC_VALUE       OTP Controller CRC Value Register
+//	0x090 32  VERSION         OTP Controller Version Register
+//	0x100 32  TIMING2         OTP Controller Timing Register
+//	0x400 32  LOCK            Value of OTP Bank0 Word0 (Lock controls)
+//	0x410 32  CFG0            Value of OTP Bank0 Word1 (Configuration and Manufacturing Info.)
+//	0x420 32  CFG1            Value of OTP Bank0 Word2 (Configuration and Manufacturing Info.)
+//	0x430 32  CFG2            Value of OTP Bank0 Word3 (Configuration and Manufacturing Info.)
+//	0x440 32  CFG3            Value of OTP Bank0 Word4 (Configuration and Manufacturing Info.)
+//	0x450 32  CFG4            Value of OTP Bank0 Word5 (Configuration and Manufacturing Info.)
+//	0x460 32  CFG5            Value of OTP Bank0 Word6 (Configuration and Manufacturing Info.)
+//	0x470 32  CFG6            Value of OTP Bank0 Word7 (Configuration and Manufacturing Info.)
+//	0x480 32  MEM0            Value of OTP Bank1 Word0 (Memory Related Info.)
+//	0x490 32  MEM1            Value of OTP Bank1 Word1 (Memory Related Info.)
+//	0x4A0 32  MEM2            Value of OTP Bank1 Word2 (Memory Related Info.)
+//	0x4B0 32  MEM3            Value of OTP Bank1 Word3 (Memory Related Info.)
+//	0x4C0 32  MEM4            Value of OTP Bank1 Word4 (Memory Related Info.)
+//	0x4D0 32  ANA0            Value of OTP Bank1 Word5 (Memory Related Info.)
+//	0x4E0 32  ANA1            Value of OTP Bank1 Word6 (General Purpose Customer Defined Info.)
+//	0x4F0 32  ANA2            Value of OTP Bank1 Word7 (General Purpose Customer Defined Info.)
+//	0x500 32  OTPMK0          Value of OTP Bank2 Word0 (OTPMK Key)
+//	0x510 32  OTPMK1          Value of OTP Bank2 Word1 (OTPMK Key)
+//	0x520 32  OTPMK2          Value of OTP Bank2 Word2 (OTPMK Key)
+//	0x530 32  OTPMK3          Value of OTP Bank2 Word3 (OTPMK Key)
+//	0x540 32  OTPMK4          Value of OTP Bank2 Word4 (OTPMK Key)
+//	0x550 32  OTPMK5          Value of OTP Bank2 Word5 (OTPMK Key)
+//	0x560 32  OTPMK6          Value of OTP Bank2 Word6 (OTPMK Key)
+//	0x570 32  OTPMK7          Value of OTP Bank2 Word7 (OTPMK Key)
+//	0x580 32  SRK0            Shadow Register for OTP Bank3 Word0 (SRK Hash)
+//	0x590 32  SRK1            Shadow Register for OTP Bank3 Word1 (SRK Hash)
+//	0x5A0 32  SRK2            Shadow Register for OTP Bank3 Word2 (SRK Hash)
+//	0x5B0 32  SRK3            Shadow Register for OTP Bank3 Word3 (SRK Hash)
+//	0x5C0 32  SRK4            Shadow Register for OTP Bank3 Word4 (SRK Hash)
+//	0x5D0 32  SRK5            Shadow Register for OTP Bank3 Word5 (SRK Hash)
+//	0x5E0 32  SRK6            Shadow Register for OTP Bank3 Word6 (SRK Hash)
+//	0x5F0 32  SRK7            Shadow Register for OTP Bank3 Word7 (SRK Hash)
+//	0x600 32  SJC_RESP0       Value of OTP Bank4 Word0 (Secure JTAG Response Field)
+//	0x610 32  SJC_RESP1       Value of OTP Bank4 Word1 (Secure JTAG Response Field)
+//	0x620 32  MAC0            Value of OTP Bank4 Word2 (MAC Address)
+//	0x630 32  MAC1            Value of OTP Bank4 Word3 (MAC Address)
+//	0x640 32  MAC2            Value of OTP Bank4 Word4 (MAC2 Address)
+//	0x650 32  OTPMK_CRC32     Value of OTP Bank4 Word5 (CRC Key)
+//	0x660 32  GP1             Value of OTP Bank4 Word6 (General Purpose Customer Defined Info)
+//	0x670 32  GP2             Value of OTP Bank4 Word7 (General Purpose Customer Defined Info)
+//	0x680 32  SW_GP1          Value of OTP Bank5 Word0 (SW GP1)
+//	0x690 32  SW_GP20         Value of OTP Bank5 Word1 (SW GP2)
+//	0x6A0 32  SW_GP21         Value of OTP Bank5 Word2 (SW GP2)
+//	0x6B0 32  SW_GP22         Value of OTP Bank5 Word3 (SW GP2)
+//	0x6C0 32  SW_GP23         Value of OTP Bank5 Word4 (SW GP2)
+//	0x6D0 32  MISC_CONF0      Value of OTP Bank5 Word5 (Misc Conf)
+//	0x6E0 32  MISC_CONF1      Value of OTP Bank5 Word6 (Misc Conf)
+//	0x6F0 32  SRK_REVOKE      Value of OTP Bank5 Word7 (SRK Revoke)
+//	0x800 32  ROM_PATCH0      Value of OTP Bank6 Word0 (ROM Patch)
+//	0x810 32  ROM_PATCH1      Value of OTP Bank6 Word1 (ROM Patch)
+//	0x820 32  ROM_PATCH2      Value of OTP Bank6 Word2 (ROM Patch)
+//	0x830 32  ROM_PATCH3      Value of OTP Bank6 Word3 (ROM Patch)
+//	0x840 32  ROM_PATCH4      Value of OTP Bank6 Word4 (ROM Patch)
+//	0x850 32  ROM_PATCH5      Value of OTP Bank6 Word5 (ROM Patch)
+//	0x860 32  ROM_PATCH6      Value of OTP Bank6 Word6 (ROM Patch)
+//	0x870 32  ROM_PATCH7      Value of OTP Bank6 Word7 (ROM Patch)
+//	0x880 32  GP30            Value of OTP Bank7 Word0 (GP3)
+//	0x890 32  GP31            Value of OTP Bank7 Word1 (GP3)
+//	0x8A0 32  GP32            Value of OTP Bank7 Word2 (GP3)
+//	0x8B0 32  GP33            Value of OTP Bank7 Word3 (GP3)
+//	0x8C0 32  GP40            Value of OTP Bank7 Word4 (GP4)
+//	0x8D0 32  GP41            Value of OTP Bank7 Word5 (GP4)
+//	0x8E0 32  GP42            Value of OTP Bank7 Word6 (GP4)
+//	0x8F0 32  GP43            Value of OTP Bank7 Word7 (GP4)
+//
 // Import:
-//  github.com/embeddedgo/imxrt/p/mmap
+//
+//	github.com/embeddedgo/imxrt/p/mmap
 package ocotp
 
 const (

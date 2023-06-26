@@ -5,32 +5,37 @@
 // Package can1 provides access to the registers of the CAN peripheral.
 //
 // Instances:
-//  CAN1  CAN1_BASE  -  CAN1*  FLEXCAN
-//  CAN2  CAN2_BASE  -  CAN2*  FLEXCAN
+//
+//	CAN1  CAN1_BASE  -  CAN1*  FLEXCAN
+//	CAN2  CAN2_BASE  -  CAN2*  FLEXCAN
+//
 // Registers:
-//  0x000 32  MCR        Module Configuration Register
-//  0x004 32  CTRL1      Control 1 Register
-//  0x008 32  TIMER      Free Running Timer Register
-//  0x010 32  RXMGMASK   Rx Mailboxes Global Mask Register
-//  0x014 32  RX14MASK   Rx Buffer 14 Mask Register
-//  0x018 32  RX15MASK   Rx Buffer 15 Mask Register
-//  0x01C 32  ECR        Error Counter Register
-//  0x020 32  ESR1       Error and Status 1 Register
-//  0x024 32  IMASK2     Interrupt Masks 2 Register
-//  0x028 32  IMASK1     Interrupt Masks 1 Register
-//  0x02C 32  IFLAG2     Interrupt Flags 2 Register
-//  0x030 32  IFLAG1     Interrupt Flags 1 Register
-//  0x034 32  CTRL2      Control 2 Register
-//  0x038 32  ESR2       Error and Status 2 Register
-//  0x044 32  CRCR       CRC Register
-//  0x048 32  RXFGMASK   Rx FIFO Global Mask Register
-//  0x04C 32  RXFIR      Rx FIFO Information Register
-//  0x058 32  DBG1       Debug 1 register
-//  0x05C 32  DBG2       Debug 2 register
-//  0x880 32  RXIMR[64]  Rx Individual Mask Registers
-//  0x9E0 32  GFWR       Glitch Filter Width Registers
+//
+//	0x000 32  MCR        Module Configuration Register
+//	0x004 32  CTRL1      Control 1 Register
+//	0x008 32  TIMER      Free Running Timer Register
+//	0x010 32  RXMGMASK   Rx Mailboxes Global Mask Register
+//	0x014 32  RX14MASK   Rx Buffer 14 Mask Register
+//	0x018 32  RX15MASK   Rx Buffer 15 Mask Register
+//	0x01C 32  ECR        Error Counter Register
+//	0x020 32  ESR1       Error and Status 1 Register
+//	0x024 32  IMASK2     Interrupt Masks 2 Register
+//	0x028 32  IMASK1     Interrupt Masks 1 Register
+//	0x02C 32  IFLAG2     Interrupt Flags 2 Register
+//	0x030 32  IFLAG1     Interrupt Flags 1 Register
+//	0x034 32  CTRL2      Control 2 Register
+//	0x038 32  ESR2       Error and Status 2 Register
+//	0x044 32  CRCR       CRC Register
+//	0x048 32  RXFGMASK   Rx FIFO Global Mask Register
+//	0x04C 32  RXFIR      Rx FIFO Information Register
+//	0x058 32  DBG1       Debug 1 register
+//	0x05C 32  DBG2       Debug 2 register
+//	0x880 32  RXIMR[64]  Rx Individual Mask Registers
+//	0x9E0 32  GFWR       Glitch Filter Width Registers
+//
 // Import:
-//  github.com/embeddedgo/imxrt/p/mmap
+//
+//	github.com/embeddedgo/imxrt/p/mmap
 package can1
 
 const (

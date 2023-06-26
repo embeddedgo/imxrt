@@ -12,7 +12,7 @@ import (
 )
 
 type Periph struct {
-	GPR0  mmio.R32[GPR0]
+	GPR0  mmio.R32[uint32]
 	GPR1  mmio.R32[GPR1]
 	GPR2  mmio.R32[GPR2]
 	GPR3  mmio.R32[GPR3]
@@ -21,13 +21,13 @@ type Periph struct {
 	GPR6  mmio.R32[GPR6]
 	GPR7  mmio.R32[GPR7]
 	GPR8  mmio.R32[GPR8]
-	GPR9  mmio.R32[GPR9]
+	GPR9  mmio.R32[uint32]
 	GPR10 mmio.R32[GPR10]
 	GPR11 mmio.R32[GPR11]
 	GPR12 mmio.R32[GPR12]
 	GPR13 mmio.R32[GPR13]
 	GPR14 mmio.R32[GPR14]
-	GPR15 mmio.R32[GPR15]
+	GPR15 mmio.R32[uint32]
 	GPR16 mmio.R32[GPR16]
 	GPR17 mmio.R32[GPR17]
 	GPR18 mmio.R32[GPR18]
@@ -54,8 +54,6 @@ func IOMUXC_GPR() *Periph { return (*Periph)(unsafe.Pointer(uintptr(mmap.IOMUXC_
 func (p *Periph) BaseAddr() uintptr {
 	return uintptr(unsafe.Pointer(p))
 }
-
-type GPR0 uint32
 
 type GPR1 uint32
 
@@ -393,8 +391,6 @@ func LPUART8_IPG_STOP_MODE_(p *Periph) mmio.RM32[GPR8] {
 }
 func LPUART8_IPG_DOZE_(p *Periph) mmio.RM32[GPR8] { return mmio.RM32[GPR8]{&p.GPR8, LPUART8_IPG_DOZE} }
 
-type GPR9 uint32
-
 type GPR10 uint32
 
 func NIDEN_(p *Periph) mmio.RM32[GPR10]        { return mmio.RM32[GPR10]{&p.GPR10, NIDEN} }
@@ -509,8 +505,6 @@ func ACMP4_SAMPLE_SYNC_EN_(p *Periph) mmio.RM32[GPR14] {
 }
 func CM7_CFGITCMSZ_(p *Periph) mmio.RM32[GPR14] { return mmio.RM32[GPR14]{&p.GPR14, CM7_CFGITCMSZ} }
 func CM7_CFGDTCMSZ_(p *Periph) mmio.RM32[GPR14] { return mmio.RM32[GPR14]{&p.GPR14, CM7_CFGDTCMSZ} }
-
-type GPR15 uint32
 
 type GPR16 uint32
 

@@ -5,19 +5,24 @@
 // Package iomuxc_snvs provides access to the registers of the IOMUXC_SNVS peripheral.
 //
 // Instances:
-//  IOMUXC_SNVS  IOMUXC_SNVS_BASE  -  -
+//
+//	IOMUXC_SNVS  IOMUXC_SNVS_BASE  -  -
+//
 // Registers:
-//  0x000 32  SW_MUX_CTL_PAD_WAKEUP         SW_MUX_CTL_PAD_WAKEUP SW MUX Control Register
-//  0x004 32  SW_MUX_CTL_PAD_PMIC_ON_REQ    SW_MUX_CTL_PAD_PMIC_ON_REQ SW MUX Control Register
-//  0x008 32  SW_MUX_CTL_PAD_PMIC_STBY_REQ  SW_MUX_CTL_PAD_PMIC_STBY_REQ SW MUX Control Register
-//  0x00C 32  SW_PAD_CTL_PAD_TEST_MODE      SW_PAD_CTL_PAD_TEST_MODE SW PAD Control Register
-//  0x010 32  SW_PAD_CTL_PAD_POR_B          SW_PAD_CTL_PAD_POR_B SW PAD Control Register
-//  0x014 32  SW_PAD_CTL_PAD_ONOFF          SW_PAD_CTL_PAD_ONOFF SW PAD Control Register
-//  0x018 32  SW_PAD_CTL_PAD_WAKEUP         SW_PAD_CTL_PAD_WAKEUP SW PAD Control Register
-//  0x01C 32  SW_PAD_CTL_PAD_PMIC_ON_REQ    SW_PAD_CTL_PAD_PMIC_ON_REQ SW PAD Control Register
-//  0x020 32  SW_PAD_CTL_PAD_PMIC_STBY_REQ  SW_PAD_CTL_PAD_PMIC_STBY_REQ SW PAD Control Register
+//
+//	0x000 32  SW_MUX_CTL_PAD_WAKEUP         SW_MUX_CTL_PAD_WAKEUP SW MUX Control Register
+//	0x004 32  SW_MUX_CTL_PAD_PMIC_ON_REQ    SW_MUX_CTL_PAD_PMIC_ON_REQ SW MUX Control Register
+//	0x008 32  SW_MUX_CTL_PAD_PMIC_STBY_REQ  SW_MUX_CTL_PAD_PMIC_STBY_REQ SW MUX Control Register
+//	0x00C 32  SW_PAD_CTL_PAD_TEST_MODE      SW_PAD_CTL_PAD_TEST_MODE SW PAD Control Register
+//	0x010 32  SW_PAD_CTL_PAD_POR_B          SW_PAD_CTL_PAD_POR_B SW PAD Control Register
+//	0x014 32  SW_PAD_CTL_PAD_ONOFF          SW_PAD_CTL_PAD_ONOFF SW PAD Control Register
+//	0x018 32  SW_PAD_CTL_PAD_WAKEUP         SW_PAD_CTL_PAD_WAKEUP SW PAD Control Register
+//	0x01C 32  SW_PAD_CTL_PAD_PMIC_ON_REQ    SW_PAD_CTL_PAD_PMIC_ON_REQ SW PAD Control Register
+//	0x020 32  SW_PAD_CTL_PAD_PMIC_STBY_REQ  SW_PAD_CTL_PAD_PMIC_STBY_REQ SW PAD Control Register
+//
 // Import:
-//  github.com/embeddedgo/imxrt/p/mmap
+//
+//	github.com/embeddedgo/imxrt/p/mmap
 package iomuxc_snvs
 
 const (

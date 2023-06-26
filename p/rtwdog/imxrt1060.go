@@ -5,14 +5,19 @@
 // Package rtwdog provides access to the registers of the RTWDOG peripheral.
 //
 // Instances:
-//  RTWDOG  RTWDOG_BASE  -  RTWDOG*  WDOG
+//
+//	RTWDOG  RTWDOG_BASE  -  RTWDOG*  WDOG
+//
 // Registers:
-//  0x000 32  CS     Watchdog Control and Status Register
-//  0x004 32  CNT    Watchdog Counter Register
-//  0x008 32  TOVAL  Watchdog Timeout Value Register
-//  0x00C 32  WIN    Watchdog Window Register
+//
+//	0x000 32  CS     Watchdog Control and Status Register
+//	0x004 32  CNT    Watchdog Counter Register
+//	0x008 32  TOVAL  Watchdog Timeout Value Register
+//	0x00C 32  WIN    Watchdog Window Register
+//
 // Import:
-//  github.com/embeddedgo/imxrt/p/mmap
+//
+//	github.com/embeddedgo/imxrt/p/mmap
 package rtwdog
 
 const (

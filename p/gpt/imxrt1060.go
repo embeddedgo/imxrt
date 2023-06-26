@@ -5,21 +5,26 @@
 // Package gpt provides access to the registers of the GPT peripheral.
 //
 // Instances:
-//  GPT1  GPT1_BASE  -  GPT1*
-//  GPT2  GPT2_BASE  -  GPT2*
+//
+//	GPT1  GPT1_BASE  -  GPT1*
+//	GPT2  GPT2_BASE  -  GPT2*
+//
 // Registers:
-//  0x000 32  CR    GPT Control Register
-//  0x004 32  PR    GPT Prescaler Register
-//  0x008 32  SR    GPT Status Register
-//  0x00C 32  IR    GPT Interrupt Register
-//  0x010 32  OCR1  GPT Output Compare Register 1
-//  0x014 32  OCR2  GPT Output Compare Register 2
-//  0x018 32  OCR3  GPT Output Compare Register 3
-//  0x01C 32  ICR1  GPT Input Capture Register 1
-//  0x020 32  ICR2  GPT Input Capture Register 2
-//  0x024 32  CNT   GPT Counter Register
+//
+//	0x000 32  CR    GPT Control Register
+//	0x004 32  PR    GPT Prescaler Register
+//	0x008 32  SR    GPT Status Register
+//	0x00C 32  IR    GPT Interrupt Register
+//	0x010 32  OCR1  GPT Output Compare Register 1
+//	0x014 32  OCR2  GPT Output Compare Register 2
+//	0x018 32  OCR3  GPT Output Compare Register 3
+//	0x01C 32  ICR1  GPT Input Capture Register 1
+//	0x020 32  ICR2  GPT Input Capture Register 2
+//	0x024 32  CNT   GPT Counter Register
+//
 // Import:
-//  github.com/embeddedgo/imxrt/p/mmap
+//
+//	github.com/embeddedgo/imxrt/p/mmap
 package gpt
 
 const (

@@ -5,14 +5,19 @@
 // Package csu provides access to the registers of the CSU peripheral.
 //
 // Instances:
-//  CSU  CSU_BASE  -  CSU*  CSU registers
+//
+//	CSU  CSU_BASE  -  CSU*  CSU registers
+//
 // Registers:
-//  0x000 32  CSL[32]     Config security level register
-//  0x200 32  HP0         HP0 register
-//  0x218 32  SA          Secure access register
-//  0x358 32  HPCONTROL0  HPCONTROL0 register
+//
+//	0x000 32  CSL[32]     Config security level register
+//	0x200 32  HP0         HP0 register
+//	0x218 32  SA          Secure access register
+//	0x358 32  HPCONTROL0  HPCONTROL0 register
+//
 // Import:
-//  github.com/embeddedgo/imxrt/p/mmap
+//
+//	github.com/embeddedgo/imxrt/p/mmap
 package csu
 
 const (

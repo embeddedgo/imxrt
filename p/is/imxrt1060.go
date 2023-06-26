@@ -5,32 +5,37 @@
 // Package is provides access to the registers of the SAI peripheral.
 //
 // Instances:
-//  SAI1  SAI1_BASE  -  SAI1*              I2S
-//  SAI2  SAI2_BASE  -  SAI2*              I2S
-//  SAI3  SAI3_BASE  -  SAI3_RX*,SAI3_TX*  I2S
+//
+//	SAI1  SAI1_BASE  -  SAI1*              I2S
+//	SAI2  SAI2_BASE  -  SAI2*              I2S
+//	SAI3  SAI3_BASE  -  SAI3_RX*,SAI3_TX*  I2S
+//
 // Registers:
-//  0x000 32  VERID   Version ID Register
-//  0x004 32  PARAM   Parameter Register
-//  0x008 32  TCSR    SAI Transmit Control Register
-//  0x00C 32  TCR1    SAI Transmit Configuration 1 Register
-//  0x010 32  TCR2    SAI Transmit Configuration 2 Register
-//  0x014 32  TCR3    SAI Transmit Configuration 3 Register
-//  0x018 32  TCR4    SAI Transmit Configuration 4 Register
-//  0x01C 32  TCR5    SAI Transmit Configuration 5 Register
-//  0x020 32  TDR[4]  SAI Transmit Data Register
-//  0x040 32  TFR[4]  SAI Transmit FIFO Register
-//  0x060 32  TMR     SAI Transmit Mask Register
-//  0x088 32  RCSR    SAI Receive Control Register
-//  0x08C 32  RCR1    SAI Receive Configuration 1 Register
-//  0x090 32  RCR2    SAI Receive Configuration 2 Register
-//  0x094 32  RCR3    SAI Receive Configuration 3 Register
-//  0x098 32  RCR4    SAI Receive Configuration 4 Register
-//  0x09C 32  RCR5    SAI Receive Configuration 5 Register
-//  0x0A0 32  RDR[4]  SAI Receive Data Register
-//  0x0C0 32  RFR[4]  SAI Receive FIFO Register
-//  0x0E0 32  RMR     SAI Receive Mask Register
+//
+//	0x000 32  VERID   Version ID Register
+//	0x004 32  PARAM   Parameter Register
+//	0x008 32  TCSR    SAI Transmit Control Register
+//	0x00C 32  TCR1    SAI Transmit Configuration 1 Register
+//	0x010 32  TCR2    SAI Transmit Configuration 2 Register
+//	0x014 32  TCR3    SAI Transmit Configuration 3 Register
+//	0x018 32  TCR4    SAI Transmit Configuration 4 Register
+//	0x01C 32  TCR5    SAI Transmit Configuration 5 Register
+//	0x020 32  TDR[4]  SAI Transmit Data Register
+//	0x040 32  TFR[4]  SAI Transmit FIFO Register
+//	0x060 32  TMR     SAI Transmit Mask Register
+//	0x088 32  RCSR    SAI Receive Control Register
+//	0x08C 32  RCR1    SAI Receive Configuration 1 Register
+//	0x090 32  RCR2    SAI Receive Configuration 2 Register
+//	0x094 32  RCR3    SAI Receive Configuration 3 Register
+//	0x098 32  RCR4    SAI Receive Configuration 4 Register
+//	0x09C 32  RCR5    SAI Receive Configuration 5 Register
+//	0x0A0 32  RDR[4]  SAI Receive Data Register
+//	0x0C0 32  RFR[4]  SAI Receive FIFO Register
+//	0x0E0 32  RMR     SAI Receive Mask Register
+//
 // Import:
-//  github.com/embeddedgo/imxrt/p/mmap
+//
+//	github.com/embeddedgo/imxrt/p/mmap
 package is
 
 const (

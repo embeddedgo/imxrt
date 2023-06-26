@@ -5,40 +5,45 @@
 // Package usdhc provides access to the registers of the USDHC peripheral.
 //
 // Instances:
-//  USDHC1  USDHC1_BASE  -  USDHC1*
-//  USDHC2  USDHC2_BASE  -  USDHC2*
+//
+//	USDHC1  USDHC1_BASE  -  USDHC1*
+//	USDHC2  USDHC2_BASE  -  USDHC2*
+//
 // Registers:
-//  0x000 32  DS_ADDR               DMA System Address
-//  0x004 32  BLK_ATT               Block Attributes
-//  0x008 32  CMD_ARG               Command Argument
-//  0x00C 32  CMD_XFR_TYP           Command Transfer Type
-//  0x010 32  CMD_RSP0              Command Response0
-//  0x014 32  CMD_RSP1              Command Response1
-//  0x018 32  CMD_RSP2              Command Response2
-//  0x01C 32  CMD_RSP3              Command Response3
-//  0x020 32  DATA_BUFF_ACC_PORT    Data Buffer Access Port
-//  0x024 32  PRES_STATE            Present State
-//  0x028 32  PROT_CTRL             Protocol Control
-//  0x02C 32  SYS_CTRL              System Control
-//  0x030 32  INT_STATUS            Interrupt Status
-//  0x034 32  INT_STATUS_EN         Interrupt Status Enable
-//  0x038 32  INT_SIGNAL_EN         Interrupt Signal Enable
-//  0x03C 32  AUTOCMD12_ERR_STATUS  Auto CMD12 Error Status
-//  0x040 32  HOST_CTRL_CAP         Host Controller Capabilities
-//  0x044 32  WTMK_LVL              Watermark Level
-//  0x048 32  MIX_CTRL              Mixer Control
-//  0x050 32  FORCE_EVENT           Force Event
-//  0x054 32  ADMA_ERR_STATUS       ADMA Error Status Register
-//  0x058 32  ADMA_SYS_ADDR         ADMA System Address
-//  0x060 32  DLL_CTRL              DLL (Delay Line) Control
-//  0x064 32  DLL_STATUS            DLL Status
-//  0x068 32  CLK_TUNE_CTRL_STATUS  CLK Tuning Control and Status
-//  0x0C0 32  VEND_SPEC             Vendor Specific Register
-//  0x0C4 32  MMC_BOOT              MMC Boot Register
-//  0x0C8 32  VEND_SPEC2            Vendor Specific 2 Register
-//  0x0CC 32  TUNING_CTRL           Tuning Control Register
+//
+//	0x000 32  DS_ADDR               DMA System Address
+//	0x004 32  BLK_ATT               Block Attributes
+//	0x008 32  CMD_ARG               Command Argument
+//	0x00C 32  CMD_XFR_TYP           Command Transfer Type
+//	0x010 32  CMD_RSP0              Command Response0
+//	0x014 32  CMD_RSP1              Command Response1
+//	0x018 32  CMD_RSP2              Command Response2
+//	0x01C 32  CMD_RSP3              Command Response3
+//	0x020 32  DATA_BUFF_ACC_PORT    Data Buffer Access Port
+//	0x024 32  PRES_STATE            Present State
+//	0x028 32  PROT_CTRL             Protocol Control
+//	0x02C 32  SYS_CTRL              System Control
+//	0x030 32  INT_STATUS            Interrupt Status
+//	0x034 32  INT_STATUS_EN         Interrupt Status Enable
+//	0x038 32  INT_SIGNAL_EN         Interrupt Signal Enable
+//	0x03C 32  AUTOCMD12_ERR_STATUS  Auto CMD12 Error Status
+//	0x040 32  HOST_CTRL_CAP         Host Controller Capabilities
+//	0x044 32  WTMK_LVL              Watermark Level
+//	0x048 32  MIX_CTRL              Mixer Control
+//	0x050 32  FORCE_EVENT           Force Event
+//	0x054 32  ADMA_ERR_STATUS       ADMA Error Status Register
+//	0x058 32  ADMA_SYS_ADDR         ADMA System Address
+//	0x060 32  DLL_CTRL              DLL (Delay Line) Control
+//	0x064 32  DLL_STATUS            DLL Status
+//	0x068 32  CLK_TUNE_CTRL_STATUS  CLK Tuning Control and Status
+//	0x0C0 32  VEND_SPEC             Vendor Specific Register
+//	0x0C4 32  MMC_BOOT              MMC Boot Register
+//	0x0C8 32  VEND_SPEC2            Vendor Specific 2 Register
+//	0x0CC 32  TUNING_CTRL           Tuning Control Register
+//
 // Import:
-//  github.com/embeddedgo/imxrt/p/mmap
+//
+//	github.com/embeddedgo/imxrt/p/mmap
 package usdhc
 
 const (

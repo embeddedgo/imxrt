@@ -5,28 +5,33 @@
 // Package bee provides access to the registers of the BEE peripheral.
 //
 // Instances:
-//  BEE  BEE_BASE  -  BEE*  Bus Encryption Engine
+//
+//	BEE  BEE_BASE  -  BEE*  Bus Encryption Engine
+//
 // Registers:
-//  0x000 32  CTRL           BEE Control Register
-//  0x004 32  ADDR_OFFSET0   no description available
-//  0x008 32  ADDR_OFFSET1   no description available
-//  0x00C 32  AES_KEY0_W0    no description available
-//  0x010 32  AES_KEY0_W1    no description available
-//  0x014 32  AES_KEY0_W2    no description available
-//  0x018 32  AES_KEY0_W3    no description available
-//  0x01C 32  STATUS         no description available
-//  0x020 32  CTR_NONCE0_W0  no description available
-//  0x024 32  CTR_NONCE0_W1  no description available
-//  0x028 32  CTR_NONCE0_W2  no description available
-//  0x02C 32  CTR_NONCE0_W3  no description available
-//  0x030 32  CTR_NONCE1_W0  no description available
-//  0x034 32  CTR_NONCE1_W1  no description available
-//  0x038 32  CTR_NONCE1_W2  no description available
-//  0x03C 32  CTR_NONCE1_W3  no description available
-//  0x040 32  REGION1_TOP    no description available
-//  0x044 32  REGION1_BOT    no description available
+//
+//	0x000 32  CTRL           BEE Control Register
+//	0x004 32  ADDR_OFFSET0   no description available
+//	0x008 32  ADDR_OFFSET1   no description available
+//	0x00C 32  AES_KEY0_W0    no description available
+//	0x010 32  AES_KEY0_W1    no description available
+//	0x014 32  AES_KEY0_W2    no description available
+//	0x018 32  AES_KEY0_W3    no description available
+//	0x01C 32  STATUS         no description available
+//	0x020 32  CTR_NONCE0_W0  no description available
+//	0x024 32  CTR_NONCE0_W1  no description available
+//	0x028 32  CTR_NONCE0_W2  no description available
+//	0x02C 32  CTR_NONCE0_W3  no description available
+//	0x030 32  CTR_NONCE1_W0  no description available
+//	0x034 32  CTR_NONCE1_W1  no description available
+//	0x038 32  CTR_NONCE1_W2  no description available
+//	0x03C 32  CTR_NONCE1_W3  no description available
+//	0x040 32  REGION1_TOP    no description available
+//	0x044 32  REGION1_BOT    no description available
+//
 // Import:
-//  github.com/embeddedgo/imxrt/p/mmap
+//
+//	github.com/embeddedgo/imxrt/p/mmap
 package bee
 
 const (

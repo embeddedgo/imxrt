@@ -5,78 +5,83 @@
 // Package dcp provides access to the registers of the DCP peripheral.
 //
 // Instances:
-//  DCP  DCP_BASE  -  DCP*,DCP_VMI*  DCP register reference index
+//
+//	DCP  DCP_BASE  -  DCP*,DCP_VMI*  DCP register reference index
+//
 // Registers:
-//  0x000 32  CTRL             DCP control register 0
-//  0x004 32  CTRL_SET         DCP control register 0
-//  0x008 32  CTRL_CLR         DCP control register 0
-//  0x00C 32  CTRL_TOG         DCP control register 0
-//  0x010 32  STAT             DCP status register
-//  0x014 32  STAT_SET         DCP status register
-//  0x018 32  STAT_CLR         DCP status register
-//  0x01C 32  STAT_TOG         DCP status register
-//  0x020 32  CHANNELCTRL      DCP channel control register
-//  0x024 32  CHANNELCTRL_SET  DCP channel control register
-//  0x028 32  CHANNELCTRL_CLR  DCP channel control register
-//  0x02C 32  CHANNELCTRL_TOG  DCP channel control register
-//  0x030 32  CAPABILITY0      DCP capability 0 register
-//  0x040 32  CAPABILITY1      DCP capability 1 register
-//  0x050 32  CONTEXT          DCP context buffer pointer
-//  0x060 32  KEY              DCP key index
-//  0x070 32  KEYDATA          DCP key data
-//  0x080 32  PACKET0          DCP work packet 0 status register
-//  0x090 32  PACKET1          DCP work packet 1 status register
-//  0x0A0 32  PACKET2          DCP work packet 2 status register
-//  0x0B0 32  PACKET3          DCP work packet 3 status register
-//  0x0C0 32  PACKET4          DCP work packet 4 status register
-//  0x0D0 32  PACKET5          DCP work packet 5 status register
-//  0x0E0 32  PACKET6          DCP work packet 6 status register
-//  0x100 32  CH0CMDPTR        DCP channel 0 command pointer address register
-//  0x110 32  CH0SEMA          DCP channel 0 semaphore register
-//  0x120 32  CH0STAT          DCP channel 0 status register
-//  0x124 32  CH0STAT_SET      DCP channel 0 status register
-//  0x128 32  CH0STAT_CLR      DCP channel 0 status register
-//  0x12C 32  CH0STAT_TOG      DCP channel 0 status register
-//  0x130 32  CH0OPTS          DCP channel 0 options register
-//  0x134 32  CH0OPTS_SET      DCP channel 0 options register
-//  0x138 32  CH0OPTS_CLR      DCP channel 0 options register
-//  0x13C 32  CH0OPTS_TOG      DCP channel 0 options register
-//  0x140 32  CH1CMDPTR        DCP channel 1 command pointer address register
-//  0x150 32  CH1SEMA          DCP channel 1 semaphore register
-//  0x160 32  CH1STAT          DCP channel 1 status register
-//  0x164 32  CH1STAT_SET      DCP channel 1 status register
-//  0x168 32  CH1STAT_CLR      DCP channel 1 status register
-//  0x16C 32  CH1STAT_TOG      DCP channel 1 status register
-//  0x170 32  CH1OPTS          DCP channel 1 options register
-//  0x174 32  CH1OPTS_SET      DCP channel 1 options register
-//  0x178 32  CH1OPTS_CLR      DCP channel 1 options register
-//  0x17C 32  CH1OPTS_TOG      DCP channel 1 options register
-//  0x180 32  CH2CMDPTR        DCP channel 2 command pointer address register
-//  0x190 32  CH2SEMA          DCP channel 2 semaphore register
-//  0x1A0 32  CH2STAT          DCP channel 2 status register
-//  0x1A4 32  CH2STAT_SET      DCP channel 2 status register
-//  0x1A8 32  CH2STAT_CLR      DCP channel 2 status register
-//  0x1AC 32  CH2STAT_TOG      DCP channel 2 status register
-//  0x1B0 32  CH2OPTS          DCP channel 2 options register
-//  0x1B4 32  CH2OPTS_SET      DCP channel 2 options register
-//  0x1B8 32  CH2OPTS_CLR      DCP channel 2 options register
-//  0x1BC 32  CH2OPTS_TOG      DCP channel 2 options register
-//  0x1C0 32  CH3CMDPTR        DCP channel 3 command pointer address register
-//  0x1D0 32  CH3SEMA          DCP channel 3 semaphore register
-//  0x1E0 32  CH3STAT          DCP channel 3 status register
-//  0x1E4 32  CH3STAT_SET      DCP channel 3 status register
-//  0x1E8 32  CH3STAT_CLR      DCP channel 3 status register
-//  0x1EC 32  CH3STAT_TOG      DCP channel 3 status register
-//  0x1F0 32  CH3OPTS          DCP channel 3 options register
-//  0x1F4 32  CH3OPTS_SET      DCP channel 3 options register
-//  0x1F8 32  CH3OPTS_CLR      DCP channel 3 options register
-//  0x1FC 32  CH3OPTS_TOG      DCP channel 3 options register
-//  0x400 32  DBGSELECT        DCP debug select register
-//  0x410 32  DBGDATA          DCP debug data register
-//  0x420 32  PAGETABLE        DCP page table register
-//  0x430 32  VERSION          DCP version register
+//
+//	0x000 32  CTRL             DCP control register 0
+//	0x004 32  CTRL_SET         DCP control register 0
+//	0x008 32  CTRL_CLR         DCP control register 0
+//	0x00C 32  CTRL_TOG         DCP control register 0
+//	0x010 32  STAT             DCP status register
+//	0x014 32  STAT_SET         DCP status register
+//	0x018 32  STAT_CLR         DCP status register
+//	0x01C 32  STAT_TOG         DCP status register
+//	0x020 32  CHANNELCTRL      DCP channel control register
+//	0x024 32  CHANNELCTRL_SET  DCP channel control register
+//	0x028 32  CHANNELCTRL_CLR  DCP channel control register
+//	0x02C 32  CHANNELCTRL_TOG  DCP channel control register
+//	0x030 32  CAPABILITY0      DCP capability 0 register
+//	0x040 32  CAPABILITY1      DCP capability 1 register
+//	0x050 32  CONTEXT          DCP context buffer pointer
+//	0x060 32  KEY              DCP key index
+//	0x070 32  KEYDATA          DCP key data
+//	0x080 32  PACKET0          DCP work packet 0 status register
+//	0x090 32  PACKET1          DCP work packet 1 status register
+//	0x0A0 32  PACKET2          DCP work packet 2 status register
+//	0x0B0 32  PACKET3          DCP work packet 3 status register
+//	0x0C0 32  PACKET4          DCP work packet 4 status register
+//	0x0D0 32  PACKET5          DCP work packet 5 status register
+//	0x0E0 32  PACKET6          DCP work packet 6 status register
+//	0x100 32  CH0CMDPTR        DCP channel 0 command pointer address register
+//	0x110 32  CH0SEMA          DCP channel 0 semaphore register
+//	0x120 32  CH0STAT          DCP channel 0 status register
+//	0x124 32  CH0STAT_SET      DCP channel 0 status register
+//	0x128 32  CH0STAT_CLR      DCP channel 0 status register
+//	0x12C 32  CH0STAT_TOG      DCP channel 0 status register
+//	0x130 32  CH0OPTS          DCP channel 0 options register
+//	0x134 32  CH0OPTS_SET      DCP channel 0 options register
+//	0x138 32  CH0OPTS_CLR      DCP channel 0 options register
+//	0x13C 32  CH0OPTS_TOG      DCP channel 0 options register
+//	0x140 32  CH1CMDPTR        DCP channel 1 command pointer address register
+//	0x150 32  CH1SEMA          DCP channel 1 semaphore register
+//	0x160 32  CH1STAT          DCP channel 1 status register
+//	0x164 32  CH1STAT_SET      DCP channel 1 status register
+//	0x168 32  CH1STAT_CLR      DCP channel 1 status register
+//	0x16C 32  CH1STAT_TOG      DCP channel 1 status register
+//	0x170 32  CH1OPTS          DCP channel 1 options register
+//	0x174 32  CH1OPTS_SET      DCP channel 1 options register
+//	0x178 32  CH1OPTS_CLR      DCP channel 1 options register
+//	0x17C 32  CH1OPTS_TOG      DCP channel 1 options register
+//	0x180 32  CH2CMDPTR        DCP channel 2 command pointer address register
+//	0x190 32  CH2SEMA          DCP channel 2 semaphore register
+//	0x1A0 32  CH2STAT          DCP channel 2 status register
+//	0x1A4 32  CH2STAT_SET      DCP channel 2 status register
+//	0x1A8 32  CH2STAT_CLR      DCP channel 2 status register
+//	0x1AC 32  CH2STAT_TOG      DCP channel 2 status register
+//	0x1B0 32  CH2OPTS          DCP channel 2 options register
+//	0x1B4 32  CH2OPTS_SET      DCP channel 2 options register
+//	0x1B8 32  CH2OPTS_CLR      DCP channel 2 options register
+//	0x1BC 32  CH2OPTS_TOG      DCP channel 2 options register
+//	0x1C0 32  CH3CMDPTR        DCP channel 3 command pointer address register
+//	0x1D0 32  CH3SEMA          DCP channel 3 semaphore register
+//	0x1E0 32  CH3STAT          DCP channel 3 status register
+//	0x1E4 32  CH3STAT_SET      DCP channel 3 status register
+//	0x1E8 32  CH3STAT_CLR      DCP channel 3 status register
+//	0x1EC 32  CH3STAT_TOG      DCP channel 3 status register
+//	0x1F0 32  CH3OPTS          DCP channel 3 options register
+//	0x1F4 32  CH3OPTS_SET      DCP channel 3 options register
+//	0x1F8 32  CH3OPTS_CLR      DCP channel 3 options register
+//	0x1FC 32  CH3OPTS_TOG      DCP channel 3 options register
+//	0x400 32  DBGSELECT        DCP debug select register
+//	0x410 32  DBGDATA          DCP debug data register
+//	0x420 32  PAGETABLE        DCP page table register
+//	0x430 32  VERSION          DCP version register
+//
 // Import:
-//  github.com/embeddedgo/imxrt/p/mmap
+//
+//	github.com/embeddedgo/imxrt/p/mmap
 package dcp
 
 const (

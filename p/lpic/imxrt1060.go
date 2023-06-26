@@ -5,41 +5,46 @@
 // Package lpic provides access to the registers of the LPI2C peripheral.
 //
 // Instances:
-//  LPI2C1  LPI2C1_BASE  -  LPI2C1*  LPI2C
-//  LPI2C2  LPI2C2_BASE  -  LPI2C2*  LPI2C
-//  LPI2C3  LPI2C3_BASE  -  LPI2C3*  LPI2C
-//  LPI2C4  LPI2C4_BASE  -  LPI2C4*  LPI2C
+//
+//	LPI2C1  LPI2C1_BASE  -  LPI2C1*  LPI2C
+//	LPI2C2  LPI2C2_BASE  -  LPI2C2*  LPI2C
+//	LPI2C3  LPI2C3_BASE  -  LPI2C3*  LPI2C
+//	LPI2C4  LPI2C4_BASE  -  LPI2C4*  LPI2C
+//
 // Registers:
-//  0x000 32  VERID   Version ID Register
-//  0x004 32  PARAM   Parameter Register
-//  0x010 32  MCR     Master Control Register
-//  0x014 32  MSR     Master Status Register
-//  0x018 32  MIER    Master Interrupt Enable Register
-//  0x01C 32  MDER    Master DMA Enable Register
-//  0x020 32  MCFGR0  Master Configuration Register 0
-//  0x024 32  MCFGR1  Master Configuration Register 1
-//  0x028 32  MCFGR2  Master Configuration Register 2
-//  0x02C 32  MCFGR3  Master Configuration Register 3
-//  0x040 32  MDMR    Master Data Match Register
-//  0x048 32  MCCR0   Master Clock Configuration Register 0
-//  0x050 32  MCCR1   Master Clock Configuration Register 1
-//  0x058 32  MFCR    Master FIFO Control Register
-//  0x05C 32  MFSR    Master FIFO Status Register
-//  0x060 32  MTDR    Master Transmit Data Register
-//  0x070 32  MRDR    Master Receive Data Register
-//  0x110 32  SCR     Slave Control Register
-//  0x114 32  SSR     Slave Status Register
-//  0x118 32  SIER    Slave Interrupt Enable Register
-//  0x11C 32  SDER    Slave DMA Enable Register
-//  0x124 32  SCFGR1  Slave Configuration Register 1
-//  0x128 32  SCFGR2  Slave Configuration Register 2
-//  0x140 32  SAMR    Slave Address Match Register
-//  0x150 32  SASR    Slave Address Status Register
-//  0x154 32  STAR    Slave Transmit ACK Register
-//  0x160 32  STDR    Slave Transmit Data Register
-//  0x170 32  SRDR    Slave Receive Data Register
+//
+//	0x000 32  VERID   Version ID Register
+//	0x004 32  PARAM   Parameter Register
+//	0x010 32  MCR     Master Control Register
+//	0x014 32  MSR     Master Status Register
+//	0x018 32  MIER    Master Interrupt Enable Register
+//	0x01C 32  MDER    Master DMA Enable Register
+//	0x020 32  MCFGR0  Master Configuration Register 0
+//	0x024 32  MCFGR1  Master Configuration Register 1
+//	0x028 32  MCFGR2  Master Configuration Register 2
+//	0x02C 32  MCFGR3  Master Configuration Register 3
+//	0x040 32  MDMR    Master Data Match Register
+//	0x048 32  MCCR0   Master Clock Configuration Register 0
+//	0x050 32  MCCR1   Master Clock Configuration Register 1
+//	0x058 32  MFCR    Master FIFO Control Register
+//	0x05C 32  MFSR    Master FIFO Status Register
+//	0x060 32  MTDR    Master Transmit Data Register
+//	0x070 32  MRDR    Master Receive Data Register
+//	0x110 32  SCR     Slave Control Register
+//	0x114 32  SSR     Slave Status Register
+//	0x118 32  SIER    Slave Interrupt Enable Register
+//	0x11C 32  SDER    Slave DMA Enable Register
+//	0x124 32  SCFGR1  Slave Configuration Register 1
+//	0x128 32  SCFGR2  Slave Configuration Register 2
+//	0x140 32  SAMR    Slave Address Match Register
+//	0x150 32  SASR    Slave Address Status Register
+//	0x154 32  STAR    Slave Transmit ACK Register
+//	0x160 32  STDR    Slave Transmit Data Register
+//	0x170 32  SRDR    Slave Receive Data Register
+//
 // Import:
-//  github.com/embeddedgo/imxrt/p/mmap
+//
+//	github.com/embeddedgo/imxrt/p/mmap
 package lpic
 
 const (

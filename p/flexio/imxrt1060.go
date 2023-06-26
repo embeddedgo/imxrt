@@ -5,36 +5,41 @@
 // Package flexio provides access to the registers of the FLEXIO peripheral.
 //
 // Instances:
-//  FLEXIO1  FLEXIO1_BASE  -  FLEXIO1*
-//  FLEXIO2  FLEXIO2_BASE  -  FLEXIO2*
-//  FLEXIO3  FLEXIO3_BASE  -  FLEXIO3*
+//
+//	FLEXIO1  FLEXIO1_BASE  -  FLEXIO1*
+//	FLEXIO2  FLEXIO2_BASE  -  FLEXIO2*
+//	FLEXIO3  FLEXIO3_BASE  -  FLEXIO3*
+//
 // Registers:
-//  0x000 32  VERID           Version ID Register
-//  0x004 32  PARAM           Parameter Register
-//  0x008 32  CTRL            FlexIO Control Register
-//  0x00C 32  PIN             Pin State Register
-//  0x010 32  SHIFTSTAT       Shifter Status Register
-//  0x014 32  SHIFTERR        Shifter Error Register
-//  0x018 32  TIMSTAT         Timer Status Register
-//  0x020 32  SHIFTSIEN       Shifter Status Interrupt Enable
-//  0x024 32  SHIFTEIEN       Shifter Error Interrupt Enable
-//  0x028 32  TIMIEN          Timer Interrupt Enable Register
-//  0x030 32  SHIFTSDEN       Shifter Status DMA Enable
-//  0x040 32  SHIFTSTATE      Shifter State Register
-//  0x080 32  SHIFTCTL[4]     Shifter Control N Register
-//  0x100 32  SHIFTCFG[4]     Shifter Configuration N Register
-//  0x200 32  SHIFTBUF[4]     Shifter Buffer N Register
-//  0x280 32  SHIFTBUFBIS[4]  Shifter Buffer N Bit Swapped Register
-//  0x300 32  SHIFTBUFBYS[4]  Shifter Buffer N Byte Swapped Register
-//  0x380 32  SHIFTBUFBBS[4]  Shifter Buffer N Bit Byte Swapped Register
-//  0x400 32  TIMCTL[4]       Timer Control N Register
-//  0x480 32  TIMCFG[4]       Timer Configuration N Register
-//  0x500 32  TIMCMP[4]       Timer Compare N Register
-//  0x680 32  SHIFTBUFNBS[4]  Shifter Buffer N Nibble Byte Swapped Register
-//  0x700 32  SHIFTBUFHWS[4]  Shifter Buffer N Half Word Swapped Register
-//  0x780 32  SHIFTBUFNIS[4]  Shifter Buffer N Nibble Swapped Register
+//
+//	0x000 32  VERID           Version ID Register
+//	0x004 32  PARAM           Parameter Register
+//	0x008 32  CTRL            FlexIO Control Register
+//	0x00C 32  PIN             Pin State Register
+//	0x010 32  SHIFTSTAT       Shifter Status Register
+//	0x014 32  SHIFTERR        Shifter Error Register
+//	0x018 32  TIMSTAT         Timer Status Register
+//	0x020 32  SHIFTSIEN       Shifter Status Interrupt Enable
+//	0x024 32  SHIFTEIEN       Shifter Error Interrupt Enable
+//	0x028 32  TIMIEN          Timer Interrupt Enable Register
+//	0x030 32  SHIFTSDEN       Shifter Status DMA Enable
+//	0x040 32  SHIFTSTATE      Shifter State Register
+//	0x080 32  SHIFTCTL[4]     Shifter Control N Register
+//	0x100 32  SHIFTCFG[4]     Shifter Configuration N Register
+//	0x200 32  SHIFTBUF[4]     Shifter Buffer N Register
+//	0x280 32  SHIFTBUFBIS[4]  Shifter Buffer N Bit Swapped Register
+//	0x300 32  SHIFTBUFBYS[4]  Shifter Buffer N Byte Swapped Register
+//	0x380 32  SHIFTBUFBBS[4]  Shifter Buffer N Bit Byte Swapped Register
+//	0x400 32  TIMCTL[4]       Timer Control N Register
+//	0x480 32  TIMCFG[4]       Timer Configuration N Register
+//	0x500 32  TIMCMP[4]       Timer Compare N Register
+//	0x680 32  SHIFTBUFNBS[4]  Shifter Buffer N Nibble Byte Swapped Register
+//	0x700 32  SHIFTBUFHWS[4]  Shifter Buffer N Half Word Swapped Register
+//	0x780 32  SHIFTBUFNIS[4]  Shifter Buffer N Nibble Swapped Register
+//
 // Import:
-//  github.com/embeddedgo/imxrt/p/mmap
+//
+//	github.com/embeddedgo/imxrt/p/mmap
 package flexio
 
 const (

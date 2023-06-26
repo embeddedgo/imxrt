@@ -5,94 +5,99 @@
 // Package adc_etc provides access to the registers of the ADC_ETC peripheral.
 //
 // Instances:
-//  ADC_ETC  ADC_ETC_BASE  -  ADC_ETC_IRQ0*,ADC_ETC_IRQ1*,ADC_ETC_IRQ2*,ADC_ETC_ERROR_IRQ*
+//
+//	ADC_ETC  ADC_ETC_BASE  -  ADC_ETC_IRQ0*,ADC_ETC_IRQ1*,ADC_ETC_IRQ2*,ADC_ETC_ERROR_IRQ*
+//
 // Registers:
-//  0x000 32  CTRL              ADC_ETC Global Control Register
-//  0x004 32  DONE0_1_IRQ       ETC DONE0 and DONE1 IRQ State Register
-//  0x008 32  DONE2_ERR_IRQ     ETC DONE_2 and DONE_ERR IRQ State Register
-//  0x00C 32  DMA_CTRL          ETC DMA control Register
-//  0x010 32  TRIG0_CTRL        ETC_TRIG0 Control Register
-//  0x014 32  TRIG0_COUNTER     ETC_TRIG0 Counter Register
-//  0x018 32  TRIG0_CHAIN_1_0   ETC_TRIG Chain 0/1 Register
-//  0x01C 32  TRIG0_CHAIN_3_2   ETC_TRIG Chain 2/3 Register
-//  0x020 32  TRIG0_CHAIN_5_4   ETC_TRIG Chain 4/5 Register
-//  0x024 32  TRIG0_CHAIN_7_6   ETC_TRIG Chain 6/7 Register
-//  0x028 32  TRIG0_RESULT_1_0  ETC_TRIG Result Data 1/0 Register
-//  0x02C 32  TRIG0_RESULT_3_2  ETC_TRIG Result Data 3/2 Register
-//  0x030 32  TRIG0_RESULT_5_4  ETC_TRIG Result Data 5/4 Register
-//  0x034 32  TRIG0_RESULT_7_6  ETC_TRIG Result Data 7/6 Register
-//  0x038 32  TRIG1_CTRL        ETC_TRIG1 Control Register
-//  0x03C 32  TRIG1_COUNTER     ETC_TRIG1 Counter Register
-//  0x040 32  TRIG1_CHAIN_1_0   ETC_TRIG Chain 0/1 Register
-//  0x044 32  TRIG1_CHAIN_3_2   ETC_TRIG Chain 2/3 Register
-//  0x048 32  TRIG1_CHAIN_5_4   ETC_TRIG Chain 4/5 Register
-//  0x04C 32  TRIG1_CHAIN_7_6   ETC_TRIG Chain 6/7 Register
-//  0x050 32  TRIG1_RESULT_1_0  ETC_TRIG Result Data 1/0 Register
-//  0x054 32  TRIG1_RESULT_3_2  ETC_TRIG Result Data 3/2 Register
-//  0x058 32  TRIG1_RESULT_5_4  ETC_TRIG Result Data 5/4 Register
-//  0x05C 32  TRIG1_RESULT_7_6  ETC_TRIG Result Data 7/6 Register
-//  0x060 32  TRIG2_CTRL        ETC_TRIG2 Control Register
-//  0x064 32  TRIG2_COUNTER     ETC_TRIG2 Counter Register
-//  0x068 32  TRIG2_CHAIN_1_0   ETC_TRIG Chain 0/1 Register
-//  0x06C 32  TRIG2_CHAIN_3_2   ETC_TRIG Chain 2/3 Register
-//  0x070 32  TRIG2_CHAIN_5_4   ETC_TRIG Chain 4/5 Register
-//  0x074 32  TRIG2_CHAIN_7_6   ETC_TRIG Chain 6/7 Register
-//  0x078 32  TRIG2_RESULT_1_0  ETC_TRIG Result Data 1/0 Register
-//  0x07C 32  TRIG2_RESULT_3_2  ETC_TRIG Result Data 3/2 Register
-//  0x080 32  TRIG2_RESULT_5_4  ETC_TRIG Result Data 5/4 Register
-//  0x084 32  TRIG2_RESULT_7_6  ETC_TRIG Result Data 7/6 Register
-//  0x088 32  TRIG3_CTRL        ETC_TRIG3 Control Register
-//  0x08C 32  TRIG3_COUNTER     ETC_TRIG3 Counter Register
-//  0x090 32  TRIG3_CHAIN_1_0   ETC_TRIG Chain 0/1 Register
-//  0x094 32  TRIG3_CHAIN_3_2   ETC_TRIG Chain 2/3 Register
-//  0x098 32  TRIG3_CHAIN_5_4   ETC_TRIG Chain 4/5 Register
-//  0x09C 32  TRIG3_CHAIN_7_6   ETC_TRIG Chain 6/7 Register
-//  0x0A0 32  TRIG3_RESULT_1_0  ETC_TRIG Result Data 1/0 Register
-//  0x0A4 32  TRIG3_RESULT_3_2  ETC_TRIG Result Data 3/2 Register
-//  0x0A8 32  TRIG3_RESULT_5_4  ETC_TRIG Result Data 5/4 Register
-//  0x0AC 32  TRIG3_RESULT_7_6  ETC_TRIG Result Data 7/6 Register
-//  0x0B0 32  TRIG4_CTRL        ETC_TRIG4 Control Register
-//  0x0B4 32  TRIG4_COUNTER     ETC_TRIG4 Counter Register
-//  0x0B8 32  TRIG4_CHAIN_1_0   ETC_TRIG Chain 0/1 Register
-//  0x0BC 32  TRIG4_CHAIN_3_2   ETC_TRIG Chain 2/3 Register
-//  0x0C0 32  TRIG4_CHAIN_5_4   ETC_TRIG Chain 4/5 Register
-//  0x0C4 32  TRIG4_CHAIN_7_6   ETC_TRIG Chain 6/7 Register
-//  0x0C8 32  TRIG4_RESULT_1_0  ETC_TRIG Result Data 1/0 Register
-//  0x0CC 32  TRIG4_RESULT_3_2  ETC_TRIG Result Data 3/2 Register
-//  0x0D0 32  TRIG4_RESULT_5_4  ETC_TRIG Result Data 5/4 Register
-//  0x0D4 32  TRIG4_RESULT_7_6  ETC_TRIG Result Data 7/6 Register
-//  0x0D8 32  TRIG5_CTRL        ETC_TRIG5 Control Register
-//  0x0DC 32  TRIG5_COUNTER     ETC_TRIG5 Counter Register
-//  0x0E0 32  TRIG5_CHAIN_1_0   ETC_TRIG Chain 0/1 Register
-//  0x0E4 32  TRIG5_CHAIN_3_2   ETC_TRIG Chain 2/3 Register
-//  0x0E8 32  TRIG5_CHAIN_5_4   ETC_TRIG Chain 4/5 Register
-//  0x0EC 32  TRIG5_CHAIN_7_6   ETC_TRIG Chain 6/7 Register
-//  0x0F0 32  TRIG5_RESULT_1_0  ETC_TRIG Result Data 1/0 Register
-//  0x0F4 32  TRIG5_RESULT_3_2  ETC_TRIG Result Data 3/2 Register
-//  0x0F8 32  TRIG5_RESULT_5_4  ETC_TRIG Result Data 5/4 Register
-//  0x0FC 32  TRIG5_RESULT_7_6  ETC_TRIG Result Data 7/6 Register
-//  0x100 32  TRIG6_CTRL        ETC_TRIG6 Control Register
-//  0x104 32  TRIG6_COUNTER     ETC_TRIG6 Counter Register
-//  0x108 32  TRIG6_CHAIN_1_0   ETC_TRIG Chain 0/1 Register
-//  0x10C 32  TRIG6_CHAIN_3_2   ETC_TRIG Chain 2/3 Register
-//  0x110 32  TRIG6_CHAIN_5_4   ETC_TRIG Chain 4/5 Register
-//  0x114 32  TRIG6_CHAIN_7_6   ETC_TRIG Chain 6/7 Register
-//  0x118 32  TRIG6_RESULT_1_0  ETC_TRIG Result Data 1/0 Register
-//  0x11C 32  TRIG6_RESULT_3_2  ETC_TRIG Result Data 3/2 Register
-//  0x120 32  TRIG6_RESULT_5_4  ETC_TRIG Result Data 5/4 Register
-//  0x124 32  TRIG6_RESULT_7_6  ETC_TRIG Result Data 7/6 Register
-//  0x128 32  TRIG7_CTRL        ETC_TRIG7 Control Register
-//  0x12C 32  TRIG7_COUNTER     ETC_TRIG7 Counter Register
-//  0x130 32  TRIG7_CHAIN_1_0   ETC_TRIG Chain 0/1 Register
-//  0x134 32  TRIG7_CHAIN_3_2   ETC_TRIG Chain 2/3 Register
-//  0x138 32  TRIG7_CHAIN_5_4   ETC_TRIG Chain 4/5 Register
-//  0x13C 32  TRIG7_CHAIN_7_6   ETC_TRIG Chain 6/7 Register
-//  0x140 32  TRIG7_RESULT_1_0  ETC_TRIG Result Data 1/0 Register
-//  0x144 32  TRIG7_RESULT_3_2  ETC_TRIG Result Data 3/2 Register
-//  0x148 32  TRIG7_RESULT_5_4  ETC_TRIG Result Data 5/4 Register
-//  0x14C 32  TRIG7_RESULT_7_6  ETC_TRIG Result Data 7/6 Register
+//
+//	0x000 32  CTRL              ADC_ETC Global Control Register
+//	0x004 32  DONE0_1_IRQ       ETC DONE0 and DONE1 IRQ State Register
+//	0x008 32  DONE2_ERR_IRQ     ETC DONE_2 and DONE_ERR IRQ State Register
+//	0x00C 32  DMA_CTRL          ETC DMA control Register
+//	0x010 32  TRIG0_CTRL        ETC_TRIG0 Control Register
+//	0x014 32  TRIG0_COUNTER     ETC_TRIG0 Counter Register
+//	0x018 32  TRIG0_CHAIN_1_0   ETC_TRIG Chain 0/1 Register
+//	0x01C 32  TRIG0_CHAIN_3_2   ETC_TRIG Chain 2/3 Register
+//	0x020 32  TRIG0_CHAIN_5_4   ETC_TRIG Chain 4/5 Register
+//	0x024 32  TRIG0_CHAIN_7_6   ETC_TRIG Chain 6/7 Register
+//	0x028 32  TRIG0_RESULT_1_0  ETC_TRIG Result Data 1/0 Register
+//	0x02C 32  TRIG0_RESULT_3_2  ETC_TRIG Result Data 3/2 Register
+//	0x030 32  TRIG0_RESULT_5_4  ETC_TRIG Result Data 5/4 Register
+//	0x034 32  TRIG0_RESULT_7_6  ETC_TRIG Result Data 7/6 Register
+//	0x038 32  TRIG1_CTRL        ETC_TRIG1 Control Register
+//	0x03C 32  TRIG1_COUNTER     ETC_TRIG1 Counter Register
+//	0x040 32  TRIG1_CHAIN_1_0   ETC_TRIG Chain 0/1 Register
+//	0x044 32  TRIG1_CHAIN_3_2   ETC_TRIG Chain 2/3 Register
+//	0x048 32  TRIG1_CHAIN_5_4   ETC_TRIG Chain 4/5 Register
+//	0x04C 32  TRIG1_CHAIN_7_6   ETC_TRIG Chain 6/7 Register
+//	0x050 32  TRIG1_RESULT_1_0  ETC_TRIG Result Data 1/0 Register
+//	0x054 32  TRIG1_RESULT_3_2  ETC_TRIG Result Data 3/2 Register
+//	0x058 32  TRIG1_RESULT_5_4  ETC_TRIG Result Data 5/4 Register
+//	0x05C 32  TRIG1_RESULT_7_6  ETC_TRIG Result Data 7/6 Register
+//	0x060 32  TRIG2_CTRL        ETC_TRIG2 Control Register
+//	0x064 32  TRIG2_COUNTER     ETC_TRIG2 Counter Register
+//	0x068 32  TRIG2_CHAIN_1_0   ETC_TRIG Chain 0/1 Register
+//	0x06C 32  TRIG2_CHAIN_3_2   ETC_TRIG Chain 2/3 Register
+//	0x070 32  TRIG2_CHAIN_5_4   ETC_TRIG Chain 4/5 Register
+//	0x074 32  TRIG2_CHAIN_7_6   ETC_TRIG Chain 6/7 Register
+//	0x078 32  TRIG2_RESULT_1_0  ETC_TRIG Result Data 1/0 Register
+//	0x07C 32  TRIG2_RESULT_3_2  ETC_TRIG Result Data 3/2 Register
+//	0x080 32  TRIG2_RESULT_5_4  ETC_TRIG Result Data 5/4 Register
+//	0x084 32  TRIG2_RESULT_7_6  ETC_TRIG Result Data 7/6 Register
+//	0x088 32  TRIG3_CTRL        ETC_TRIG3 Control Register
+//	0x08C 32  TRIG3_COUNTER     ETC_TRIG3 Counter Register
+//	0x090 32  TRIG3_CHAIN_1_0   ETC_TRIG Chain 0/1 Register
+//	0x094 32  TRIG3_CHAIN_3_2   ETC_TRIG Chain 2/3 Register
+//	0x098 32  TRIG3_CHAIN_5_4   ETC_TRIG Chain 4/5 Register
+//	0x09C 32  TRIG3_CHAIN_7_6   ETC_TRIG Chain 6/7 Register
+//	0x0A0 32  TRIG3_RESULT_1_0  ETC_TRIG Result Data 1/0 Register
+//	0x0A4 32  TRIG3_RESULT_3_2  ETC_TRIG Result Data 3/2 Register
+//	0x0A8 32  TRIG3_RESULT_5_4  ETC_TRIG Result Data 5/4 Register
+//	0x0AC 32  TRIG3_RESULT_7_6  ETC_TRIG Result Data 7/6 Register
+//	0x0B0 32  TRIG4_CTRL        ETC_TRIG4 Control Register
+//	0x0B4 32  TRIG4_COUNTER     ETC_TRIG4 Counter Register
+//	0x0B8 32  TRIG4_CHAIN_1_0   ETC_TRIG Chain 0/1 Register
+//	0x0BC 32  TRIG4_CHAIN_3_2   ETC_TRIG Chain 2/3 Register
+//	0x0C0 32  TRIG4_CHAIN_5_4   ETC_TRIG Chain 4/5 Register
+//	0x0C4 32  TRIG4_CHAIN_7_6   ETC_TRIG Chain 6/7 Register
+//	0x0C8 32  TRIG4_RESULT_1_0  ETC_TRIG Result Data 1/0 Register
+//	0x0CC 32  TRIG4_RESULT_3_2  ETC_TRIG Result Data 3/2 Register
+//	0x0D0 32  TRIG4_RESULT_5_4  ETC_TRIG Result Data 5/4 Register
+//	0x0D4 32  TRIG4_RESULT_7_6  ETC_TRIG Result Data 7/6 Register
+//	0x0D8 32  TRIG5_CTRL        ETC_TRIG5 Control Register
+//	0x0DC 32  TRIG5_COUNTER     ETC_TRIG5 Counter Register
+//	0x0E0 32  TRIG5_CHAIN_1_0   ETC_TRIG Chain 0/1 Register
+//	0x0E4 32  TRIG5_CHAIN_3_2   ETC_TRIG Chain 2/3 Register
+//	0x0E8 32  TRIG5_CHAIN_5_4   ETC_TRIG Chain 4/5 Register
+//	0x0EC 32  TRIG5_CHAIN_7_6   ETC_TRIG Chain 6/7 Register
+//	0x0F0 32  TRIG5_RESULT_1_0  ETC_TRIG Result Data 1/0 Register
+//	0x0F4 32  TRIG5_RESULT_3_2  ETC_TRIG Result Data 3/2 Register
+//	0x0F8 32  TRIG5_RESULT_5_4  ETC_TRIG Result Data 5/4 Register
+//	0x0FC 32  TRIG5_RESULT_7_6  ETC_TRIG Result Data 7/6 Register
+//	0x100 32  TRIG6_CTRL        ETC_TRIG6 Control Register
+//	0x104 32  TRIG6_COUNTER     ETC_TRIG6 Counter Register
+//	0x108 32  TRIG6_CHAIN_1_0   ETC_TRIG Chain 0/1 Register
+//	0x10C 32  TRIG6_CHAIN_3_2   ETC_TRIG Chain 2/3 Register
+//	0x110 32  TRIG6_CHAIN_5_4   ETC_TRIG Chain 4/5 Register
+//	0x114 32  TRIG6_CHAIN_7_6   ETC_TRIG Chain 6/7 Register
+//	0x118 32  TRIG6_RESULT_1_0  ETC_TRIG Result Data 1/0 Register
+//	0x11C 32  TRIG6_RESULT_3_2  ETC_TRIG Result Data 3/2 Register
+//	0x120 32  TRIG6_RESULT_5_4  ETC_TRIG Result Data 5/4 Register
+//	0x124 32  TRIG6_RESULT_7_6  ETC_TRIG Result Data 7/6 Register
+//	0x128 32  TRIG7_CTRL        ETC_TRIG7 Control Register
+//	0x12C 32  TRIG7_COUNTER     ETC_TRIG7 Counter Register
+//	0x130 32  TRIG7_CHAIN_1_0   ETC_TRIG Chain 0/1 Register
+//	0x134 32  TRIG7_CHAIN_3_2   ETC_TRIG Chain 2/3 Register
+//	0x138 32  TRIG7_CHAIN_5_4   ETC_TRIG Chain 4/5 Register
+//	0x13C 32  TRIG7_CHAIN_7_6   ETC_TRIG Chain 6/7 Register
+//	0x140 32  TRIG7_RESULT_1_0  ETC_TRIG Result Data 1/0 Register
+//	0x144 32  TRIG7_RESULT_3_2  ETC_TRIG Result Data 3/2 Register
+//	0x148 32  TRIG7_RESULT_5_4  ETC_TRIG Result Data 5/4 Register
+//	0x14C 32  TRIG7_RESULT_7_6  ETC_TRIG Result Data 7/6 Register
+//
 // Import:
-//  github.com/embeddedgo/imxrt/p/mmap
+//
+//	github.com/embeddedgo/imxrt/p/mmap
 package adc_etc
 
 const (

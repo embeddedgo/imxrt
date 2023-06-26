@@ -5,16 +5,21 @@
 // Package ewm provides access to the registers of the EWM peripheral.
 //
 // Instances:
-//  EWM  EWM_BASE  -  EWM*
+//
+//	EWM  EWM_BASE  -  EWM*
+//
 // Registers:
-//  0x000  8  CTRL          Control Register
-//  0x001  8  SERV          Service Register
-//  0x002  8  CMPL          Compare Low Register
-//  0x003  8  CMPH          Compare High Register
-//  0x004  8  CLKCTRL       Clock Control Register
-//  0x005  8  CLKPRESCALER  Clock Prescaler Register
+//
+//	0x000  8  CTRL          Control Register
+//	0x001  8  SERV          Service Register
+//	0x002  8  CMPL          Compare Low Register
+//	0x003  8  CMPH          Compare High Register
+//	0x004  8  CLKCTRL       Clock Control Register
+//	0x005  8  CLKPRESCALER  Clock Prescaler Register
+//
 // Import:
-//  github.com/embeddedgo/imxrt/p/mmap
+//
+//	github.com/embeddedgo/imxrt/p/mmap
 package ewm
 
 const (

@@ -5,24 +5,29 @@
 // Package src provides access to the registers of the SRC peripheral.
 //
 // Instances:
-//  SRC  SRC_BASE  -  SRC*
+//
+//	SRC  SRC_BASE  -  SRC*
+//
 // Registers:
-//  0x000 32  SCR    SRC Control Register
-//  0x004 32  SBMR1  SRC Boot Mode Register 1
-//  0x008 32  SRSR   SRC Reset Status Register
-//  0x01C 32  SBMR2  SRC Boot Mode Register 2
-//  0x020 32  GPR1   SRC General Purpose Register 1
-//  0x024 32  GPR2   SRC General Purpose Register 2
-//  0x028 32  GPR3   SRC General Purpose Register 3
-//  0x02C 32  GPR4   SRC General Purpose Register 4
-//  0x030 32  GPR5   SRC General Purpose Register 5
-//  0x034 32  GPR6   SRC General Purpose Register 6
-//  0x038 32  GPR7   SRC General Purpose Register 7
-//  0x03C 32  GPR8   SRC General Purpose Register 8
-//  0x040 32  GPR9   SRC General Purpose Register 9
-//  0x044 32  GPR10  SRC General Purpose Register 10
+//
+//	0x000 32  SCR    SRC Control Register
+//	0x004 32  SBMR1  SRC Boot Mode Register 1
+//	0x008 32  SRSR   SRC Reset Status Register
+//	0x01C 32  SBMR2  SRC Boot Mode Register 2
+//	0x020 32  GPR1   SRC General Purpose Register 1
+//	0x024 32  GPR2   SRC General Purpose Register 2
+//	0x028 32  GPR3   SRC General Purpose Register 3
+//	0x02C 32  GPR4   SRC General Purpose Register 4
+//	0x030 32  GPR5   SRC General Purpose Register 5
+//	0x034 32  GPR6   SRC General Purpose Register 6
+//	0x038 32  GPR7   SRC General Purpose Register 7
+//	0x03C 32  GPR8   SRC General Purpose Register 8
+//	0x040 32  GPR9   SRC General Purpose Register 9
+//	0x044 32  GPR10  SRC General Purpose Register 10
+//
 // Import:
-//  github.com/embeddedgo/imxrt/p/mmap
+//
+//	github.com/embeddedgo/imxrt/p/mmap
 package src
 
 const (

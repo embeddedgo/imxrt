@@ -5,16 +5,21 @@
 // Package wdog provides access to the registers of the WDOG peripheral.
 //
 // Instances:
-//  WDOG1  WDOG1_BASE  -  WDOG1*
-//  WDOG2  WDOG2_BASE  -  WDOG2*
+//
+//	WDOG1  WDOG1_BASE  -  WDOG1*
+//	WDOG2  WDOG2_BASE  -  WDOG2*
+//
 // Registers:
-//  0x000 16  WCR   Watchdog Control Register
-//  0x002 16  WSR   Watchdog Service Register
-//  0x004 16  WRSR  Watchdog Reset Status Register
-//  0x006 16  WICR  Watchdog Interrupt Control Register
-//  0x008 16  WMCR  Watchdog Miscellaneous Control Register
+//
+//	0x000 16  WCR   Watchdog Control Register
+//	0x002 16  WSR   Watchdog Service Register
+//	0x004 16  WRSR  Watchdog Reset Status Register
+//	0x006 16  WICR  Watchdog Interrupt Control Register
+//	0x008 16  WMCR  Watchdog Miscellaneous Control Register
+//
 // Import:
-//  github.com/embeddedgo/imxrt/p/mmap
+//
+//	github.com/embeddedgo/imxrt/p/mmap
 package wdog
 
 const (

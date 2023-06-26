@@ -5,22 +5,27 @@
 // Package adc provides access to the registers of the ADC peripheral.
 //
 // Instances:
-//  ADC1  ADC1_BASE  -  ADC1*  Analog-to-Digital Converter
-//  ADC2  ADC2_BASE  -  ADC2*  Analog-to-Digital Converter
+//
+//	ADC1  ADC1_BASE  -  ADC1*  Analog-to-Digital Converter
+//	ADC2  ADC2_BASE  -  ADC2*  Analog-to-Digital Converter
+//
 // Registers:
-//  0x000 32  HC0    Control register for hardware triggers
-//  0x004 32  HC[7]  Control register for hardware triggers
-//  0x020 32  HS     Status register for HW triggers
-//  0x024 32  R0     Data result register for HW triggers
-//  0x028 32  R[7]   Data result register for HW triggers
-//  0x044 32  CFG    Configuration register
-//  0x048 32  GC     General control register
-//  0x04C 32  GS     General status register
-//  0x050 32  CV     Compare value register
-//  0x054 32  OFS    Offset correction value register
-//  0x058 32  CAL    Calibration value register
+//
+//	0x000 32  HC0    Control register for hardware triggers
+//	0x004 32  HC[7]  Control register for hardware triggers
+//	0x020 32  HS     Status register for HW triggers
+//	0x024 32  R0     Data result register for HW triggers
+//	0x028 32  R[7]   Data result register for HW triggers
+//	0x044 32  CFG    Configuration register
+//	0x048 32  GC     General control register
+//	0x04C 32  GS     General status register
+//	0x050 32  CV     Compare value register
+//	0x054 32  OFS    Offset correction value register
+//	0x058 32  CAL    Calibration value register
+//
 // Import:
-//  github.com/embeddedgo/imxrt/p/mmap
+//
+//	github.com/embeddedgo/imxrt/p/mmap
 package adc
 
 const (

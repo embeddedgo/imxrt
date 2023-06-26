@@ -5,66 +5,71 @@
 // Package semc provides access to the registers of the SEMC peripheral.
 //
 // Instances:
-//  SEMC  SEMC_BASE  -  SEMC*
+//
+//	SEMC  SEMC_BASE  -  SEMC*
+//
 // Registers:
-//  0x000 32  MCR       Module Control Register
-//  0x004 32  IOCR      IO Mux Control Register
-//  0x008 32  BMCR0     Master Bus (AXI) Control Register 0
-//  0x00C 32  BMCR1     Master Bus (AXI) Control Register 1
-//  0x010 32  BR0       Base Register 0 (For SDRAM CS0 device)
-//  0x014 32  BR1       Base Register 1 (For SDRAM CS1 device)
-//  0x018 32  BR2       Base Register 2 (For SDRAM CS2 device)
-//  0x01C 32  BR3       Base Register 3 (For SDRAM CS3 device)
-//  0x020 32  BR4       Base Register 4 (For NAND device)
-//  0x024 32  BR5       Base Register 5 (For NOR device)
-//  0x028 32  BR6       Base Register 6 (For PSRAM device)
-//  0x02C 32  BR7       Base Register 7 (For DBI-B (MIPI Display Bus Interface Type B) device)
-//  0x030 32  BR8       Base Register 8 (For NAND device)
-//  0x034 32  DLLCR     DLL Control Register
-//  0x038 32  INTEN     Interrupt Enable Register
-//  0x03C 32  INTR      Interrupt Enable Register
-//  0x040 32  SDRAMCR0  SDRAM control register 0
-//  0x044 32  SDRAMCR1  SDRAM control register 1
-//  0x048 32  SDRAMCR2  SDRAM control register 2
-//  0x04C 32  SDRAMCR3  SDRAM control register 3
-//  0x050 32  NANDCR0   NAND control register 0
-//  0x054 32  NANDCR1   NAND control register 1
-//  0x058 32  NANDCR2   NAND control register 2
-//  0x05C 32  NANDCR3   NAND control register 3
-//  0x060 32  NORCR0    NOR control register 0
-//  0x064 32  NORCR1    NOR control register 1
-//  0x068 32  NORCR2    NOR control register 2
-//  0x06C 32  NORCR3    NOR control register 3
-//  0x070 32  SRAMCR0   SRAM control register 0
-//  0x074 32  SRAMCR1   SRAM control register 1
-//  0x078 32  SRAMCR2   SRAM control register 2
-//  0x07C 32  SRAMCR3   SRAM control register 3
-//  0x080 32  DBICR0    DBI-B control register 0
-//  0x084 32  DBICR1    DBI-B control register 1
-//  0x090 32  IPCR0     IP Command control register 0
-//  0x094 32  IPCR1     IP Command control register 1
-//  0x098 32  IPCR2     IP Command control register 2
-//  0x09C 32  IPCMD     IP Command register
-//  0x0A0 32  IPTXDAT   TX DATA register (for IP Command)
-//  0x0B0 32  IPRXDAT   RX DATA register (for IP Command)
-//  0x0C0 32  STS0      Status register 0
-//  0x0C4 32  STS1      Status register 1
-//  0x0C8 32  STS2      Status register 2
-//  0x0CC 32  STS3      Status register 3
-//  0x0D0 32  STS4      Status register 4
-//  0x0D4 32  STS5      Status register 5
-//  0x0D8 32  STS6      Status register 6
-//  0x0DC 32  STS7      Status register 7
-//  0x0E0 32  STS8      Status register 8
-//  0x0E4 32  STS9      Status register 9
-//  0x0E8 32  STS10     Status register 10
-//  0x0EC 32  STS11     Status register 11
-//  0x0F0 32  STS12     Status register 12
-//  0x0F4 32  STS13     Status register 13
-//  0x0F8 32  STS14     Status register 14
-//  0x0FC 32  STS15     Status register 15
+//
+//	0x000 32  MCR       Module Control Register
+//	0x004 32  IOCR      IO Mux Control Register
+//	0x008 32  BMCR0     Master Bus (AXI) Control Register 0
+//	0x00C 32  BMCR1     Master Bus (AXI) Control Register 1
+//	0x010 32  BR0       Base Register 0 (For SDRAM CS0 device)
+//	0x014 32  BR1       Base Register 1 (For SDRAM CS1 device)
+//	0x018 32  BR2       Base Register 2 (For SDRAM CS2 device)
+//	0x01C 32  BR3       Base Register 3 (For SDRAM CS3 device)
+//	0x020 32  BR4       Base Register 4 (For NAND device)
+//	0x024 32  BR5       Base Register 5 (For NOR device)
+//	0x028 32  BR6       Base Register 6 (For PSRAM device)
+//	0x02C 32  BR7       Base Register 7 (For DBI-B (MIPI Display Bus Interface Type B) device)
+//	0x030 32  BR8       Base Register 8 (For NAND device)
+//	0x034 32  DLLCR     DLL Control Register
+//	0x038 32  INTEN     Interrupt Enable Register
+//	0x03C 32  INTR      Interrupt Enable Register
+//	0x040 32  SDRAMCR0  SDRAM control register 0
+//	0x044 32  SDRAMCR1  SDRAM control register 1
+//	0x048 32  SDRAMCR2  SDRAM control register 2
+//	0x04C 32  SDRAMCR3  SDRAM control register 3
+//	0x050 32  NANDCR0   NAND control register 0
+//	0x054 32  NANDCR1   NAND control register 1
+//	0x058 32  NANDCR2   NAND control register 2
+//	0x05C 32  NANDCR3   NAND control register 3
+//	0x060 32  NORCR0    NOR control register 0
+//	0x064 32  NORCR1    NOR control register 1
+//	0x068 32  NORCR2    NOR control register 2
+//	0x06C 32  NORCR3    NOR control register 3
+//	0x070 32  SRAMCR0   SRAM control register 0
+//	0x074 32  SRAMCR1   SRAM control register 1
+//	0x078 32  SRAMCR2   SRAM control register 2
+//	0x07C 32  SRAMCR3   SRAM control register 3
+//	0x080 32  DBICR0    DBI-B control register 0
+//	0x084 32  DBICR1    DBI-B control register 1
+//	0x090 32  IPCR0     IP Command control register 0
+//	0x094 32  IPCR1     IP Command control register 1
+//	0x098 32  IPCR2     IP Command control register 2
+//	0x09C 32  IPCMD     IP Command register
+//	0x0A0 32  IPTXDAT   TX DATA register (for IP Command)
+//	0x0B0 32  IPRXDAT   RX DATA register (for IP Command)
+//	0x0C0 32  STS0      Status register 0
+//	0x0C4 32  STS1      Status register 1
+//	0x0C8 32  STS2      Status register 2
+//	0x0CC 32  STS3      Status register 3
+//	0x0D0 32  STS4      Status register 4
+//	0x0D4 32  STS5      Status register 5
+//	0x0D8 32  STS6      Status register 6
+//	0x0DC 32  STS7      Status register 7
+//	0x0E0 32  STS8      Status register 8
+//	0x0E4 32  STS9      Status register 9
+//	0x0E8 32  STS10     Status register 10
+//	0x0EC 32  STS11     Status register 11
+//	0x0F0 32  STS12     Status register 12
+//	0x0F4 32  STS13     Status register 13
+//	0x0F8 32  STS14     Status register 14
+//	0x0FC 32  STS15     Status register 15
+//
 // Import:
-//  github.com/embeddedgo/imxrt/p/mmap
+//
+//	github.com/embeddedgo/imxrt/p/mmap
 package semc
 
 const (

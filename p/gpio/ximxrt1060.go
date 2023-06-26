@@ -12,18 +12,18 @@ import (
 )
 
 type Periph struct {
-	DR        mmio.R32[DR]
-	GDIR      mmio.R32[GDIR]
-	PSR       mmio.R32[PSR]
+	DR        mmio.R32[uint32]
+	GDIR      mmio.R32[uint32]
+	PSR       mmio.R32[uint32]
 	ICR1      mmio.R32[ICR1]
 	ICR2      mmio.R32[ICR2]
-	IMR       mmio.R32[IMR]
-	ISR       mmio.R32[ISR]
-	EDGE_SEL  mmio.R32[EDGE_SEL]
+	IMR       mmio.R32[uint32]
+	ISR       mmio.R32[uint32]
+	EDGE_SEL  mmio.R32[uint32]
 	_         [25]uint32
-	DR_SET    mmio.R32[DR_SET]
-	DR_CLEAR  mmio.R32[DR_CLEAR]
-	DR_TOGGLE mmio.R32[DR_TOGGLE]
+	DR_SET    mmio.R32[uint32]
+	DR_CLEAR  mmio.R32[uint32]
+	DR_TOGGLE mmio.R32[uint32]
 }
 
 func GPIO1() *Periph { return (*Periph)(unsafe.Pointer(uintptr(mmap.GPIO1_BASE))) }
@@ -39,12 +39,6 @@ func GPIO9() *Periph { return (*Periph)(unsafe.Pointer(uintptr(mmap.GPIO9_BASE))
 func (p *Periph) BaseAddr() uintptr {
 	return uintptr(unsafe.Pointer(p))
 }
-
-type DR uint32
-
-type GDIR uint32
-
-type PSR uint32
 
 type ICR1 uint32
 
@@ -83,15 +77,3 @@ func IC28_(p *Periph) mmio.RM32[ICR2] { return mmio.RM32[ICR2]{&p.ICR2, IC28} }
 func IC29_(p *Periph) mmio.RM32[ICR2] { return mmio.RM32[ICR2]{&p.ICR2, IC29} }
 func IC30_(p *Periph) mmio.RM32[ICR2] { return mmio.RM32[ICR2]{&p.ICR2, IC30} }
 func IC31_(p *Periph) mmio.RM32[ICR2] { return mmio.RM32[ICR2]{&p.ICR2, IC31} }
-
-type IMR uint32
-
-type ISR uint32
-
-type EDGE_SEL uint32
-
-type DR_SET uint32
-
-type DR_CLEAR uint32
-
-type DR_TOGGLE uint32

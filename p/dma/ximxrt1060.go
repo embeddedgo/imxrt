@@ -325,8 +325,8 @@ type DCHPR uint8
 type STCD struct {
 	SADDR            mmio.R32[SADDR]
 	ATTR_SOFF        mmio.R32[ATTR_SOFF]
+	NBYTES_MLNO      mmio.R32[NBYTES_MLNO]
 	ML_NBYTES        mmio.R32[ML_NBYTES]
-	SLAST            mmio.R32[SLAST]
 	DADDR            mmio.R32[DADDR]
 	ELINK_CITER_DOFF mmio.R32[ELINK_CITER_DOFF]
 	DLASTSGA         mmio.R32[DLASTSGA]
@@ -353,9 +353,13 @@ func SMOD_(p *Periph, i int) mmio.RM32[ATTR_SOFF] {
 	return mmio.RM32[ATTR_SOFF]{&p.TCD[i].ATTR_SOFF, SMOD}
 }
 
-type ML_NBYTES uint32
+type NBYTES_MLNO uint32
 
-type SLAST uint32
+func NBYTES_(p *Periph, i int) mmio.RM32[NBYTES_MLNO] {
+	return mmio.RM32[NBYTES_MLNO]{&p.TCD[i].NBYTES_MLNO, NBYTES}
+}
+
+type ML_NBYTES uint32
 
 type DADDR uint32
 

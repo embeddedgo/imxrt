@@ -5,33 +5,38 @@
 // Package enc provides access to the registers of the ENC peripheral.
 //
 // Instances:
-//  ENC1  ENC1_BASE  -  ENC1*  Quadrature Decoder
-//  ENC2  ENC2_BASE  -  ENC2*  Quadrature Decoder
-//  ENC3  ENC3_BASE  -  ENC3*  Quadrature Decoder
-//  ENC4  ENC4_BASE  -  ENC4*  Quadrature Decoder
+//
+//	ENC1  ENC1_BASE  -  ENC1*  Quadrature Decoder
+//	ENC2  ENC2_BASE  -  ENC2*  Quadrature Decoder
+//	ENC3  ENC3_BASE  -  ENC3*  Quadrature Decoder
+//	ENC4  ENC4_BASE  -  ENC4*  Quadrature Decoder
+//
 // Registers:
-//  0x000 16  CTRL   Control Register
-//  0x002 16  FILT   Input Filter Register
-//  0x004 16  WTR    Watchdog Timeout Register
-//  0x006 16  POSD   Position Difference Counter Register
-//  0x008 16  POSDH  Position Difference Hold Register
-//  0x00A 16  REV    Revolution Counter Register
-//  0x00C 16  REVH   Revolution Hold Register
-//  0x00E 16  UPOS   Upper Position Counter Register
-//  0x010 16  LPOS   Lower Position Counter Register
-//  0x012 16  UPOSH  Upper Position Hold Register
-//  0x014 16  LPOSH  Lower Position Hold Register
-//  0x016 16  UINIT  Upper Initialization Register
-//  0x018 16  LINIT  Lower Initialization Register
-//  0x01A 16  IMR    Input Monitor Register
-//  0x01C 16  TST    Test Register
-//  0x01E 16  CTRL2  Control 2 Register
-//  0x020 16  UMOD   Upper Modulus Register
-//  0x022 16  LMOD   Lower Modulus Register
-//  0x024 16  UCOMP  Upper Position Compare Register
-//  0x026 16  LCOMP  Lower Position Compare Register
+//
+//	0x000 16  CTRL   Control Register
+//	0x002 16  FILT   Input Filter Register
+//	0x004 16  WTR    Watchdog Timeout Register
+//	0x006 16  POSD   Position Difference Counter Register
+//	0x008 16  POSDH  Position Difference Hold Register
+//	0x00A 16  REV    Revolution Counter Register
+//	0x00C 16  REVH   Revolution Hold Register
+//	0x00E 16  UPOS   Upper Position Counter Register
+//	0x010 16  LPOS   Lower Position Counter Register
+//	0x012 16  UPOSH  Upper Position Hold Register
+//	0x014 16  LPOSH  Lower Position Hold Register
+//	0x016 16  UINIT  Upper Initialization Register
+//	0x018 16  LINIT  Lower Initialization Register
+//	0x01A 16  IMR    Input Monitor Register
+//	0x01C 16  TST    Test Register
+//	0x01E 16  CTRL2  Control 2 Register
+//	0x020 16  UMOD   Upper Modulus Register
+//	0x022 16  LMOD   Lower Modulus Register
+//	0x024 16  UCOMP  Upper Position Compare Register
+//	0x026 16  LCOMP  Lower Position Compare Register
+//
 // Import:
-//  github.com/embeddedgo/imxrt/p/mmap
+//
+//	github.com/embeddedgo/imxrt/p/mmap
 package enc
 
 const (

@@ -5,29 +5,34 @@
 // Package gpio provides access to the registers of the GPIO peripheral.
 //
 // Instances:
-//  GPIO1  GPIO1_BASE  -  GPIO1_INT0*,GPIO1_INT1*,GPIO1_INT2*,GPIO1_INT3*,GPIO1_INT4*,GPIO1_INT5*,GPIO1_INT6*,GPIO1_INT7*,GPIO1_Combined_0_15*,GPIO1_Combined_16_31*
-//  GPIO2  GPIO2_BASE  -  GPIO2_Combined_0_15*,GPIO2_Combined_16_31*
-//  GPIO3  GPIO3_BASE  -  GPIO3_Combined_0_15*,GPIO3_Combined_16_31*
-//  GPIO4  GPIO4_BASE  -  GPIO4_Combined_0_15*,GPIO4_Combined_16_31*
-//  GPIO5  GPIO5_BASE  -  GPIO5_Combined_0_15*,GPIO5_Combined_16_31*
-//  GPIO6  GPIO6_BASE  -  GPIO6_7_8_9*
-//  GPIO7  GPIO7_BASE  -  GPIO6_7_8_9*
-//  GPIO8  GPIO8_BASE  -  GPIO6_7_8_9*
-//  GPIO9  GPIO9_BASE  -  GPIO6_7_8_9*
+//
+//	GPIO1  GPIO1_BASE  -  GPIO1_INT0*,GPIO1_INT1*,GPIO1_INT2*,GPIO1_INT3*,GPIO1_INT4*,GPIO1_INT5*,GPIO1_INT6*,GPIO1_INT7*,GPIO1_Combined_0_15*,GPIO1_Combined_16_31*
+//	GPIO2  GPIO2_BASE  -  GPIO2_Combined_0_15*,GPIO2_Combined_16_31*
+//	GPIO3  GPIO3_BASE  -  GPIO3_Combined_0_15*,GPIO3_Combined_16_31*
+//	GPIO4  GPIO4_BASE  -  GPIO4_Combined_0_15*,GPIO4_Combined_16_31*
+//	GPIO5  GPIO5_BASE  -  GPIO5_Combined_0_15*,GPIO5_Combined_16_31*
+//	GPIO6  GPIO6_BASE  -  GPIO6_7_8_9*
+//	GPIO7  GPIO7_BASE  -  GPIO6_7_8_9*
+//	GPIO8  GPIO8_BASE  -  GPIO6_7_8_9*
+//	GPIO9  GPIO9_BASE  -  GPIO6_7_8_9*
+//
 // Registers:
-//  0x000 32  DR         GPIO data register
-//  0x004 32  GDIR       GPIO direction register
-//  0x008 32  PSR        GPIO pad status register
-//  0x00C 32  ICR1       GPIO interrupt configuration register1
-//  0x010 32  ICR2       GPIO interrupt configuration register2
-//  0x014 32  IMR        GPIO interrupt mask register
-//  0x018 32  ISR        GPIO interrupt status register
-//  0x01C 32  EDGE_SEL   GPIO edge select register
-//  0x084 32  DR_SET     GPIO data register SET
-//  0x088 32  DR_CLEAR   GPIO data register CLEAR
-//  0x08C 32  DR_TOGGLE  GPIO data register TOGGLE
+//
+//	0x000 32  DR         GPIO data register
+//	0x004 32  GDIR       GPIO direction register
+//	0x008 32  PSR        GPIO pad status register
+//	0x00C 32  ICR1       GPIO interrupt configuration register1
+//	0x010 32  ICR2       GPIO interrupt configuration register2
+//	0x014 32  IMR        GPIO interrupt mask register
+//	0x018 32  ISR        GPIO interrupt status register
+//	0x01C 32  EDGE_SEL   GPIO edge select register
+//	0x084 32  DR_SET     GPIO data register SET
+//	0x088 32  DR_CLEAR   GPIO data register CLEAR
+//	0x08C 32  DR_TOGGLE  GPIO data register TOGGLE
+//
 // Import:
-//  github.com/embeddedgo/imxrt/p/mmap
+//
+//	github.com/embeddedgo/imxrt/p/mmap
 package gpio
 
 const (
