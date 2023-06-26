@@ -11,69 +11,47 @@
 //
 // Registers:
 //
-//	0x000 32  ID                Identification register
-//	0x004 32  HWGENERAL         Hardware General
-//	0x008 32  HWHOST            Host Hardware Parameters
-//	0x00C 32  HWDEVICE          Device Hardware Parameters
-//	0x010 32  HWTXBUF           TX Buffer Hardware Parameters
-//	0x014 32  HWRXBUF           RX Buffer Hardware Parameters
-//	0x080 32  GPTIMER0LD        General Purpose Timer #0 Load
-//	0x084 32  GPTIMER0CTRL      General Purpose Timer #0 Controller
-//	0x088 32  GPTIMER1LD        General Purpose Timer #1 Load
-//	0x08C 32  GPTIMER1CTRL      General Purpose Timer #1 Controller
-//	0x090 32  SBUSCFG           System Bus Config
-//	0x100  8  CAPLENGTH         Capability Registers Length
-//	0x102 16  HCIVERSION        Host Controller Interface Version
-//	0x104 32  HCSPARAMS         Host Controller Structural Parameters
-//	0x108 32  HCCPARAMS         Host Controller Capability Parameters
-//	0x120 16  DCIVERSION        Device Controller Interface Version
-//	0x124 32  DCCPARAMS         Device Controller Capability Parameters
-//	0x140 32  USBCMD            USB Command Register
-//	0x144 32  USBSTS            USB Status Register
-//	0x148 32  USBINTR           Interrupt Enable Register
-//	0x14C 32  FRINDEX           USB Frame Index
-//	0x154 32  DEVICEADDR        Device Address
-//	0x154 32  PERIODICLISTBASE  Frame List Base Address
-//	0x158 32  ASYNCLISTADDR     Next Asynch. Address
-//	0x158 32  ENDPTLISTADDR     Endpoint List Address
-//	0x160 32  BURSTSIZE         Programmable Burst Size
-//	0x164 32  TXFILLTUNING      TX FIFO Fill Tuning
-//	0x178 32  ENDPTNAK          Endpoint NAK
-//	0x17C 32  ENDPTNAKEN        Endpoint NAK Enable
-//	0x180 32  CONFIGFLAG        Configure Flag Register
-//	0x184 32  PORTSC1           Port Status & Control
-//	0x1A4 32  OTGSC             On-The-Go Status & control
-//	0x1A8 32  USBMODE           USB Device Mode
-//	0x1AC 32  ENDPTSETUPSTAT    Endpoint Setup Status
-//	0x1B0 32  ENDPTPRIME        Endpoint Prime
-//	0x1B4 32  ENDPTFLUSH        Endpoint Flush
-//	0x1B8 32  ENDPTSTAT         Endpoint Status
-//	0x1BC 32  ENDPTCOMPLETE     Endpoint Complete
-//	0x1C0 32  ENDPTCTRL0        Endpoint Control0
-//	0x1C4 32  ENDPTCTRL1        Endpoint Control 1
-//	0x1C8 32  ENDPTCTRL2        Endpoint Control 2
-//	0x1CC 32  ENDPTCTRL3        Endpoint Control 3
-//	0x1D0 32  ENDPTCTRL4        Endpoint Control 4
-//	0x1D4 32  ENDPTCTRL5        Endpoint Control 5
-//	0x1D8 32  ENDPTCTRL6        Endpoint Control 6
-//	0x1DC 32  ENDPTCTRL7        Endpoint Control 7
+//	0x000 32  ID                            Identification register
+//	0x004 32  HWGENERAL                     Hardware General
+//	0x008 32  HWHOST                        Host Hardware Parameters
+//	0x00C 32  HWDEVICE                      Device Hardware Parameters
+//	0x010 32  HWTXBUF                       TX Buffer Hardware Parameters
+//	0x014 32  HWRXBUF                       RX Buffer Hardware Parameters
+//	0x080 32  GPTIMER{LD,CTRL(GPTCTRL)}[2]  General Purpose Timers
+//	0x090 32  SBUSCFG                       System Bus Config
+//	0x100  8  CAPLENGTH                     Capability Registers Length
+//	0x102 16  HCIVERSION                    Host Controller Interface Version
+//	0x104 32  HCSPARAMS                     Host Controller Structural Parameters
+//	0x108 32  HCCPARAMS                     Host Controller Capability Parameters
+//	0x120 16  DCIVERSION                    Device Controller Interface Version
+//	0x124 32  DCCPARAMS                     Device Controller Capability Parameters
+//	0x140 32  USBCMD                        USB Command Register
+//	0x144 32  USBSTS                        USB Status Register
+//	0x148 32  USBINTR                       Interrupt Enable Register
+//	0x14C 32  FRINDEX                       USB Frame Index
+//	0x154 32  DEVICEADDR                    Device Address
+//	0x154 32  PERIODICLISTBASE              Frame List Base Address
+//	0x158 32  ASYNCLISTADDR                 Next Asynch. Address
+//	0x158 32  ENDPTLISTADDR                 Endpoint List Address
+//	0x160 32  BURSTSIZE                     Programmable Burst Size
+//	0x164 32  TXFILLTUNING                  TX FIFO Fill Tuning
+//	0x178 32  ENDPTNAK                      Endpoint NAK
+//	0x17C 32  ENDPTNAKEN                    Endpoint NAK Enable
+//	0x180 32  CONFIGFLAG                    Configure Flag Register
+//	0x184 32  PORTSC1                       Port Status & Control
+//	0x1A4 32  OTGSC                         On-The-Go Status & control
+//	0x1A8 32  USBMODE                       USB Device Mode
+//	0x1AC 32  ENDPTSETUPSTAT                Endpoint Setup Status
+//	0x1B0 32  ENDPTPRIME                    Endpoint Prime
+//	0x1B4 32  ENDPTFLUSH                    Endpoint Flush
+//	0x1B8 32  ENDPTSTAT                     Endpoint Status
+//	0x1BC 32  ENDPTCOMPLETE                 Endpoint Complete
+//	0x1C4 32  ENDPTCTRL[8]                  Endpoint Control
 //
 // Import:
 //
 //	github.com/embeddedgo/imxrt/p/mmap
 package usb
-
-const (
-	ID       ID = 0x3F << 0  //+ Configuration number
-	NID      ID = 0x3F << 8  //+ Complement version of ID
-	REVISION ID = 0xFF << 16 //+ Revision number of the controller core.
-)
-
-const (
-	IDn       = 0
-	NIDn      = 8
-	REVISIONn = 16
-)
 
 const (
 	PHYW   HWGENERAL = 0x03 << 4 //+ Data width of the transciever connected to the controller core. PHYW bit reset value is
@@ -144,40 +122,10 @@ const (
 )
 
 const (
-	GPTLD GPTIMER0LD = 0xFFFFFF << 0 //+ General Purpose Timer Load Value These bit fields are loaded to GPTCNT bits when GPTRST bit is set '1b'
-)
-
-const (
-	GPTLDn = 0
-)
-
-const (
-	GPTCNT  GPTIMER0CTRL = 0xFFFFFF << 0 //+ General Purpose Timer Counter. This field is the count value of the countdown timer.
-	GPTMODE GPTIMER0CTRL = 0x01 << 24    //+ General Purpose Timer Mode In one shot mode, the timer will count down to zero, generate an interrupt, and stop until the counter is reset by software; In repeat mode, the timer will count down to zero, generate an interrupt and automatically reload the counter value from GPTLD bits to start again
-	GPTRST  GPTIMER0CTRL = 0x01 << 30    //+ General Purpose Timer Reset
-	GPTRUN  GPTIMER0CTRL = 0x01 << 31    //+ General Purpose Timer Run GPTCNT bits are not effected when setting or clearing this bit.
-)
-
-const (
-	GPTCNTn  = 0
-	GPTMODEn = 24
-	GPTRSTn  = 30
-	GPTRUNn  = 31
-)
-
-const (
-	GPTLD GPTIMER1LD = 0xFFFFFF << 0 //+ General Purpose Timer Load Value These bit fields are loaded to GPTCNT bits when GPTRST bit is set '1b'
-)
-
-const (
-	GPTLDn = 0
-)
-
-const (
-	GPTCNT  GPTIMER1CTRL = 0xFFFFFF << 0 //+ General Purpose Timer Counter. This field is the count value of the countdown timer.
-	GPTMODE GPTIMER1CTRL = 0x01 << 24    //+ General Purpose Timer Mode In one shot mode, the timer will count down to zero, generate an interrupt, and stop until the counter is reset by software
-	GPTRST  GPTIMER1CTRL = 0x01 << 30    //+ General Purpose Timer Reset
-	GPTRUN  GPTIMER1CTRL = 0x01 << 31    //+ General Purpose Timer Run GPTCNT bits are not effected when setting or clearing this bit.
+	GPTCNT  GPTCTRL = 0xFFFFFF << 0 //+ General Purpose Timer Counter. This field is the count value of the countdown timer.
+	GPTMODE GPTCTRL = 0x01 << 24    //+ General Purpose Timer Mode In one shot mode, the timer will count down to zero, generate an interrupt, and stop until the counter is reset by software; In repeat mode, the timer will count down to zero, generate an interrupt and automatically reload the counter value from GPTLD bits to start again
+	GPTRST  GPTCTRL = 0x01 << 30    //+ General Purpose Timer Reset
+	GPTRUN  GPTCTRL = 0x01 << 31    //+ General Purpose Timer Run GPTCNT bits are not effected when setting or clearing this bit.
 )
 
 const (
@@ -203,22 +151,6 @@ const (
 )
 
 const (
-	CAPLENGTH CAPLENGTH = 0xFF << 0 //+ These bits are used as an offset to add to register base to find the beginning of the Operational Register
-)
-
-const (
-	CAPLENGTHn = 0
-)
-
-const (
-	HCIVERSION HCIVERSION = 0xFFFF << 0 //+ Host Controller Interface Version Number Default value is '10h', which means EHCI rev1.0.
-)
-
-const (
-	HCIVERSIONn = 0
-)
-
-const (
 	N_PORTS HCSPARAMS = 0x0F << 0  //+ Number of downstream ports
 	PPC     HCSPARAMS = 0x01 << 4  //+ Port Power Control This field indicates whether the host controller implementation includes port power control
 	N_PCC   HCSPARAMS = 0x0F << 8  //+ Number of Ports per Companion Controller This field indicates the number of ports supported per internal Companion Controller
@@ -241,39 +173,31 @@ const (
 )
 
 const (
-	ADC  HCCPARAMS = 0x01 << 0 //+ 64-bit Addressing Capability This bit is set '0b' in all controller core, no 64-bit addressing capability is supported
-	PFL  HCCPARAMS = 0x01 << 1 //+ Programmable Frame List Flag If this bit is set to zero, then the system software must use a frame list length of 1024 elements with this host controller
-	ASP  HCCPARAMS = 0x01 << 2 //+ Asynchronous Schedule Park Capability If this bit is set to a one, then the host controller supports the park feature for high-speed queue heads in the Asynchronous Schedule
-	IST  HCCPARAMS = 0x0F << 4 //+ Isochronous Scheduling Threshold
-	EECP HCCPARAMS = 0xFF << 8 //+ EHCI Extended Capabilities Pointer
+	HPADC  HCCPARAMS = 0x01 << 0 //+ 64-bit Addressing Capability This bit is set '0b' in all controller core, no 64-bit addressing capability is supported
+	HPPFL  HCCPARAMS = 0x01 << 1 //+ Programmable Frame List Flag If this bit is set to zero, then the system software must use a frame list length of 1024 elements with this host controller
+	HPASP  HCCPARAMS = 0x01 << 2 //+ Asynchronous Schedule Park Capability If this bit is set to a one, then the host controller supports the park feature for high-speed queue heads in the Asynchronous Schedule
+	HPIST  HCCPARAMS = 0x0F << 4 //+ Isochronous Scheduling Threshold
+	HPEECP HCCPARAMS = 0xFF << 8 //+ EHCI Extended Capabilities Pointer
 )
 
 const (
-	ADCn  = 0
-	PFLn  = 1
-	ASPn  = 2
-	ISTn  = 4
-	EECPn = 8
+	HPADCn  = 0
+	HPPFLn  = 1
+	HPASPn  = 2
+	HPISTn  = 4
+	HPEECPn = 8
 )
 
 const (
-	DCIVERSION DCIVERSION = 0xFFFF << 0 //+ Device Controller Interface Version Number Default value is '01h', which means rev0.1.
+	DPDEN DCCPARAMS = 0x1F << 0 //+ Device Endpoint Number This field indicates the number of endpoints built into the device controller
+	DPDC  DCCPARAMS = 0x01 << 7 //+ Device Capable When this bit is 1, this controller is capable of operating as a USB 2.0 device.
+	DPHC  DCCPARAMS = 0x01 << 8 //+ Host Capable When this bit is 1, this controller is capable of operating as an EHCI compatible USB 2
 )
 
 const (
-	DCIVERSIONn = 0
-)
-
-const (
-	DEN DCCPARAMS = 0x1F << 0 //+ Device Endpoint Number This field indicates the number of endpoints built into the device controller
-	DC  DCCPARAMS = 0x01 << 7 //+ Device Capable When this bit is 1, this controller is capable of operating as a USB 2.0 device.
-	HC  DCCPARAMS = 0x01 << 8 //+ Host Capable When this bit is 1, this controller is capable of operating as an EHCI compatible USB 2
-)
-
-const (
-	DENn = 0
-	DCn  = 7
-	HCn  = 8
+	DPDENn = 0
+	DPDCn  = 7
+	DPHCn  = 8
 )
 
 const (
@@ -388,22 +312,6 @@ const (
 	UPIEn  = 19
 	TIE0n  = 24
 	TIE1n  = 25
-)
-
-const (
-	FRINDEX   FRINDEX = 0x3FFF << 0 //+ Frame Index
-	FRINDEX_0 FRINDEX = 0x00 << 0   //  (1024) 12
-	FRINDEX_1 FRINDEX = 0x01 << 0   //  (512) 11
-	FRINDEX_2 FRINDEX = 0x02 << 0   //  (256) 10
-	FRINDEX_3 FRINDEX = 0x03 << 0   //  (128) 9
-	FRINDEX_4 FRINDEX = 0x04 << 0   //  (64) 8
-	FRINDEX_5 FRINDEX = 0x05 << 0   //  (32) 7
-	FRINDEX_6 FRINDEX = 0x06 << 0   //  (16) 6
-	FRINDEX_7 FRINDEX = 0x07 << 0   //  (8) 5
-)
-
-const (
-	FRINDEXn = 0
 )
 
 const (
@@ -642,14 +550,6 @@ const (
 )
 
 const (
-	ENDPTSETUPSTAT ENDPTSETUPSTAT = 0xFFFF << 0 //+ Setup Endpoint Status
-)
-
-const (
-	ENDPTSETUPSTATn = 0
-)
-
-const (
 	PERB ENDPTPRIME = 0xFF << 0  //+ Prime Endpoint Receive Buffer - R/WS
 	PETB ENDPTPRIME = 0xFF << 16 //+ Prime Endpoint Transmit Buffer - R/WS
 )
@@ -690,216 +590,18 @@ const (
 )
 
 const (
-	RXS ENDPTCTRL0 = 0x01 << 0  //+ RX Endpoint Stall - Read/Write 0 End Point OK
-	RXT ENDPTCTRL0 = 0x03 << 2  //+ RX Endpoint Type - Read/Write 00 Control Endpoint0 is fixed as a Control End Point.
-	RXE ENDPTCTRL0 = 0x01 << 7  //+ RX Endpoint Enable 1 Enabled Endpoint0 is always enabled.
-	TXS ENDPTCTRL0 = 0x01 << 16 //+ TX Endpoint Stall - Read/Write 0 End Point OK [Default] 1 End Point Stalled Software can write a one to this bit to force the endpoint to return a STALL handshake to the Host
-	TXT ENDPTCTRL0 = 0x03 << 18 //+ TX Endpoint Type - Read/Write 00 - Control Endpoint0 is fixed as a Control End Point.
-	TXE ENDPTCTRL0 = 0x01 << 23 //+ TX Endpoint Enable 1 Enabled Endpoint0 is always enabled.
-)
-
-const (
-	RXSn = 0
-	RXTn = 2
-	RXEn = 7
-	TXSn = 16
-	TXTn = 18
-	TXEn = 23
-)
-
-const (
-	RXS ENDPTCTRL1 = 0x01 << 0  //+ RX Endpoint Stall - Read/Write 0 End Point OK
-	RXD ENDPTCTRL1 = 0x01 << 1  //+ RX Endpoint Data Sink - Read/Write 0 Dual Port Memory Buffer/DMA Engine [Default] Should always be written as zero
-	RXT ENDPTCTRL1 = 0x03 << 2  //+ RX Endpoint Type - Read/Write 00 Control 01 Isochronous 10 Bulk 11 Interrupt
-	RXI ENDPTCTRL1 = 0x01 << 5  //+ RX Data Toggle Inhibit 0 Disabled [Default] 1 Enabled This bit is only used for test and should always be written as zero
-	RXR ENDPTCTRL1 = 0x01 << 6  //+ RX Data Toggle Reset (WS) Write 1 - Reset PID Sequence Whenever a configuration event is received for this Endpoint, software must write a one to this bit in order to synchronize the data PID's between the host and device
-	RXE ENDPTCTRL1 = 0x01 << 7  //+ RX Endpoint Enable 0 Disabled [Default] 1 Enabled An Endpoint should be enabled only after it has been configured
-	TXS ENDPTCTRL1 = 0x01 << 16 //+ TX Endpoint Stall - Read/Write 0 End Point OK 1 End Point Stalled This bit will be cleared automatically upon receipt of a SETUP request if this Endpoint is configured as a Control Endpoint and this bit will continue to be cleared by hardware until the associated ENDPTSETUPSTAT bit is cleared
-	TXD ENDPTCTRL1 = 0x01 << 17 //+ TX Endpoint Data Source - Read/Write 0 Dual Port Memory Buffer/DMA Engine [DEFAULT] Should always be written as 0
-	TXT ENDPTCTRL1 = 0x03 << 18 //+ TX Endpoint Type - Read/Write 00 Control 01 Isochronous 10 Bulk 11 Interrupt
-	TXI ENDPTCTRL1 = 0x01 << 21 //+ TX Data Toggle Inhibit 0 PID Sequencing Enabled
-	TXR ENDPTCTRL1 = 0x01 << 22 //+ TX Data Toggle Reset (WS) Write 1 - Reset PID Sequence Whenever a configuration event is received for this Endpoint, software must write a one to this bit in order to synchronize the data PID's between the Host and device
-	TXE ENDPTCTRL1 = 0x01 << 23 //+ TX Endpoint Enable 0 Disabled [Default] 1 Enabled An Endpoint should be enabled only after it has been configured
-)
-
-const (
-	RXSn = 0
-	RXDn = 1
-	RXTn = 2
-	RXIn = 5
-	RXRn = 6
-	RXEn = 7
-	TXSn = 16
-	TXDn = 17
-	TXTn = 18
-	TXIn = 21
-	TXRn = 22
-	TXEn = 23
-)
-
-const (
-	RXS ENDPTCTRL2 = 0x01 << 0  //+ RX Endpoint Stall - Read/Write 0 End Point OK
-	RXD ENDPTCTRL2 = 0x01 << 1  //+ RX Endpoint Data Sink - Read/Write 0 Dual Port Memory Buffer/DMA Engine [Default] Should always be written as zero
-	RXT ENDPTCTRL2 = 0x03 << 2  //+ RX Endpoint Type - Read/Write 00 Control 01 Isochronous 10 Bulk 11 Interrupt
-	RXI ENDPTCTRL2 = 0x01 << 5  //+ RX Data Toggle Inhibit 0 Disabled [Default] 1 Enabled This bit is only used for test and should always be written as zero
-	RXR ENDPTCTRL2 = 0x01 << 6  //+ RX Data Toggle Reset (WS) Write 1 - Reset PID Sequence Whenever a configuration event is received for this Endpoint, software must write a one to this bit in order to synchronize the data PID's between the host and device
-	RXE ENDPTCTRL2 = 0x01 << 7  //+ RX Endpoint Enable 0 Disabled [Default] 1 Enabled An Endpoint should be enabled only after it has been configured
-	TXS ENDPTCTRL2 = 0x01 << 16 //+ TX Endpoint Stall - Read/Write 0 End Point OK 1 End Point Stalled This bit will be cleared automatically upon receipt of a SETUP request if this Endpoint is configured as a Control Endpoint and this bit will continue to be cleared by hardware until the associated ENDPTSETUPSTAT bit is cleared
-	TXD ENDPTCTRL2 = 0x01 << 17 //+ TX Endpoint Data Source - Read/Write 0 Dual Port Memory Buffer/DMA Engine [DEFAULT] Should always be written as 0
-	TXT ENDPTCTRL2 = 0x03 << 18 //+ TX Endpoint Type - Read/Write 00 Control 01 Isochronous 10 Bulk 11 Interrupt
-	TXI ENDPTCTRL2 = 0x01 << 21 //+ TX Data Toggle Inhibit 0 PID Sequencing Enabled
-	TXR ENDPTCTRL2 = 0x01 << 22 //+ TX Data Toggle Reset (WS) Write 1 - Reset PID Sequence Whenever a configuration event is received for this Endpoint, software must write a one to this bit in order to synchronize the data PID's between the Host and device
-	TXE ENDPTCTRL2 = 0x01 << 23 //+ TX Endpoint Enable 0 Disabled [Default] 1 Enabled An Endpoint should be enabled only after it has been configured
-)
-
-const (
-	RXSn = 0
-	RXDn = 1
-	RXTn = 2
-	RXIn = 5
-	RXRn = 6
-	RXEn = 7
-	TXSn = 16
-	TXDn = 17
-	TXTn = 18
-	TXIn = 21
-	TXRn = 22
-	TXEn = 23
-)
-
-const (
-	RXS ENDPTCTRL3 = 0x01 << 0  //+ RX Endpoint Stall - Read/Write 0 End Point OK
-	RXD ENDPTCTRL3 = 0x01 << 1  //+ RX Endpoint Data Sink - Read/Write 0 Dual Port Memory Buffer/DMA Engine [Default] Should always be written as zero
-	RXT ENDPTCTRL3 = 0x03 << 2  //+ RX Endpoint Type - Read/Write 00 Control 01 Isochronous 10 Bulk 11 Interrupt
-	RXI ENDPTCTRL3 = 0x01 << 5  //+ RX Data Toggle Inhibit 0 Disabled [Default] 1 Enabled This bit is only used for test and should always be written as zero
-	RXR ENDPTCTRL3 = 0x01 << 6  //+ RX Data Toggle Reset (WS) Write 1 - Reset PID Sequence Whenever a configuration event is received for this Endpoint, software must write a one to this bit in order to synchronize the data PID's between the host and device
-	RXE ENDPTCTRL3 = 0x01 << 7  //+ RX Endpoint Enable 0 Disabled [Default] 1 Enabled An Endpoint should be enabled only after it has been configured
-	TXS ENDPTCTRL3 = 0x01 << 16 //+ TX Endpoint Stall - Read/Write 0 End Point OK 1 End Point Stalled This bit will be cleared automatically upon receipt of a SETUP request if this Endpoint is configured as a Control Endpoint and this bit will continue to be cleared by hardware until the associated ENDPTSETUPSTAT bit is cleared
-	TXD ENDPTCTRL3 = 0x01 << 17 //+ TX Endpoint Data Source - Read/Write 0 Dual Port Memory Buffer/DMA Engine [DEFAULT] Should always be written as 0
-	TXT ENDPTCTRL3 = 0x03 << 18 //+ TX Endpoint Type - Read/Write 00 Control 01 Isochronous 10 Bulk 11 Interrupt
-	TXI ENDPTCTRL3 = 0x01 << 21 //+ TX Data Toggle Inhibit 0 PID Sequencing Enabled
-	TXR ENDPTCTRL3 = 0x01 << 22 //+ TX Data Toggle Reset (WS) Write 1 - Reset PID Sequence Whenever a configuration event is received for this Endpoint, software must write a one to this bit in order to synchronize the data PID's between the Host and device
-	TXE ENDPTCTRL3 = 0x01 << 23 //+ TX Endpoint Enable 0 Disabled [Default] 1 Enabled An Endpoint should be enabled only after it has been configured
-)
-
-const (
-	RXSn = 0
-	RXDn = 1
-	RXTn = 2
-	RXIn = 5
-	RXRn = 6
-	RXEn = 7
-	TXSn = 16
-	TXDn = 17
-	TXTn = 18
-	TXIn = 21
-	TXRn = 22
-	TXEn = 23
-)
-
-const (
-	RXS ENDPTCTRL4 = 0x01 << 0  //+ RX Endpoint Stall - Read/Write 0 End Point OK
-	RXD ENDPTCTRL4 = 0x01 << 1  //+ RX Endpoint Data Sink - Read/Write 0 Dual Port Memory Buffer/DMA Engine [Default] Should always be written as zero
-	RXT ENDPTCTRL4 = 0x03 << 2  //+ RX Endpoint Type - Read/Write 00 Control 01 Isochronous 10 Bulk 11 Interrupt
-	RXI ENDPTCTRL4 = 0x01 << 5  //+ RX Data Toggle Inhibit 0 Disabled [Default] 1 Enabled This bit is only used for test and should always be written as zero
-	RXR ENDPTCTRL4 = 0x01 << 6  //+ RX Data Toggle Reset (WS) Write 1 - Reset PID Sequence Whenever a configuration event is received for this Endpoint, software must write a one to this bit in order to synchronize the data PID's between the host and device
-	RXE ENDPTCTRL4 = 0x01 << 7  //+ RX Endpoint Enable 0 Disabled [Default] 1 Enabled An Endpoint should be enabled only after it has been configured
-	TXS ENDPTCTRL4 = 0x01 << 16 //+ TX Endpoint Stall - Read/Write 0 End Point OK 1 End Point Stalled This bit will be cleared automatically upon receipt of a SETUP request if this Endpoint is configured as a Control Endpoint and this bit will continue to be cleared by hardware until the associated ENDPTSETUPSTAT bit is cleared
-	TXD ENDPTCTRL4 = 0x01 << 17 //+ TX Endpoint Data Source - Read/Write 0 Dual Port Memory Buffer/DMA Engine [DEFAULT] Should always be written as 0
-	TXT ENDPTCTRL4 = 0x03 << 18 //+ TX Endpoint Type - Read/Write 00 Control 01 Isochronous 10 Bulk 11 Interrupt
-	TXI ENDPTCTRL4 = 0x01 << 21 //+ TX Data Toggle Inhibit 0 PID Sequencing Enabled
-	TXR ENDPTCTRL4 = 0x01 << 22 //+ TX Data Toggle Reset (WS) Write 1 - Reset PID Sequence Whenever a configuration event is received for this Endpoint, software must write a one to this bit in order to synchronize the data PID's between the Host and device
-	TXE ENDPTCTRL4 = 0x01 << 23 //+ TX Endpoint Enable 0 Disabled [Default] 1 Enabled An Endpoint should be enabled only after it has been configured
-)
-
-const (
-	RXSn = 0
-	RXDn = 1
-	RXTn = 2
-	RXIn = 5
-	RXRn = 6
-	RXEn = 7
-	TXSn = 16
-	TXDn = 17
-	TXTn = 18
-	TXIn = 21
-	TXRn = 22
-	TXEn = 23
-)
-
-const (
-	RXS ENDPTCTRL5 = 0x01 << 0  //+ RX Endpoint Stall - Read/Write 0 End Point OK
-	RXD ENDPTCTRL5 = 0x01 << 1  //+ RX Endpoint Data Sink - Read/Write 0 Dual Port Memory Buffer/DMA Engine [Default] Should always be written as zero
-	RXT ENDPTCTRL5 = 0x03 << 2  //+ RX Endpoint Type - Read/Write 00 Control 01 Isochronous 10 Bulk 11 Interrupt
-	RXI ENDPTCTRL5 = 0x01 << 5  //+ RX Data Toggle Inhibit 0 Disabled [Default] 1 Enabled This bit is only used for test and should always be written as zero
-	RXR ENDPTCTRL5 = 0x01 << 6  //+ RX Data Toggle Reset (WS) Write 1 - Reset PID Sequence Whenever a configuration event is received for this Endpoint, software must write a one to this bit in order to synchronize the data PID's between the host and device
-	RXE ENDPTCTRL5 = 0x01 << 7  //+ RX Endpoint Enable 0 Disabled [Default] 1 Enabled An Endpoint should be enabled only after it has been configured
-	TXS ENDPTCTRL5 = 0x01 << 16 //+ TX Endpoint Stall - Read/Write 0 End Point OK 1 End Point Stalled This bit will be cleared automatically upon receipt of a SETUP request if this Endpoint is configured as a Control Endpoint and this bit will continue to be cleared by hardware until the associated ENDPTSETUPSTAT bit is cleared
-	TXD ENDPTCTRL5 = 0x01 << 17 //+ TX Endpoint Data Source - Read/Write 0 Dual Port Memory Buffer/DMA Engine [DEFAULT] Should always be written as 0
-	TXT ENDPTCTRL5 = 0x03 << 18 //+ TX Endpoint Type - Read/Write 00 Control 01 Isochronous 10 Bulk 11 Interrupt
-	TXI ENDPTCTRL5 = 0x01 << 21 //+ TX Data Toggle Inhibit 0 PID Sequencing Enabled
-	TXR ENDPTCTRL5 = 0x01 << 22 //+ TX Data Toggle Reset (WS) Write 1 - Reset PID Sequence Whenever a configuration event is received for this Endpoint, software must write a one to this bit in order to synchronize the data PID's between the Host and device
-	TXE ENDPTCTRL5 = 0x01 << 23 //+ TX Endpoint Enable 0 Disabled [Default] 1 Enabled An Endpoint should be enabled only after it has been configured
-)
-
-const (
-	RXSn = 0
-	RXDn = 1
-	RXTn = 2
-	RXIn = 5
-	RXRn = 6
-	RXEn = 7
-	TXSn = 16
-	TXDn = 17
-	TXTn = 18
-	TXIn = 21
-	TXRn = 22
-	TXEn = 23
-)
-
-const (
-	RXS ENDPTCTRL6 = 0x01 << 0  //+ RX Endpoint Stall - Read/Write 0 End Point OK
-	RXD ENDPTCTRL6 = 0x01 << 1  //+ RX Endpoint Data Sink - Read/Write 0 Dual Port Memory Buffer/DMA Engine [Default] Should always be written as zero
-	RXT ENDPTCTRL6 = 0x03 << 2  //+ RX Endpoint Type - Read/Write 00 Control 01 Isochronous 10 Bulk 11 Interrupt
-	RXI ENDPTCTRL6 = 0x01 << 5  //+ RX Data Toggle Inhibit 0 Disabled [Default] 1 Enabled This bit is only used for test and should always be written as zero
-	RXR ENDPTCTRL6 = 0x01 << 6  //+ RX Data Toggle Reset (WS) Write 1 - Reset PID Sequence Whenever a configuration event is received for this Endpoint, software must write a one to this bit in order to synchronize the data PID's between the host and device
-	RXE ENDPTCTRL6 = 0x01 << 7  //+ RX Endpoint Enable 0 Disabled [Default] 1 Enabled An Endpoint should be enabled only after it has been configured
-	TXS ENDPTCTRL6 = 0x01 << 16 //+ TX Endpoint Stall - Read/Write 0 End Point OK 1 End Point Stalled This bit will be cleared automatically upon receipt of a SETUP request if this Endpoint is configured as a Control Endpoint and this bit will continue to be cleared by hardware until the associated ENDPTSETUPSTAT bit is cleared
-	TXD ENDPTCTRL6 = 0x01 << 17 //+ TX Endpoint Data Source - Read/Write 0 Dual Port Memory Buffer/DMA Engine [DEFAULT] Should always be written as 0
-	TXT ENDPTCTRL6 = 0x03 << 18 //+ TX Endpoint Type - Read/Write 00 Control 01 Isochronous 10 Bulk 11 Interrupt
-	TXI ENDPTCTRL6 = 0x01 << 21 //+ TX Data Toggle Inhibit 0 PID Sequencing Enabled
-	TXR ENDPTCTRL6 = 0x01 << 22 //+ TX Data Toggle Reset (WS) Write 1 - Reset PID Sequence Whenever a configuration event is received for this Endpoint, software must write a one to this bit in order to synchronize the data PID's between the Host and device
-	TXE ENDPTCTRL6 = 0x01 << 23 //+ TX Endpoint Enable 0 Disabled [Default] 1 Enabled An Endpoint should be enabled only after it has been configured
-)
-
-const (
-	RXSn = 0
-	RXDn = 1
-	RXTn = 2
-	RXIn = 5
-	RXRn = 6
-	RXEn = 7
-	TXSn = 16
-	TXDn = 17
-	TXTn = 18
-	TXIn = 21
-	TXRn = 22
-	TXEn = 23
-)
-
-const (
-	RXS ENDPTCTRL7 = 0x01 << 0  //+ RX Endpoint Stall - Read/Write 0 End Point OK
-	RXD ENDPTCTRL7 = 0x01 << 1  //+ RX Endpoint Data Sink - Read/Write 0 Dual Port Memory Buffer/DMA Engine [Default] Should always be written as zero
-	RXT ENDPTCTRL7 = 0x03 << 2  //+ RX Endpoint Type - Read/Write 00 Control 01 Isochronous 10 Bulk 11 Interrupt
-	RXI ENDPTCTRL7 = 0x01 << 5  //+ RX Data Toggle Inhibit 0 Disabled [Default] 1 Enabled This bit is only used for test and should always be written as zero
-	RXR ENDPTCTRL7 = 0x01 << 6  //+ RX Data Toggle Reset (WS) Write 1 - Reset PID Sequence Whenever a configuration event is received for this Endpoint, software must write a one to this bit in order to synchronize the data PID's between the host and device
-	RXE ENDPTCTRL7 = 0x01 << 7  //+ RX Endpoint Enable 0 Disabled [Default] 1 Enabled An Endpoint should be enabled only after it has been configured
-	TXS ENDPTCTRL7 = 0x01 << 16 //+ TX Endpoint Stall - Read/Write 0 End Point OK 1 End Point Stalled This bit will be cleared automatically upon receipt of a SETUP request if this Endpoint is configured as a Control Endpoint and this bit will continue to be cleared by hardware until the associated ENDPTSETUPSTAT bit is cleared
-	TXD ENDPTCTRL7 = 0x01 << 17 //+ TX Endpoint Data Source - Read/Write 0 Dual Port Memory Buffer/DMA Engine [DEFAULT] Should always be written as 0
-	TXT ENDPTCTRL7 = 0x03 << 18 //+ TX Endpoint Type - Read/Write 00 Control 01 Isochronous 10 Bulk 11 Interrupt
-	TXI ENDPTCTRL7 = 0x01 << 21 //+ TX Data Toggle Inhibit 0 PID Sequencing Enabled
-	TXR ENDPTCTRL7 = 0x01 << 22 //+ TX Data Toggle Reset (WS) Write 1 - Reset PID Sequence Whenever a configuration event is received for this Endpoint, software must write a one to this bit in order to synchronize the data PID's between the Host and device
-	TXE ENDPTCTRL7 = 0x01 << 23 //+ TX Endpoint Enable 0 Disabled [Default] 1 Enabled An Endpoint should be enabled only after it has been configured
+	RXS ENDPTCTRL = 0x01 << 0  //+ RX Endpoint Stall - Read/Write 0 End Point OK
+	RXD ENDPTCTRL = 0x01 << 1  //+ RX Endpoint Data Sink - Read/Write 0 Dual Port Memory Buffer/DMA Engine [Default] Should always be written as zero
+	RXT ENDPTCTRL = 0x03 << 2  //+ RX Endpoint Type - Read/Write 00 Control 01 Isochronous 10 Bulk 11 Interrupt
+	RXI ENDPTCTRL = 0x01 << 5  //+ RX Data Toggle Inhibit 0 Disabled [Default] 1 Enabled This bit is only used for test and should always be written as zero
+	RXR ENDPTCTRL = 0x01 << 6  //+ RX Data Toggle Reset (WS) Write 1 - Reset PID Sequence Whenever a configuration event is received for this Endpoint, software must write a one to this bit in order to synchronize the data PID's between the host and device
+	RXE ENDPTCTRL = 0x01 << 7  //+ RX Endpoint Enable 0 Disabled [Default] 1 Enabled An Endpoint should be enabled only after it has been configured
+	TXS ENDPTCTRL = 0x01 << 16 //+ TX Endpoint Stall - Read/Write 0 End Point OK 1 End Point Stalled This bit will be cleared automatically upon receipt of a SETUP request if this Endpoint is configured as a Control Endpoint and this bit will continue to be cleared by hardware until the associated ENDPTSETUPSTAT bit is cleared
+	TXD ENDPTCTRL = 0x01 << 17 //+ TX Endpoint Data Source - Read/Write 0 Dual Port Memory Buffer/DMA Engine [DEFAULT] Should always be written as 0
+	TXT ENDPTCTRL = 0x03 << 18 //+ TX Endpoint Type - Read/Write 00 Control 01 Isochronous 10 Bulk 11 Interrupt
+	TXI ENDPTCTRL = 0x01 << 21 //+ TX Data Toggle Inhibit 0 PID Sequencing Enabled
+	TXR ENDPTCTRL = 0x01 << 22 //+ TX Data Toggle Reset (WS) Write 1 - Reset PID Sequence Whenever a configuration event is received for this Endpoint, software must write a one to this bit in order to synchronize the data PID's between the Host and device
+	TXE ENDPTCTRL = 0x01 << 23 //+ TX Endpoint Enable 0 Disabled [Default] 1 Enabled An Endpoint should be enabled only after it has been configured
 )
 
 const (
