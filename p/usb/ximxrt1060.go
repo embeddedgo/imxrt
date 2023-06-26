@@ -12,52 +12,51 @@ import (
 )
 
 type Periph struct {
-	ID               mmio.R32[uint32]
-	HWGENERAL        mmio.R32[HWGENERAL]
-	HWHOST           mmio.R32[HWHOST]
-	HWDEVICE         mmio.R32[HWDEVICE]
-	HWTXBUF          mmio.R32[HWTXBUF]
-	HWRXBUF          mmio.R32[HWRXBUF]
-	_                [26]uint32
-	GPTIMER          [2]SGPTIMER
-	SBUSCFG          mmio.R32[SBUSCFG]
-	_                [27]uint32
-	CAPLENGTH        mmio.R8[uint8]
-	_                uint8
-	HCIVERSION       mmio.R16[uint16]
-	HCSPARAMS        mmio.R32[HCSPARAMS]
-	HCCPARAMS        mmio.R32[HCCPARAMS]
-	_                [5]uint32
-	DCIVERSION       mmio.R16[uint16]
-	_                uint16
-	DCCPARAMS        mmio.R32[DCCPARAMS]
-	_                [6]uint32
-	USBCMD           mmio.R32[USBCMD]
-	USBSTS           mmio.R32[USBSTS]
-	USBINTR          mmio.R32[USBINTR]
-	FRINDEX          mmio.R32[uint32]
-	_                uint32
-	DEVICEADDR       mmio.R32[DEVICEADDR]
-	PERIODICLISTBASE mmio.R32[PERIODICLISTBASE]
-	ASYNCLISTADDR    mmio.R32[ASYNCLISTADDR]
-	ENDPTLISTADDR    mmio.R32[ENDPTLISTADDR]
-	BURSTSIZE        mmio.R32[BURSTSIZE]
-	TXFILLTUNING     mmio.R32[TXFILLTUNING]
-	_                [3]uint32
-	ENDPTNAK         mmio.R32[ENDPTNAK]
-	ENDPTNAKEN       mmio.R32[ENDPTNAKEN]
-	CONFIGFLAG       mmio.R32[CONFIGFLAG]
-	PORTSC1          mmio.R32[PORTSC1]
-	_                [7]uint32
-	OTGSC            mmio.R32[OTGSC]
-	USBMODE          mmio.R32[USBMODE]
-	ENDPTSETUPSTAT   mmio.R32[uint32]
-	ENDPTPRIME       mmio.R32[ENDPTPRIME]
-	ENDPTFLUSH       mmio.R32[ENDPTFLUSH]
-	ENDPTSTAT        mmio.R32[ENDPTSTAT]
-	ENDPTCOMPLETE    mmio.R32[ENDPTCOMPLETE]
-	_                uint32
-	ENDPTCTRL        [8]mmio.R32[ENDPTCTRL]
+	ID                  mmio.R32[uint32]
+	HWGENERAL           mmio.R32[HWGENERAL]
+	HWHOST              mmio.R32[HWHOST]
+	HWDEVICE            mmio.R32[HWDEVICE]
+	HWTXBUF             mmio.R32[HWTXBUF]
+	HWRXBUF             mmio.R32[HWRXBUF]
+	_                   [26]uint32
+	GPTIMER             [2]SGPTIMER
+	SBUSCFG             mmio.R32[SBUSCFG]
+	_                   [27]uint32
+	CAPLENGTH           mmio.R8[uint8]
+	_                   uint8
+	HCIVERSION          mmio.R16[uint16]
+	HCSPARAMS           mmio.R32[HCSPARAMS]
+	HCCPARAMS           mmio.R32[HCCPARAMS]
+	_                   [5]uint32
+	DCIVERSION          mmio.R16[uint16]
+	_                   uint16
+	DCCPARAMS           mmio.R32[DCCPARAMS]
+	_                   [6]uint32
+	USBCMD              mmio.R32[USBCMD]
+	USBSTS              mmio.R32[USBSTS]
+	USBINTR             mmio.R32[USBINTR]
+	FRINDEX             mmio.R32[uint32]
+	_                   uint32
+	DEVADDR_PLISTBASE   mmio.R32[uint32]
+	ASYNC_ENDPTLISTADDR mmio.R32[uint32]
+	_                   uint32
+	BURSTSIZE           mmio.R32[BURSTSIZE]
+	TXFILLTUNING        mmio.R32[TXFILLTUNING]
+	_                   [4]uint32
+	ENDPTNAK            mmio.R32[ENDPTNAK]
+	ENDPTNAKEN          mmio.R32[ENDPTNAKEN]
+	CONFIGFLAG          mmio.R32[CONFIGFLAG]
+	PORTSC1             mmio.R32[PORTSC1]
+	_                   [7]uint32
+	OTGSC               mmio.R32[OTGSC]
+	USBMODE             mmio.R32[USBMODE]
+	ENDPTSETUPSTAT      mmio.R32[uint32]
+	ENDPTPRIME          mmio.R32[ENDPTPRIME]
+	ENDPTFLUSH          mmio.R32[ENDPTFLUSH]
+	ENDPTSTAT           mmio.R32[ENDPTSTAT]
+	ENDPTCOMPLETE       mmio.R32[ENDPTCOMPLETE]
+	_                   uint32
+	ENDPTCTRL           [8]mmio.R32[ENDPTCTRL]
 }
 
 func USB1() *Periph { return (*Periph)(unsafe.Pointer(uintptr(mmap.USB1_BASE))) }
@@ -182,29 +181,6 @@ func UAIE_(p *Periph) mmio.RM32[USBINTR]  { return mmio.RM32[USBINTR]{&p.USBINTR
 func UPIE_(p *Periph) mmio.RM32[USBINTR]  { return mmio.RM32[USBINTR]{&p.USBINTR, UPIE} }
 func TIE0_(p *Periph) mmio.RM32[USBINTR]  { return mmio.RM32[USBINTR]{&p.USBINTR, TIE0} }
 func TIE1_(p *Periph) mmio.RM32[USBINTR]  { return mmio.RM32[USBINTR]{&p.USBINTR, TIE1} }
-
-type DEVICEADDR uint32
-
-func USBADRA_(p *Periph) mmio.RM32[DEVICEADDR] { return mmio.RM32[DEVICEADDR]{&p.DEVICEADDR, USBADRA} }
-func USBADR_(p *Periph) mmio.RM32[DEVICEADDR]  { return mmio.RM32[DEVICEADDR]{&p.DEVICEADDR, USBADR} }
-
-type PERIODICLISTBASE uint32
-
-func BASEADR_(p *Periph) mmio.RM32[PERIODICLISTBASE] {
-	return mmio.RM32[PERIODICLISTBASE]{&p.PERIODICLISTBASE, BASEADR}
-}
-
-type ASYNCLISTADDR uint32
-
-func ASYBASE_(p *Periph) mmio.RM32[ASYNCLISTADDR] {
-	return mmio.RM32[ASYNCLISTADDR]{&p.ASYNCLISTADDR, ASYBASE}
-}
-
-type ENDPTLISTADDR uint32
-
-func EPBASE_(p *Periph) mmio.RM32[ENDPTLISTADDR] {
-	return mmio.RM32[ENDPTLISTADDR]{&p.ENDPTLISTADDR, EPBASE}
-}
 
 type BURSTSIZE uint32
 

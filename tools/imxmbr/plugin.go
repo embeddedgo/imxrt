@@ -48,7 +48,7 @@ const (
 	PC = 15
 )
 
-// Plugin code to configure the whole FlexRAM as OCRAM.
+// Plugin code to configure the FlexRAM.
 //
 // By default FlexRAM is configured by fuses 0x6D0[19:16] = 0b0000 which means
 // 128KB 128KB 256KB {O O O O D D I I I I D D O O O O}. If FLEXRAM_BANK_CFG_SEL

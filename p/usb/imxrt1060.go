@@ -29,10 +29,8 @@
 //	0x144 32  USBSTS                        USB Status Register
 //	0x148 32  USBINTR                       Interrupt Enable Register
 //	0x14C 32  FRINDEX                       USB Frame Index
-//	0x154 32  DEVICEADDR                    Device Address
-//	0x154 32  PERIODICLISTBASE              Frame List Base Address
-//	0x158 32  ASYNCLISTADDR                 Next Asynch. Address
-//	0x158 32  ENDPTLISTADDR                 Endpoint List Address
+//	0x154 32  DEVADDR_PLISTBASE             Device Address / Frame List Base Address
+//	0x158 32  ASYNC_ENDPTLISTADDR           Next Asynch. Address / Endpoint List Address
 //	0x160 32  BURSTSIZE                     Programmable Burst Size
 //	0x164 32  TXFILLTUNING                  TX FIFO Fill Tuning
 //	0x178 32  ENDPTNAK                      Endpoint NAK
@@ -312,40 +310,6 @@ const (
 	UPIEn  = 19
 	TIE0n  = 24
 	TIE1n  = 25
-)
-
-const (
-	USBADRA DEVICEADDR = 0x01 << 24 //+ Device Address Advance
-	USBADR  DEVICEADDR = 0x7F << 25 //+ Device Address. These bits correspond to the USB device address
-)
-
-const (
-	USBADRAn = 24
-	USBADRn  = 25
-)
-
-const (
-	BASEADR PERIODICLISTBASE = 0xFFFFF << 12 //+ Base Address (Low)
-)
-
-const (
-	BASEADRn = 12
-)
-
-const (
-	ASYBASE ASYNCLISTADDR = 0x7FFFFFF << 5 //+ Link Pointer Low (LPL)
-)
-
-const (
-	ASYBASEn = 5
-)
-
-const (
-	EPBASE ENDPTLISTADDR = 0x1FFFFF << 11 //+ Endpoint List Pointer(Low)
-)
-
-const (
-	EPBASEn = 11
 )
 
 const (
