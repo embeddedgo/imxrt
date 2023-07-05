@@ -39,7 +39,7 @@ func Setup(d *lpuart.Driver, rx, tx iomux.Pin, conf lpuart.Config, baudrate int,
 
 	// Set a system writer for print, println, panic, etc.
 	uart = d
-	//rtos.SetSystemWriter(write)
+	rtos.SetSystemWriter(write)
 
 	// Setup a serial console (standard input and output).
 	con := termfs.New(name, d, d)

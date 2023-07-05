@@ -147,8 +147,11 @@ func USB_OTG1_Handler() {
 	u := usb.USB1()
 	status := u.USBSTS.Load()
 	u.USBSTS.Store(status)
+
+	leds.User.Toggle()
+	print("USB_OTG1_Handler: ", status, "\r\n")
+
 	if status&usb.UI != 0 {
-		leds.User.SetOn()
 	}
 	if status&usb.URI != 0 {
 

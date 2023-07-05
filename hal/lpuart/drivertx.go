@@ -169,6 +169,8 @@ func (d *Driver) WriteString(s string) (n int, err error) {
 	switch {
 	case len(s) == 0:
 		return
+	case rtos.HandlerMode():
+		return sysWrite(d, s)
 	case len(s) >= 32 && d.txdma.IsValid():
 		// DMA can handle only cache-aligned transfers, because of the required
 		// cache maintenance operations that must don't overlap accidentally.
@@ -264,4 +266,29 @@ func (d *Driver) WriteWord16(w uint16) error {
 // WriteByte implements the io.ByteWriter interface.
 func (d *Driver) WriteByte(b byte) error {
 	return d.WriteWord16(uint16(b))
+}
+
+// sysWrite is called in handler mode. It is used by print and println mainly
+// to print a stack trace before system halt.
+// BUG: multiple cores not supported.
+func sysWrite(d *Driver, s string) (int, error) {
+	var dmux dma.Mux
+	if c := d.txdma; c.IsValid() {
+		dmux = c.Mux()
+		c.SetMux(0) // stop request from LPUART
+		for c.IsReq() {
+			// wait for the end of current request
+		}
+	}
+	p := d.p
+	for _, b := range []byte(s) {
+		for int(p.WATER.LoadBits(TXCOUNT)>>TXCOUNTn) == 1<<d.txlog2max {
+			// busy waiting
+		}
+		p.DATA.Store(uint16(b))
+	}
+	if c := d.txdma; c.IsValid() {
+		c.SetMux(dmux)
+	}
+	return len(s), nil
 }
