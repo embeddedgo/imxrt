@@ -23,8 +23,8 @@ func main() {
 	// aligned buffers. If you have ordinary (non cache-aligned) buffers you
 	// can still use DMA with them but the beginning and end of the buffers may
 	// require special treatment.
-	src := dma.Alloc[uint32](n)
-	dst := dma.Alloc[uint32](n)
+	src := dma.MakeSlice[uint32](n, n)
+	dst := dma.MakeSlice[uint32](n, n)
 
 	// Initialize the source memory with some pattern.
 	for i := range src {

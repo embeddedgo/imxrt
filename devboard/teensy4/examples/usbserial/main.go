@@ -14,6 +14,7 @@ import (
 	"github.com/embeddedgo/imxrt/hal/lpuart"
 	"github.com/embeddedgo/imxrt/hal/lpuart/lpuart1"
 	"github.com/embeddedgo/imxrt/hal/system/console/uartcon"
+	"github.com/embeddedgo/imxrt/hal/system/dtcm"
 	"github.com/embeddedgo/imxrt/p/ccm"
 	"github.com/embeddedgo/imxrt/p/ccm_analog"
 	"github.com/embeddedgo/imxrt/p/pmu"
@@ -97,26 +98,23 @@ func initUSB() {
 	PHY.PWD.Store(0)
 	USB.USBMODE.Store(usb.CM_2 | usb.SLOM)
 
-	dQHList = (*[4]dQH)(unsafe.Pointer(DTCM_ADDR))
+	dQHList := dtcm.MakeSlice[dQH](4096, 4, 4)
 	dQHList[0].epcap = 64<<maxPktLenn | 1<<intOnSetupn
 	dQHList[1].epcap = 64 << maxPktLenn
 
-	USB.ASYNC_ENDPTLISTADDR.Store(uint32(DTCM_ADDR))
+	USB.ASYNC_ENDPTLISTADDR.Store(uint32(uintptr(unsafe.Pointer(&dQHList[0]))))
 
 	irq.USB_OTG1.Enable(rtos.IntPrioLow, 0)
 
 	USB.USBINTR.Store(usb.UE | usb.UEE | usb.URE | usb.SLE)
 
 	USB.USBCMD.Store(usb.RS)
+
+	for i := 0; ; i++ {
+		print("i=", i, " ", USB.ASYNC_ENDPTLISTADDR.Load(), "\r\n")
+		time.Sleep(time.Second)
+	}
 }
-
-// On mbr.img sets the last FlexRAM bank as DTCM (see mkmbr.sh).
-const (
-	DTCM_ADDR uintptr = 0x2000_0000
-	DTCM_SIZE         = 32 * 1024
-)
-
-var dQHList *[4]dQH // must not span 4096 byte page boundary
 
 // Endpoint Queue Head (dQH) must be 64 byte aligned in memory.
 type dQH struct {

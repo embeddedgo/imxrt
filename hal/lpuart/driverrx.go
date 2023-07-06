@@ -33,7 +33,7 @@ func (d *Driver) EnableRx(bufLen int) {
 		if bufLen > 32767 {
 			bufLen = 32767
 		}
-		d.rxbuf = dma.Alloc[uint16](bufLen)
+		d.rxbuf = dma.MakeSlice[uint16](bufLen, bufLen)
 		ptr, size := unsafe.Pointer(&d.rxbuf[0]), len(d.rxbuf)*2
 		rtos.CacheMaint(rtos.DCacheCleanInval, ptr, size)
 		tcd := dma.TCD{
