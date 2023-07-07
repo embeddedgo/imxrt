@@ -335,26 +335,6 @@ const (
 )
 
 const (
-	EPRN ENDPTNAK = 0xFF << 0  //+ RX Endpoint NAK - R/WC
-	EPTN ENDPTNAK = 0xFF << 16 //+ TX Endpoint NAK - R/WC
-)
-
-const (
-	EPRNn = 0
-	EPTNn = 16
-)
-
-const (
-	EPRNE ENDPTNAKEN = 0xFF << 0  //+ RX Endpoint NAK Enable - R/W
-	EPTNE ENDPTNAKEN = 0xFF << 16 //+ TX Endpoint NAK Enable - R/W
-)
-
-const (
-	EPRNEn = 0
-	EPTNEn = 16
-)
-
-const (
 	CF CONFIGFLAG = 0x01 << 0 //+ Configure Flag Host software sets this bit as the last action in its process of configuring the Host Controller
 )
 
@@ -511,46 +491,6 @@ const (
 	ESn   = 2
 	SLOMn = 3
 	SDISn = 4
-)
-
-const (
-	PERB ENDPTPRIME = 0xFF << 0  //+ Prime Endpoint Receive Buffer - R/WS
-	PETB ENDPTPRIME = 0xFF << 16 //+ Prime Endpoint Transmit Buffer - R/WS
-)
-
-const (
-	PERBn = 0
-	PETBn = 16
-)
-
-const (
-	FERB ENDPTFLUSH = 0xFF << 0  //+ Flush Endpoint Receive Buffer - R/WS
-	FETB ENDPTFLUSH = 0xFF << 16 //+ Flush Endpoint Transmit Buffer - R/WS
-)
-
-const (
-	FERBn = 0
-	FETBn = 16
-)
-
-const (
-	ERBR ENDPTSTAT = 0xFF << 0  //+ Endpoint Receive Buffer Ready -- Read Only
-	ETBR ENDPTSTAT = 0xFF << 16 //+ Endpoint Transmit Buffer Ready -- Read Only
-)
-
-const (
-	ERBRn = 0
-	ETBRn = 16
-)
-
-const (
-	ERCE ENDPTCOMPLETE = 0xFF << 0  //+ Endpoint Receive Complete Event - RW/C
-	ETCE ENDPTCOMPLETE = 0xFF << 16 //+ Endpoint Transmit Complete Event - R/WC
-)
-
-const (
-	ERCEn = 0
-	ETCEn = 16
 )
 
 const (

@@ -43,18 +43,18 @@ type Periph struct {
 	BURSTSIZE           mmio.R32[BURSTSIZE]
 	TXFILLTUNING        mmio.R32[TXFILLTUNING]
 	_                   [4]uint32
-	ENDPTNAK            mmio.R32[ENDPTNAK]
-	ENDPTNAKEN          mmio.R32[ENDPTNAKEN]
+	ENDPTNAK            mmio.R32[uint32]
+	ENDPTNAKEN          mmio.R32[uint32]
 	CONFIGFLAG          mmio.R32[CONFIGFLAG]
 	PORTSC1             mmio.R32[PORTSC1]
 	_                   [7]uint32
 	OTGSC               mmio.R32[OTGSC]
 	USBMODE             mmio.R32[USBMODE]
 	ENDPTSETUPSTAT      mmio.R32[uint32]
-	ENDPTPRIME          mmio.R32[ENDPTPRIME]
-	ENDPTFLUSH          mmio.R32[ENDPTFLUSH]
-	ENDPTSTAT           mmio.R32[ENDPTSTAT]
-	ENDPTCOMPLETE       mmio.R32[ENDPTCOMPLETE]
+	ENDPTPRIME          mmio.R32[uint32]
+	ENDPTFLUSH          mmio.R32[uint32]
+	ENDPTSTAT           mmio.R32[uint32]
+	ENDPTCOMPLETE       mmio.R32[uint32]
 	_                   uint32
 	ENDPTCTRL           [8]mmio.R32[ENDPTCTRL]
 }
@@ -199,16 +199,6 @@ func TXFIFOTHRES_(p *Periph) mmio.RM32[TXFILLTUNING] {
 	return mmio.RM32[TXFILLTUNING]{&p.TXFILLTUNING, TXFIFOTHRES}
 }
 
-type ENDPTNAK uint32
-
-func EPRN_(p *Periph) mmio.RM32[ENDPTNAK] { return mmio.RM32[ENDPTNAK]{&p.ENDPTNAK, EPRN} }
-func EPTN_(p *Periph) mmio.RM32[ENDPTNAK] { return mmio.RM32[ENDPTNAK]{&p.ENDPTNAK, EPTN} }
-
-type ENDPTNAKEN uint32
-
-func EPRNE_(p *Periph) mmio.RM32[ENDPTNAKEN] { return mmio.RM32[ENDPTNAKEN]{&p.ENDPTNAKEN, EPRNE} }
-func EPTNE_(p *Periph) mmio.RM32[ENDPTNAKEN] { return mmio.RM32[ENDPTNAKEN]{&p.ENDPTNAKEN, EPTNE} }
-
 type CONFIGFLAG uint32
 
 func CF_(p *Periph) mmio.RM32[CONFIGFLAG] { return mmio.RM32[CONFIGFLAG]{&p.CONFIGFLAG, CF} }
@@ -276,30 +266,6 @@ func CM_(p *Periph) mmio.RM32[USBMODE]   { return mmio.RM32[USBMODE]{&p.USBMODE,
 func ES_(p *Periph) mmio.RM32[USBMODE]   { return mmio.RM32[USBMODE]{&p.USBMODE, ES} }
 func SLOM_(p *Periph) mmio.RM32[USBMODE] { return mmio.RM32[USBMODE]{&p.USBMODE, SLOM} }
 func SDIS_(p *Periph) mmio.RM32[USBMODE] { return mmio.RM32[USBMODE]{&p.USBMODE, SDIS} }
-
-type ENDPTPRIME uint32
-
-func PERB_(p *Periph) mmio.RM32[ENDPTPRIME] { return mmio.RM32[ENDPTPRIME]{&p.ENDPTPRIME, PERB} }
-func PETB_(p *Periph) mmio.RM32[ENDPTPRIME] { return mmio.RM32[ENDPTPRIME]{&p.ENDPTPRIME, PETB} }
-
-type ENDPTFLUSH uint32
-
-func FERB_(p *Periph) mmio.RM32[ENDPTFLUSH] { return mmio.RM32[ENDPTFLUSH]{&p.ENDPTFLUSH, FERB} }
-func FETB_(p *Periph) mmio.RM32[ENDPTFLUSH] { return mmio.RM32[ENDPTFLUSH]{&p.ENDPTFLUSH, FETB} }
-
-type ENDPTSTAT uint32
-
-func ERBR_(p *Periph) mmio.RM32[ENDPTSTAT] { return mmio.RM32[ENDPTSTAT]{&p.ENDPTSTAT, ERBR} }
-func ETBR_(p *Periph) mmio.RM32[ENDPTSTAT] { return mmio.RM32[ENDPTSTAT]{&p.ENDPTSTAT, ETBR} }
-
-type ENDPTCOMPLETE uint32
-
-func ERCE_(p *Periph) mmio.RM32[ENDPTCOMPLETE] {
-	return mmio.RM32[ENDPTCOMPLETE]{&p.ENDPTCOMPLETE, ERCE}
-}
-func ETCE_(p *Periph) mmio.RM32[ENDPTCOMPLETE] {
-	return mmio.RM32[ENDPTCOMPLETE]{&p.ENDPTCOMPLETE, ETCE}
-}
 
 type ENDPTCTRL uint32
 
