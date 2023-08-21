@@ -6,6 +6,8 @@ package usb
 
 import (
 	"embedded/mmio"
+	"embedded/rtos"
+	"fmt"
 	"time"
 	"unsafe"
 
@@ -45,6 +47,16 @@ type Device struct {
 
 	configuration uint8
 	highSpeed     bool
+}
+
+func (d *Device) Print(i int) {
+	qh := &d.dtcm.qhs[i]
+	mmio.MB()
+	fmt.Printf(
+		"%#x qh[%d]: mult=%d zlt=%d maxpkt=%4d ios=%d current=%#x\n",
+		d.u.ENDPTCTRL[i/2].Load(), i, qh.config>>30&3, qh.config>>29&1, qh.config>>16&0x3ff, qh.config>>15&1, qh.current,
+	)
+	qh.overlay.Print()
 }
 
 func NewDevice(controller int) *Device {
@@ -87,16 +99,17 @@ func (d *Device) Init(intPrio int, descriptors map[uint32][]byte, forceFullSpeed
 
 	// Enable power to PHY and select device mode.
 	phy.PWD.Store(0)
-	u.USBMODE.Store(usb.CM_2 | usb.SLOM)
 	if forceFullSpeed {
 		u.PORTSC1.SetBits(usb.PFSC)
 	}
+	u.USBMODE.Store(usb.CM_2 | usb.SLOM) // device mode, setup lockout disabled
 
 	// Setup QHs for EP0.
-	d.dtcm.qhs[0].config = 64<<dqhMaxPktLenShift | dqhIOS // Rx (host OUT)
-	d.dtcm.qhs[1].config = 64 << dqhMaxPktLenShift        // Tx (host IN)
+	d.dtcm.qhs[0].setConfig(64, dqhIOS) // Rx (host OUT)
+	d.dtcm.qhs[1].setConfig(64, 0)      // Tx (host IN)
+	mmio.MB()
 
-	u.ASYNC_ENDPTLISTADDR.Store(uint32(uintptr(unsafe.Pointer(&d.dtcm.qhs))))
+	u.ASYNC_ENDPTLISTADDR.Store(uint32(uintptr(unsafe.Pointer(&d.dtcm.qhs[0]))))
 
 	d.des = descriptors
 
@@ -124,6 +137,7 @@ func (d *Device) ISR() {
 
 	status := u.USBSTS.Load()
 	u.USBSTS.Store(status)
+	print("ISR ", status, "\r\n")
 
 	if status&usb.UI != 0 {
 		print("UI\r\n")
@@ -167,12 +181,18 @@ func (d *Device) ISR() {
 	}
 
 	if status&usb.URI != 0 {
+		// 42.5.6.2.1 Bus Reset
 		print("URI\r\n")
 		u.ENDPTSETUPSTAT.Store(u.ENDPTSETUPSTAT.Load())
 		u.ENDPTCOMPLETE.Store(u.ENDPTCOMPLETE.Load())
 		for u.ENDPTPRIME.Load() != 0 {
 		}
 		u.ENDPTFLUSH.Store(0xffff_ffff)
+		// The above clanup task must be performed before the end of reset.
+		if u.PORTSC1.LoadBits(usb.PR) == 0 {
+			// Too late. End of reset detected. Hardware reset needed.
+			// BUG: Unlikely case, but should be handled nonetheless.
+		}
 	}
 
 	if status&usb.TI0 != 0 {
@@ -184,18 +204,13 @@ func (d *Device) ISR() {
 	}
 
 	if status&usb.PCI != 0 {
-		//print("PCI\r\n")
-		if u.PORTSC1.LoadBits(usb.HSP) != 0 {
-			//print(" high speed\r\f")
-			d.highSpeed = true
-		} else {
-			//print(" full speed\r\f")
-			d.highSpeed = false
-		}
+		print("PCI\r\n")
 	}
 
 	if status&usb.SLI != 0 {
+		// 42.5.6.2.2.1 Suspend
 		print("SLI\r\n")
+		// TODO: It could be signaled somehow to the application.
 	}
 
 	if status&usb.UEI != 0 {
@@ -234,14 +249,19 @@ func setupRequest(d *Device, setup [2]uint32) {
 	siz := int(setup[1] >> 16)
 
 	u := d.u
-	// Standard device/interface/endbpoint requests are handled in ISR directly.
+	// Standard device/interface/endpoint requests are handled in ISR directly.
 	// Other requests are signaled to the handle goroutines.
 	switch typ {
 	case 0x00: // Standard Device Request
+		print("device: ")
 		switch req {
 		case reqGetStatus:
 			print("reqGetStatus\r\n")
-
+			d.dtcm.data[0] = 0
+			d.dtcm.data[1] = 0
+			d.prime(ep0tx, d.dataTD(2))
+			d.prime(ep0rx, d.statusTD())
+			return
 		case reqClearFeature:
 			print("reqClearFeature\r\n")
 
@@ -256,16 +276,20 @@ func setupRequest(d *Device, setup [2]uint32) {
 			return
 		case reqGetDescriptor:
 			print("reqGetDescriptor\r\n")
-			desc := d.des[uint32(val)<<16|uint32(idx)]
-			if n := len(desc); n != 0 {
-				if n > siz {
-					n = siz
-				}
-				n = copy(d.dtcm.data[:], desc[:n])
-				d.prime(ep0tx, d.dataTD(n))
-				d.prime(ep0rx, d.statusTD())
+			desc, ok := d.des[uint32(val)<<16|uint32(idx)]
+			if !ok {
+				print("unknown descr: ", uint32(val)<<16|uint32(idx), "\r\n")
 				return
 			}
+			n := len(desc)
+			if n > siz {
+				n = siz
+			}
+			n = copy(d.dtcm.data[:], desc[:n])
+			d.prime(ep0tx, d.dataTD(n))
+			d.prime(ep0rx, d.statusTD())
+			return
+
 		case reqSetDescriptor:
 			print("reqSetDescriptor\r\n")
 
@@ -278,17 +302,69 @@ func setupRequest(d *Device, setup [2]uint32) {
 
 		case reqSetConfiguration: // enables the device
 			print("reqSetConfiguration\r\n")
-			d.prime(ep0tx, d.statusTD())
+			maxPkt := 64
+			switch u.PORTSC1.LoadBits(usb.PSPD) >> usb.PSPDn {
+			case 0:
+				print(" full speed\r\n")
+			case 1:
+				print(" low speed\r\n")
+			case 2:
+				print(" high speed\r\n")
+				maxPkt = 512
+			default:
+				print(" ??? speed\r\n")
+			}
+
 			d.configuration = uint8(val)
-			u.ENDPTCTRL[2].Store(3<<usb.TXTn | usb.TXR | usb.TXE)
-			u.ENDPTCTRL[3].Store(2<<usb.RXTn | usb.RXR | usb.RXE)
-			u.ENDPTCTRL[4].Store(2<<usb.TXTn | usb.TXR | usb.TXE)
+			// 42.5.6.3.1 Endpoint Initialization
+			// TODO: this must be infered from descriptors
+			d.dtcm.qhs[2*2+1].setConfig(16, 0)
+			d.dtcm.qhs[3*2+0].setConfig(maxPkt, dqhZLT)
+			d.dtcm.qhs[4*2+1].setConfig(maxPkt, dqhZLT)
+			mmio.MB()
+			u.ENDPTCTRL[2].Store(3<<usb.TXTn | usb.TXR | usb.TXE | 2<<usb.RXTn) // interrupt
+			u.ENDPTCTRL[3].Store(2<<usb.RXTn | usb.RXR | usb.RXE | 2<<usb.TXTn) // bulk
+			u.ENDPTCTRL[4].Store(2<<usb.TXTn | usb.TXR | usb.TXE | 2<<usb.RXTn) // bulk
+
+			d.prime(ep0tx, d.statusTD())
 			return
 		}
 	case 0x01: // Standard Interface Request
+		print("interface: ?\r\n")
 
 	case 0x02: // Standard Endpoint Request
-
+		print("endpoint: ")
+		le := idx & 0x7F
+		print("endpoint ", le, ": ")
+		if le > 7 {
+			return
+		}
+		epctl := &u.ENDPTCTRL[le]
+		mask := usb.RXS
+		if idx&0x80 != 0 {
+			mask = usb.TXS
+		}
+		switch req {
+		case reqGetStatus:
+			print("reqGetStatus\r\n")
+			stall := byte(0)
+			if epctl.LoadBits(mask) != 0 {
+				stall = 1
+			}
+			d.dtcm.data[1] = stall
+			d.dtcm.data[1] = 0
+			d.prime(ep0tx, d.dataTD(2))
+			d.prime(ep0rx, d.statusTD())
+		case reqClearFeature:
+			print("reqClearFeature\r\n")
+			epctl.ClearBits(mask)
+			d.prime(ep0tx, d.statusTD())
+		case reqSetFeature:
+			print("reqSetFeature\r\n")
+			epctl.SetBits(mask)
+			d.prime(ep0tx, d.statusTD())
+		}
+		return
 	case 0x21: // Class Interface Request
 		switch req {
 		case reqCDCSetLineCoding:
@@ -299,12 +375,14 @@ func setupRequest(d *Device, setup [2]uint32) {
 
 		case reqCDCSetControlLineState:
 			print("reqCDCSetControlLineState\r\n")
+			// idx contains CDC_STATUS_INTERFACE id to distinguish beetwen
+			// multiple CDC interfaces, val contains RTS DTR config bits.
 			d.prime(ep0tx, d.statusTD())
 			return
 		}
 	}
-	print("unknown: ", setup[0]&0xffff, ", usb stall\r\n")
-	u.ENDPTCTRL[0].Store(usb.RXS | usb.TXS) // stall
+	print("unknown: ", setup[0]&0xffff, " typ=", typ, " req=", req, " val=", val, " usb stall\r\n")
+	u.ENDPTCTRL[0].Store(usb.RXS | usb.TXS) // 42.5.6.3.2 Protocol stall
 }
 
 //go:nosplit
@@ -323,10 +401,10 @@ func (d *Device) dataTD(n int) *DTD {
 }
 
 //go:nosplit
-func (d *Device) prime(he uint, td *DTD) {
-	mask := uint32(1) << (he&1*16 + he>>1)
+func (d *Device) prime(he int, td *DTD) {
+	mask := uint32(1) << (he & 1 * 16) << (he >> 1)
 	u := d.u
-	for u.ENDPTPRIME.Load()&mask != 0 {
+	for (u.ENDPTPRIME.Load()|u.ENDPTSTAT.Load())&mask != 0 {
 		// This is simplified prime algorithm intended to be used in ISR. It can
 		// prime inactive endpoint only (no support for dTD lists).
 	}
@@ -335,4 +413,46 @@ func (d *Device) prime(he uint, td *DTD) {
 	overlay.token = 0       // clear active & halt bit
 	mmio.MB()               // flush CPU buffers to DTCM (not enough for OCRAM)
 	u.ENDPTPRIME.SetBits(mask)
+}
+
+// Prime primes the he hardware endpoint with td.
+func (d *Device) Prime(he int, td *DTD) {
+	qh := &d.dtcm.qhs[he]
+	mask := uint32(1) << (he & 1 * 16) << (he >> 1)
+	u := d.u
+	for {
+		if qh.tail == nil {
+			// The list is empty.
+			qh.overlay.next = td
+			qh.overlay.token = 0 // clear active & halt bit
+			qh.head = td
+			qh.tail = td
+			mmio.MB() // ensure qh is ready before priming
+			fmt.Printf("1 ENDPTPRIME=%#x ", d.u.ENDPTPRIME.Load())
+			u.ENDPTPRIME.SetBits(mask)
+			fmt.Printf("mask=%#x ENDPTPRIME=%#x\n", mask, d.u.ENDPTPRIME.Load())
+			return
+		}
+		// The list is not empty.
+		qh.tail.SetNext(td)
+		rtos.CacheMaint(rtos.DCacheClean, unsafe.Pointer(qh.tail), 32)
+		qh.tail = td
+		if u.ENDPTPRIME.Load()&mask != 0 {
+			fmt.Printf("2 ENDPTPRIME=%#x %#x\n", d.u.ENDPTPRIME.Load(), mask)
+			return
+		}
+		var status uint32
+		for {
+			u.USBCMD.SetBits(usb.ATDTW)
+			status = u.ENDPTSTAT.Load()
+			if u.USBCMD.LoadBits(usb.ATDTW) != 0 {
+				break
+			}
+		}
+		u.USBCMD.ClearBits(usb.ATDTW)
+		if status&mask != 0 {
+			fmt.Printf("3 ENDPTPRIME=%#x %#x\n", d.u.ENDPTPRIME.Load(), mask)
+			return
+		}
+	}
 }

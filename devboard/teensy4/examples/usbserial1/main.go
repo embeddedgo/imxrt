@@ -8,14 +8,17 @@ import (
 	"embedded/rtos"
 	"fmt"
 	"time"
+	"unsafe"
 
 	"github.com/embeddedgo/imxrt/devboard/teensy4/board/pins"
+	"github.com/embeddedgo/imxrt/hal/dtcm"
 	"github.com/embeddedgo/imxrt/hal/lpuart"
 	"github.com/embeddedgo/imxrt/hal/lpuart/lpuart1"
 	"github.com/embeddedgo/imxrt/hal/system/console/uartcon"
 	"github.com/embeddedgo/imxrt/hal/usb"
 
 	"github.com/embeddedgo/imxrt/p/pmu"
+	pusb "github.com/embeddedgo/imxrt/p/usb"
 )
 
 var usbd *usb.Device
@@ -40,12 +43,50 @@ func main() {
 	pmu.PMU().REG_3P0.Store(out3v000 | boo0v150 | pmu.ENABLE_LINREG)
 
 	usbd = usb.NewDevice(1)
-	usbd.Init(rtos.IntPrioLow, descriptors, false)
+	usbd.Init(rtos.IntPrioLow, descriptors, true)
 	usbd.Enable()
 
-	fmt.Println("USB enabled.")
+	fmt.Println("USB enabled. Waiting 2s...")
+
+	time.Sleep(2 * time.Second)
+
+	fmt.Println("Go!")
+
+	/*const txt = "Hello, Wolrd!"
+	  txtd := usb.NewDTD()
+	  txtd.SetupTransfer(unsafe.Pointer(unsafe.StringData(txt)), len(txt))
+	  usbd.Print(4*2 + 1)
+	  txtd.Print()
+	  usbd.Prime(4*2+1, txtd)*/
+
+	var note rtos.Note
+	buf0 := dtcm.MakeSlice[byte](32, 512, 512)
+	buf1 := dtcm.MakeSlice[byte](32, 512, 512)
+	rxtd0 := usb.NewDTD()
+	rxtd0.SetNote(&note)
+	rxtd0.SetupTransfer(unsafe.Pointer(&buf0[0]), len(buf0))
+	rxtd1 := usb.NewDTD()
+	rxtd1.SetNote(&note)
+	rxtd1.SetupTransfer(unsafe.Pointer(&buf1[0]), len(buf1))
+	rxtd0.SetNext(rxtd1)
+	rxtd0.Print()
+	rxtd1.Print()
+	usbd.Print(3 * 2)
+	usbd.Prime(3*2, rxtd0)
+
+	pu := pusb.USB1()
 	for {
-		time.Sleep(time.Second)
+		fmt.Printf(
+			"eprime: %#x estat: %#x ecomplt: %#x nak: %#x\n",
+			pu.ENDPTPRIME.Load(), pu.ENDPTSTAT.Load(), pu.ENDPTCOMPLETE.Load(),
+			pu.ENDPTNAK.Load(),
+		)
+		//usbd.Print(4*2 + 1)
+		//txtd.Print()
+		usbd.Print(3 * 2)
+		rxtd0.Print()
+		rxtd1.Print()
+		time.Sleep(5 * time.Second)
 	}
 }
 

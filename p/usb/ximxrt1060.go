@@ -55,7 +55,6 @@ type Periph struct {
 	ENDPTFLUSH          mmio.R32[uint32]
 	ENDPTSTAT           mmio.R32[uint32]
 	ENDPTCOMPLETE       mmio.R32[uint32]
-	_                   uint32
 	ENDPTCTRL           [8]mmio.R32[ENDPTCTRL]
 }
 

@@ -44,7 +44,7 @@
 //	0x1B4 32  ENDPTFLUSH                    Endpoint Flush
 //	0x1B8 32  ENDPTSTAT                     Endpoint Status
 //	0x1BC 32  ENDPTCOMPLETE                 Endpoint Complete
-//	0x1C4 32  ENDPTCTRL[8]                  Endpoint Control
+//	0x1C0 32  ENDPTCTRL[8]                  Endpoint Control
 //
 // Import:
 //
