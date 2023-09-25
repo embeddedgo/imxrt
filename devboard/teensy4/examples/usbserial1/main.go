@@ -11,7 +11,7 @@ import (
 	"unsafe"
 
 	"github.com/embeddedgo/imxrt/devboard/teensy4/board/pins"
-	"github.com/embeddedgo/imxrt/hal/dtcm"
+	"github.com/embeddedgo/imxrt/hal/dma"
 	"github.com/embeddedgo/imxrt/hal/lpuart"
 	"github.com/embeddedgo/imxrt/hal/lpuart/lpuart1"
 	"github.com/embeddedgo/imxrt/hal/system/console/uartcon"
@@ -60,8 +60,10 @@ func main() {
 	  usbd.Prime(4*2+1, txtd)*/
 
 	var note rtos.Note
-	buf0 := dtcm.MakeSlice[byte](32, 512, 512)
-	buf1 := dtcm.MakeSlice[byte](32, 512, 512)
+	buf0 := dma.MakeSlice[byte](512, 512)
+	rtos.CacheMaint(rtos.DCacheInval, unsafe.Pointer(&buf0[0]), len(buf0))
+	buf1 := dma.MakeSlice[byte](512, 512)
+	rtos.CacheMaint(rtos.DCacheInval, unsafe.Pointer(&buf1[0]), len(buf1))
 	rxtd0 := usb.NewDTD()
 	rxtd0.SetNote(&note)
 	rxtd0.SetupTransfer(unsafe.Pointer(&buf0[0]), len(buf0))

@@ -13,8 +13,8 @@ import (
 )
 
 const (
-	dqhIOS = 1 << 15 // interrupt on setup
-	dqhZLT = 1 << 29 // zero length termination
+	dqhIOS        = 1 << 15 // interrupt on setup
+	dqhDisableZLT = 1 << 29 // zero length termination
 
 	dqhMaxPktLenShift = 16
 )

@@ -8,6 +8,7 @@ import (
 	"embedded/mmio"
 	"embedded/rtos"
 	"fmt"
+	"sync/atomic"
 	"time"
 	"unsafe"
 
@@ -45,8 +46,8 @@ type Device struct {
 	des  map[uint32][]byte
 	dtcm *dtcmem
 
+	configuerd    atomic.Bool
 	configuration uint8
-	highSpeed     bool
 }
 
 func (d *Device) Print(i int) {
@@ -129,6 +130,7 @@ func (d *Device) Enable() {
 
 func (d *Device) Disable() {
 	d.u.USBCMD.ClearBits(usb.RS)
+	d.configured.Store(false)
 }
 
 //go:nosplit
@@ -319,14 +321,15 @@ func setupRequest(d *Device, setup [2]uint32) {
 			// 42.5.6.3.1 Endpoint Initialization
 			// TODO: this must be infered from descriptors
 			d.dtcm.qhs[2*2+1].setConfig(16, 0)
-			d.dtcm.qhs[3*2+0].setConfig(maxPkt, dqhZLT)
-			d.dtcm.qhs[4*2+1].setConfig(maxPkt, dqhZLT)
+			d.dtcm.qhs[3*2+0].setConfig(maxPkt, dqhDisableZLT)
+			d.dtcm.qhs[4*2+1].setConfig(maxPkt, dqhDisableZLT)
 			mmio.MB()
 			u.ENDPTCTRL[2].Store(3<<usb.TXTn | usb.TXR | usb.TXE | 2<<usb.RXTn) // interrupt
 			u.ENDPTCTRL[3].Store(2<<usb.RXTn | usb.RXR | usb.RXE | 2<<usb.TXTn) // bulk
 			u.ENDPTCTRL[4].Store(2<<usb.TXTn | usb.TXR | usb.TXE | 2<<usb.RXTn) // bulk
 
 			d.prime(ep0tx, d.statusTD())
+			d.configured.Store(true)
 			return
 		}
 	case 0x01: // Standard Interface Request
@@ -435,7 +438,7 @@ func (d *Device) Prime(he int, td *DTD) {
 		}
 		// The list is not empty.
 		qh.tail.SetNext(td)
-		rtos.CacheMaint(rtos.DCacheClean, unsafe.Pointer(qh.tail), 32)
+		rtos.CacheMaint(rtos.DCacheFlush, unsafe.Pointer(qh.tail), 32)
 		qh.tail = td
 		if u.ENDPTPRIME.Load()&mask != 0 {
 			fmt.Printf("2 ENDPTPRIME=%#x %#x\n", d.u.ENDPTPRIME.Load(), mask)
