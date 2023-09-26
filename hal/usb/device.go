@@ -6,8 +6,8 @@ package usb
 
 import (
 	"embedded/mmio"
-	"embedded/rtos"
 	"fmt"
+	"sync"
 	"sync/atomic"
 	"time"
 	"unsafe"
@@ -45,8 +45,9 @@ type Device struct {
 	phy  *usbphy.Periph
 	des  map[uint32][]byte
 	dtcm *dtcmem
+	pmu  sync.Mutex // prime mutex
 
-	configuerd    atomic.Bool
+	configured    atomic.Bool
 	configuration uint8
 }
 
@@ -57,7 +58,6 @@ func (d *Device) Print(i int) {
 		"%#x qh[%d]: mult=%d zlt=%d maxpkt=%4d ios=%d current=%#x\n",
 		d.u.ENDPTCTRL[i/2].Load(), i, qh.config>>30&3, qh.config>>29&1, qh.config>>16&0x3ff, qh.config>>15&1, qh.current,
 	)
-	qh.overlay.Print()
 }
 
 func NewDevice(controller int) *Device {
@@ -76,8 +76,8 @@ func NewDevice(controller int) *Device {
 	m := dtcmCache[controller]
 	if m == nil {
 		m = dtcm.New[dtcmem](4096)
-		m.dtd.SetLast()
-		m.std.SetLast()
+		m.dtd.next.Store(dtdEnd)
+		m.std.next.Store(dtdEnd)
 		dtcmCache[controller] = m
 	}
 	d.dtcm = m
@@ -175,10 +175,32 @@ func (d *Device) ISR() {
 			}
 		}
 
-		// Check for completed transactions
+		// Wakeup goroutines that are waiting for IOC.
 		if ec := u.ENDPTCOMPLETE.Load(); ec != 0 {
 			u.ENDPTCOMPLETE.Store(ec) // clear
-
+			ec &^= 1<<16 | 1
+			for he, ec := 2, ec>>1; ec != 0; he, ec = he+2, ec>>1 {
+				if he == 32 {
+					he = 3
+					ec >>= 1
+				}
+				if ec&1 == 0 {
+					continue
+				}
+				qh := &d.dtcm.qhs[he]
+				next := qh.tlist.Load()
+				for next != dtdEnd {
+					td := (*DTD)(unsafe.Pointer(next))
+					if td.token&Active != 0 {
+						break
+					}
+					next = td.next.Load()
+					qh.tlist.Store(next)
+					if td.note != nil {
+						td.note.Wakeup()
+					}
+				}
+			}
 		}
 	}
 
@@ -329,6 +351,7 @@ func setupRequest(d *Device, setup [2]uint32) {
 			u.ENDPTCTRL[4].Store(2<<usb.TXTn | usb.TXR | usb.TXE | 2<<usb.RXTn) // bulk
 
 			d.prime(ep0tx, d.statusTD())
+
 			d.configured.Store(true)
 			return
 		}
@@ -411,51 +434,54 @@ func (d *Device) prime(he int, td *DTD) {
 		// This is simplified prime algorithm intended to be used in ISR. It can
 		// prime inactive endpoint only (no support for dTD lists).
 	}
-	overlay := &d.dtcm.qhs[he].overlay
-	overlay.setNextNoWB(td) // write dQH next pointer AND dQH terminate bit to 0
-	overlay.token = 0       // clear active & halt bit
-	mmio.MB()               // flush CPU buffers to DTCM (not enough for OCRAM)
+	qh := &d.dtcm.qhs[he]
+	qh.next = td.uintptr()
+	qh.token = 0
+	mmio.MB()
 	u.ENDPTPRIME.SetBits(mask)
 }
 
-// Prime primes the he hardware endpoint with td.
-func (d *Device) Prime(he int, td *DTD) {
+// Prime primes the he hardware endpoint with tdl list of transfer descriptors.
+func (d *Device) Prime(he int, tdl *DTD) {
 	qh := &d.dtcm.qhs[he]
-	mask := uint32(1) << (he & 1 * 16) << (he >> 1)
-	u := d.u
+	// Append tdl to the end of he list.
 	for {
-		if qh.tail == nil {
-			// The list is empty.
-			qh.overlay.next = td
-			qh.overlay.token = 0 // clear active & halt bit
-			qh.head = td
-			qh.tail = td
-			mmio.MB() // ensure qh is ready before priming
-			fmt.Printf("1 ENDPTPRIME=%#x ", d.u.ENDPTPRIME.Load())
-			u.ENDPTPRIME.SetBits(mask)
-			fmt.Printf("mask=%#x ENDPTPRIME=%#x\n", mask, d.u.ENDPTPRIME.Load())
-			return
-		}
-		// The list is not empty.
-		qh.tail.SetNext(td)
-		rtos.CacheMaint(rtos.DCacheFlush, unsafe.Pointer(qh.tail), 32)
-		qh.tail = td
-		if u.ENDPTPRIME.Load()&mask != 0 {
-			fmt.Printf("2 ENDPTPRIME=%#x %#x\n", d.u.ENDPTPRIME.Load(), mask)
-			return
-		}
-		var status uint32
+		next := &qh.tlist
 		for {
-			u.USBCMD.SetBits(usb.ATDTW)
-			status = u.ENDPTSTAT.Load()
-			if u.USBCMD.LoadBits(usb.ATDTW) != 0 {
+			p := next.Load()
+			if p == dtdEnd {
 				break
 			}
+			next = &(*DTD)(unsafe.Pointer(p)).next
 		}
-		u.USBCMD.ClearBits(usb.ATDTW)
-		if status&mask != 0 {
-			fmt.Printf("3 ENDPTPRIME=%#x %#x\n", d.u.ENDPTPRIME.Load(), mask)
-			return
+		if next.CompareAndSwap(dtdEnd, tdl.uintptr()) {
+			break
 		}
 	}
+	if !d.configured.Load() {
+		// The qh.tlist will be cleared and all goroutines woken when configured
+		return
+	}
+	mask := uint32(1) << (he & 1 * 16) << (he >> 1)
+	u := d.u
+	if u.ENDPTPRIME.LoadBits(mask) != 0 {
+		return
+	}
+	d.pmu.Lock()
+	var status uint32
+	for {
+		u.USBCMD.SetBits(usb.ATDTW)
+		status = u.ENDPTSTAT.Load()
+		if u.USBCMD.LoadBits(usb.ATDTW) != 0 {
+			break
+		}
+	}
+	u.USBCMD.ClearBits(usb.ATDTW)
+	if status&mask == 0 {
+		qh.next = tdl.uintptr()
+		qh.token = 0
+		mmio.MB()
+		u.ENDPTPRIME.SetBits(mask)
+	}
+	d.pmu.Unlock()
 }

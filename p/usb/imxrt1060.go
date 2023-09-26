@@ -207,7 +207,7 @@ const (
 	IAA    USBCMD = 0x01 << 6  //+ Interrupt on Async Advance Doorbell - Read/Write
 	ASP    USBCMD = 0x03 << 8  //+ Asynchronous Schedule Park Mode Count - Read/Write
 	ASPE   USBCMD = 0x01 << 11 //+ Asynchronous Schedule Park Mode Enable - Read/Write
-	ATDTW  USBCMD = 0x01 << 12 //+ Add dTD TripWire - Read/Write
+	ATDTW  USBCMD = 0x01 << 14 //+ Add dTD TripWire - Read/Write
 	SUTW   USBCMD = 0x01 << 13 //+ Setup TripWire - Read/Write
 	FS_2   USBCMD = 0x01 << 15 //+ See also bits 3-2 Frame List Size - (Read/Write or Read Only)
 	ITC    USBCMD = 0xFF << 16 //+ Interrupt Threshold Control -Read/Write
@@ -230,7 +230,7 @@ const (
 	IAAn   = 6
 	ASPn   = 8
 	ASPEn  = 11
-	ATDTWn = 12
+	ATDTWn = 14
 	SUTWn  = 13
 	FS_2n  = 15
 	ITCn   = 16

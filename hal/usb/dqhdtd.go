@@ -5,11 +5,13 @@
 package usb
 
 import (
+	"embedded/mmio"
 	"embedded/rtos"
 	"fmt"
+	"sync/atomic"
 	"unsafe"
 
-	"github.com/embeddedgo/imxrt/hal/dma"
+	"github.com/embeddedgo/imxrt/hal/dtcm"
 )
 
 const (
@@ -24,91 +26,119 @@ const dtdEnd uintptr = 1
 type dQH struct {
 	config  uint32
 	current uintptr // *DTD
-	overlay DTD
+	next    uintptr // *DTD
+	token   uint32
+	page    [5]uintptr
+	_       uint32
 	setup   [2]uint32
-	head    *DTD
-	tail    *DTD
-	_       [2]uint32 // padding to make dQH 64 bytes in size, unused
+	tlist   atomic.Uintptr // *DTD
+	_       [3]uint32      // padding to make dQH 64 bytes in size, unused
 }
 
 func (qh *dQH) setConfig(maxPktLen int, flags uint32) {
 	qh.config = uint32(maxPktLen)<<dqhMaxPktLenShift | flags
 	qh.current = 0
-	*(*uintptr)(unsafe.Pointer(&qh.overlay.next)) = dtdEnd
+	qh.next = dtdEnd
+	qh.tlist.Store(dtdEnd) // BUG: send notes to all waiting goroutines
 }
 
-// DTD.Token bit fields
+// DTD status
 const (
-	tokActive uint32 = 1 << 7
-	tokMultO  uint32 = 3 << 10
-	tokIOC    uint32 = 1 << 15
+	TransErr   = 1 << 3
+	DataBufErr = 1 << 5
+	Halted     = 1 << 6
+	Active     = 1 << 7
+
+	tokMultO = 3 << 10
+	tokIOC   = 1 << 15
 )
 
+// DTD is a Device Transfer Descriptor. It MUST BE allocated in non-cacheable
+// memory and 32 byte aligned. The NewDTD and MakeSliceDTD functions meet these
+// requirements.
 type DTD struct {
-	next  *DTD
+	next  atomic.Uintptr // not atomic.Pointer[DTD] to avoid write barriers
 	token uint32
 	page  [5]uintptr
-	note  unsafe.Pointer // *rtos.Note or some pointer
+	note  *rtos.Note
 }
 
 func (td *DTD) Print() {
-	rtos.CacheMaint(rtos.DCacheInval, unsafe.Pointer(td), 32)
+	mmio.MB()
 	fmt.Printf(
-		" %p: next=%p len=%3d ioc=%d mult=%d stat=0b%08b %#x\n",
-		td, td.next, td.token>>16&0x7fff,
+		" %p: next=%#x len=%3d ioc=%d mult=%d stat=0b%08b %#x\n",
+		td, td.next.Load(), td.token>>16&0x7fff,
 		td.token>>15&1, td.token>>10&3, td.token&0xff, td.page,
 	)
 }
 
+// NewDTD returns new DTD allocated in non-cacheable memory. Use carefully
+// because the non-cacheable memory isn't managet by the Go garbage collector
+// and there is no any way to release it. The returned DTD is zeroed except for
+// the next field which is set to the termination mark recognized by the USB
+// controler.
 func NewDTD() *DTD {
-	td := dma.New[DTD]()
-	td.next = (*DTD)(unsafe.Pointer(dtdEnd))
+	td := dtcm.New[DTD](32)
+	td.next.Store(dtdEnd)
 	return td
 }
 
+// MakeSliceDTD returns new slice of DTD structs allocated in non-cacheable
+// memory. Use carefully because the non-cacheable memory isn't managet by the
+// Go garbage collector and there is no any way to release it. The returned DTDs
+// are zeroed except for their next fields which are set to the termination
+// mark recognized by the USB controler.
 func MakeSliceDTD(len, cap int) []DTD {
-	tds := dma.MakeSlice[DTD](len, cap)
+	tds := dtcm.MakeSlice[DTD](32, len, cap)
 	for i := range tds {
-		tds[i].next = (*DTD)(unsafe.Pointer(dtdEnd))
+		tds[i].next.Store(dtdEnd)
 	}
 	return tds
 }
 
-// SetNext sets the next field in the DTD to next. Use SetLast to mark this DTD
-// as the last one in the list (don't use nil because the controller doesn't
-// recognize it as termination mark).
+func (td *DTD) uintptr() uintptr {
+	return uintptr(unsafe.Pointer(td))
+}
+
+// Status returns the td.token field. If td is used to prime an USB controller
+// endpoint the returned value is only valid after receiving a note that signals
+// the end of transfer to which this td belongs to.
+//
+// N contains the number bytes in the buffer that remain untransfered. It should
+// equal 0 for the IN (Tx) endpoints.
+//
+// After successful transaction the status byte should equal zero.
+func (td *DTD) Status() (n int, status uint8) {
+	return int(td.token >> 16 & 0x7fff), uint8(td.token & (Active | Halted | DataBufErr | TransErr))
+}
+
+// SetNext sets the td.next field to next. If next == nil the td.next field is
+// set to the termination mark recognized by the USB controller.
 func (td *DTD) SetNext(next *DTD) {
-	td.next = next
-	rtos.CacheMaint(rtos.DCacheFlush, unsafe.Pointer(td), 32)
-}
-
-// SetLast marks this DTD as the last in the DTD list.
-func (td *DTD) SetLast() {
-	td.next = (*DTD)(unsafe.Pointer(dtdEnd))
-	rtos.CacheMaint(rtos.DCacheFlush, unsafe.Pointer(td), 32)
-}
-
-// Next returns a pointer to the next DTD on the DTD lists. It returns nil if
-// the next field is nil or contains a last mark.
-func (td *DTD) Next() *DTD {
-	next := td.next
-	if uintptr(unsafe.Pointer(next)) == dtdEnd {
-		next = nil
+	p := dtdEnd
+	if next != nil {
+		p = uintptr(unsafe.Pointer(next))
 	}
-	return next
+	td.next.Store(p)
 }
 
-func (td *DTD) setNextNoWB(next *DTD) {
-	*(*uintptr)(unsafe.Pointer(&td.next)) = uintptr(unsafe.Pointer(next))
+// Next returns the content of td.next field or nil if equal to the termination
+// mark.
+func (td *DTD) Next() *DTD {
+	p := td.next.Load()
+	if p == dtdEnd {
+		return nil
+	}
+	return (*DTD)(unsafe.Pointer(p))
 }
 
-// SetupTransfer configures d to use the bufer specified by ptr and size for a
+// SetupTransfer configures td to use the buffer specified by ptr and size for a
 // data transfer. As the maximum transfer length that can be handled by single
 // DTD is limited it returns how much of the buffer will be used. The limit
-// depends on the buffer alignment in memory and can be any number from 16 to
-// 20 KiB. The remaining part of the buffer can be transfered using a next DTD
-// in the list or assigned to the same DTD next time. In most cases the bufer
-// requires a cache maintanance (see also dma.New, dma.MakeSlice,
+// depends on the buffer alignment in memory and can be any number from 16 KiB
+// to 20 KiB. The remaining part of the buffer can be transfered using a next
+// DTD in the list or assigned to the same DTD next time. In most cases the
+// bufer requires a cache maintanance (see also dma.New, dma.MakeSlice,
 // rtos.CacheMaint) and  must be keep referenced until the end of transfer to
 // avoid GC. The unsafe.Pointer type is there to remind you of both of these
 // inconveniences.
@@ -130,45 +160,23 @@ func (td *DTD) SetupTransfer(ptr unsafe.Pointer, size int) (n int) {
 			n = size
 		}
 	}
-	td.token = td.token&(tokIOC|tokMultO) | uint32(n<<16) | tokActive
-	rtos.CacheMaint(rtos.DCacheFlush, unsafe.Pointer(td), 32)
+	td.token = td.token&(tokIOC|tokMultO) | uint32(n<<16) | Active
 	return
 }
 
+// SetNote sets the Interrupt On Complete bit (IOC) in the td.token field and
+// the note that will be used by an interrupt handler to communicate the
+// completion of a transfer. As the Go GC may have no access to the td.note
+// field you must keep a reference to the note somewhere. For the same reason
+// the DTD type does not provide a method to obtain td.note. Set note to nil to
+// clear IOC.
+//
+// A woken goroutine should call td.Status to check status bits.
 func (td *DTD) SetNote(note *rtos.Note) {
-	td.note = unsafe.Pointer(note)
+	td.note = note
 	if note != nil {
 		td.token |= tokIOC
 	} else {
 		td.token &^= tokIOC
 	}
-	rtos.CacheMaint(rtos.DCacheFlush, unsafe.Pointer(td), 32)
-}
-
-func (td *DTD) Note() *rtos.Note {
-	return (*rtos.Note)(td.note)
-}
-
-// SetRef can be used to store a pointer in DTD. SetRef shares the same field
-// in DTD that is used by SetNote. It is intended to be used to store a
-// reference to the data buffer set by SetBuf in case you do not want to wait
-// for the transaction to complete and do not want to reuse the buffer again.
-// Storing a reference to the buffer in DTD ensures no GC until the transaction
-// completes.
-func (td *DTD) SetRef(ptr unsafe.Pointer) {
-	td.note = ptr
-	td.token &^= tokIOC
-	rtos.CacheMaint(rtos.DCacheFlush, unsafe.Pointer(td), 32)
-}
-
-func (td *DTD) Ref() unsafe.Pointer {
-	if td.token&tokIOC == 0 {
-		return td.note
-	}
-	return nil
-}
-
-func (td *DTD) Status() uint32 {
-	rtos.CacheMaint(rtos.DCacheInval, unsafe.Pointer(td), 32)
-	return td.token
 }

@@ -43,7 +43,7 @@ func main() {
 	pmu.PMU().REG_3P0.Store(out3v000 | boo0v150 | pmu.ENABLE_LINREG)
 
 	usbd = usb.NewDevice(1)
-	usbd.Init(rtos.IntPrioLow, descriptors, true)
+	usbd.Init(rtos.IntPrioLow, descriptors, false)
 	usbd.Enable()
 
 	fmt.Println("USB enabled. Waiting 2s...")
@@ -52,7 +52,7 @@ func main() {
 
 	fmt.Println("Go!")
 
-	/*const txt = "Hello, Wolrd!"
+	/*const txt = "Hello, World!"
 	  txtd := usb.NewDTD()
 	  txtd.SetupTransfer(unsafe.Pointer(unsafe.StringData(txt)), len(txt))
 	  usbd.Print(4*2 + 1)
@@ -78,6 +78,8 @@ func main() {
 
 	pu := pusb.USB1()
 	for {
+		note.Sleep(-1)
+		note.Clear()
 		fmt.Printf(
 			"eprime: %#x estat: %#x ecomplt: %#x nak: %#x\n",
 			pu.ENDPTPRIME.Load(), pu.ENDPTSTAT.Load(), pu.ENDPTCOMPLETE.Load(),
@@ -88,7 +90,6 @@ func main() {
 		usbd.Print(3 * 2)
 		rxtd0.Print()
 		rxtd1.Print()
-		time.Sleep(5 * time.Second)
 	}
 }
 
