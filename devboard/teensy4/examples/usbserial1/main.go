@@ -18,7 +18,6 @@ import (
 	"github.com/embeddedgo/imxrt/hal/usb"
 
 	"github.com/embeddedgo/imxrt/p/pmu"
-	pusb "github.com/embeddedgo/imxrt/p/usb"
 )
 
 var usbd *usb.Device
@@ -46,50 +45,58 @@ func main() {
 	usbd.Init(rtos.IntPrioLow, descriptors, false)
 	usbd.Enable()
 
-	fmt.Println("USB enabled. Waiting 2s...")
-
-	time.Sleep(2 * time.Second)
-
-	fmt.Println("Go!")
-
-	/*const txt = "Hello, World!"
-	  txtd := usb.NewDTD()
-	  txtd.SetupTransfer(unsafe.Pointer(unsafe.StringData(txt)), len(txt))
-	  usbd.Print(4*2 + 1)
-	  txtd.Print()
-	  usbd.Prime(4*2+1, txtd)*/
-
 	var note rtos.Note
-	buf0 := dma.MakeSlice[byte](512, 512)
-	rtos.CacheMaint(rtos.DCacheInval, unsafe.Pointer(&buf0[0]), len(buf0))
-	buf1 := dma.MakeSlice[byte](512, 512)
-	rtos.CacheMaint(rtos.DCacheInval, unsafe.Pointer(&buf1[0]), len(buf1))
-	rxtd0 := usb.NewDTD()
-	rxtd0.SetNote(&note)
-	rxtd0.SetupTransfer(unsafe.Pointer(&buf0[0]), len(buf0))
-	rxtd1 := usb.NewDTD()
-	rxtd1.SetNote(&note)
-	rxtd1.SetupTransfer(unsafe.Pointer(&buf1[0]), len(buf1))
-	rxtd0.SetNext(rxtd1)
-	rxtd0.Print()
-	rxtd1.Print()
-	usbd.Print(3 * 2)
-	usbd.Prime(3*2, rxtd0)
+	rxe := 2 * 2
+	rxtd := usb.NewDTD()
+	rxtd.SetNote(&note)
+	txe := 2*2 + 1
+	txtd := usb.NewDTD()
+	txtd.SetNote(&note)
+	buf := dma.MakeSlice[byte](512, 512)
 
-	pu := pusb.USB1()
 	for {
-		note.Sleep(-1)
-		note.Clear()
-		fmt.Printf(
-			"eprime: %#x estat: %#x ecomplt: %#x nak: %#x\n",
-			pu.ENDPTPRIME.Load(), pu.ENDPTSTAT.Load(), pu.ENDPTCOMPLETE.Load(),
-			pu.ENDPTNAK.Load(),
+		var (
+			n    int
+			stat uint8
 		)
-		//usbd.Print(4*2 + 1)
-		//txtd.Print()
-		usbd.Print(3 * 2)
-		rxtd0.Print()
-		rxtd1.Print()
+		rtos.CacheMaint(rtos.DCacheInval, unsafe.Pointer(&buf[0]), len(buf))
+		rxtd.SetupTransfer(unsafe.Pointer(&buf[0]), len(buf))
+		note.Clear()
+		for !usbd.Prime(rxe, rxtd) {
+			goto waitForUSB
+		}
+		note.Sleep(-1)
+		n, stat = rxtd.Status()
+		if stat != 0 {
+			if stat&usb.Active != 0 {
+				goto waitForUSB
+			}
+			fmt.Printf("Rx error: 0b%08b\n", stat)
+			time.Sleep(time.Second)
+			continue
+		}
+		n = len(buf) - n
+		fmt.Printf("received %d bytes: %s\n", n, buf[:n])
+		txtd.SetupTransfer(unsafe.Pointer(&buf[0]), n)
+		note.Clear()
+		for !usbd.Prime(txe, txtd) {
+			goto waitForUSB
+		}
+		note.Sleep(-1)
+		_, stat = txtd.Status()
+		if stat != 0 {
+			if stat&usb.Active != 0 {
+				goto waitForUSB
+			}
+			fmt.Printf("Tx error: 0b%08b\n", stat)
+			time.Sleep(time.Second)
+			continue
+		}
+		fmt.Printf("sent %d bytes\n", n)
+		continue
+	waitForUSB:
+		fmt.Println("Waiting for USB...")
+		time.Sleep(100 * time.Millisecond)
 	}
 }
 

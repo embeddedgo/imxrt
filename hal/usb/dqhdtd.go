@@ -5,9 +5,7 @@
 package usb
 
 import (
-	"embedded/mmio"
 	"embedded/rtos"
-	"fmt"
 	"sync/atomic"
 	"unsafe"
 
@@ -39,7 +37,6 @@ func (qh *dQH) setConfig(maxPktLen int, flags uint32) {
 	qh.config = uint32(maxPktLen)<<dqhMaxPktLenShift | flags
 	qh.current = 0
 	qh.next = dtdEnd
-	qh.tlist.Store(dtdEnd) // BUG: send notes to all waiting goroutines
 }
 
 // DTD status
@@ -63,6 +60,7 @@ type DTD struct {
 	note  *rtos.Note
 }
 
+/*
 func (td *DTD) Print() {
 	mmio.MB()
 	fmt.Printf(
@@ -71,6 +69,7 @@ func (td *DTD) Print() {
 		td.token>>15&1, td.token>>10&3, td.token&0xff, td.page,
 	)
 }
+*/
 
 // NewDTD returns new DTD allocated in non-cacheable memory. Use carefully
 // because the non-cacheable memory isn't managet by the Go garbage collector
@@ -100,14 +99,17 @@ func (td *DTD) uintptr() uintptr {
 	return uintptr(unsafe.Pointer(td))
 }
 
-// Status returns the td.token field. If td is used to prime an USB controller
-// endpoint the returned value is only valid after receiving a note that signals
-// the end of transfer to which this td belongs to.
+// Status returns a transfer status. If td was used to prime an USB controller
+// endpoint the returned value is only valid after waking up from the note.Sleep
+// (see SetNote method) that signals the end of transfer to which this td
+// belongs to.
 //
-// N contains the number bytes in the buffer that remain untransfered. It should
-// equal 0 for the IN (Tx) endpoints.
+// N contains the number of bytes in the buffer that remain untransfered.
 //
-// After successful transaction the status byte should equal zero.
+// After a successful transaction, the status byte should be zero. If not zero,
+// the Active bit means unfinished transfer due to the Bus Reset and the
+// meanings of the remaining bits (Halted, DataBufErr, TransErr) can be found
+// in the documentation of the Endpoint Transfer Descriptor (dTD).
 func (td *DTD) Status() (n int, status uint8) {
 	return int(td.token >> 16 & 0x7fff), uint8(td.token & (Active | Halted | DataBufErr | TransErr))
 }
@@ -165,13 +167,16 @@ func (td *DTD) SetupTransfer(ptr unsafe.Pointer, size int) (n int) {
 }
 
 // SetNote sets the Interrupt On Complete bit (IOC) in the td.token field and
-// the note that will be used by an interrupt handler to communicate the
+// a note that will be used by an interrupt handler to communicate the
 // completion of a transfer. As the Go GC may have no access to the td.note
 // field you must keep a reference to the note somewhere. For the same reason
-// the DTD type does not provide a method to obtain td.note. Set note to nil to
-// clear IOC.
+// the DTD type does not provide a method to obtain the note set.
 //
-// A woken goroutine should call td.Status to check status bits.
+// Set note to nil to clear IOC.
+//
+// After waking up from the note.Sleep the Status method should be used to check
+// status of the transfer. Check all transfer descriptors in the list that may
+// be signaled by this note.
 func (td *DTD) SetNote(note *rtos.Note) {
 	td.note = note
 	if note != nil {

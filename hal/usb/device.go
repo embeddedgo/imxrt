@@ -29,7 +29,7 @@ const (
 	ep0tx = 1
 )
 
-// Use DTCM for buffers that require specific alignment and to avoid cache
+// We use DTCM for buffers that require specific alignment and to avoid cache
 // maintenance operations for EP0 transactions in ISR.
 type dtcmem struct {
 	qhs  [leNum * 2]dQH // queue heads, 1024 B, requires 4096 alignment
@@ -80,6 +80,9 @@ func NewDevice(controller int) *Device {
 		m.std.next.Store(dtdEnd)
 		dtcmCache[controller] = m
 	}
+	for he := range m.qhs {
+		m.qhs[he].tlist.Store(dtdEnd)
+	}
 	d.dtcm = m
 	return d
 }
@@ -129,21 +132,17 @@ func (d *Device) Enable() {
 }
 
 func (d *Device) Disable() {
-	d.u.USBCMD.ClearBits(usb.RS)
 	d.configured.Store(false)
+	d.u.USBCMD.ClearBits(usb.RS)
 }
 
 //go:nosplit
 func (d *Device) ISR() {
 	u := d.u
-
 	status := u.USBSTS.Load()
 	u.USBSTS.Store(status)
-	print("ISR ", status, "\r\n")
 
 	if status&usb.UI != 0 {
-		print("UI\r\n")
-
 		// Check for setup reques
 		for {
 			ess := u.ENDPTSETUPSTAT.Load() & (1<<leNum - 1)
@@ -175,9 +174,10 @@ func (d *Device) ISR() {
 			}
 		}
 
-		// Wakeup goroutines that are waiting for IOC.
 		if ec := u.ENDPTCOMPLETE.Load(); ec != 0 {
 			u.ENDPTCOMPLETE.Store(ec) // clear
+			// Remove completed DTDs from tlists and wakeup the goroutines that
+			// waiting for them.
 			ec &^= 1<<16 | 1
 			for he, ec := 2, ec>>1; ec != 0; he, ec = he+2, ec>>1 {
 				if he == 32 {
@@ -206,7 +206,7 @@ func (d *Device) ISR() {
 
 	if status&usb.URI != 0 {
 		// 42.5.6.2.1 Bus Reset
-		print("URI\r\n")
+		d.configured.Store(false)
 		u.ENDPTSETUPSTAT.Store(u.ENDPTSETUPSTAT.Load())
 		u.ENDPTCOMPLETE.Store(u.ENDPTCOMPLETE.Load())
 		for u.ENDPTPRIME.Load() != 0 {
@@ -215,34 +215,35 @@ func (d *Device) ISR() {
 		// The above clanup task must be performed before the end of reset.
 		if u.PORTSC1.LoadBits(usb.PR) == 0 {
 			// Too late. End of reset detected. Hardware reset needed.
-			// BUG: Unlikely case, but should be handled nonetheless.
+			// BUG: Unlikely case, but not handled properly..
+		}
+		// Clean all tlists and wakeup gorutines that waits for the primed
+		// transactions..
+		for he := 2; he < len(d.dtcm.qhs); he++ {
+			next := d.dtcm.qhs[he].tlist.Swap(dtdEnd)
+			for next != dtdEnd {
+				td := (*DTD)(unsafe.Pointer(next))
+				if td.token&Active != 0 && td.note != nil {
+					td.note.Wakeup()
+				}
+				next = td.next.Load()
+			}
 		}
 	}
 
+	if status&usb.SRI != 0 {
+	}
 	if status&usb.TI0 != 0 {
-		print("timer 0\r\n")
 	}
-
 	if status&usb.TI1 != 0 {
-		print("timer 1\r\n")
 	}
-
 	if status&usb.PCI != 0 {
-		print("PCI\r\n")
 	}
-
 	if status&usb.SLI != 0 {
-		// 42.5.6.2.2.1 Suspend
-		print("SLI\r\n")
-		// TODO: It could be signaled somehow to the application.
+		// 42.5.6.2.2.1 Suspend. Could be signaled somehow to the application.
 	}
-
 	if status&usb.UEI != 0 {
-		print("UEI\r\n")
-	}
-
-	if u.USBINTR.LoadBits(usb.SRE) != 0 && status&usb.SRI != 0 {
-		print("reboot\r\n")
+		// BUG: there is no handling of USB errors
 	}
 }
 
@@ -342,14 +343,17 @@ func setupRequest(d *Device, setup [2]uint32) {
 			d.configuration = uint8(val)
 			// 42.5.6.3.1 Endpoint Initialization
 			// TODO: this must be infered from descriptors
-			d.dtcm.qhs[2*2+1].setConfig(16, 0)
-			d.dtcm.qhs[3*2+0].setConfig(maxPkt, dqhDisableZLT)
-			d.dtcm.qhs[4*2+1].setConfig(maxPkt, dqhDisableZLT)
+			const (
+				CDC_ACM_ENDPOINT = 1
+				CDC_RX_ENDPOINT  = 2
+				CDC_TX_ENDPOINT  = 2
+			)
+			d.dtcm.qhs[CDC_ACM_ENDPOINT*2+1].setConfig(16, 0)
+			d.dtcm.qhs[CDC_RX_ENDPOINT*2+0].setConfig(maxPkt, 0)
+			d.dtcm.qhs[CDC_TX_ENDPOINT*2+1].setConfig(maxPkt, 0)
 			mmio.MB()
-			u.ENDPTCTRL[2].Store(3<<usb.TXTn | usb.TXR | usb.TXE | 2<<usb.RXTn) // interrupt
-			u.ENDPTCTRL[3].Store(2<<usb.RXTn | usb.RXR | usb.RXE | 2<<usb.TXTn) // bulk
-			u.ENDPTCTRL[4].Store(2<<usb.TXTn | usb.TXR | usb.TXE | 2<<usb.RXTn) // bulk
-
+			u.ENDPTCTRL[CDC_ACM_ENDPOINT].Store(3<<usb.TXTn | usb.TXR | usb.TXE | 2<<usb.RXTn)                                  // interrupt
+			u.ENDPTCTRL[CDC_RX_ENDPOINT].Store(2<<usb.RXTn | usb.RXR | usb.RXE | 2<<usb.TXTn | usb.TXR | usb.TXE | 2<<usb.RXTn) // bulk, RX + TX
 			d.prime(ep0tx, d.statusTD())
 
 			d.configured.Store(true)
@@ -442,7 +446,18 @@ func (d *Device) prime(he int, td *DTD) {
 }
 
 // Prime primes the he hardware endpoint with tdl list of transfer descriptors.
-func (d *Device) Prime(he int, tdl *DTD) {
+// It reports whether the endpoint was succesfully primed. The device must be
+// in configured state to priming an endpoint succesfully, i.e. Prime alwyas
+// fails in any other device state (powered, attach, reset, default FS/HS).
+//
+// The last descriptor in the tdl must have a note set to provide a way to
+// inform about the end of transfer (see DTD.SetNote). Setting a note for the
+// preceding DTDs in the list is optional and depends on the logical structure
+// of the transfer.
+func (d *Device) Prime(he int, tdl *DTD) (primed bool) {
+	if !d.configured.Load() {
+		return false
+	}
 	qh := &d.dtcm.qhs[he]
 	// Append tdl to the end of he list.
 	for {
@@ -458,14 +473,10 @@ func (d *Device) Prime(he int, tdl *DTD) {
 			break
 		}
 	}
-	if !d.configured.Load() {
-		// The qh.tlist will be cleared and all goroutines woken when configured
-		return
-	}
 	mask := uint32(1) << (he & 1 * 16) << (he >> 1)
 	u := d.u
 	if u.ENDPTPRIME.LoadBits(mask) != 0 {
-		return
+		return true
 	}
 	d.pmu.Lock()
 	var status uint32
@@ -484,4 +495,5 @@ func (d *Device) Prime(he int, tdl *DTD) {
 		u.ENDPTPRIME.SetBits(mask)
 	}
 	d.pmu.Unlock()
+	return true
 }
