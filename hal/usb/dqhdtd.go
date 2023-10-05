@@ -6,6 +6,7 @@ package usb
 
 import (
 	"embedded/rtos"
+	"sync"
 	"sync/atomic"
 	"unsafe"
 
@@ -29,8 +30,9 @@ type dQH struct {
 	page    [5]uintptr
 	_       uint32
 	setup   [2]uint32
-	tlist   atomic.Uintptr // *DTD
-	_       [3]uint32      // padding to make dQH 64 bytes in size, unused
+	active  atomic.Uintptr // *DTD
+	tlist   uintptr        // *DTD
+	mu      sync.Mutex
 }
 
 func (qh *dQH) setConfig(maxPktLen int, flags uint32) {
@@ -46,15 +48,16 @@ const (
 	Halted     = 1 << 6
 	Active     = 1 << 7
 
-	tokMultO = 3 << 10
-	tokIOC   = 1 << 15
+	tokRemove = 1 << 8 // reserved bit, ISR uses it to mark a DTD to be removed
+	tokMultO  = 3 << 10
+	tokIOC    = 1 << 15
 )
 
-// DTD is a Device Transfer Descriptor. It MUST BE allocated in non-cacheable
-// memory and 32 byte aligned. The NewDTD and MakeSliceDTD functions meet these
-// requirements.
+// A DTD is a Device Transfer Descriptor. It MUST BE allocated in the
+// non-cacheable memory and 32 byte aligned. The NewDTD and MakeSliceDTD
+// functions meet these requirements.
 type DTD struct {
-	next  atomic.Uintptr // not atomic.Pointer[DTD] to avoid write barriers
+	next  uintptr // not a *DTD to avoid write barriers
 	token uint32
 	page  [5]uintptr
 	note  *rtos.Note
@@ -71,26 +74,24 @@ func (td *DTD) Print() {
 }
 */
 
-// NewDTD returns new DTD allocated in non-cacheable memory. Use carefully
-// because the non-cacheable memory isn't managet by the Go garbage collector
-// and there is no any way to release it. The returned DTD is zeroed except for
-// the next field which is set to the termination mark recognized by the USB
-// controler.
+// NewDTD returns new DTD allocated in the non-cacheable memory. Use carefully
+// because currently there is no way to release memory allocated this way. The
+// returned DTD is zeroed except for the next field which is set to the
+// termination mark recognized by the USB controler.
 func NewDTD() *DTD {
 	td := dtcm.New[DTD](32)
-	td.next.Store(dtdEnd)
+	td.next = dtdEnd
 	return td
 }
 
 // MakeSliceDTD returns new slice of DTD structs allocated in non-cacheable
-// memory. Use carefully because the non-cacheable memory isn't managet by the
-// Go garbage collector and there is no any way to release it. The returned DTDs
-// are zeroed except for their next fields which are set to the termination
-// mark recognized by the USB controler.
+// memory.  Use carefully because currently there is no way to release memory
+// allocated this way. The returned DTDs are zeroed except for their next fields
+// which are set to the termination mark recognized by the USB controler.
 func MakeSliceDTD(len, cap int) []DTD {
 	tds := dtcm.MakeSlice[DTD](32, len, cap)
 	for i := range tds {
-		tds[i].next.Store(dtdEnd)
+		tds[i].next = dtdEnd
 	}
 	return tds
 }
@@ -121,13 +122,13 @@ func (td *DTD) SetNext(next *DTD) {
 	if next != nil {
 		p = uintptr(unsafe.Pointer(next))
 	}
-	td.next.Store(p)
+	td.next = p
 }
 
 // Next returns the content of td.next field or nil if equal to the termination
 // mark.
 func (td *DTD) Next() *DTD {
-	p := td.next.Load()
+	p := td.next
 	if p == dtdEnd {
 		return nil
 	}

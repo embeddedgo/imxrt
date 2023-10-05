@@ -62,7 +62,7 @@ func main() {
 		rtos.CacheMaint(rtos.DCacheInval, unsafe.Pointer(&buf[0]), len(buf))
 		rxtd.SetupTransfer(unsafe.Pointer(&buf[0]), len(buf))
 		note.Clear()
-		for !usbd.Prime(rxe, rxtd) {
+		for !usbd.Prime(rxe, rxtd, 1) {
 			goto waitForUSB
 		}
 		note.Sleep(-1)
@@ -79,7 +79,7 @@ func main() {
 		fmt.Printf("received %d bytes: %s\n", n, buf[:n])
 		txtd.SetupTransfer(unsafe.Pointer(&buf[0]), n)
 		note.Clear()
-		for !usbd.Prime(txe, txtd) {
+		for !usbd.Prime(txe, txtd, 1) {
 			goto waitForUSB
 		}
 		note.Sleep(-1)

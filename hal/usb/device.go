@@ -6,7 +6,7 @@ package usb
 
 import (
 	"embedded/mmio"
-	"fmt"
+	"embedded/rtos"
 	"sync"
 	"sync/atomic"
 	"time"
@@ -29,6 +29,15 @@ const (
 	ep0tx = 1
 )
 
+type noteNext struct {
+	note rtos.Note
+	next uintptr // *wait
+}
+
+func (nn *noteNext) uintptr() uintptr {
+	return uintptr(unsafe.Pointer(nn))
+}
+
 // We use DTCM for buffers that require specific alignment and to avoid cache
 // maintenance operations for EP0 transactions in ISR.
 type dtcmem struct {
@@ -41,16 +50,17 @@ type dtcmem struct {
 var dtcmCache [2]*dtcmem // cache the allocated DTCM for both USB controllers
 
 type Device struct {
-	u    *usb.Periph
-	phy  *usbphy.Periph
-	des  map[uint32][]byte
-	dtcm *dtcmem
-	pmu  sync.Mutex // prime mutex
-
-	configured    atomic.Bool
-	configuration uint8
+	u      *usb.Periph
+	phy    *usbphy.Periph
+	des    map[uint32][]byte
+	dtcm   *dtcmem
+	pmu    sync.Mutex // prime mutex
+	config atomic.Uint32
+	cwl    atomic.Uintptr // *wait
+	cwlmu  sync.Mutex
 }
 
+/*
 func (d *Device) Print(i int) {
 	qh := &d.dtcm.qhs[i]
 	mmio.MB()
@@ -59,6 +69,7 @@ func (d *Device) Print(i int) {
 		d.u.ENDPTCTRL[i/2].Load(), i, qh.config>>30&3, qh.config>>29&1, qh.config>>16&0x3ff, qh.config>>15&1, qh.current,
 	)
 }
+*/
 
 func NewDevice(controller int) *Device {
 	d := new(Device)
@@ -76,8 +87,8 @@ func NewDevice(controller int) *Device {
 	m := dtcmCache[controller]
 	if m == nil {
 		m = dtcm.New[dtcmem](4096)
-		m.dtd.next.Store(dtdEnd)
-		m.std.next.Store(dtdEnd)
+		m.dtd.next = dtdEnd
+		m.std.next = dtdEnd
 		dtcmCache[controller] = m
 	}
 	for he := range m.qhs {
@@ -132,7 +143,7 @@ func (d *Device) Enable() {
 }
 
 func (d *Device) Disable() {
-	d.configured.Store(false)
+	d.config.Store(0)
 	d.u.USBCMD.ClearBits(usb.RS)
 }
 
@@ -176,8 +187,7 @@ func (d *Device) ISR() {
 
 		if ec := u.ENDPTCOMPLETE.Load(); ec != 0 {
 			u.ENDPTCOMPLETE.Store(ec) // clear
-			// Remove completed DTDs from tlists and wakeup the goroutines that
-			// waiting for them.
+			// Wake up goroutines that wait for the completed transfers.
 			ec &^= 1<<16 | 1
 			for he, ec := 2, ec>>1; ec != 0; he, ec = he+2, ec>>1 {
 				if he == 32 {
@@ -188,16 +198,24 @@ func (d *Device) ISR() {
 					continue
 				}
 				qh := &d.dtcm.qhs[he]
-				next := qh.tlist.Load()
-				for next != dtdEnd {
-					td := (*DTD)(unsafe.Pointer(next))
-					if td.token&Active != 0 {
+				p := qh.active.Swap(0)
+				if p == 0 {
+					continue
+				}
+				for {
+					td := (*DTD)(unsafe.Pointer(p))
+					tok := td.token
+					if tok|Active != 0 {
+						qh.active.Store(td.uintptr())
 						break
 					}
-					next = td.next.Load()
-					qh.tlist.Store(next)
+					p = td.next
+					atomic.StoreUint32(&td.token, tok|tokRemove)
 					if td.note != nil {
 						td.note.Wakeup()
+					}
+					if p == dtdEnd {
+						break
 					}
 				}
 			}
@@ -206,7 +224,7 @@ func (d *Device) ISR() {
 
 	if status&usb.URI != 0 {
 		// 42.5.6.2.1 Bus Reset
-		d.configured.Store(false)
+		d.config.Store(0)
 		u.ENDPTSETUPSTAT.Store(u.ENDPTSETUPSTAT.Load())
 		u.ENDPTCOMPLETE.Store(u.ENDPTCOMPLETE.Load())
 		for u.ENDPTPRIME.Load() != 0 {
@@ -217,16 +235,23 @@ func (d *Device) ISR() {
 			// Too late. End of reset detected. Hardware reset needed.
 			// BUG: Unlikely case, but not handled properly..
 		}
-		// Clean all tlists and wakeup gorutines that waits for the primed
-		// transactions..
+		// Wake up goroutines that still waiting for the end of transfer.
 		for he := 2; he < len(d.dtcm.qhs); he++ {
-			next := d.dtcm.qhs[he].tlist.Swap(dtdEnd)
-			for next != dtdEnd {
-				td := (*DTD)(unsafe.Pointer(next))
-				if td.token&Active != 0 && td.note != nil {
+			qh := &d.dtcm.qhs[he]
+			p := qh.active.Swap(0)
+			if p == 0 {
+				continue
+			}
+			for {
+				td := (*DTD)(unsafe.Pointer(p))
+				p = td.next
+				atomic.StoreUint32(&td.token, td.token|tokRemove)
+				if td.note != nil {
 					td.note.Wakeup()
 				}
-				next = td.next.Load()
+				if p == dtdEnd {
+					break
+				}
 			}
 		}
 	}
@@ -320,7 +345,7 @@ func setupRequest(d *Device, setup [2]uint32) {
 
 		case reqGetConfiguration:
 			print("reqGetConfiguration\r\n")
-			d.dtcm.data[0] = d.configuration
+			d.dtcm.data[0] = uint8(d.config.Load())
 			d.prime(ep0tx, d.dataTD(1))
 			d.prime(ep0rx, d.statusTD())
 			return
@@ -340,8 +365,8 @@ func setupRequest(d *Device, setup [2]uint32) {
 				print(" ??? speed\r\n")
 			}
 
-			d.configuration = uint8(val)
 			// 42.5.6.3.1 Endpoint Initialization
+
 			// TODO: this must be infered from descriptors
 			const (
 				CDC_ACM_ENDPOINT = 1
@@ -349,14 +374,24 @@ func setupRequest(d *Device, setup [2]uint32) {
 				CDC_TX_ENDPOINT  = 2
 			)
 			d.dtcm.qhs[CDC_ACM_ENDPOINT*2+1].setConfig(16, 0)
-			d.dtcm.qhs[CDC_RX_ENDPOINT*2+0].setConfig(maxPkt, 0)
+			d.dtcm.qhs[CDC_RX_ENDPOINT*2+0].setConfig(maxPkt, dqhDisableZLT)
 			d.dtcm.qhs[CDC_TX_ENDPOINT*2+1].setConfig(maxPkt, 0)
 			mmio.MB()
 			u.ENDPTCTRL[CDC_ACM_ENDPOINT].Store(3<<usb.TXTn | usb.TXR | usb.TXE | 2<<usb.RXTn)                                  // interrupt
 			u.ENDPTCTRL[CDC_RX_ENDPOINT].Store(2<<usb.RXTn | usb.RXR | usb.RXE | 2<<usb.TXTn | usb.TXR | usb.TXE | 2<<usb.RXTn) // bulk, RX + TX
 			d.prime(ep0tx, d.statusTD())
 
-			d.configured.Store(true)
+			d.config.Store(uint32(val) & 0xff)
+			for {
+				p := d.cwl.Load()
+				if p == 0 {
+					break
+				}
+				nn := (*noteNext)(unsafe.Pointer(p))
+				if d.cwl.CompareAndSwap(p, nn.next) {
+					nn.note.Wakeup() // succesfully remowed w so send the note
+				}
+			}
 			return
 		}
 	case 0x01: // Standard Interface Request
@@ -445,40 +480,116 @@ func (d *Device) prime(he int, td *DTD) {
 	u.ENDPTPRIME.SetBits(mask)
 }
 
+// Config returns the configuration number selected during the USB enumeration
+// process or zero if the device is not in the configured state. If wait is true
+// Config tries to wait for the configured state but may still return zero.
+func (d *Device) Config(wait bool) uint8 {
+	config := d.config.Load()
+	if config != 0 || wait == false {
+		return uint8(config)
+	}
+	d.cwlmu.Lock()
+	var (
+		cwl uintptr
+		cw  noteNext
+	)
+	for {
+		cwl := d.cwl.Load()
+		cw.next = cwl
+		if d.cwl.CompareAndSwap(cwl, cw.uintptr()) {
+			break
+		}
+	}
+	config = d.config.Load()
+	if config != 0 && !d.cwl.CompareAndSwap(cw.uintptr(), cwl) {
+		// ISR removed cw, must keep reference to cw until recieving a note
+		config = 0
+	}
+	d.cwlmu.Lock()
+	if config == 0 {
+		cw.note.Sleep(-1)
+	}
+	return uint8(d.config.Load())
+}
+
+func clean(tlist *uintptr) {
+	p := *tlist
+	for p != dtdEnd {
+		td = (*DTD)(unsafe.Pointer(p))
+		if atomic.LoadUint32(&td.token)&tokRemove == 0 {
+			break
+		}
+		p = td.next
+		if p == dtdEnd {
+			break
+		}
+	}
+	*tlist = p
+}
+
 // Prime primes the he hardware endpoint with tdl list of transfer descriptors.
-// It reports whether the endpoint was succesfully primed. The device must be
-// in configured state to priming an endpoint succesfully, i.e. Prime alwyas
-// fails in any other device state (powered, attach, reset, default FS/HS).
+// It reports whether the endpoint was succesfully primed.
+//
+// To successfully prime an endpoint the device must be in configured state and
+// the selected configuration must equal config. Prime alwyas fails in any other
+// device state (powered, attach, reset, default FS/HS).
+//
+// Prime panics if tdl == nil or config == 0.
 //
 // The last descriptor in the tdl must have a note set to provide a way to
 // inform about the end of transfer (see DTD.SetNote). Setting a note for the
 // preceding DTDs in the list is optional and depends on the logical structure
 // of the transfer.
-func (d *Device) Prime(he int, tdl *DTD) (primed bool) {
-	if !d.configured.Load() {
+func (d *Device) Prime(he int, tdl *DTD, config uint8) (primed bool) {
+	if he < 2 || he >= len(d.qhs) {
+		panic("bad he")
+	}
+	if tdl == nil {
+		panic("tdl == nil")
+	}
+	if config == 0 {
+		panic("config == 0")
+	}
+	if d.config.Load() != uint32(config) {
 		return false
 	}
 	qh := &d.dtcm.qhs[he]
-	// Append tdl to the end of he list.
-	for {
-		next := &qh.tlist
-		for {
-			p := next.Load()
-			if p == dtdEnd {
-				break
-			}
-			next = &(*DTD)(unsafe.Pointer(p)).next
-		}
-		if next.CompareAndSwap(dtdEnd, tdl.uintptr()) {
-			break
-		}
+
+	qh.mu.Lock()
+
+	// Clean the list from completed dTDs.
+	clean(&qh.tlist)
+
+	// Move to the end of list
+	var td *DTD
+	p := qh.tlist
+	for p == dtdEnd {
+		td = (*DTD)(unsafe.Pointer(p))
+		p = td.next
 	}
+
+	// Cancel if the configuration changed.
+	if d.config.Load() != uint32(config) {
+		return false
+	}
+
+	// Append.
+	qh.active.CompareAndSwap(dtdEnd, tdl.uintptr())
+	if td == nil {
+		qh.tlist = tdl.uintptr()
+	} else {
+		td.next = tdl.uintptr()
+	}
+
+	d.pmu.Lock() // prevent other goroutines from overtaking us
+	qh.mu.Unlock()
+
+	// Prime the endpoint
 	mask := uint32(1) << (he & 1 * 16) << (he >> 1)
 	u := d.u
 	if u.ENDPTPRIME.LoadBits(mask) != 0 {
 		return true
 	}
-	d.pmu.Lock()
 	var status uint32
 	for {
 		u.USBCMD.SetBits(usb.ATDTW)
@@ -494,6 +605,7 @@ func (d *Device) Prime(he int, tdl *DTD) (primed bool) {
 		mmio.MB()
 		u.ENDPTPRIME.SetBits(mask)
 	}
+
 	d.pmu.Unlock()
 	return true
 }
