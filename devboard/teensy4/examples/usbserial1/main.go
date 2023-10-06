@@ -7,6 +7,7 @@ package main
 import (
 	"embedded/rtos"
 	"fmt"
+	"strings"
 	"time"
 	"unsafe"
 
@@ -39,13 +40,16 @@ func main() {
 		out3v000 = 15 << pmu.OUTPUT_TRGn
 		boo0v150 = 6 << pmu.BO_OFFSETn
 	)
-	pmu.PMU().REG_3P0.Store(out3v000 | boo0v150 | pmu.ENABLE_LINREG)
+	if false {
+		pmu.PMU().REG_3P0.Store(out3v000 | boo0v150 | pmu.ENABLE_LINREG)
+	}
 
 	usbd = usb.NewDevice(1)
 	usbd.Init(rtos.IntPrioLow, descriptors, false)
 	usbd.Enable()
 
 	var note rtos.Note
+	config := uint8(1)
 	rxe := 2 * 2
 	rxtd := usb.NewDTD()
 	rxtd.SetNote(&note)
@@ -53,6 +57,11 @@ func main() {
 	txtd := usb.NewDTD()
 	txtd.SetNote(&note)
 	buf := dma.MakeSlice[byte](512, 512)
+
+usbNotReady:
+	fmt.Println("Waiting for USB...")
+	usbd.WaitConfig(config)
+	fmt.Println("USB is ready.")
 
 	for {
 		var (
@@ -62,41 +71,54 @@ func main() {
 		rtos.CacheMaint(rtos.DCacheInval, unsafe.Pointer(&buf[0]), len(buf))
 		rxtd.SetupTransfer(unsafe.Pointer(&buf[0]), len(buf))
 		note.Clear()
-		for !usbd.Prime(rxe, rxtd, 1) {
-			goto waitForUSB
+
+		if !usbd.Prime(rxe, rxtd, config) {
+			goto usbNotReady
 		}
 		note.Sleep(-1)
+		usbd.Clean(rxe)
+
 		n, stat = rxtd.Status()
 		if stat != 0 {
 			if stat&usb.Active != 0 {
-				goto waitForUSB
+				goto usbNotReady
 			}
 			fmt.Printf("Rx error: 0b%08b\n", stat)
 			time.Sleep(time.Second)
 			continue
 		}
+
 		n = len(buf) - n
 		fmt.Printf("received %d bytes: %s\n", n, buf[:n])
+
+		if strings.TrimSpace(string(buf[:n])) == "reset" {
+			fmt.Println("* Reset! *")
+			usbd.Disable()
+			time.Sleep(time.Second)
+			usbd.Enable()
+			fmt.Println("* Go! *")
+		}
+
 		txtd.SetupTransfer(unsafe.Pointer(&buf[0]), n)
 		note.Clear()
-		for !usbd.Prime(txe, txtd, 1) {
-			goto waitForUSB
+
+		if !usbd.Prime(txe, txtd, config) {
+			goto usbNotReady
 		}
 		note.Sleep(-1)
+		usbd.Clean(txe)
+
 		_, stat = txtd.Status()
 		if stat != 0 {
 			if stat&usb.Active != 0 {
-				goto waitForUSB
+				goto usbNotReady
 			}
 			fmt.Printf("Tx error: 0b%08b\n", stat)
 			time.Sleep(time.Second)
 			continue
 		}
+
 		fmt.Printf("sent %d bytes\n", n)
-		continue
-	waitForUSB:
-		fmt.Println("Waiting for USB...")
-		time.Sleep(100 * time.Millisecond)
 	}
 }
 
