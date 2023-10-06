@@ -49,7 +49,7 @@ type dtcmem struct {
 
 var dtcmCache [2]*dtcmem // cache the allocated DTCM for both USB controllers
 
-// A Device is an USB Device Controler Driver (DCD).
+// A Device represents an USB Device Controler Driver (DCD).
 type Device struct {
 	u      *usb.Periph
 	phy    *usbphy.Periph
@@ -72,7 +72,7 @@ func (d *Device) Print(i int) {
 }
 */
 
-// NewDevice returns a new device driver for USB controller 1 or 2.
+// NewDevice returns a new device controler driver for USB controller 1 or 2.
 func NewDevice(controller int) *Device {
 	d := new(Device)
 	switch controller {
@@ -95,8 +95,7 @@ func NewDevice(controller int) *Device {
 	}
 	for he := range m.qhs {
 		qh := &m.qhs[he]
-		qh.tlist = dtdEnd
-		qh.active.Store(dtdEnd)
+		qh.head = dtdEnd
 	}
 	d.dtcm = m
 	return d
@@ -196,7 +195,9 @@ func (d *Device) ISR() {
 
 		if ec := u.ENDPTCOMPLETE.Load(); ec != 0 {
 			u.ENDPTCOMPLETE.Store(ec) // clear
-			// Wake up goroutines that wait for the completed transfers.
+			// Wake up goroutines that wait for the completed transfers. This
+			// code runs concurently with the Prime method (also look at the
+			// comments written there).
 			ec &^= 1<<16 | 1
 			for he, ec := 2, ec>>1; ec != 0; he, ec = he+2, ec>>1 {
 				if he == 32 {
@@ -206,22 +207,7 @@ func (d *Device) ISR() {
 				if ec&1 == 0 {
 					continue
 				}
-				qh := &d.dtcm.qhs[he]
-				p := qh.active.Swap(dtdEnd)
-				for p != dtdEnd {
-					td := (*DTD)(unsafe.Pointer(p))
-					tok := td.token
-					if tok&Active != 0 {
-						qh.active.Store(td.uintptr())
-						break
-					}
-					p = td.next
-					qh.active.CompareAndSwap(p, dtdEnd) // may be set by Prime
-					atomic.StoreUint32(&td.token, tok|tokRemove)
-					if td.note != nil {
-						td.note.Wakeup()
-					}
-				}
+				removeAndWakeup(&d.dtcm.qhs[he], Active)
 			}
 		}
 	}
@@ -241,17 +227,7 @@ func (d *Device) ISR() {
 		}
 		// Wake up goroutines that still waiting for the end of transfer.
 		for he := 2; he < len(d.dtcm.qhs); he++ {
-			qh := &d.dtcm.qhs[he]
-			p := qh.active.Swap(dtdEnd)
-			for p != dtdEnd {
-				td := (*DTD)(unsafe.Pointer(p))
-				p = td.next
-				qh.active.CompareAndSwap(p, dtdEnd) // may be set by Prime
-				atomic.StoreUint32(&td.token, td.token|tokRemove)
-				if td.note != nil {
-					td.note.Wakeup()
-				}
-			}
+			removeAndWakeup(&d.dtcm.qhs[he], 0)
 		}
 	}
 
@@ -268,6 +244,41 @@ func (d *Device) ISR() {
 	}
 	if status&usb.UEI != 0 {
 		// BUG: there is no handling of USB errors
+	}
+}
+
+//go:nosplit
+func removeAndWakeup(qh *dQH, active uint32) {
+	p := atomic.SwapUintptr(&qh.head, dtdEnd)
+	for p != dtdEnd {
+		td := (*DTD)(unsafe.Pointer(p))
+		if td.token&active != 0 {
+			qh.head = td.uintptr()
+			break
+		}
+		p = td.next
+		if p != dtdEnd {
+			goto wakeup
+		}
+		// The last item on the list requires special treatment.
+		// Let's try to mark td as selected for deletion.
+		if !atomic.CompareAndSwapUintptr(&td.next, dtdEnd, 0) {
+			// Failed, so td.next points to a newly added DTD list.
+			p = td.next
+			goto wakeup
+		}
+		// Marked. Try to clear the reference to td in qh.tail.
+		if !atomic.CompareAndSwapUintptr(&qh.tail, td.uintptr(), 0) {
+			// Failed, so qh.tail now points to the end of newly
+			// added DTD list. Cannot wake up the goroutine waiting
+			// for this td because it may still be referenced by the
+			// appending goroutine.
+			break
+		}
+	wakeup:
+		if td.note != nil {
+			td.note.Wakeup()
+		}
 	}
 }
 
@@ -298,8 +309,8 @@ func setupRequest(d *Device, setup [2]uint32) {
 	siz := int(setup[1] >> 16)
 
 	u := d.u
-	// Standard device/interface/endpoint requests are handled in ISR directly.
-	// Other requests are signaled to the handle goroutines.
+	// Standard device/interface/endpoint requests are handled directly in the
+	// ISR. Other requests are signaled to the handle goroutines.
 	switch typ {
 	case 0x00: // Standard Device Request
 		print("device: ")
@@ -517,6 +528,7 @@ func (d *Device) WaitConfig(cn uint8) {
 	}
 }
 
+/*
 func clean(tlist *uintptr) {
 	p := *tlist
 	for p != dtdEnd {
@@ -531,9 +543,11 @@ func clean(tlist *uintptr) {
 	}
 	*tlist = p
 }
+*/
 
-// Prime primes the he hardware endpoint with tdl list of transfer descriptors.
-// It reports whether the endpoint was succesfully primed.
+// Prime primes the he hardware endpoint with the list of transfer descriptors
+// specified by first and last. It reports whether the endpoint was succesfully
+// primed.
 //
 // To successfully prime an endpoint the device must be in the configured state
 // and the selected configuration number must equal cn. Prime alwyas fails in
@@ -545,58 +559,69 @@ func clean(tlist *uintptr) {
 // ISR to inform about the end of transfer (see DTD.SetNote). Setting notes for
 // the preceding DTDs in the list is optional and depends on the logical
 // structure of the transfer.
-//
-// Prime cleans the internal list from compleded DTDs for the given hardware
-// endpoint (see Clean) before it adppends tdl to it.
-func (d *Device) Prime(he int, tdl *DTD, cn uint8) (primed bool) {
+func (d *Device) Prime(he int, first, last *DTD, cn uint8) (primed bool) {
 	if he < 2 || he >= len(d.dtcm.qhs) {
 		panic("bad he")
 	}
-	if tdl == nil {
-		panic("tdl == nil")
+	if first == nil {
+		panic("first == nil")
+	}
+	if last == nil {
+		panic("last == nil")
 	}
 	if cn == 0 {
 		panic("cn == 0")
 	}
+
+	last.next = dtdEnd
 	if d.config.Load() != uint32(cn) {
 		return false
 	}
-	qh := &d.dtcm.qhs[he]
 
+	qh := &d.dtcm.qhs[he]
 	qh.mu.Lock()
 
-	// Clean the list from completed dTDs.
-	clean(&qh.tlist)
+	// Exclusive appending, still executed concurently with the removing ISR
+	// (also look at the comments written there).
 
-	// Go to the end of list.
-	var td *DTD
-	for p := qh.tlist; p != dtdEnd; p = td.next {
-		td = (*DTD)(unsafe.Pointer(p))
-	}
-
-	// Last chance to cancel if the configuration changed.
-	if d.config.Load() != uint32(cn) {
-		return false
-	}
-
-	// Append.
-	qh.active.CompareAndSwap(dtdEnd, tdl.uintptr())
-	if td == nil {
-		qh.tlist = tdl.uintptr()
-	} else {
-		td.next = tdl.uintptr()
-	}
-
-	d.pmu.Lock() // prevent other goroutines from overtaking us
-	qh.mu.Unlock()
-
-	// Prime the endpoint
+	var status uint32
 	mask := uint32(1) << (he & 1 * 16) << (he >> 1)
 	u := d.u
+	tail := qh.tail
+	td := (*DTD)(unsafe.Pointer(tail))
+
+	if tail == 0 {
+		// The list is empty.
+		goto fastPrime
+	}
+	if !atomic.CompareAndSwapUintptr(&qh.tail, tail, last.uintptr()) {
+		// The list has just been emptied by ISR.
+		goto fastPrime
+	}
+	// The list seems to be non-empty. Let's try append tdl to its end.
+	if next := td.next; next == 0 || !atomic.CompareAndSwapUintptr(&td.next, next, first.uintptr()) {
+		// The ISR marked the list as empty but didn't finished its work because
+		// we managed to CAS qh.tail successfully. For this reason it didn't
+		// handled td.note.
+		if td.note != nil {
+			td.note.Wakeup()
+		}
+		goto fastPrime1
+	}
+
+	// We appended tdl successfully to the non-empty list so the full prime
+	// algorithm is required.
+
+	// Check if the endpoint has just been (re)primed.
 	if u.ENDPTPRIME.LoadBits(mask) != 0 {
+		qh.mu.Unlock()
 		return true
 	}
-	var status uint32
+
+	d.pmu.Lock() // prevent other goroutines from overtaking us for priming
+	qh.mu.Unlock()
+
+	// Check the endpoint status. Prime if not active.
 	for {
 		u.USBCMD.SetBits(usb.ATDTW)
 		status = u.ENDPTSTAT.Load()
@@ -606,7 +631,7 @@ func (d *Device) Prime(he int, tdl *DTD, cn uint8) (primed bool) {
 	}
 	u.USBCMD.ClearBits(usb.ATDTW)
 	if status&mask == 0 {
-		qh.next = tdl.uintptr()
+		qh.next = first.uintptr()
 		qh.token = 0
 		mmio.MB()
 		u.ENDPTPRIME.SetBits(mask)
@@ -614,16 +639,15 @@ func (d *Device) Prime(he int, tdl *DTD, cn uint8) (primed bool) {
 
 	d.pmu.Unlock()
 	return true
-}
 
-// Clean cleans the internal list from compleded DTDs for the given hardware
-// endpoint. Clean or Prime must be called before using the completed DTDs.
-func (d *Device) Clean(he int) {
-	if he < 2 || he >= len(d.dtcm.qhs) {
-		panic("bad he")
-	}
-	qh := &d.dtcm.qhs[he]
-	qh.mu.Lock()
-	clean(&qh.tlist)
+	// Fast prime algorithm can be used if the endpoint is definitely inactive.
+fastPrime:
+	qh.tail = last.uintptr()
+fastPrime1:
+	qh.token = 0
+	qh.next = first.uintptr()
+	atomic.StoreUintptr(&qh.head, first.uintptr())
+	u.ENDPTPRIME.SetBits(mask)
 	qh.mu.Unlock()
+	return true
 }

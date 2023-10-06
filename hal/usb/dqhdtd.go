@@ -7,7 +7,6 @@ package usb
 import (
 	"embedded/rtos"
 	"sync"
-	"sync/atomic"
 	"unsafe"
 
 	"github.com/embeddedgo/imxrt/hal/dtcm"
@@ -24,14 +23,14 @@ const dtdEnd uintptr = 1
 
 type dQH struct {
 	config  uint32
-	current uintptr // *DTD
-	next    uintptr // *DTD
+	current uintptr // *DTD (used by controller)
+	next    uintptr // *DTD (used by controller/driver)
 	token   uint32
 	page    [5]uintptr
-	_       uint32
+	head    uintptr // *DTD (used by driver)
 	setup   [2]uint32
-	active  atomic.Uintptr // *DTD
-	tlist   uintptr        // *DTD
+	new     uintptr // *DTD (used by driver)
+	tail    uintptr // *DTD (used by driver)
 	mu      sync.Mutex
 }
 
@@ -48,14 +47,17 @@ const (
 	Halted     = 1 << 6
 	Active     = 1 << 7
 
-	tokRemove = 1 << 8 // reserved bit, ISR uses it to mark a DTD to be removed
-	tokMultO  = 3 << 10
-	tokIOC    = 1 << 15
+	tokMultO = 3 << 10
+	tokIOC   = 1 << 15
 )
 
 // A DTD is a Device Transfer Descriptor. It MUST BE allocated in the
 // non-cacheable memory and 32 byte aligned. The NewDTD and MakeSliceDTD
 // functions meet these requirements.
+//
+// The DTD is used for priming the USB controller endpoints always in the form
+// of DTD list. The next field of the last DTD on the list used for priming may
+// by changed implicitly so you cannot use nil as an end-of-list mark.
 type DTD struct {
 	next  uintptr // not a *DTD to avoid write barriers
 	token uint32
@@ -75,25 +77,16 @@ func (td *DTD) Print() {
 */
 
 // NewDTD returns new DTD allocated in the non-cacheable memory. Use carefully
-// because currently there is no way to release memory allocated this way. The
-// returned DTD is zeroed except for the next field which is set to the
-// termination mark recognized by the USB controler.
+// because currently there is no way to release memory allocated this way.
 func NewDTD() *DTD {
-	td := dtcm.New[DTD](32)
-	td.next = dtdEnd
-	return td
+	return dtcm.New[DTD](32)
 }
 
 // MakeSliceDTD returns new slice of DTD structs allocated in non-cacheable
 // memory.  Use carefully because currently there is no way to release memory
-// allocated this way. The returned DTDs are zeroed except for their next fields
-// which are set to the termination mark recognized by the USB controler.
+// allocated this way.
 func MakeSliceDTD(len, cap int) []DTD {
-	tds := dtcm.MakeSlice[DTD](32, len, cap)
-	for i := range tds {
-		tds[i].next = dtdEnd
-	}
-	return tds
+	return dtcm.MakeSlice[DTD](32, len, cap)
 }
 
 func (td *DTD) uintptr() uintptr {
@@ -115,24 +108,14 @@ func (td *DTD) Status() (n int, status uint8) {
 	return int(td.token >> 16 & 0x7fff), uint8(td.token & (Active | Halted | DataBufErr | TransErr))
 }
 
-// SetNext sets the td.next field to next. If next == nil the td.next field is
-// set to the termination mark recognized by the USB controller.
+// SetNext sets the td.next field to next.
 func (td *DTD) SetNext(next *DTD) {
-	p := dtdEnd
-	if next != nil {
-		p = uintptr(unsafe.Pointer(next))
-	}
-	td.next = p
+	td.next = uintptr(unsafe.Pointer(next))
 }
 
-// Next returns the content of td.next field or nil if equal to the termination
-// mark.
+// Next returns the content of td.next.
 func (td *DTD) Next() *DTD {
-	p := td.next
-	if p == dtdEnd {
-		return nil
-	}
-	return (*DTD)(unsafe.Pointer(p))
+	return (*DTD)(unsafe.Pointer(td.next))
 }
 
 // SetupTransfer configures td to use the buffer specified by ptr and size for a

@@ -48,14 +48,14 @@ func main() {
 	usbd.Init(rtos.IntPrioLow, descriptors, false)
 	usbd.Enable()
 
-	var note rtos.Note
+	var done rtos.Note
 	config := uint8(1)
 	rxe := 2 * 2
 	rxtd := usb.NewDTD()
-	rxtd.SetNote(&note)
+	rxtd.SetNote(&done)
 	txe := 2*2 + 1
 	txtd := usb.NewDTD()
-	txtd.SetNote(&note)
+	txtd.SetNote(&done)
 	buf := dma.MakeSlice[byte](512, 512)
 
 usbNotReady:
@@ -70,13 +70,12 @@ usbNotReady:
 		)
 		rtos.CacheMaint(rtos.DCacheInval, unsafe.Pointer(&buf[0]), len(buf))
 		rxtd.SetupTransfer(unsafe.Pointer(&buf[0]), len(buf))
-		note.Clear()
+		done.Clear()
 
-		if !usbd.Prime(rxe, rxtd, config) {
+		if !usbd.Prime(rxe, rxtd, rxtd, config) {
 			goto usbNotReady
 		}
-		note.Sleep(-1)
-		usbd.Clean(rxe)
+		done.Sleep(-1)
 
 		n, stat = rxtd.Status()
 		if stat != 0 {
@@ -100,13 +99,12 @@ usbNotReady:
 		}
 
 		txtd.SetupTransfer(unsafe.Pointer(&buf[0]), n)
-		note.Clear()
+		done.Clear()
 
-		if !usbd.Prime(txe, txtd, config) {
+		if !usbd.Prime(txe, txtd, txtd, config) {
 			goto usbNotReady
 		}
-		note.Sleep(-1)
-		usbd.Clean(txe)
+		done.Sleep(-1)
 
 		_, stat = txtd.Status()
 		if stat != 0 {

@@ -30,21 +30,18 @@
 //			td.SetupTransfer(unsafe.Pointer(&buf[0]), len(buf))
 //			done.Clear()
 //
-//			if !usbd.Prime(rxEndpoint, td, config) {
+//			if !usbd.Prime(rxEndpoint, td, td, config) {
 //				goto usbNotReady
 //			}
 //			done.Sleep(-1)
-//			usbd.Clean(rxEndpoint)
 //
 //			n, stat := rxtd.Status()
 //			switch {
 //			case stat == 0:
 //				n = len(buf) - n
 //				handleRxData(buf[:n])
-//
 //			case stat&usb.Active != 0:
 //				goto usbNotReady
-//
 //			default:
 //				handleRxError(stat)
 //			}
