@@ -11,9 +11,8 @@ var descriptors = map[uint32][]byte{
 	0x0301_0409: usbManufacturerName[:],
 	0x0302_0409: usbProductName[:],
 	0x0303_0409: usbSerialNumber[:],
-	0x0600_0000: qualifierDescr[:],
 	0x0700_0000: usbConfigDescr12[:],
-	0x0a00_0000: nil, // debugDescr
+	0x0600_0000: qualifierDescr[:],
 }
 
 const (

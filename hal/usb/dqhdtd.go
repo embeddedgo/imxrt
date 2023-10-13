@@ -34,7 +34,8 @@ type dQH struct {
 	mu      sync.Mutex
 }
 
-func (qh *dQH) setConfig(maxPktLen int, flags uint32) {
+//go:nosplit
+func (qh *dQH) setConf(maxPktLen int, flags uint32) {
 	qh.config = uint32(maxPktLen)<<dqhMaxPktLenShift | flags
 	qh.current = 0
 	qh.next = dtdEnd

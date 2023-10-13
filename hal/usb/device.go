@@ -59,6 +59,7 @@ type Device struct {
 	config atomic.Uint32
 	cwl    atomic.Uintptr // *wait
 	cwlmu  sync.Mutex
+	ctreq  rtos.Note
 }
 
 /*
@@ -124,8 +125,8 @@ func (d *Device) Init(intPrio int, descriptors map[uint32][]byte, forceFullSpeed
 	u.USBMODE.Store(usb.CM_2 | usb.SLOM) // device mode, setup lockout disabled
 
 	// Setup QHs for EP0.
-	d.dtcm.qhs[0].setConfig(64, dqhIOS) // Rx (host OUT)
-	d.dtcm.qhs[1].setConfig(64, 0)      // Tx (host IN)
+	d.dtcm.qhs[0].setConf(64, dqhIOS) // Rx (host OUT)
+	d.dtcm.qhs[1].setConf(64, 0)      // Tx (host IN)
 	mmio.MB()
 
 	u.ASYNC_ENDPTLISTADDR.Store(uint32(uintptr(unsafe.Pointer(&d.dtcm.qhs[0]))))
@@ -139,6 +140,8 @@ func (d *Device) Init(intPrio int, descriptors map[uint32][]byte, forceFullSpeed
 	}
 	ui.Enable(intPrio, 0)
 	u.USBINTR.Store(usb.UE | usb.UEE | usb.PCE | usb.URE | usb.SLE)
+
+	//go ctrlReqHandler(d)
 }
 
 // Enable enables the device controller.
@@ -301,6 +304,21 @@ const (
 )
 
 //go:nosplit
+func (d *Device) statusTD() *DTD {
+	d.dtcm.std.SetupTransfer(nil, 0)
+	return &d.dtcm.std
+}
+
+//go:nosplit
+func (d *Device) dataTD(n int) *DTD {
+	if n > len(d.dtcm.data) {
+		panic("dtcm.data buffer too small")
+	}
+	d.dtcm.dtd.SetupTransfer(unsafe.Pointer(&d.dtcm.data), n)
+	return &d.dtcm.dtd
+}
+
+//go:nosplit
 func setupRequest(d *Device, setup [2]uint32) {
 	typ := uint8(setup[0] & 0x7f)
 	req := uint16(setup[0] >> 7 & 0x1ff)
@@ -310,7 +328,8 @@ func setupRequest(d *Device, setup [2]uint32) {
 
 	u := d.u
 	// Standard device/interface/endpoint requests are handled directly in the
-	// ISR. Other requests are signaled to the handle goroutines.
+	// ISR. Other requests are forwarded to the registered callback functions
+	// and executed in thread mode.
 	switch typ {
 	case 0x00: // Standard Device Request
 		print("device: ")
@@ -335,12 +354,8 @@ func setupRequest(d *Device, setup [2]uint32) {
 			u.DEVADDR_PLISTBASE.Store(1<<24 | uint32(addr)<<25)
 			return
 		case reqGetDescriptor:
-			print("reqGetDescriptor\r\n")
-			desc, ok := d.des[uint32(val)<<16|uint32(idx)]
-			if !ok {
-				print("unknown descr: ", uint32(val)<<16|uint32(idx), "\r\n")
-				return
-			}
+			print("reqGetDescriptor ", uint32(val)<<16|uint32(idx), "\r\n")
+			desc := d.des[uint32(val)<<16|uint32(idx)]
 			n := len(desc)
 			if n > siz {
 				n = siz
@@ -362,36 +377,51 @@ func setupRequest(d *Device, setup [2]uint32) {
 
 		case reqSetConfiguration: // enables the device
 			print("reqSetConfiguration\r\n")
-			maxPkt := 64
-			switch u.PORTSC1.LoadBits(usb.PSPD) >> usb.PSPDn {
-			case 0:
-				print(" full speed\r\n")
-			case 1:
-				print(" low speed\r\n")
-			case 2:
-				print(" high speed\r\n")
-				maxPkt = 512
-			default:
-				print(" ??? speed\r\n")
+			// Deconfigure endpoints.
+			for i := 1; i < leNum; i++ {
+				u.ENDPTCTRL[i].Store(0)
 			}
+			cnf := uint32(val) & 0xff
+			if cnf != 0 {
+				// Select the appropriate configuration descriptors.
+				cfd := d.des[0x0200_0000]
+				if u.PORTSC1.LoadBits(usb.PSPD)>>usb.PSPDn < 2 {
+					cfd = d.des[0x0700_0000]
+				}
+				// Configure endpoints according to the endpoint descriptors.
+				for len(cfd) > 2 {
+					n := int(cfd[0])
+					if len(cfd) < n {
+						break
+					}
+					if n == 7 && cfd[1] == 5 && uint(cfd[2]&0x0f)-1 < leNum-1 {
+						le := int(cfd[2] & 0x0f)
+						dir := cfd[2] >> 7 // 0: Rx (OUT),  1: Tx (IN)
+						shift := uint(dir) * 16
+						he := le*2 + int(dir)
+						typ := cfd[3] & 3
+						maxPkt := int(cfd[4]) | int(cfd[5])<<8
 
-			// 42.5.6.3.1 Endpoint Initialization
-
-			// TODO: this must be infered from descriptors
-			const (
-				CDC_ACM_ENDPOINT = 1
-				CDC_RX_ENDPOINT  = 2
-				CDC_TX_ENDPOINT  = 2
-			)
-			d.dtcm.qhs[CDC_ACM_ENDPOINT*2+1].setConfig(16, 0)
-			d.dtcm.qhs[CDC_RX_ENDPOINT*2+0].setConfig(maxPkt, dqhDisableZLT)
-			d.dtcm.qhs[CDC_TX_ENDPOINT*2+1].setConfig(maxPkt, 0)
-			mmio.MB()
-			u.ENDPTCTRL[CDC_ACM_ENDPOINT].Store(3<<usb.TXTn | usb.TXR | usb.TXE | 2<<usb.RXTn)                                  // interrupt
-			u.ENDPTCTRL[CDC_RX_ENDPOINT].Store(2<<usb.RXTn | usb.RXR | usb.RXE | 2<<usb.TXTn | usb.TXR | usb.TXE | 2<<usb.RXTn) // bulk, RX + TX
+						// 42.5.6.3.1 Endpoint Initialization
+						flags := dqhDisableZLT & uint32(dir-1)
+						d.dtcm.qhs[he].setConf(maxPkt, flags)
+						mask := usb.ENDPTCTRL(0xffff) << shift
+						other := u.ENDPTCTRL[le].LoadBits(^mask)
+						if typ != 0 && other == 0 {
+							other = 2 << usb.TXTn >> shift
+						}
+						cfg := usb.ENDPTCTRL(typ)<<usb.RXTn | usb.RXR | usb.RXE
+						mmio.MB()
+						u.ENDPTCTRL[le].Store(other | cfg<<shift)
+					}
+					cfd = cfd[n:]
+				}
+			}
 			d.prime(ep0tx, d.statusTD())
-
-			d.config.Store(uint32(val) & 0xff)
+			d.config.Store(cnf)
+			if cnf == 0 {
+				return
+			}
 			for {
 				p := d.cwl.Load()
 				if p == 0 {
@@ -461,21 +491,6 @@ func setupRequest(d *Device, setup [2]uint32) {
 }
 
 //go:nosplit
-func (d *Device) statusTD() *DTD {
-	d.dtcm.std.SetupTransfer(nil, 0)
-	return &d.dtcm.std
-}
-
-//go:nosplit
-func (d *Device) dataTD(n int) *DTD {
-	if n > len(d.dtcm.data) {
-		panic("dtcm.data buffer too small")
-	}
-	d.dtcm.dtd.SetupTransfer(unsafe.Pointer(&d.dtcm.data), n)
-	return &d.dtcm.dtd
-}
-
-//go:nosplit
 func (d *Device) prime(he int, td *DTD) {
 	mask := uint32(1) << (he & 1 * 16) << (he >> 1)
 	u := d.u
@@ -490,6 +505,10 @@ func (d *Device) prime(he int, td *DTD) {
 	u.ENDPTPRIME.SetBits(mask)
 }
 
+func ctrlReqHandler(d *Device) {
+
+}
+
 // Config returns the configuration number selected during the USB enumeration
 // process or zero if the device is not in the configured state.
 func (d *Device) Config() uint8 {
@@ -500,8 +519,8 @@ func (d *Device) Config() uint8 {
 // USB enumeration process or simply for the configured state if cn is zero.
 func (d *Device) WaitConfig(cn uint8) {
 	for {
-		cfg := d.config.Load()
-		if cfg != 0 && (cfg == uint32(cn) || cn == 0) {
+		cnf := d.config.Load()
+		if cnf != 0 && (cnf == uint32(cn) || cn == 0) {
 			return
 		}
 		d.cwlmu.Lock()
@@ -516,13 +535,13 @@ func (d *Device) WaitConfig(cn uint8) {
 				break
 			}
 		}
-		cfg = d.config.Load()
-		if cfg != 0 && !d.cwl.CompareAndSwap(cw.uintptr(), cwl) {
+		cnf = d.config.Load()
+		if cnf != 0 && !d.cwl.CompareAndSwap(cw.uintptr(), cwl) {
 			// ISR removed cw, must keep reference to cw until recieving a note
-			cfg = 0
+			cnf = 0
 		}
 		d.cwlmu.Unlock()
-		if cfg == 0 {
+		if cnf == 0 {
 			cw.note.Sleep(-1)
 		}
 	}
@@ -602,7 +621,7 @@ func (d *Device) Prime(he int, first, last *DTD, cn uint8) (primed bool) {
 	if next := td.next; next == 0 || !atomic.CompareAndSwapUintptr(&td.next, next, first.uintptr()) {
 		// The ISR marked the list as empty but didn't finished its work because
 		// we managed to CAS qh.tail successfully. For this reason it didn't
-		// handled td.note.
+		// handled td.note so we do it here.
 		if td.note != nil {
 			td.note.Wakeup()
 		}
@@ -640,7 +659,7 @@ func (d *Device) Prime(he int, first, last *DTD, cn uint8) (primed bool) {
 	d.pmu.Unlock()
 	return true
 
-	// Fast prime algorithm can be used if the endpoint is definitely inactive.
+	// If the endpoint is inactive we can use a simple prime algorithm.
 fastPrime:
 	qh.tail = last.uintptr()
 fastPrime1:
