@@ -31,7 +31,7 @@ const (
 
 type noteNext struct {
 	note rtos.Note
-	next uintptr // *wait
+	next uintptr // *noteNext
 }
 
 func (nn *noteNext) uintptr() uintptr {
@@ -60,6 +60,7 @@ type Device struct {
 	cwl    atomic.Uintptr // *wait
 	cwlmu  sync.Mutex
 	ctreq  rtos.Note
+	cthm   map[uint16]func(r *ControlRequest) int
 }
 
 /*
@@ -100,6 +101,13 @@ func NewDevice(controller int) *Device {
 	}
 	d.dtcm = m
 	return d
+}
+
+// Handle registers the handler for the endpoint 0 control request with the
+// given request (see ControlRequest). All handlers must be registered before
+// enabling the device.
+func (d *Device) Handle(request uint16, handler func(r *ControlRequest) int) {
+
 }
 
 // Init initializes the USB device controler and the driver itself.

@@ -170,3 +170,10 @@ func (td *DTD) SetNote(note *rtos.Note) {
 		td.token &^= tokIOC
 	}
 }
+
+type ControlRequest struct {
+	Request uint16 // bRequest<<8 | bmRequestType
+	Value   uint16 // wValue
+	Index   uint16 // wIndex
+	Data    []byte // len(Data) = wLength
+}
