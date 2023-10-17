@@ -19,8 +19,6 @@ const (
 	dqhMaxPktLenShift = 16
 )
 
-const dtdEnd uintptr = 1
-
 type dQH struct {
 	config  uint32
 	current uintptr // *DTD (used by controller)
@@ -34,13 +32,6 @@ type dQH struct {
 	mu      sync.Mutex
 }
 
-//go:nosplit
-func (qh *dQH) setConf(maxPktLen int, flags uint32) {
-	qh.config = uint32(maxPktLen)<<dqhMaxPktLenShift | flags
-	qh.current = 0
-	qh.next = dtdEnd
-}
-
 // DTD status
 const (
 	TransErr   = 1 << 3
@@ -51,6 +42,8 @@ const (
 	tokMultO = 3 << 10
 	tokIOC   = 1 << 15
 )
+
+const dtdEnd uintptr = 1
 
 // A DTD is a Device Transfer Descriptor. It MUST BE allocated in the
 // non-cacheable memory and 32 byte aligned. The NewDTD and MakeSliceDTD
@@ -90,10 +83,6 @@ func MakeSliceDTD(len, cap int) []DTD {
 	return dtcm.MakeSlice[DTD](32, len, cap)
 }
 
-func (td *DTD) uintptr() uintptr {
-	return uintptr(unsafe.Pointer(td))
-}
-
 // Status returns a transfer status. If td was used to prime an USB controller
 // endpoint the returned value is only valid after waking up from the note.Sleep
 // (see SetNote method) that signals the end of transfer to which this td
@@ -119,38 +108,6 @@ func (td *DTD) Next() *DTD {
 	return (*DTD)(unsafe.Pointer(td.next))
 }
 
-// SetupTransfer configures td to use the buffer specified by ptr and size for a
-// data transfer. As the maximum transfer length that can be handled by single
-// DTD is limited it returns how much of the buffer will be used. The limit
-// depends on the buffer alignment in memory and can be any number from 16 KiB
-// to 20 KiB. The remaining part of the buffer can be transfered using a next
-// DTD in the list or assigned to the same DTD next time. In most cases the
-// bufer requires a cache maintanance (see also dma.New, dma.MakeSlice,
-// rtos.CacheMaint) and  must be keep referenced until the end of transfer to
-// avoid GC. The unsafe.Pointer type is there to remind you of both of these
-// inconveniences.
-func (td *DTD) SetupTransfer(ptr unsafe.Pointer, size int) (n int) {
-	if size > 0 {
-		addr := uintptr(ptr)
-		td.page[0] = addr
-		pa := addr&^0x0fff + 0x1000
-		td.page[1] = pa
-		pa += 0x1000
-		td.page[2] = pa
-		pa += 0x1000
-		td.page[3] = pa
-		pa += 0x1000
-		td.page[4] = pa
-		pa += 0x1000
-		n = int(pa - addr)
-		if n > size {
-			n = size
-		}
-	}
-	td.token = td.token&(tokIOC|tokMultO) | uint32(n<<16) | Active
-	return
-}
-
 // SetNote sets the Interrupt On Complete bit (IOC) in the td.token field and
 // a note that will be used by an interrupt handler to communicate the
 // completion of a transfer. As the Go GC may have no access to the td.note
@@ -169,11 +126,4 @@ func (td *DTD) SetNote(note *rtos.Note) {
 	} else {
 		td.token &^= tokIOC
 	}
-}
-
-type ControlRequest struct {
-	Request uint16 // bRequest<<8 | bmRequestType
-	Value   uint16 // wValue
-	Index   uint16 // wIndex
-	Data    []byte // len(Data) = wLength
 }

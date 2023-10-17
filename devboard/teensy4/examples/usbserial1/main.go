@@ -23,6 +23,16 @@ import (
 
 var usbd *usb.Device
 
+func cdcSetLineCoding(cr *usb.ControlRequest) int {
+	fmt.Printf("cdcSetLineCoding: %+v\r\n", *cr)
+	return 0
+}
+
+func cdcSetControlLineState(cr *usb.ControlRequest) int {
+	fmt.Printf("cdcSetControlLineState: %+v\r\n", *cr)
+	return 0
+}
+
 func main() {
 	// IO pins
 	conTx := pins.P24
@@ -46,10 +56,12 @@ func main() {
 
 	usbd = usb.NewDevice(1)
 	usbd.Init(rtos.IntPrioLow, descriptors, false)
+	usbd.Handle(0, 0x2021, cdcSetLineCoding)
+	usbd.Handle(0, 0x2221, cdcSetControlLineState)
 	usbd.Enable()
 
 	var done rtos.Note
-	config := uint8(1)
+	config := 1
 	rxe := 2 * 2
 	rxtd := usb.NewDTD()
 	rxtd.SetNote(&done)
@@ -93,7 +105,6 @@ usbNotReady:
 		if strings.TrimSpace(string(buf[:n])) == "reset" {
 			fmt.Println("* Reset! *")
 			usbd.Disable()
-			time.Sleep(time.Second)
 			usbd.Enable()
 			fmt.Println("* Go! *")
 		}
