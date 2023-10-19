@@ -11,14 +11,15 @@
 //
 // The Hardware Endpoint number (he) specifies an unidirectional communication
 // channel available in the USB device. The supported direction is encoded in
-// the least significant bit of he (even number means OUT endpoint, odd number
-// mean IN endpoint).
+// the least significant bit of the he (an even he means OUT endpoint, an odd he
+// means IN endpoint).
 //
-// The Logical Endpoint number (le) is more commonly used in USB documentation.
-// In this package it is used mainly in the context of control endpoints due to
-// their obligatory bidirectional nature. In fact a logical endpoint without
-// specifying its direction is not a precise term because it may point to two
-// unrelated communication channels.
+// The Logical Endpoint number (le) is what the USB documentation means when
+// it uses the phrase endpoint or endpoint number. In this package it is used
+// mainly in the context of control endpoints due to their obligatory
+// bidirectional nature. In fact, a logical endpoint without specifying its
+// direction is not a precise term because it may point to two unrelated
+// communication channels.
 //
 // The connection between le and he is as follows: le = he >> 1
 //
@@ -38,27 +39,31 @@
 //		td := usb.NewDTD()
 //		td.SetNote(&done)
 //		buf := dma.MakeSlice[byte](512, 512)
+//		config := 1
 //
 //	usbNotReady:
 //		usbd.WaitConfig(config)
 //
 //		for {
-//			rtos.CacheMaint(rtos.DCacheInval, unsafe.Pointer(&buf[0]), len(buf))
-//			td.SetupTransfer(unsafe.Pointer(&buf[0]), len(buf))
+//			bufp := unsafe.Pointer(&buf[0])
+//			rtos.CacheMaint(rtos.DCacheInval, bufp, len(buf))
+//			td.SetupTransfer(bufp, len(buf))
 //			done.Clear()
 //
-//			if !usbd.Prime(rxEndpoint, td, td, config) {
+//			if !usbd.Prime(rxhe, td, td, config) {
 //				goto usbNotReady
 //			}
 //			done.Sleep(-1)
 //
-//			n, stat := rxtd.Status()
+//			n, stat := td.Status()
 //			switch {
 //			case stat == 0:
 //				n = len(buf) - n
 //				handleRxData(buf[:n])
+//
 //			case stat&usb.Active != 0:
 //				goto usbNotReady
+//
 //			default:
 //				handleRxError(stat)
 //			}
@@ -69,5 +74,4 @@
 //	func USB_OTG1_Handler() {
 //		usbd.ISR()
 //	}
-//
 package usb

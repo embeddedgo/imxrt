@@ -22,7 +22,7 @@ import (
 	"github.com/embeddedgo/imxrt/p/usbphy"
 )
 
-const leNum = 8
+const leNum = len(usb.Periph{}.ENDPTCTRL)
 
 type noteNext struct {
 	note rtos.Note
@@ -112,7 +112,7 @@ func NewDevice(controller int) *Device {
 		qh.head = dtdEnd
 	}
 	d.dtcm = m
-	d.cr.Data = m.isr.data[:]
+	d.cr.Data = m.isr.data[:] // cannot be set in ISR because of write barriers
 	d.crhm = make(map[uint32]func(r *ControlRequest) int)
 	return d
 }

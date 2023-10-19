@@ -10,13 +10,14 @@ import (
 	"sync/atomic"
 	"unsafe"
 
+	"github.com/embeddedgo/imxrt/hal/internal"
 	"github.com/embeddedgo/imxrt/p/usb"
 )
 
 // All functions/methods that may run in the interrupt context (Cortex-M handler
 // mode) should be placed in this file.
 //
-// All functions in this file must have go:nosplit directive.
+// All functions in this file must have the go:nosplit directive.
 
 // ISR handles USB interrupts.
 //
@@ -143,7 +144,7 @@ func (td *DTD) uintptr() uintptr {
 // to 20 KiB. The remaining part of the buffer can be transfered using a next
 // DTD in the list or assigned to the same DTD next time. In most cases the
 // bufer requires a cache maintanance (see also dma.New, dma.MakeSlice,
-// rtos.CacheMaint) and  must be keep referenced until the end of transfer to
+// rtos.CacheMaint) and must be keep referenced until the end of transfer to
 // avoid GC. The unsafe.Pointer type is there to remind you of both of these
 // inconveniences.
 //
@@ -286,56 +287,51 @@ func parseSetup(cr *ControlRequest, setup [2]uint32) int {
 
 // Standard requests (contain the direction bit).
 const (
-	reqGetStatus        = 0x0080 >> 7
-	reqClearFeature     = 0x0100 >> 7
-	reqSetFeature       = 0x0300 >> 7
-	reqSetAdress        = 0x0500 >> 7
-	reqGetDescriptor    = 0x0680 >> 7
-	reqSetDescriptor    = 0x0700 >> 7
-	reqGetConfiguration = 0x0880 >> 7
-	reqSetConfiguration = 0x0900 >> 7
+	reqGetStatus        = 0x00<<1 | 1
+	reqClearFeature     = 0x01<<1 | 0
+	reqSetFeature       = 0x03<<1 | 0
+	reqSetAdress        = 0x05<<1 | 0
+	reqGetDescriptor    = 0x06<<1 | 1
+	reqSetDescriptor    = 0x07<<1 | 0
+	reqGetConfiguration = 0x08<<1 | 1
+	reqSetConfiguration = 0x09<<1 | 0
+	reqGetInterface     = 0x0a<<1 | 1
+	reqSetInterface     = 0x11<<1 | 0
 )
 
 //go:nosplit
 func (d *Device) controlHandlerISR(cr *ControlRequest) int {
-	typ := uint8(cr.Request & 0x7f) // request type - direction
-	req := cr.Request >> 7 & 0x1ff  // request number + direction
+	typ := uint8(cr.Request & 0x7f) // request type without direction
+	req := cr.Request >> 7 & 0x1ff  // request number with direction
 	switch typ {
 	case 0x00: // Standard Device Request
-		print("device: ")
 		switch req {
 		case reqGetStatus:
-			print("reqGetStatus\r\n")
 			if len(cr.Data) < 2 {
 				break
 			}
-			cr.Data[0] = 0
+			cr.Data[0] = 0 // bus powered, DEVICE_REMOTE_WAKEUP unset
 			cr.Data[1] = 0
 			return 2
 
-		case reqClearFeature:
-			print("reqClearFeature\r\n")
-
-		case reqSetFeature:
-			print("reqSetFeature\r\n")
+		case reqClearFeature, reqSetFeature:
+			// Not supported.
+			// Used to clear/set DEVICE_REMOTE_WAKEUP, TEST_MODE.
 
 		case reqSetAdress:
-			print("reqSetAdress\r\n")
 			addr := cr.Value & 0x7f
 			d.u.DEVADDR_PLISTBASE.Store(1<<24 | uint32(addr)<<25)
 			return 0
 
 		case reqGetDescriptor:
 			key := uint32(cr.Value)<<16 | uint32(cr.Index)
-			print("reqGetDescriptor ", key, "\r\n")
 			desc := d.des[key]
 			return copy(cr.Data, desc)
 
 		case reqSetDescriptor:
-			print("reqSetDescriptor\r\n")
+			// Not supported.
 
 		case reqGetConfiguration:
-			print("reqGetConfiguration\r\n")
 			if len(cr.Data) < 1 {
 				break
 			}
@@ -343,7 +339,6 @@ func (d *Device) controlHandlerISR(cr *ControlRequest) int {
 			return 1
 
 		case reqSetConfiguration: // enables the device
-			print("reqSetConfiguration\r\n")
 			// Deconfigure endpoints.
 			u := d.u
 			for i := 1; i < leNum; i++ {
@@ -362,7 +357,7 @@ func (d *Device) controlHandlerISR(cr *ControlRequest) int {
 					if len(cfd) < n {
 						break
 					}
-					if n == 7 && cfd[1] == 5 && uint(cfd[2]&0x0f)-1 < leNum-1 {
+					if n == 7 && cfd[1] == 5 && uint(cfd[2]&0x0f)-1 < uint(leNum)-1 {
 						le := int(cfd[2] & 0x0f)
 						dir := cfd[2] >> 7 // 0: Rx (OUT),  1: Tx (IN)
 						shift := uint(dir) * 16
@@ -402,13 +397,27 @@ func (d *Device) controlHandlerISR(cr *ControlRequest) int {
 			return 0
 		}
 	case 0x01: // Standard Interface Request
-		print("interface: ?\r\n")
+		switch req {
+		case reqGetStatus:
+			if len(cr.Data) < 2 {
+				break
+			}
+			cr.Data[0] = 0
+			cr.Data[1] = 0
+			return 2
+		case reqGetInterface:
+			if len(cr.Data) < 1 {
+				break
+			}
+			cr.Data[0] = 0
+			return 1
+		case reqSetInterface:
+			// TODO: support alternate interface settings
+		}
 
 	case 0x02: // Standard Endpoint Request
-		print("endpoint: ")
-		le := cr.Index & 0x7F
-		print("endpoint ", le, ": ")
-		if le > 7 {
+		le := int(cr.Index & 0x7F)
+		if le >= leNum {
 			return -1
 		}
 		epctl := &d.u.ENDPTCTRL[le]
@@ -418,23 +427,17 @@ func (d *Device) controlHandlerISR(cr *ControlRequest) int {
 		}
 		switch req {
 		case reqGetStatus:
-			print("reqGetStatus\r\n")
 			if len(cr.Data) < 2 {
 				break
 			}
-			stall := byte(0)
-			if epctl.LoadBits(mask) != 0 {
-				stall = 1
-			}
-			cr.Data[0] = stall
+			stall := internal.BoolToInt(epctl.LoadBits(mask) != 0)
+			cr.Data[0] = byte(stall)
 			cr.Data[1] = 0
 			return 2
 		case reqClearFeature:
-			print("reqClearFeature\r\n")
 			epctl.ClearBits(mask)
 			return 0
 		case reqSetFeature:
-			print("reqSetFeature\r\n")
 			epctl.SetBits(mask)
 			return 0
 		}
