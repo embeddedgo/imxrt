@@ -193,6 +193,7 @@ func (d *Driver) SetWriteTimeout(timeout time.Duration) {
 	d.txtimeout = timeout
 }
 
+//go:nosplit
 //go:nowritebarrierrec
 func (d *Driver) ISR() {
 	p := d.p

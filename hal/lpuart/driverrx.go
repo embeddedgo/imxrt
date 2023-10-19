@@ -106,6 +106,7 @@ func (d *Driver) Len() int {
 	return n
 }
 
+//go:nosplit
 func rxISR(d *Driver) {
 	wake := atomic.CompareAndSwapUint32(&d.rxwake, 1, 0)
 	if rxdma := d.rxdma; rxdma.IsValid() {

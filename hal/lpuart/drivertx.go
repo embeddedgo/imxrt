@@ -34,6 +34,7 @@ func (d *Driver) DisableTx() {
 	}
 }
 
+//go:nosplit
 func txISR(d *Driver) {
 	dr := &d.p.DATA
 	n := d.txn
