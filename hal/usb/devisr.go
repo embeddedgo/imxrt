@@ -6,6 +6,7 @@ package usb
 
 import (
 	"embedded/mmio"
+	"math/bits"
 	"sync/atomic"
 	"unsafe"
 
@@ -13,7 +14,7 @@ import (
 )
 
 // All functions/methods that may run in the interrupt context (Cortex-M handler
-// mode) shuod be placed in this file.
+// mode) should be placed in this file.
 //
 // All functions in this file must have go:nosplit directive.
 
@@ -29,18 +30,18 @@ func (d *Device) ISR() {
 	//print("ISR ", status, "\r\n")
 
 	if status&usb.UI != 0 {
-		// Check for setup request
+		// Check for setup request.
 		for {
 			// 42.5.6.4.2.1 Setup Phase
-			ess := u.ENDPTSETUPSTAT.Load() & (1<<leNum - 1)
+			ess := uint16(u.ENDPTSETUPSTAT.Load())
 			if ess == 0 {
 				break
 			}
-			u.ENDPTSETUPSTAT.Store(ess) // clear
-			for le := uint(0); ess != 0; le, ess = le+1, ess>>1 {
-				if ess&1 == 0 {
-					continue
-				}
+			u.ENDPTSETUPSTAT.Store(uint32(ess)) // clear
+			for le := 0; ess != 0; le, ess = le+1, ess>>1 {
+				n := bits.TrailingZeros16(ess)
+				ess >>= uint(n)
+				le += n
 				var setup [2]uint32
 				for {
 					u.USBCMD.SetBits(usb.SUTW)
@@ -51,7 +52,7 @@ func (d *Device) ISR() {
 					}
 				}
 				u.USBCMD.ClearBits(usb.SUTW)
-				flush := uint32(0x0001_0001) << le
+				flush := uint32(0x0001_0001) << uint(le)
 				u.ENDPTFLUSH.Store(flush)
 				for u.ENDPTFLUSH.LoadBits(flush) != 0 {
 				}
@@ -62,7 +63,6 @@ func (d *Device) ISR() {
 					d.cr.Data = d.cr.Data[:n:maxCtrlData] // avoid write barrier
 					execContorHandler(d, &d.dtcm.isr, &d.cr, d.controlHandlerISR)
 				} else {
-					print("other ", setup[0], "\r\n")
 					// Other requests are forwarded to the regristered handlers
 					// and executed in thread mode.
 					d.crsa[le] = setup
@@ -76,21 +76,17 @@ func (d *Device) ISR() {
 				}
 			}
 		}
-
+		// Handle completed transfers.
 		if ec := u.ENDPTCOMPLETE.LoadBits(0xfffe_fffe); ec != 0 {
 			u.ENDPTCOMPLETE.Store(ec) // clear
 			// Wake up goroutines that wait for the completed transfers. This
 			// code runs concurently with the Prime method (also look at the
 			// comments written there).
-			ec &^= 1<<16 | 1
-			for he, ec := 2, ec>>1; ec != 0; he, ec = he+2, ec>>1 {
-				if he == 32 {
-					he = 3
-					ec >>= 1
-				}
-				if ec&1 == 0 {
-					continue
-				}
+			for i := 0; ec != 0; i, ec = i+1, ec>>1 {
+				n := bits.TrailingZeros32(ec)
+				i += n
+				ec >>= uint(n)
+				he := i&15<<1 | i>>4
 				removeAndWakeup(&d.dtcm.qhs[he], Active)
 			}
 		}
@@ -131,7 +127,7 @@ func (d *Device) ISR() {
 		// 42.5.6.2.2.1 Suspend. Could be signaled somehow to the application.
 	}
 	if status&usb.UEI != 0 {
-		// BUG: there is no handling of USB errors
+		// BUG: error handling
 	}
 }
 
