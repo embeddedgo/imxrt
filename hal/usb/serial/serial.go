@@ -27,6 +27,21 @@ func New(d *usb.Device, ihe, ohe int) *Serial {
 	}
 }
 
-func (se *Serial) Read(p []byte) (int, error) {
+func (s *Serial) Read(p []byte) (int, error) {
+	return tran(s.d, s.ohe, (*[3]usb.DTD)(s.tda[:3]), (*[64]byte)(s.buf[:64]), p)
+}
+
+func (s *Serial) Write(p []byte) (int, error) {
+	if len(p) == 0 {
+		return 0, nil
+	}
+	return tran(s.d, s.ihe, (*[3]usb.DTD)(s.tda[3:]), (*[64]byte)(s.buf[64:]), p)
+}
+
+func tran(d *usb.Device, he int, tda *[3]usb.DTD, buf *[64]byte, p []byte) (int, error) {
+	if len(p) == 0 {
+		return 0, nil
+	}
+
 	return 0, nil
 }

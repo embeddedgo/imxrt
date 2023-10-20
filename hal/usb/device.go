@@ -262,21 +262,22 @@ func (d *Device) WaitConfig(cn int) {
 }
 
 // Prime primes the he hardware endpoint with the list of transfer descriptors
-// specified by first and last. It reports whether the endpoint was succesfully
-// primed.
+// specified by the first and last pointers. It reports whether the endpoint was
+// succesfully primed.
 //
 // To successfully prime an endpoint the device must be in the configured state
 // and the selected configuration number must equal cn. Prime alwyas fails in
 // any other device state (powered, attach, reset, default FS/HS).
 //
-// Prime panics if he is invalid or tdl is nil or cn is zero.
+// Prime can be used concurently by multiple goroutines also with the same
+// endpoint.
 //
 // The last descriptor in the tdl must have a note set to provide a way for the
 // ISR to inform about the end of transfer (see DTD.SetNote). Setting notes for
 // the preceding DTDs in the list is optional and depends on the logical
 // structure of the transfer.
 func (d *Device) Prime(he int, first, last *DTD, cn int) (primed bool) {
-	if he < 2 || he >= len(d.dtcm.qhs) {
+	if uint(he-2) >= uint(len(d.dtcm.qhs)-2) {
 		panic("bad he")
 	}
 	if first == nil {
