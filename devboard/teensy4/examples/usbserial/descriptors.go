@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-// This file contains descriptor data from Teensyduino Core Library.
+// This file contains descriptor data from the Teensyduino Core Library.
 
 /* Teensyduino Core Library
  * http://www.pjrc.com/teensy/
@@ -36,496 +36,470 @@
 
 package main
 
-var descriptors = map[uint32][]byte{
-	0x0100_0000: deviceDescr[:],
-	0x0200_0000: usbConfigDescr480[:],
-	0x0300_0000: string0[:],
-	0x0301_0409: usbManufacturerName[:],
-	0x0302_0409: usbProductName[:],
-	0x0303_0409: usbSerialNumber[:],
-	0x0700_0000: usbConfigDescr12[:],
-	0x0600_0000: qualifierDescr[:],
+var descriptors = map[uint32]string{
+	0x0100_0000: deviceDescr,
+	0x0200_0000: usbConfigDescr480,
+	0x0300_0000: string0,
+	0x0301_0409: usbManufacturerName,
+	0x0302_0409: usbProductName,
+	0x0303_0409: usbSerialNumber,
+	0x0600_0000: qualifierDescr,
+	0x0700_0000: usbConfigDescr12,
 }
 
 const (
-	ep0pktSize = 64
-	vendorID   = 0x16C0
-	productID  = 0x0483
+	ctrlPktSize = "\x40"     // 64
+	vendorID    = "\xC0\x16" // 0x16C0 "Van Ooijen Technische Informatica"
+	productID   = "\x83\x04" // 0x0483 "Teensyduino Serial"
 )
 
-const deviceDescrStr = "" +
-	"\x16" + // bLength
+const deviceDescr = "" +
+	"\x12" + // bLength
 	"\x01" + // bDescriptorType
 	"\x00\x02" + // bcdUSB
 	"\x00" + // bDeviceClass
 	"\x00" + // bDeviceSubClass
 	"\x00" + // bDeviceProtocol
-	"\x40" + // bMaxPacketSize0
-	"\xc0\x16" + // idVendor
-	"\x83\x04" + // idProduct
+	ctrlPktSize + // bMaxPacketSize0
+	vendorID + // idVendor
+	productID + // idProduct
 	"\x81\x02" + // bcdDevice
 	"\x01" + // iManufacturer
 	"\x02" + // iProduct
 	"\x03" + // iSerialNumber
 	"\x01" // bNumConfigurations
 
-var deviceDescr = [18]byte{
-	18,   // bLength
-	1,    // bDescriptorType
-	0, 2, // bcdUSB, 0x0200 means USB 2.0
-	0,                              // bDeviceClass, 0 means see interface class
-	0,                              // bDeviceSubClass
-	0,                              // bDeviceProtocol
-	ep0pktSize,                     // bMaxPacketSize0
-	vendorID & 0xff, vendorID >> 8, // idVendor
-	productID & 0xff, productID >> 8, // idProduct
-	0x81, 0x02, // bcdDevice
-	1, // iManufacturer
-	2, // iProduct
-	3, // iSerialNumber
-	1, // bNumConfigurations
-}
-
-var qualifierDescr = [10]byte{
-	10,         // bLength
-	6,          // bDescriptorType
-	0x00, 0x02, // bcdUSB
-	0,          // bDeviceClass
-	0,          // bDeviceSubClass
-	0,          // bDeviceProtocol
-	ep0pktSize, // bMaxPacketSize0
-	1,          // bNumConfigurations
-	0,          // bReserved
-}
+const qualifierDescr = "" +
+	"\x0a" + // bLength
+	"\x06" + // bDescriptorType
+	"\x00\x02" + // bcdUSB
+	"\x00" + // bDeviceClass
+	"\x00" + // bDeviceSubClass
+	"\x00" + // bDeviceProtocol
+	ctrlPktSize + // bMaxPacketSize0
+	"\x01" + // bNumConfigurations
+	"\x00" // bReserved
 
 const (
-	intNum = 4
+	intNum = "\x04"
 
-	acm0_StatusInt = 0
-	acm0_DataInt   = 1
-	acm0_StatusIN  = 1 | 0x80
-	acm0_DataIN    = 2 | 0x80
-	acm0_DataOUT   = 2
+	acm0_StatusInt = "\x00"
+	acm0_DataInt   = "\x01"
+	acm0_StatusIN  = "\x81" // 1 IN
+	acm0_DataIN    = "\x82" // 2 IN
+	acm0_DataOUT   = "\x02" // 2 OUT
 
-	acm1_StatusInt = 2
-	acm1_DataInt   = 3
-	acm1_StatusIN  = 3 | 0x80
-	acm1_DataIN    = 4 | 0x80
-	acm1_DataOUT   = 4
+	acm1_StatusInt = "\x02"
+	acm1_DataInt   = "\x03"
+	acm1_StatusIN  = "\x83" // 3 IN
+	acm1_DataIN    = "\x84" // 4 IN
+	acm1_DataOUT   = "\x04" // 4 OUT
 
-	acmStatusSize  = 16
-	acmDataSize480 = 512
-	acmDataSize12  = 64
+	acmStatusSize  = "\x10\x00" // 16
+	acmDataSize480 = "\x00\x02" // 512
+	acmDataSize12  = "\x40\x00" // 64
 )
 
-const usbConfigDescrLen = 141
+const usbConfigDescrLen = "\x8d\x00"
 
-var usbConfigDescr480 = [usbConfigDescrLen]byte{
-	9,                        // bLength;
-	2,                        // bDescriptorType;
-	usbConfigDescrLen & 0xff, // wTotalLength
-	usbConfigDescrLen >> 8,
-	intNum, // bNumInterfaces
-	1,      // bConfigurationValue, use 1 to select this conig
-	0,      // iConfiguration, 0 means no string descriptor for this conf
-	0xC0,   // bmAttributes, Self Powered
-	50,     // bMaxPower, 50 * 2 mA = 100 mA
+const usbConfigDescr480 = "" +
+	"\x09" + // bLength;
+	"\x02" + // bDescriptorType;
+	usbConfigDescrLen + // wTotalLength
+	intNum + // bNumInterfaces
+	"\x01" + // bConfigurationValue, use 1 to select this conig
+	"\x00" + // iConfiguration, 0 means no string descriptor for this conf
+	"\xC0" + // bmAttributes, Self Powered
+	"\x32" + // bMaxPower, 50 * 2 mA = 100 mA
 
 	// interface association descriptor, USB ECN, Table 9-Z
-	8,              // bLength
-	11,             // bDescriptorType
-	acm0_StatusInt, // bFirstInterface
-	2,              // bInterfaceCount
-	0x02,           // bFunctionClass
-	0x02,           // bFunctionSubClass
-	0x01,           // bFunctionProtocol
-	0,              // iFunction
+	"\x08" + // bLength
+	"\x0b" + // bDescriptorType
+	acm0_StatusInt + // bFirstInterface
+	"\x02" + // bInterfaceCount
+	"\x02" + // bFunctionClass
+	"\x02" + // bFunctionSubClass
+	"\x01" + // bFunctionProtocol
+	"\x00" + // iFunction
 
 	// configuration for 480 Mbit/sec speed
 	// interface descriptor, USB spec 9.6.5, page 267-269, Table 9-12
-	9,              // bLength
-	4,              // bDescriptorType
-	acm0_StatusInt, // bInterfaceNumber
-	0,              // bAlternateSetting
-	1,              // bNumEndpoints
-	0x02,           // bInterfaceClass
-	0x02,           // bInterfaceSubClass
-	0x01,           // bInterfaceProtocol
-	0,              // iInterface
+	"\x09" + // bLength
+	"\x04" + // bDescriptorType
+	acm0_StatusInt + // bInterfaceNumber
+	"\x00" + // bAlternateSetting
+	"\x01" + // bNumEndpoints
+	"\x02" + // bInterfaceClass
+	"\x02" + // bInterfaceSubClass
+	"\x01" + // bInterfaceProtocol
+	"\x00" + // iInterface
 
 	// CDC Header Functional Descriptor, CDC Spec 5.2.3.1, Table 26
-	5,          // bFunctionLength
-	0x24,       // bDescriptorType
-	0x00,       // bDescriptorSubtype
-	0x10, 0x01, // bcdCDC
+	"\x05" + // bFunctionLength
+	"\x24" + // bDescriptorType
+	"\x00" + // bDescriptorSubtype
+	"\x10\x01" + // bcdCDC
 
 	// Call Management Functional Descriptor, CDC Spec 5.2.3.2, Table 27
-	5,    // bFunctionLength
-	0x24, // bDescriptorType
-	0x01, // bDescriptorSubtype
-	0x01, // bmCapabilities
-	1,    // bDataInterface
+	"\x05" + // bFunctionLength
+	"\x24" + // bDescriptorType
+	"\x01" + // bDescriptorSubtype
+	"\x01" + // bmCapabilities
+	"\x01" + // bDataInterface
 
 	// Abstract Control Management Functional Descriptor, CDC Spec 5.2.3.3, Table 28
-	4,    // bFunctionLength
-	0x24, // bDescriptorType
-	0x02, // bDescriptorSubtype
-	0x06, // bmCapabilities
+	"\x04" + // bFunctionLength
+	"\x24" + // bDescriptorType
+	"\x02" + // bDescriptorSubtype
+	"\x06" + // bmCapabilities
 
 	// Union Functional Descriptor, CDC Spec 5.2.3.8, Table 33
-	5,              // bFunctionLength
-	0x24,           // bDescriptorType
-	0x06,           // bDescriptorSubtype
-	acm0_StatusInt, // bMasterInterface
-	acm0_DataInt,   // bSlaveInterface0
+	"\x05" + // bFunctionLength
+	"\x24" + // bDescriptorType
+	"\x06" + // bDescriptorSubtype
+	acm0_StatusInt + // bMasterInterface
+	acm0_DataInt + // bSlaveInterface0
 
 	// endpoint descriptor, USB spec 9.6.6, page 269-271, Table 9-13
-	7,                                             // bLength
-	5,                                             // bDescriptorType
-	acm0_StatusIN,                                 // bEndpointAddress
-	0x03,                                          // bmAttributes (0x03=intr)
-	byte(acmStatusSize), byte(acmStatusSize >> 8), // wMaxPacketSize
-	5, // bInterval
+	"\x07" + // bLength
+	"\x05" + // bDescriptorType
+	acm0_StatusIN + // bEndpointAddress
+	"\x03" + // bmAttributes (0x03=intr)
+	acmStatusSize + // wMaxPacketSize
+	"\x05" + // bInterval
 
 	// interface descriptor, USB spec 9.6.5, page 267-269, Table 9-12
-	9,            // bLength
-	4,            // bDescriptorType
-	acm0_DataInt, // bInterfaceNumber
-	0,            // bAlternateSetting
-	2,            // bNumEndpoints
-	0x0A,         // bInterfaceClass
-	0x00,         // bInterfaceSubClass
-	0x00,         // bInterfaceProtocol
-	0,            // iInterface
+	"\x09" + // bLength
+	"\x04" + // bDescriptorType
+	acm0_DataInt + // bInterfaceNumber
+	"\x00" + // bAlternateSetting
+	"\x02" + // bNumEndpoints
+	"\x0A" + // bInterfaceClass
+	"\x00" + // bInterfaceSubClass
+	"\x00" + // bInterfaceProtocol
+	"\x00" + // iInterface
 
 	// endpoint descriptor, USB spec 9.6.6, page 269-271, Table 9-13
-	7,                                          // bLength
-	5,                                          // bDescriptorType
-	acm0_DataIN,                                // bEndpointAddress
-	0x02,                                       // bmAttributes (0x02=bulk)
-	acmDataSize480 & 0xff, acmDataSize480 >> 8, // wMaxPacketSize
-	0, // bInterval
+	"\x07" + // bLength
+	"\x05" + // bDescriptorType
+	acm0_DataIN + // bEndpointAddress
+	"\x02" + // bmAttributes (0x02=bulk)
+	acmDataSize480 + // wMaxPacketSize
+	"\x00" + // bInterval
 
 	// endpoint descriptor, USB spec 9.6.6, page 269-271, Table 9-13
-	7,                                          // bLength
-	5,                                          // bDescriptorType
-	acm0_DataOUT,                               // bEndpointAddress
-	0x02,                                       // bmAttributes (0x02=bulk)
-	acmDataSize480 & 0xff, acmDataSize480 >> 8, // wMaxPacketSize
-	0, // bInterval
+	"\x07" + // bLength
+	"\x05" + // bDescriptorType
+	acm0_DataOUT + // bEndpointAddress
+	"\x02" + // bmAttributes (0x02=bulk)
+	acmDataSize480 + // wMaxPacketSize
+	"\x00" + // bInterval
 
 	// interface association descriptor, USB ECN, Table 9-Z
-	8,              // bLength
-	11,             // bDescriptorType
-	acm1_StatusInt, // bFirstInterface
-	2,              // bInterfaceCount
-	0x02,           // bFunctionClass
-	0x02,           // bFunctionSubClass
-	0x01,           // bFunctionProtocol
-	0,              // iFunction
+	"\x08" + // bLength
+	"\x0b" + // bDescriptorType
+	acm1_StatusInt + // bFirstInterface
+	"\x02" + // bInterfaceCount
+	"\x02" + // bFunctionClass
+	"\x02" + // bFunctionSubClass
+	"\x01" + // bFunctionProtocol
+	"\x00" + // iFunction
 
 	// configuration for 480 Mbit/sec speed
 	// interface descriptor, USB spec 9.6.5, page 267-269, Table 9-12
-	9,              // bLength
-	4,              // bDescriptorType
-	acm1_StatusInt, // bInterfaceNumber
-	0,              // bAlternateSetting
-	1,              // bNumEndpoints
-	0x02,           // bInterfaceClass
-	0x02,           // bInterfaceSubClass
-	0x01,           // bInterfaceProtocol
-	0,              // iInterface
+	"\x09" + // bLength
+	"\x04" + // bDescriptorType
+	acm1_StatusInt + // bInterfaceNumber
+	"\x00" + // bAlternateSetting
+	"\x01" + // bNumEndpoints
+	"\x02" + // bInterfaceClass
+	"\x02" + // bInterfaceSubClass
+	"\x01" + // bInterfaceProtocol
+	"\x00" + // iInterface
 
 	// CDC Header Functional Descriptor, CDC Spec 5.2.3.1, Table 26
-	5,          // bFunctionLength
-	0x24,       // bDescriptorType
-	0x00,       // bDescriptorSubtype
-	0x10, 0x01, // bcdCDC
+	"\x05" + // bFunctionLength
+	"\x24" + // bDescriptorType
+	"\x00" + // bDescriptorSubtype
+	"\x10\x01" + // bcdCDC
 
 	// Call Management Functional Descriptor, CDC Spec 5.2.3.2, Table 27
-	5,    // bFunctionLength
-	0x24, // bDescriptorType
-	0x01, // bDescriptorSubtype
-	0x01, // bmCapabilities
-	1,    // bDataInterface
+	"\x05" + // bFunctionLength
+	"\x24" + // bDescriptorType
+	"\x01" + // bDescriptorSubtype
+	"\x01" + // bmCapabilities
+	"\x01" + // bDataInterface
 
 	// Abstract Control Management Functional Descriptor, CDC Spec 5.2.3.3, Table 28
-	4,    // bFunctionLength
-	0x24, // bDescriptorType
-	0x02, // bDescriptorSubtype
-	0x06, // bmCapabilities
+	"\x04" + // bFunctionLength
+	"\x24" + // bDescriptorType
+	"\x02" + // bDescriptorSubtype
+	"\x06" + // bmCapabilities
 
 	// Union Functional Descriptor, CDC Spec 5.2.3.8, Table 33
-	5,              // bFunctionLength
-	0x24,           // bDescriptorType
-	0x06,           // bDescriptorSubtype
-	acm1_StatusInt, // bMasterInterface
-	acm1_DataInt,   // bSlaveInterface0
+	"\x05" + // bFunctionLength
+	"\x24" + // bDescriptorType
+	"\x06" + // bDescriptorSubtype
+	acm1_StatusInt + // bMasterInterface
+	acm1_DataInt + // bSlaveInterface0
 
 	// endpoint descriptor, USB spec 9.6.6, page 269-271, Table 9-13
-	7,                                             // bLength
-	5,                                             // bDescriptorType
-	acm1_StatusIN,                                 // bEndpointAddress
-	0x03,                                          // bmAttributes (0x03=intr)
-	byte(acmStatusSize), byte(acmStatusSize >> 8), // wMaxPacketSize
-	5, // bInterval
+	"\x07" + // bLength
+	"\x05" + // bDescriptorType
+	acm1_StatusIN + // bEndpointAddress
+	"\x03" + // bmAttributes (0x03=intr)
+	acmStatusSize + // wMaxPacketSize
+	"\x05" + // bInterval
 
 	// interface descriptor, USB spec 9.6.5, page 267-269, Table 9-12
-	9,            // bLength
-	4,            // bDescriptorType
-	acm1_DataInt, // bInterfaceNumber
-	0,            // bAlternateSetting
-	2,            // bNumEndpoints
-	0x0A,         // bInterfaceClass
-	0x00,         // bInterfaceSubClass
-	0x00,         // bInterfaceProtocol
-	0,            // iInterface
+	"\x09" + // bLength
+	"\x04" + // bDescriptorType
+	acm1_DataInt + // bInterfaceNumber
+	"\x00" + // bAlternateSetting
+	"\x02" + // bNumEndpoints
+	"\x0A" + // bInterfaceClass
+	"\x00" + // bInterfaceSubClass
+	"\x00" + // bInterfaceProtocol
+	"\x00" + // iInterface
 
 	// endpoint descriptor, USB spec 9.6.6, page 269-271, Table 9-13
-	7,                                          // bLength
-	5,                                          // bDescriptorType
-	acm1_DataIN,                                // bEndpointAddress
-	0x02,                                       // bmAttributes (0x02=bulk)
-	acmDataSize480 & 0xff, acmDataSize480 >> 8, // wMaxPacketSize
-	0, // bInterval
+	"\x07" + // bLength
+	"\x05" + // bDescriptorType
+	acm1_DataIN + // bEndpointAddress
+	"\x02" + // bmAttributes (0x02=bulk)
+	acmDataSize480 + // wMaxPacketSize
+	"\x00" + // bInterval
 
 	// endpoint descriptor, USB spec 9.6.6, page 269-271, Table 9-13
-	7,                                          // bLength
-	5,                                          // bDescriptorType
-	acm1_DataOUT,                               // bEndpointAddress
-	0x02,                                       // bmAttributes (0x02=bulk)
-	acmDataSize480 & 0xff, acmDataSize480 >> 8, // wMaxPacketSize
-	0, // bInterval
-}
+	"\x07" + // bLength
+	"\x05" + // bDescriptorType
+	acm1_DataOUT + // bEndpointAddress
+	"\x02" + // bmAttributes (0x02=bulk)
+	acmDataSize480 + // wMaxPacketSize
+	"\x00" // bInterval
 
-var usbConfigDescr12 = [usbConfigDescrLen]byte{
+const usbConfigDescr12 = "" +
 	// configuration descriptor, USB spec 9.6.3, page 264-266, Table 9-10
-	9,                        // bLength;
-	2,                        // bDescriptorType;
-	usbConfigDescrLen & 0xff, // wTotalLength
-	usbConfigDescrLen >> 8,
-	intNum, // bNumInterfaces
-	1,      // bConfigurationValue
-	0,      // iConfiguration
-	0xC0,   // bmAttributes
-	50,     // bMaxPower
+	"\x09" + // bLength;
+	"\x02" + // bDescriptorType;
+	usbConfigDescrLen + // wTotalLength
+	intNum + // bNumInterfaces
+	"\x01" + // bConfigurationValue
+	"\x00" + // iConfiguration
+	"\xC0" + // bmAttributes
+	"\x32" + // bMaxPower
 
 	// interface association descriptor, USB ECN, Table 9-Z
-	8,              // bLength
-	11,             // bDescriptorType
-	acm0_StatusInt, // bFirstInterface
-	2,              // bInterfaceCount
-	0x02,           // bFunctionClass
-	0x02,           // bFunctionSubClass
-	0x01,           // bFunctionProtocol
-	0,              // iFunction
+	"\x08" + // bLength
+	"\x0B" + // bDescriptorType
+	acm0_StatusInt + // bFirstInterface
+	"\x02" + // bInterfaceCount
+	"\x02" + // bFunctionClass
+	"\x02" + // bFunctionSubClass
+	"\x01" + // bFunctionProtocol
+	"\x00" + // iFunction
 
 	// configuration for 12 Mbit/sec speed
 	// interface descriptor, USB spec 9.6.5, page 267-269, Table 9-12
-	9,              // bLength
-	4,              // bDescriptorType
-	acm0_StatusInt, // bInterfaceNumber
-	0,              // bAlternateSetting
-	1,              // bNumEndpoints
-	0x02,           // bInterfaceClass
-	0x02,           // bInterfaceSubClass
-	0x01,           // bInterfaceProtocol
-	0,              // iInterface
+	"\x09" + // bLength
+	"\x04" + // bDescriptorType
+	acm0_StatusInt + // bInterfaceNumber
+	"\x00" + // bAlternateSetting
+	"\x01" + // bNumEndpoints
+	"\x02" + // bInterfaceClass
+	"\x02" + // bInterfaceSubClass
+	"\x01" + // bInterfaceProtocol
+	"\x00" + // iInterface
 
 	// CDC Header Functional Descriptor, CDC Spec 5.2.3.1, Table 26
-	5,          // bFunctionLength
-	0x24,       // bDescriptorType
-	0x00,       // bDescriptorSubtype
-	0x10, 0x01, // bcdCDC
+	"\x05" + // bFunctionLength
+	"\x24" + // bDescriptorType
+	"\x00" + // bDescriptorSubtype
+	"\x10\x01" + // bcdCDC
 	// Call Management Functional Descriptor, CDC Spec 5.2.3.2, Table 27
-	5,    // bFunctionLength
-	0x24, // bDescriptorType
-	0x01, // bDescriptorSubtype
-	0x01, // bmCapabilities
-	1,    // bDataInterface
+	"\x05" + // bFunctionLength
+	"\x24" + // bDescriptorType
+	"\x01" + // bDescriptorSubtype
+	"\x01" + // bmCapabilities
+	"\x01" + // bDataInterface
 
 	// Abstract Control Management Functional Descriptor, CDC Spec 5.2.3.3, Table 28
-	4,    // bFunctionLength
-	0x24, // bDescriptorType
-	0x02, // bDescriptorSubtype
-	0x06, // bmCapabilities
+	"\x04" + // bFunctionLength
+	"\x24" + // bDescriptorType
+	"\x02" + // bDescriptorSubtype
+	"\x06" + // bmCapabilities
 
 	// Union Functional Descriptor, CDC Spec 5.2.3.8, Table 33
-	5,              // bFunctionLength
-	0x24,           // bDescriptorType
-	0x06,           // bDescriptorSubtype
-	acm0_StatusInt, // bMasterInterface
-	acm0_DataInt,   // bSlaveInterface0
+	"\x05" + // bFunctionLength
+	"\x24" + // bDescriptorType
+	"\x06" + // bDescriptorSubtype
+	acm0_StatusInt + // bMasterInterface
+	acm0_DataInt + // bSlaveInterface0
 
 	// endpoint descriptor, USB spec 9.6.6, page 269-271, Table 9-13
-	7,                // bLength
-	5,                // bDescriptorType
-	acm0_StatusIN,    // bEndpointAddress
-	0x03,             // bmAttributes (0x03=intr)
-	acmStatusSize, 0, // wMaxPacketSize
-	16, // bInterval
+	"\x07" + // bLength
+	"\x05" + // bDescriptorType
+	acm0_StatusIN + // bEndpointAddress
+	"\x03" + // bmAttributes (0x03=intr)
+	acmStatusSize + // wMaxPacketSize
+	"\x10" + // bInterval
 
 	// interface descriptor, USB spec 9.6.5, page 267-269, Table 9-12
-	9,            // bLength
-	4,            // bDescriptorType
-	acm0_DataInt, // bInterfaceNumber
-	0,            // bAlternateSetting
-	2,            // bNumEndpoints
-	0x0A,         // bInterfaceClass
-	0x00,         // bInterfaceSubClass
-	0x00,         // bInterfaceProtocol
-	0,            // iInterface
+	"\x09" + // bLength
+	"\x04" + // bDescriptorType
+	acm0_DataInt + // bInterfaceNumber
+	"\x00" + // bAlternateSetting
+	"\x02" + // bNumEndpoints
+	"\x0A" + // bInterfaceClass
+	"\x00" + // bInterfaceSubClass
+	"\x00" + // bInterfaceProtocol
+	"\x00" + // iInterface
 
 	// endpoint descriptor, USB spec 9.6.6, page 269-271, Table 9-13
-	7,                                        // bLength
-	5,                                        // bDescriptorType
-	acm0_DataIN,                              // bEndpointAddress
-	0x02,                                     // bmAttributes (0x02=bulk)
-	acmDataSize12 & 0xff, acmDataSize12 >> 8, // wMaxPacketSize
-	0, // bInterval
+	"\x07" + // bLength
+	"\x05" + // bDescriptorType
+	acm0_DataIN + // bEndpointAddress
+	"\x02" + // bmAttributes (0x02=bulk)
+	acmDataSize12 + // wMaxPacketSize
+	"\x00" + // bInterval
 
 	// endpoint descriptor, USB spec 9.6.6, page 269-271, Table 9-13
-	7,                                        // bLength
-	5,                                        // bDescriptorType
-	acm0_DataOUT,                             // bEndpointAddress
-	0x02,                                     // bmAttributes (0x02=bulk)
-	acmDataSize12 & 0xff, acmDataSize12 >> 8, // wMaxPacketSize
-	0, // bInterval
+	"\x07" + // bLength
+	"\x05" + // bDescriptorType
+	acm0_DataOUT + // bEndpointAddress
+	"\x02" + // bmAttributes (0x02=bulk)
+	acmDataSize12 + // wMaxPacketSize
+	"\x00" + // bInterval
 
 	// interface association descriptor, USB ECN, Table 9-Z
-	8,              // bLength
-	11,             // bDescriptorType
-	acm1_StatusInt, // bFirstInterface
-	2,              // bInterfaceCount
-	0x02,           // bFunctionClass
-	0x02,           // bFunctionSubClass
-	0x01,           // bFunctionProtocol
-	0,              // iFunction
+	"\x08" + // bLength
+	"\x0B" + // bDescriptorType
+	acm1_StatusInt + // bFirstInterface
+	"\x02" + // bInterfaceCount
+	"\x02" + // bFunctionClass
+	"\x02" + // bFunctionSubClass
+	"\x01" + // bFunctionProtocol
+	"\x00" + // iFunction
 
 	// configuration for 12 Mbit/sec speed
 	// interface descriptor, USB spec 9.6.5, page 267-269, Table 9-12
-	9,              // bLength
-	4,              // bDescriptorType
-	acm1_StatusInt, // bInterfaceNumber
-	0,              // bAlternateSetting
-	1,              // bNumEndpoints
-	0x02,           // bInterfaceClass
-	0x02,           // bInterfaceSubClass
-	0x01,           // bInterfaceProtocol
-	0,              // iInterface
+	"\x09" + // bLength
+	"\x04" + // bDescriptorType
+	acm1_StatusInt + // bInterfaceNumber
+	"\x00" + // bAlternateSetting
+	"\x01" + // bNumEndpoints
+	"\x02" + // bInterfaceClass
+	"\x02" + // bInterfaceSubClass
+	"\x01" + // bInterfaceProtocol
+	"\x00" + // iInterface
 
 	// CDC Header Functional Descriptor, CDC Spec 5.2.3.1, Table 26
-	5,          // bFunctionLength
-	0x24,       // bDescriptorType
-	0x00,       // bDescriptorSubtype
-	0x10, 0x01, // bcdCDC
+	"\x05" + // bFunctionLength
+	"\x24" + // bDescriptorType
+	"\x00" + // bDescriptorSubtype
+	"\x10\x01" + // bcdCDC
 	// Call Management Functional Descriptor, CDC Spec 5.2.3.2, Table 27
-	5,    // bFunctionLength
-	0x24, // bDescriptorType
-	0x01, // bDescriptorSubtype
-	0x01, // bmCapabilities
-	1,    // bDataInterface
+	"\x05" + // bFunctionLength
+	"\x24" + // bDescriptorType
+	"\x01" + // bDescriptorSubtype
+	"\x01" + // bmCapabilities
+	"\x01" + // bDataInterface
 
 	// Abstract Control Management Functional Descriptor, CDC Spec 5.2.3.3, Table 28
-	4,    // bFunctionLength
-	0x24, // bDescriptorType
-	0x02, // bDescriptorSubtype
-	0x06, // bmCapabilities
+	"\x04" + // bFunctionLength
+	"\x24" + // bDescriptorType
+	"\x02" + // bDescriptorSubtype
+	"\x06" + // bmCapabilities
 
 	// Union Functional Descriptor, CDC Spec 5.2.3.8, Table 33
-	5,              // bFunctionLength
-	0x24,           // bDescriptorType
-	0x06,           // bDescriptorSubtype
-	acm1_StatusInt, // bMasterInterface
-	acm1_DataInt,   // bSlaveInterface0
+	"\x05" + // bFunctionLength
+	"\x24" + // bDescriptorType
+	"\x06" + // bDescriptorSubtype
+	acm1_StatusInt + // bMasterInterface
+	acm1_DataInt + // bSlaveInterface0
 
 	// endpoint descriptor, USB spec 9.6.6, page 269-271, Table 9-13
-	7,                // bLength
-	5,                // bDescriptorType
-	acm1_StatusIN,    // bEndpointAddress
-	0x03,             // bmAttributes (0x03=intr)
-	acmStatusSize, 0, // wMaxPacketSize
-	16, // bInterval
+	"\x07" + // bLength
+	"\x05" + // bDescriptorType
+	acm1_StatusIN + // bEndpointAddress
+	"\x03" + // bmAttributes (0x03=intr)
+	acmStatusSize + // wMaxPacketSize
+	"\x10" + // bInterval
 
 	// interface descriptor, USB spec 9.6.5, page 267-269, Table 9-12
-	9,            // bLength
-	4,            // bDescriptorType
-	acm1_DataInt, // bInterfaceNumber
-	0,            // bAlternateSetting
-	2,            // bNumEndpoints
-	0x0A,         // bInterfaceClass
-	0x00,         // bInterfaceSubClass
-	0x00,         // bInterfaceProtocol
-	0,            // iInterface
+	"\x09" + // bLength
+	"\x04" + // bDescriptorType
+	acm1_DataInt + // bInterfaceNumber
+	"\x00" + // bAlternateSetting
+	"\x02" + // bNumEndpoints
+	"\x0A" + // bInterfaceClass
+	"\x00" + // bInterfaceSubClass
+	"\x00" + // bInterfaceProtocol
+	"\x00" + // iInterface
 
 	// endpoint descriptor, USB spec 9.6.6, page 269-271, Table 9-13
-	7,                                        // bLength
-	5,                                        // bDescriptorType
-	acm1_DataIN,                              // bEndpointAddress
-	0x02,                                     // bmAttributes (0x02=bulk)
-	acmDataSize12 & 0xff, acmDataSize12 >> 8, // wMaxPacketSize
-	0, // bInterval
+	"\x07" + // bLength
+	"\x05" + // bDescriptorType
+	acm1_DataIN + // bEndpointAddress
+	"\x02" + // bmAttributes (0x02=bulk)
+	acmDataSize12 + // wMaxPacketSize
+	"\x00" + // bInterval
 
 	// endpoint descriptor, USB spec 9.6.6, page 269-271, Table 9-13
-	7,                                        // bLength
-	5,                                        // bDescriptorType
-	acm1_DataOUT,                             // bEndpointAddress
-	0x02,                                     // bmAttributes (0x02=bulk)
-	acmDataSize12 & 0xff, acmDataSize12 >> 8, // wMaxPacketSize
-	0, // bInterval
-}
+	"\x07" + // bLength
+	"\x05" + // bDescriptorType
+	acm1_DataOUT + // bEndpointAddress
+	"\x02" + // bmAttributes (0x02=bulk)
+	acmDataSize12 + // wMaxPacketSize
+	"\x00" // bInterval
 
 // string0 descriptor lists supportedd languages
-var string0 = [4]byte{
-	4,
-	3,
-	9, 4, // English (United States)
-}
+const string0 = "" +
+	"\x04" +
+	"\x03" +
+	"\x09\x04" // English (United States)
 
-var usbManufacturerName = [24]byte{
-	24,
-	3,
-	'E', 0,
-	'm', 0,
-	'b', 0,
-	'e', 0,
-	'd', 0,
-	'd', 0,
-	'e', 0,
-	'd', 0,
-	' ', 0,
-	'G', 0,
-	'o', 0,
-}
+const usbManufacturerName = "" +
+	"\x18" + // bLength
+	"\x03" + // bDescriptorType
+	"E\x00" +
+	"m\x00" +
+	"b\x00" +
+	"e\x00" +
+	"d\x00" +
+	"d\x00" +
+	"e\x00" +
+	"d\x00" +
+	" \x00" +
+	"G\x00" +
+	"o\x00"
 
-var usbProductName = [28]byte{
-	28,
-	3,
-	'C', 0,
-	'o', 0,
-	'n', 0,
-	's', 0,
-	'o', 0,
-	'l', 0,
-	'e', 0,
-	' ', 0,
-	'+', 0,
-	' ', 0,
-	'A', 0,
-	'U', 0,
-	'X', 0,
-}
+const usbProductName = "" +
+	"\x1C" + // bLength
+	"\x03" + // bDescriptorType
+	"C\x00" +
+	"o\x00" +
+	"n\x00" +
+	"s\x00" +
+	"o\x00" +
+	"l\x00" +
+	"e\x00" +
+	" \x00" +
+	"+\x00" +
+	" \x00" +
+	"A\x00" +
+	"U\x00" +
+	"X\x00"
 
-var usbSerialNumber = [20]byte{
-	20,
-	3,
-	'1', 0,
-	'2', 0,
-	'3', 0,
-	'4', 0,
-	'5', 0,
-	'6', 0,
-	'7', 0,
-	'8', 0,
-	'9', 0,
-}
+const usbSerialNumber = "" +
+	"\x14" + // bLength
+	"\x03" + // bDescriptorType
+	"1\x00" +
+	"2\x00" +
+	"3\x00" +
+	"4\x00" +
+	"5\x00" +
+	"6\x00" +
+	"7\x00" +
+	"8\x00" +
+	"9\x00"

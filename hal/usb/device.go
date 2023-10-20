@@ -56,7 +56,7 @@ var dtcmCache [2]*dtcmem // cache the allocated DTCM for both USB controllers
 type Device struct {
 	u      *usb.Periph
 	phy    *usbphy.Periph
-	des    map[uint32][]byte
+	des    map[uint32]string
 	dtcm   *dtcmem
 	pmu    sync.Mutex // prime mutex
 	config atomic.Uint32
@@ -118,7 +118,7 @@ func NewDevice(controller int) *Device {
 }
 
 // Init initializes the USB device controler and the driver itself.
-func (d *Device) Init(intPrio int, descriptors map[uint32][]byte, forceFullSpeed bool) {
+func (d *Device) Init(intPrio int, descriptors map[uint32]string, forceFullSpeed bool) {
 	// Ungate all necessary clocks.
 	ccm.CCM().CCGR6.SetBits(ccm.CG6_0 | ccm.CG6_11) // usboh3 | anadig (CCMA)
 	ccm_analog.CCM_ANALOG().PLL_USB1_SET.Store(ccm_analog.PLL_USB_EN_USB_CLKS)
