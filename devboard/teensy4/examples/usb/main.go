@@ -17,7 +17,6 @@ import (
 	"github.com/embeddedgo/imxrt/hal/lpuart/lpuart1"
 	"github.com/embeddedgo/imxrt/hal/system/console/uartcon"
 	"github.com/embeddedgo/imxrt/hal/usb"
-	"github.com/embeddedgo/imxrt/hal/usb/serial"
 
 	"github.com/embeddedgo/imxrt/p/pmu"
 )
@@ -70,9 +69,6 @@ func main() {
 	txtd := usb.NewDTD()
 	txtd.SetNote(&done)
 	buf := dma.MakeSlice[byte](512, 512)
-
-	se := serial.New(usbd, txe, rxe)
-	_ = se
 
 usbNotReady:
 	fmt.Println("Waiting for USB...")
