@@ -17,8 +17,6 @@ import (
 	"github.com/embeddedgo/imxrt/hal/lpuart/lpuart1"
 	"github.com/embeddedgo/imxrt/hal/system/console/uartcon"
 	"github.com/embeddedgo/imxrt/hal/usb"
-
-	"github.com/embeddedgo/imxrt/p/pmu"
 )
 
 var usbd *usb.Device
@@ -44,15 +42,6 @@ func main() {
 	time.Sleep(20 * time.Millisecond) // wait at least 20ms before starting USB
 
 	fmt.Println("Start!")
-
-	// Enable internal 3V0 regulator
-	const (
-		out3v000 = 15 << pmu.OUTPUT_TRGn
-		boo0v150 = 6 << pmu.BO_OFFSETn
-	)
-	if false {
-		pmu.PMU().REG_3P0.Store(out3v000 | boo0v150 | pmu.ENABLE_LINREG)
-	}
 
 	usbd = usb.NewDevice(1)
 	usbd.Init(rtos.IntPrioLow, descriptors, false)

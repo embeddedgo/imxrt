@@ -10,6 +10,15 @@ import (
 )
 
 func init() {
+	/*
+		// Reconfigure the internal USB regulator.
+		const (
+			out3v000 = 15 << pmu.OUTPUT_TRGn
+			boo0v150 = 6 << pmu.BO_OFFSETn
+		)
+		pmu.PMU().REG_3P0.Store(out3v000 | boo0v150 | pmu.ENABLE_LINREG)
+	*/
+
 	system.Setup528_FlexSPI()
 	systick.Setup(2e6)
 }

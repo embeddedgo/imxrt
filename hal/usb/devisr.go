@@ -127,9 +127,6 @@ func (d *Device) ISR() {
 	if status&usb.SLI != 0 {
 		// 42.5.6.2.2.1 Suspend. Could be signaled somehow to the application.
 	}
-	if status&usb.UEI != 0 {
-		// BUG: error handling
-	}
 }
 
 //go:nosplit

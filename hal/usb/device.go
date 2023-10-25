@@ -7,6 +7,7 @@ package usb
 import (
 	"embedded/mmio"
 	"embedded/rtos"
+	"fmt"
 	"math/bits"
 	"sync"
 	"sync/atomic"
@@ -73,16 +74,14 @@ type Device struct {
 	crhm map[uint32]func(cr *ControlRequest) int
 }
 
-/*
-func (d *Device) Print(i int) {
-	qh := &d.dtcm.qhs[i]
+func (d *Device) Print(he uint8) {
+	qh := &d.dtcm.qhs[he]
 	mmio.MB()
 	fmt.Printf(
-		"%#x qh[%d]: mult=%d zlt=%d maxpkt=%4d ios=%d current=%#x\n",
-		d.u.ENDPTCTRL[i/2].Load(), i, qh.config>>30&3, qh.config>>29&1, qh.config>>16&0x3ff, qh.config>>15&1, qh.current,
+		"ectrl=%#x qh[%d]: mult=%d zlt=%d maxpkt=%4d ios=%d curr=%#x next=%#x\n",
+		d.u.ENDPTCTRL[he/2].Load(), he, qh.config>>30&3, qh.config>>29&1, qh.config>>16&0x3ff, qh.config>>15&1, qh.current, qh.next,
 	)
 }
-*/
 
 // NewDevice returns a new device controler driver for USB controller 1 or 2.
 func NewDevice(controller int) *Device {
@@ -115,6 +114,17 @@ func NewDevice(controller int) *Device {
 	d.cr.Data = m.isr.data[:] // cannot be set in ISR because of write barriers
 	d.crhm = make(map[uint32]func(r *ControlRequest) int)
 	return d
+}
+
+// Controller returnt the controller number used this device driver.
+func (d *Device) Controller() int {
+	switch d.u {
+	case usb.USB1():
+		return 1
+	case usb.USB2():
+		return 2
+	}
+	return -1
 }
 
 // Init initializes the USB device controler and the driver itself.
@@ -154,15 +164,12 @@ func (d *Device) Init(intPrio int, descriptors map[uint32]string, forceFullSpeed
 		ui = irq.USB_OTG2
 	}
 	ui.Enable(intPrio, 0)
-	u.USBINTR.Store(usb.UE | usb.UEE | usb.PCE | usb.URE | usb.SLE)
+	u.USBINTR.Store(usb.UE | usb.PCE | usb.URE | usb.SLE)
+	// UEE not enabled. Transfer errors handled by goroutines waiting for IOC.
 
 	go handleControRequests(d)
 }
 
-// ControlRequest represents an USB Control Request. The LE field is the logical
-// endpoint number the request is adressed to. The remaining fields are derived
-// from the Setup Stage. The length of the Data field is also specified by the
-// setup packed but its content is related to the optional Data Stage. The Data
 // field serves two functions. In case of OUT direction it contains the data
 // received from the host, otherwise (IN direction) it serves as the output
 // buffer, for sending data to the host.
@@ -276,7 +283,7 @@ func (d *Device) WaitConfig(cn int) {
 // ISR to inform about the end of transfer (see DTD.SetNote). Setting notes for
 // the preceding DTDs in the list is optional and depends on the logical
 // structure of the transfer.
-func (d *Device) Prime(he int, first, last *DTD, cn int) (primed bool) {
+func (d *Device) Prime(he uint8, first, last *DTD, cn int) (primed bool) {
 	if uint(he-2) >= uint(len(d.dtcm.qhs)-2) {
 		panic("bad he")
 	}
@@ -337,6 +344,7 @@ func (d *Device) Prime(he int, first, last *DTD, cn int) (primed bool) {
 	// Check if the endpoint has just been (re)primed.
 	if u.ENDPTPRIME.LoadBits(mask) != 0 {
 		qh.mu.Unlock()
+		fmt.Println("\n####\n")
 		return true
 	}
 
@@ -353,6 +361,7 @@ func (d *Device) Prime(he int, first, last *DTD, cn int) (primed bool) {
 	}
 	u.USBCMD.ClearBits(usb.ATDTW)
 	if status&mask == 0 {
+		fmt.Printf("\n### %#x %#x\n\n", qh.next, qh.token)
 		qh.next = first.uintptr()
 		qh.token = 0
 		mmio.MB()
@@ -385,3 +394,17 @@ reset:
 	d.u.USBCMD.SetBits(usb.RS)
 	return false
 }
+
+// Endpoint direction.
+const (
+	OUT uint8 = 0 // output endpoint (Rx for device, Tx for host)
+	IN  uint8 = 1 // input endpoint (Tx for device, Rx for host)
+)
+
+// HE returns the hardware endpiont number for the given logical endpoint and
+// direction.
+func HE(le int8, dir uint8) uint8 { return uint8(le<<1) | dir }
+
+// LE returns the logical endpoint number and its direction for the given
+// hardware endpoint.
+func LE(he uint8) (le int8, dir uint8) { return int8(he >> 1), he & 1 }

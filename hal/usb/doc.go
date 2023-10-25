@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-// Package usb provides a drivers for the i.MX RT built-in USB
+// Package usb provides a high level access to the i.MX RT built-in USB
 // controllers.
 //
 // # Logical vs hardware endpoint numbers.
@@ -21,7 +21,9 @@
 // direction is not a precise term because it may point to two unrelated
 // communication channels.
 //
-// The connection between le and he is as follows: le = he >> 1
+// This package uses uint8 for he and int8 for le. The connection between le and
+// he is as follows: le = int8(he >> 1). The HE and LE functions can be used for
+// readabble conversions.
 //
 // # Device Controller Driver (DCD)
 //
