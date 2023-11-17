@@ -41,8 +41,7 @@ func (d *Device) ISR() {
 			u.ENDPTSETUPSTAT.Store(uint32(ess)) // clear
 			for le := 0; ess != 0; le, ess = le+1, ess>>1 {
 				n := bits.TrailingZeros16(ess)
-				ess >>= uint(n)
-				le += n
+				le, ess = le+n, ess>>uint(n) // skip the zero bits
 				var setup [2]uint32
 				for {
 					u.USBCMD.SetBits(usb.SUTW)
@@ -85,8 +84,7 @@ func (d *Device) ISR() {
 			// comments written there).
 			for i := 0; ec != 0; i, ec = i+1, ec>>1 {
 				n := bits.TrailingZeros32(ec)
-				i += n
-				ec >>= uint(n)
+				i, ec = i+n, ec>>uint(n) // skip the zero bits
 				he := i&15<<1 | i>>4
 				removeAndWakeup(&d.dtcm.qhs[he], Active)
 			}
@@ -189,7 +187,7 @@ func removeAndWakeup(qh *dQH, active uint32) {
 		}
 		// The last item on the list requires special treatment.
 		// Let's try to mark td as selected for deletion.
-		if !atomic.CompareAndSwapUintptr(&td.next, dtdEnd, 0) {
+		if !atomic.CompareAndSwapUintptr(&td.next, dtdEnd, dtdRm) {
 			// Failed, so td.next points to a newly added DTD list.
 			p = td.next
 			goto wakeup
@@ -213,7 +211,7 @@ func removeAndWakeup(qh *dQH, active uint32) {
 // Can be used in ISR.
 //
 //go:nosplit
-func (d *Device) prime(he int, td *DTD) {
+func (d *Device) prime(he uint8, td *DTD) {
 	mask := uint32(1) << (he & 1 * 16) << (he >> 1)
 	u := d.u
 	qh := &d.dtcm.qhs[he]
@@ -241,7 +239,7 @@ func badControlRequest(d *Device, cr *ControlRequest) {
 
 //go:nosplit
 func execContorHandler(d *Device, ctds *ctds, cr *ControlRequest, h func(r *ControlRequest) int) {
-	he := cr.LE * 2
+	he := uint8(cr.LE) * 2
 	she := he // status he
 	if cr.Request>>7&1 == 0 {
 		she++

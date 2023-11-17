@@ -30,13 +30,24 @@ import (
 type Serial struct {
 	d          *usb.Device
 	config     uint8
-	txe        uint8
-	rxe        uint8
+	txe, rxe   uint8
+	wn         uint8
 	rn, ri     int
-	tda        *[3]usb.DTD  // tda[0]  is for Read,   tda[1:] is for Write
-	donea      [3]rtos.Note // donea[0] is for Read,   donea[1:] is for Write
+	tda        *[3]usb.DTD  // tda[:2]   is for Write, tda[2] is for Read,
+	donea      [3]rtos.Note // donea[:2] is for Write, donea[2] is for Read
 	buf        []byte       // buf[:len] is for Read, buf[len:cap] is for Write
 	lineCoding [7]byte
+	autoFlush  bool
+	rxto       time.Duration
+	txto       time.Duration
+}
+
+func (s *Serial) SetRxTimeout(to time.Duration) {
+	s.rxto = to
+}
+
+func (s *Serial) SetTxTimeout(to time.Duration) {
+	s.txto = to
 }
 
 func log(s *Serial) {
@@ -49,25 +60,27 @@ func log(s *Serial) {
 			u.ENDPTPRIME.Load(), u.ENDPTSTAT.Load(),
 		)
 		s.d.Print(s.rxe)
-		fmt.Println("0:")
-		s.tda[0].Print()
+		fmt.Println("2:")
+		s.tda[2].Print()
 		fmt.Println()
 
 		s.d.Print(s.txe)
+		fmt.Println("0:")
+		s.tda[0].Print()
 		fmt.Println("1:")
 		s.tda[1].Print()
-		fmt.Println("2:")
-		s.tda[2].Print()
 	}
 }
 
 func (s *Serial) setLineCoding(cr *usb.ControlRequest) int {
+
 	d := cr.Data
 	if len(d) < 7 {
 		return 0
 	}
 	copy(s.lineCoding[:], d)
-	fmt.Printf("cdcACMSetLineCoding:")
+
+	fmt.Printf("cdcACMSetLineCoding:\r\n")
 	baud := uint(d[0]) + uint(d[1])<<8 + uint(d[2])<<16 + uint(d[3])<<24
 	stop := float32(d[4]+2) / 2
 	pi := d[5]
@@ -82,6 +95,7 @@ func (s *Serial) setLineCoding(cr *usb.ControlRequest) int {
 	fmt.Printf(" -data bits: %d\r\n", data)
 	fmt.Printf(" -stop bits: %.1f\r\n", stop)
 	fmt.Printf(" -parity:    %s\r\n", parity)
+
 	return 0
 }
 
@@ -111,7 +125,7 @@ func New(d *usb.Device, rxe, txe int8, maxPkt, config int) *Serial {
 		txe:    usb.HE(txe, usb.IN),
 		rxe:    usb.HE(rxe, usb.OUT),
 		tda:    (*[3]usb.DTD)(usb.MakeSliceDTD(3, 3)),
-		buf:    dtcm.MakeSlice[byte](1, maxPkt, maxPkt+dma.CacheLineSize),
+		buf:    dtcm.MakeSlice[byte](1, maxPkt, maxPkt+2*dma.CacheLineSize),
 	}
 	s.tda[0].SetNote(&s.donea[0])
 	s.tda[1].SetNote(&s.donea[1])
@@ -120,11 +134,11 @@ func New(d *usb.Device, rxe, txe int8, maxPkt, config int) *Serial {
 	d.Handle(0, 0x20a1, s.getLineCoding)
 	d.Handle(0, 0x2221, s.setControlLineState)
 
-	go log(s)
+	//go log(s)
 	return s
 }
 
-// dd if=/dev/zero of=/dev/ttyACM0 bs=2048 status=progress
+var A, M, N int
 
 // Read implements io.Reader interface.
 func (s *Serial) Read(p []byte) (n int, err error) {
@@ -138,13 +152,13 @@ func (s *Serial) Read(p []byte) (n int, err error) {
 		return
 	}
 	if uintptr(unsafe.Pointer(&p[0]))&(dma.CacheLineSize-1) == 0 {
-		if m := len(p) &^ (len(s.buf) - 1); m != 0 {
+		if m := len(p) &^ (len(buf) - 1); m != 0 {
 			// p is cache-aligned and can hold at least one packet.
 			buf = p[:m] // so use it directly as the receive buffer
 			rtos.CacheMaint(rtos.DCacheInval, unsafe.Pointer(&buf[0]), m)
 		}
 	}
-	td, done := &s.tda[0], &s.donea[0]
+	td, done := &s.tda[2], &s.donea[2]
 	n = td.SetupTransfer(unsafe.Pointer(&buf[0]), len(buf))
 	done.Clear()
 	var (
@@ -170,55 +184,101 @@ error:
 	return n, &usb.Error{s.d.Controller(), "serial", s.rxe, status}
 }
 
+// SetAutoFlush enables/disables the AutoFlush mode. If AutoFlush is enabled
+// Write calls Flush before exit.
+func (s *Serial) SetAutoFlush(af bool) {
+	s.autoFlush = af
+}
+
 // Write implements io.Writer interface.
 func (s *Serial) Write(p []byte) (n int, err error) {
 	if len(p) == 0 {
 		return
 	}
-	tds, dones := s.tda[1:], s.donea[1:]
 	dtcm := s.buf[len(s.buf):cap(s.buf)]
-	m := len(p)
-	if m >= dma.CacheLineSize {
+	nh := len(p) // unaligned head bytes, send through dtcm buffer
+	nm := 0      // middle bytes, send directly from p, require rtos.DCacheFlush
+	nt := 0      // unaligned tail bytes, send through dtcm buffer
+	if nh > len(dtcm) {
 		const align = dma.CacheLineSize - 1
-		a := int(dma.CacheLineSize-uintptr(unsafe.Pointer(&p[0]))) & align
-		if a != 0 {
-			m = a
-		}
-		if n := (len(p) - a) &^ align; n != 0 {
-			rtos.CacheMaint(rtos.DCacheFlush, unsafe.Pointer(&p[a]), n)
+		nh = int(dma.CacheLineSize-uintptr(unsafe.Pointer(&p[0]))) & align
+		nm = len(p) - nh
+		nt = nm & align
+		nm -= nt
+		if nm != 0 {
+			rtos.CacheMaint(rtos.DCacheFlush, unsafe.Pointer(&p[nh]), nm)
 		}
 	}
-	// The loop below is a bit convoluted because the next transfer is primed
-	// before waiting for the previous one to complete.
-	var status uint8
-	for i := 0; ; i++ {
-		if m != 0 {
-			buf := p[n:]
-			if m < dma.CacheLineSize {
-				copy(dtcm, buf[:m])
-				buf = dtcm
-			}
-			td, done := &tds[i&1], &dones[i&1]
-			m = td.SetupTransfer(unsafe.Pointer(&buf[0]), m)
-			done.Clear()
-			if !s.d.Prime(s.txe, td, td, int(s.config)) {
-				goto error
-			}
+	var (
+		status uint8
+		buf    unsafe.Pointer
+		m      int
+	)
+	wn := int(s.wn)
+	if nh != 0 {
+		m = nh
+		goto useDTCM
+	}
+next:
+	if nm != 0 {
+		buf = unsafe.Pointer(&p[n])
+		m = nm
+		nm = 0
+		goto loop
+	}
+	if nt != 0 {
+		m = nt
+		nt = 0
+		goto useDTCM
+	}
+	if s.autoFlush {
+		err = s.Flush()
+	} else {
+		s.wn = uint8(2 | wn&1)
+	}
+	return
+useDTCM:
+	copy(dtcm, p[n:n+m])
+	buf = unsafe.Pointer(&dtcm[0])
+loop:
+	for {
+		td, done := &s.tda[wn&1], &s.donea[wn&1]
+		k := td.SetupTransfer(buf, m)
+		done.Clear()
+		if !s.d.Prime(s.txe, td, td, int(s.config)) {
+			goto error
 		}
-		if i != 0 {
-			td, done := &tds[(i-1)&1], &dones[(i-1)&1]
+		if wn != 0 {
+			td, done = &s.tda[(wn-1)&1], &s.donea[(wn-1)&1]
 			done.Sleep(-1)
 			_, status = td.Status()
 			if status != 0 {
 				goto error
 			}
 		}
+		wn++
+		n += k
+		m -= k
 		if m == 0 {
-			return
+			goto next
 		}
-		n += m
-		m = len(p) - n
 	}
 error:
+	s.wn = 0
 	return n, &usb.Error{s.d.Controller(), "serial", s.txe, status}
+}
+
+// Flush ensures that the last data written were sent to the USB host.
+func (s *Serial) Flush() error {
+	if s.wn == 0 {
+		return nil
+	}
+	wn := (s.wn - 1) & 1
+	s.wn = 0
+	td, done := &s.tda[wn], &s.donea[wn]
+	done.Sleep(-1)
+	if _, status := td.Status(); status != 0 {
+		return &usb.Error{s.d.Controller(), "serial", s.txe, status}
+	}
+	return nil
 }

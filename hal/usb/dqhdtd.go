@@ -45,7 +45,12 @@ const (
 	tokIOC   = 1 << 15
 )
 
-const dtdEnd uintptr = 1
+// Special values for DTD.next field. Both must have the LSbit set to be
+// recognized by the controller as the end of dDT list.
+const (
+	dtdEnd uintptr = 1
+	dtdRm  uintptr = 3
+)
 
 // A DTD is a Device Transfer Descriptor. It MUST BE allocated in the
 // non-cacheable memory and 32 byte aligned. The NewDTD and MakeSliceDTD
@@ -98,12 +103,12 @@ func (td *DTD) Status() (n int, status uint8) {
 	return int(td.token >> 16 & 0x7fff), uint8(td.token & (Active | Halted | DataBufErr | TransErr))
 }
 
-// SetNext sets the td.next field to next.
+// SetNext sets the td.next field to the next.
 func (td *DTD) SetNext(next *DTD) {
 	td.next = uintptr(unsafe.Pointer(next))
 }
 
-// Next returns the content of td.next.
+// Next returns the content of the td.next field.
 func (td *DTD) Next() *DTD {
 	return (*DTD)(unsafe.Pointer(td.next))
 }

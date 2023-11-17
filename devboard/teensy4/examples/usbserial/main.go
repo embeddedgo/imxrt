@@ -7,7 +7,7 @@ package main
 import (
 	"embedded/rtos"
 	"fmt"
-	"strings"
+	"io"
 	"time"
 
 	"github.com/embeddedgo/imxrt/devboard/teensy4/board/pins"
@@ -45,25 +45,7 @@ func cdcSetControlLineState(cr *usb.ControlRequest) int {
 	return 0
 }
 
-var txt = []byte(`
-000102030405060708090a0b0c0d0e0f0g0h0i0j0k0l0m0n0o0p0r0s0t0u0v0w0x0y0z
-101112131415161718191a1b1c1d1e1f1g1h1i1j1k1l1m1n1o1p1r1s1t1u1v1w1x1y1z
-202122232425262728292a2b2c2d2e2f2g2h2i2j2k2l2m2n2o2p2r2s2t2u2v2w2x2y2z
-303132333435363738393a3b3c3d3e3f3g3h3i3j3k3l3m3n3o3p3r3s3t3u3v3w3x3y3z
-404142434445464748494a4b4c4d4e4f4g4h4i4j4k4l4m4n4o4p4r4s4t4u4v4w4x4y4z
-505152535455565758595a5b5c5d5e5f5g5h5i5j5k5l5m5n5o5p5r5s5t5u5v5w5x5y5z
-606162636465666768696a6b6c6d6e6f6g6h6i6j6k6l6m6n6o6p6r6s6t6u6v6w6x6y6z
-707172737475767778797a7b7c7d7e7f7g7h7i7j7k7l7m7n7o7p7r7s7t7u7v7w7x7y7z
-808182838485868788898a8b8c8d8e8f8g8h8i8j8k8l8m8n8o8p8r8s8t8u8v8w8x8y8z
-909192939495969798999a9b9c9d9e9f9g9h9i9j9k9l9m9n9o9p9r9s9t9u9v9w9x9y9z
-a0a1a2a3a4a5a6a7a8a9aaabacadaeafagahaiajakalamanaoaparasatauavawaxayaz
-b0b1b2b3b4b5b6b7b8b9babbbcbdbebfbgbhbibjbkblbmbnbobpbrbsbtbubvbwbxbybz
-c0c1c2c3c4c5c6c7c8c9cacbcccdcecfcgchcicjckclcmcncocpcrcsctcucvcwcxcycz
-d0d1d2d3d4d5d6d7d8d9dadbdcdddedfdgdhdidjdkdldmdndodpdrdsdtdudvdwdxdydz
-e0e1e2e3e4e5e6e7e8e9eaebecedeeefegeheiejekelemeneoepereseteuevewexeyez
-f0f1f2f3f4f5f6f7f8f9fafbfcfdfefffgfhfifjfkflfmfnfofpfrfsftfufvfwfxfyfz
-_0_1_2_3_4_5_6_7_8_9_a_b_c_d_e_f_g_h_i_j_k_l_m_n_o_p_r_s_t_u_v_w_x_y_z
-`)
+var dot = []byte{'.'}
 
 func main() {
 	// IO pins
@@ -72,6 +54,7 @@ func main() {
 
 	// Serial console
 	uartcon.Setup(lpuart1.Driver(), conRx, conTx, lpuart.Word8b, 115200, "UART1")
+
 	fmt.Println("Start!")
 
 	const (
@@ -86,52 +69,75 @@ func main() {
 	se := serial.New(usbd, out, in, maxPkt, config)
 	usbd.Enable()
 
-	abuf := make([]byte, maxPkt*4)
-
-usbNotReady:
-	fmt.Println("Waiting for USB...")
-	usbd.WaitConfig(config)
-	fmt.Println("USB is ready.")
-
 	time.Sleep(5 * time.Second)
 	fmt.Println("Go!")
 
-	for buf := txt; ; buf = buf[1 : len(buf)-1] {
-		if len(buf) == 0 {
-			buf = txt
-		}
-		if false {
-			n, err := se.Read(abuf)
-			if err != nil {
-				if e, ok := err.(*usb.Error); ok && e.NotReady() {
-					goto usbNotReady
-				}
-				fmt.Printf("\n!! Error:\n %v\n\n", err)
-				continue
-			}
+	go send(se, config)
+	recv(se, config)
+}
 
-			fmt.Printf("received %d bytes: %s\n", n, abuf[:n])
+func send(w io.Writer, config int) {
+	buf := make([]byte, 4096+7)[7:]
+	for i := range buf {
+		buf[i] = byte(i)
+	}
 
-			if strings.TrimSpace(string(abuf[:n])) == "reset" {
-				fmt.Println("* Reset! *")
-				usbd.Disable()
-				usbd.Enable()
-				fmt.Println("* Go! *")
-			}
-		}
+usbNotReady:
+	fmt.Println("\nsend: Waiting for USB...")
+	usbd.WaitConfig(config)
+	fmt.Println("\nsend: USB is ready. Sending!")
 
-		n, err := se.Write(buf)
+	for o := 0; ; o += 256 {
+		_, err := w.Write(buf[:o&(len(buf)-1)])
 		if err != nil {
 			if e, ok := err.(*usb.Error); ok && e.NotReady() {
 				goto usbNotReady
 			}
-			fmt.Println(err)
+			fmt.Println("\nsend:", err)
+			time.Sleep(5 * time.Second)
 			continue
 		}
-
-		fmt.Printf("sent %d bytes\n", n)
+		//os.Stdout.Write(sendChr)
 	}
 }
+
+func recv(r io.Reader, config int) {
+	buf := make([]byte, 512)
+	var cnt byte
+
+usbNotReady:
+	fmt.Println("\nrecv: Waiting for USB...")
+	usbd.WaitConfig(config)
+	fmt.Println("\nrecv: USB is ready. Receiving!")
+
+	for {
+		n, err := r.Read(buf)
+		if err != nil {
+			if e, ok := err.(*usb.Error); ok && e.NotReady() {
+				goto usbNotReady
+			}
+			fmt.Println("\nrecv:", err)
+			time.Sleep(5 * time.Second)
+			continue
+		}
+		//os.Stdout.Write(recvChr)
+		for i, b := range buf[:n] {
+			buf[i] = 0
+			if b != cnt {
+				fmt.Printf("\nrecv: buf[%d]=%d != %d\n", i, b, cnt)
+				time.Sleep(5 * time.Second)
+				cnt = 0
+				break
+			}
+			cnt++
+		}
+	}
+}
+
+var (
+	recvChr = []byte{'r'}
+	sendChr = []byte{'s'}
+)
 
 //go:interrupthandler
 func USB_OTG1_Handler() {

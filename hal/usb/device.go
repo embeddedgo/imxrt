@@ -59,7 +59,7 @@ type Device struct {
 	phy    *usbphy.Periph
 	des    map[uint32]string
 	dtcm   *dtcmem
-	pmu    sync.Mutex // prime mutex
+	atdtwm sync.Mutex
 	config atomic.Uint32
 	cr     ControlRequest // for control requests in ISR
 
@@ -174,7 +174,7 @@ func (d *Device) Init(intPrio int, descriptors map[uint32]string, forceFullSpeed
 // received from the host, otherwise (IN direction) it serves as the output
 // buffer, for sending data to the host.
 type ControlRequest struct {
-	LE      int    // logical endpoint
+	LE      int8   // logical endpoint
 	Request uint16 // bRequest<<8 | bmRequestType
 	Value   uint16 // wValue
 	Index   uint16 // wIndex
@@ -184,7 +184,7 @@ type ControlRequest struct {
 // Handle registers the handler for the control requests adressed to the logical
 // endpoint number le. All handlers must be registered before enabling the
 // device.
-func (d *Device) Handle(le int, request uint16, handler func(cr *ControlRequest) int) {
+func (d *Device) Handle(le int8, request uint16, handler func(cr *ControlRequest) int) {
 	key := uint32(le)<<16 | uint32(request)
 	if handler != nil {
 		d.crhm[key] = handler
@@ -213,8 +213,7 @@ func handleControRequests(d *Device) {
 		crst := uint16(atomic.SwapUint32(&d.crst, 0))
 		for cr.LE = 0; crst != 0; cr.LE, crst = cr.LE+1, crst>>1 {
 			n := bits.TrailingZeros16(crst)
-			crst >>= uint(n)
-			cr.LE += n
+			cr.LE, crst = cr.LE+int8(n), crst>>uint(n) // skip the zero bits
 			crsa := d.crsa[cr.LE]
 			key := uint32(cr.LE)<<16 | crsa[0]&0xffff
 			handler := d.crhm[key]
@@ -296,62 +295,49 @@ func (d *Device) Prime(he uint8, first, last *DTD, cn int) (primed bool) {
 	if cn == 0 {
 		panic("cn == 0")
 	}
-
-	last.next = dtdEnd
 	if d.config.Load() != uint32(cn) {
 		return false
 	}
 
-	qh := &d.dtcm.qhs[he]
-	qh.mu.Lock()
-
-	// Exclusive appending, still executed concurently with the removing ISR
-	// (also look at the comments written there).
-
 	var status uint32
 	mask := uint32(1) << (he & 1 * 16) << (he >> 1)
 	u := d.u
+	qh := &d.dtcm.qhs[he]
+	last.next = dtdEnd
+
+	qh.mu.Lock()
+	defer qh.mu.Unlock()
+
 	tail := qh.tail
 	td := (*DTD)(unsafe.Pointer(tail))
 
-	if tail == 0 {
-		// The list is empty.
-		goto fastPrime
+	if tail == 0 || !atomic.CompareAndSwapUintptr(&qh.tail, tail, last.uintptr()) {
+		// The list is empty or just been emptied by ISR.
+		qh.tail = last.uintptr()
+		goto primeEmpty
 	}
-	if !atomic.CompareAndSwapUintptr(&qh.tail, tail, last.uintptr()) {
-		// The list has just been emptied by ISR.
-		goto fastPrime
-	}
-	// The list seems to be non-empty. Let's try append tdl to its end.
-	if next := td.next; next == 0 || !atomic.CompareAndSwapUintptr(&td.next, next, first.uintptr()) {
+
+	// The list seems to be non-empty. Let's try append our dTDs to its end.
+	if next := td.next; next == dtdRm || !atomic.CompareAndSwapUintptr(&td.next, next, first.uintptr()) {
 		// The ISR marked the list as empty but didn't finished its work because
 		// we managed to CAS qh.tail successfully. For this reason it didn't
 		// handled td.note so we do it here.
 		if td.note != nil {
 			td.note.Wakeup()
 		}
-		goto fastPrime1
+		goto primeEmpty
 	}
 
-	// We appended tdl successfully to the non-empty list so the full prime
-	// algorithm is required.
-
-	if d.config.Load() != uint32(cn) {
-		qh.mu.Unlock()
-		goto reset
-	}
+	// We appended our dTDs successfully to the non-empty list.
 
 	// Check if the endpoint has just been (re)primed.
 	if u.ENDPTPRIME.LoadBits(mask) != 0 {
-		qh.mu.Unlock()
-		fmt.Println("\n####\n")
-		return true
+		//fmt.Printf("pp %#x %#x %#x\n", qh.current, qh.next, qh.token)
+		goto end
 	}
 
-	d.pmu.Lock() // prevent other goroutines from overtaking us for priming
-	qh.mu.Unlock()
-
-	// Check the endpoint status. Prime if not active.
+	// Obtain the endpoint status.
+	d.atdtwm.Lock()
 	for {
 		u.USBCMD.SetBits(usb.ATDTW)
 		status = u.ENDPTSTAT.Load()
@@ -359,36 +345,29 @@ func (d *Device) Prime(he uint8, first, last *DTD, cn int) (primed bool) {
 			break
 		}
 	}
-	u.USBCMD.ClearBits(usb.ATDTW)
-	if status&mask == 0 {
-		fmt.Printf("\n### %#x %#x\n\n", qh.next, qh.token)
-		qh.next = first.uintptr()
-		qh.token = 0
-		mmio.MB()
-		u.ENDPTPRIME.SetBits(mask)
+	d.atdtwm.Unlock()
+
+	if status&mask != 0 || qh.current == last.uintptr() {
+		// The endpoint is active or the controller already finished our dTDs.
+		goto end
 	}
+	goto prime
 
-	d.pmu.Unlock()
-	return true
-
-	// If the endpoint is inactive we can use a simple prime algorithm.
-fastPrime:
-	qh.tail = last.uintptr()
-fastPrime1:
-
-	if d.config.Load() != uint32(cn) {
-		qh.mu.Unlock()
-		goto reset
-	}
-
+	//fmt.Printf("## %#x %#x %#x %#x\n", status, qh.current, qh.next, qh.token)
+primeEmpty:
+	qh.head = first.uintptr()
+prime:
 	qh.token = 0
 	qh.next = first.uintptr()
-	atomic.StoreUintptr(&qh.head, first.uintptr())
+	mmio.MB()
 	u.ENDPTPRIME.SetBits(mask)
-	qh.mu.Unlock()
-	return true
 
-reset:
+end:
+	if d.config.Load() == uint32(cn) {
+		return true
+	}
+	// We primed the endponint but in the meantime the active configuration
+	// changed. Reset the USB.
 	d.u.USBCMD.ClearBits(usb.RS)
 	time.Sleep(10 * time.Millisecond)
 	d.u.USBCMD.SetBits(usb.RS)
