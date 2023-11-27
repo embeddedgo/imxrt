@@ -174,7 +174,7 @@ func (d *Device) Init(intPrio int, descriptors map[uint32]string, forceFullSpeed
 // received from the host, otherwise (IN direction) it serves as the output
 // buffer, for sending data to the host.
 type ControlRequest struct {
-	LE      int8   // logical endpoint
+	LE      int8   // logical endpoint number
 	Request uint16 // bRequest<<8 | bmRequestType
 	Value   uint16 // wValue
 	Index   uint16 // wIndex

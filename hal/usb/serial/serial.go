@@ -30,6 +30,7 @@ import (
 type Serial struct {
 	d          *usb.Device
 	config     uint8
+	interf     uint8
 	txe, rxe   uint8
 	wn         uint8
 	rn, ri     int
@@ -72,56 +73,17 @@ func log(s *Serial) {
 	}
 }
 
-func (s *Serial) setLineCoding(cr *usb.ControlRequest) int {
-
-	d := cr.Data
-	if len(d) < 7 {
-		return 0
-	}
-	copy(s.lineCoding[:], d)
-
-	fmt.Printf("cdcACMSetLineCoding:\r\n")
-	baud := uint(d[0]) + uint(d[1])<<8 + uint(d[2])<<16 + uint(d[3])<<24
-	stop := float32(d[4]+2) / 2
-	pi := d[5]
-	if pi > 5 {
-		pi = 5
-	}
-	pi *= 4
-	parity := "noneodd evenmarkspacunkn"[pi : pi+4]
-	data := d[6]
-	fmt.Printf(" -interface: %d\r\n", cr.Index)
-	fmt.Printf(" -baudrate:  %d\r\n", baud)
-	fmt.Printf(" -data bits: %d\r\n", data)
-	fmt.Printf(" -stop bits: %.1f\r\n", stop)
-	fmt.Printf(" -parity:    %s\r\n", parity)
-
-	return 0
-}
-
-func (s *Serial) getLineCoding(cr *usb.ControlRequest) int {
-	fmt.Printf("cdcACMGetLineCoding")
-	return copy(cr.Data, s.lineCoding[:])
-}
-
-func (s *Serial) setControlLineState(cr *usb.ControlRequest) int {
-	fmt.Printf("cdcACMSetControlLineState:\r\n")
-	fmt.Printf(" -interface: %d\r\n", cr.Index)
-	fmt.Printf(" -DTE:       %d\r\n", cr.Value&1)
-	fmt.Printf(" -RTS:       %d\r\n", cr.Value>>1&1)
-	return 0
-}
-
 // New... rxe (host out), txe (host in).
 // MaxPkt must be power of two and equal or multiple of the maximum packet size
 // declared in the OUT endpoint descriptor used by this driver as Rx endpoint.
-func New(d *usb.Device, rxe, txe int8, maxPkt, config int) *Serial {
+func New(d *usb.Device, interf uint8, rxe, txe int8, maxPkt, config int) *Serial {
 	if bits.OnesCount(uint(maxPkt)) != 1 {
 		panic("serial: maxPkt must be power of two")
 	}
 	s := &Serial{
 		d:      d,
 		config: uint8(config),
+		interf: interf,
 		txe:    usb.HE(txe, usb.IN),
 		rxe:    usb.HE(rxe, usb.OUT),
 		tda:    (*[3]usb.DTD)(usb.MakeSliceDTD(3, 3)),
@@ -130,10 +92,10 @@ func New(d *usb.Device, rxe, txe int8, maxPkt, config int) *Serial {
 	s.tda[0].SetNote(&s.donea[0])
 	s.tda[1].SetNote(&s.donea[1])
 	s.tda[2].SetNote(&s.donea[2])
-	d.Handle(0, 0x2021, s.setLineCoding)
-	d.Handle(0, 0x20a1, s.getLineCoding)
-	d.Handle(0, 0x2221, s.setControlLineState)
-
+	interfaces[interf] = s
+	d.Handle(0, 0x2021, setLineCoding)
+	d.Handle(0, 0x20a1, getLineCoding)
+	d.Handle(0, 0x2221, setControlLineState)
 	//go log(s)
 	return s
 }
@@ -281,4 +243,59 @@ func (s *Serial) Flush() error {
 		return &usb.Error{s.d.Controller(), "serial", s.txe, status}
 	}
 	return nil
+}
+
+var interfaces = make(map[uint8]*Serial)
+
+func setLineCoding(cr *usb.ControlRequest) int {
+	s := interfaces[uint8(cr.Index)]
+	if s == nil {
+		return 0
+	}
+	d := cr.Data
+	if len(d) < 7 {
+		return 0
+	}
+	copy(s.lineCoding[:], d)
+	/*
+		fmt.Printf("cdcACMSetLineCoding:\r\n")
+		baud := uint(d[0]) + uint(d[1])<<8 + uint(d[2])<<16 + uint(d[3])<<24
+		stop := float32(d[4]+2) / 2
+		pi := d[5]
+		if pi > 5 {
+			pi = 5
+		}
+		pi *= 4
+		parity := "noneodd evenmarkspacunkn"[pi : pi+4]
+		data := d[6]
+		fmt.Printf(" -interface: %d\r\n", cr.Index)
+		fmt.Printf(" -baudrate:  %d\r\n", baud)
+		fmt.Printf(" -data bits: %d\r\n", data)
+		fmt.Printf(" -stop bits: %.1f\r\n", stop)
+		fmt.Printf(" -parity:    %s\r\n", parity)
+	*/
+	return 0
+}
+
+func getLineCoding(cr *usb.ControlRequest) int {
+	s := interfaces[uint8(cr.Index)]
+	if s == nil {
+		return 0
+	}
+	//fmt.Printf("cdcACMGetLineCoding")
+	return copy(cr.Data, s.lineCoding[:])
+}
+
+func setControlLineState(cr *usb.ControlRequest) int {
+	s := interfaces[uint8(cr.Index)]
+	if s == nil {
+		return 0
+	}
+	/*
+		fmt.Printf("cdcACMSetControlLineState:\r\n")
+		fmt.Printf(" -interface: %d\r\n", cr.Index)
+		fmt.Printf(" -DTE:       %d\r\n", cr.Value&1)
+		fmt.Printf(" -RTS:       %d\r\n", cr.Value>>1&1)
+	*/
+	return 0
 }

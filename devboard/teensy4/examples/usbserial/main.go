@@ -45,8 +45,6 @@ func cdcSetControlLineState(cr *usb.ControlRequest) int {
 	return 0
 }
 
-var dot = []byte{'.'}
-
 func main() {
 	// IO pins
 	conTx := pins.P24
@@ -58,15 +56,16 @@ func main() {
 	fmt.Println("Start!")
 
 	const (
-		config = 1
+		interf = 0
 		in     = 2 // input endpoint, host perspective, device Tx
 		out    = 2 // output endopint, host prespective, device Rx
 		maxPkt = 512
+		config = 1
 	)
 
 	usbd = usb.NewDevice(1)
 	usbd.Init(rtos.IntPrioLow, descriptors, false)
-	se := serial.New(usbd, out, in, maxPkt, config)
+	se := serial.New(usbd, interf, out, in, maxPkt, config)
 	usbd.Enable()
 
 	time.Sleep(5 * time.Second)

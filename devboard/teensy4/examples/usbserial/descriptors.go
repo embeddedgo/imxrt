@@ -108,7 +108,7 @@ const usbConfigDescr480 = "" +
 	usbConfigDescrLen + // wTotalLength
 	intNum + // bNumInterfaces
 	"\x01" + // bConfigurationValue, use 1 to select this conig
-	"\x00" + // iConfiguration, 0 means no string descriptor for this conf
+	"\x00" + // iConfiguration, 0 means no string descriptor for this config
 	"\xC0" + // bmAttributes, Self Powered
 	"\x32" + // bMaxPower, 50 * 2 mA = 100 mA
 
@@ -284,10 +284,10 @@ const usbConfigDescr12 = "" +
 	"\x02" + // bDescriptorType;
 	usbConfigDescrLen + // wTotalLength
 	intNum + // bNumInterfaces
-	"\x01" + // bConfigurationValue
-	"\x00" + // iConfiguration
-	"\xC0" + // bmAttributes
-	"\x32" + // bMaxPower
+	"\x01" + // bConfigurationValue, use 1 to select this conig
+	"\x00" + // iConfiguration, 0 means no string descriptor for this config
+	"\xC0" + // bmAttributes, Self Powered
+	"\x32" + // bMaxPower, 50 * 2 mA = 100 mA
 
 	// interface association descriptor, USB ECN, Table 9-Z
 	"\x08" + // bLength
