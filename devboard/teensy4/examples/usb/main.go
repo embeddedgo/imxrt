@@ -51,10 +51,10 @@ func main() {
 
 	var done rtos.Note
 	config := 1
-	rxe := 2 * 2
+	rxe := uint8(2 * 2)
 	rxtd := usb.NewDTD()
 	rxtd.SetNote(&done)
-	txe := 2*2 + 1
+	txe := uint8(2*2 + 1)
 	txtd := usb.NewDTD()
 	txtd.SetNote(&done)
 	buf := dma.MakeSlice[byte](512, 512)
@@ -73,7 +73,7 @@ usbNotReady:
 		rxtd.SetupTransfer(unsafe.Pointer(&buf[0]), len(buf))
 		done.Clear()
 
-		if !usbd.Prime(rxe, rxtd, rxtd, config) {
+		if !usbd.Prime(rxe, rxtd, rxtd) {
 			goto usbNotReady
 		}
 		done.Sleep(-1)
@@ -101,7 +101,7 @@ usbNotReady:
 		txtd.SetupTransfer(unsafe.Pointer(&buf[0]), n)
 		done.Clear()
 
-		if !usbd.Prime(txe, txtd, txtd, config) {
+		if !usbd.Prime(txe, txtd, txtd) {
 			goto usbNotReady
 		}
 		done.Sleep(-1)

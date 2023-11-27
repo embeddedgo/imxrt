@@ -230,8 +230,8 @@ func handleControRequests(d *Device) {
 
 // Config returns the configuration number selected during the USB enumeration
 // process or zero if the device is not in the configured state.
-func (d *Device) Config() uint8 {
-	return uint8(d.config.Load())
+func (d *Device) Config() int {
+	return int(d.config.Load())
 }
 
 // WaitConfig waits for the selection of the cn configuration number during the
@@ -271,9 +271,7 @@ func (d *Device) WaitConfig(cn int) {
 // specified by the first and last pointers. It reports whether the endpoint was
 // succesfully primed.
 //
-// To successfully prime an endpoint the device must be in the configured state
-// and the selected configuration number must equal cn. Prime alwyas fails in
-// any other device state (powered, attach, reset, default FS/HS).
+// To successfully prime an endpoint the device must be in the configured state.
 //
 // Prime can be used concurently by multiple goroutines also with the same
 // endpoint.
@@ -282,7 +280,7 @@ func (d *Device) WaitConfig(cn int) {
 // ISR to inform about the end of transfer (see DTD.SetNote). Setting notes for
 // the preceding DTDs in the list is optional and depends on the logical
 // structure of the transfer.
-func (d *Device) Prime(he uint8, first, last *DTD, cn int) (primed bool) {
+func (d *Device) Prime(he uint8, first, last *DTD) (primed bool) {
 	if uint(he-2) >= uint(len(d.dtcm.qhs)-2) {
 		panic("bad he")
 	}
@@ -292,10 +290,8 @@ func (d *Device) Prime(he uint8, first, last *DTD, cn int) (primed bool) {
 	if last == nil {
 		panic("last == nil")
 	}
-	if cn == 0 {
-		panic("cn == 0")
-	}
-	if d.config.Load() != uint32(cn) {
+	cfg := d.config.Load()
+	if cfg == 0 {
 		return false
 	}
 
@@ -363,7 +359,7 @@ prime:
 	u.ENDPTPRIME.SetBits(mask)
 
 end:
-	if d.config.Load() == uint32(cn) {
+	if d.config.Load() == cfg {
 		return true
 	}
 	// We primed the endponint but in the meantime the active configuration

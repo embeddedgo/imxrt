@@ -29,7 +29,6 @@ import (
 // A Serial is a simple CDC ACM driver.
 type Serial struct {
 	d          *usb.Device
-	config     uint8
 	interf     uint8
 	txe, rxe   uint8
 	wn         uint8
@@ -76,13 +75,12 @@ func log(s *Serial) {
 // New... rxe (host out), txe (host in).
 // MaxPkt must be power of two and equal or multiple of the maximum packet size
 // declared in the OUT endpoint descriptor used by this driver as Rx endpoint.
-func New(d *usb.Device, interf uint8, rxe, txe int8, maxPkt, config int) *Serial {
+func New(d *usb.Device, interf uint8, rxe, txe int8, maxPkt int) *Serial {
 	if bits.OnesCount(uint(maxPkt)) != 1 {
 		panic("serial: maxPkt must be power of two")
 	}
 	s := &Serial{
 		d:      d,
-		config: uint8(config),
 		interf: interf,
 		txe:    usb.HE(txe, usb.IN),
 		rxe:    usb.HE(rxe, usb.OUT),
@@ -127,7 +125,7 @@ func (s *Serial) Read(p []byte) (n int, err error) {
 		m      int
 		status uint8
 	)
-	if !s.d.Prime(s.rxe, td, td, int(s.config)) {
+	if !s.d.Prime(s.rxe, td, td) {
 		goto error
 	}
 	done.Sleep(-1)
@@ -207,7 +205,7 @@ loop:
 		td, done := &s.tda[wn&1], &s.donea[wn&1]
 		k := td.SetupTransfer(buf, m)
 		done.Clear()
-		if !s.d.Prime(s.txe, td, td, int(s.config)) {
+		if !s.d.Prime(s.txe, td, td) {
 			goto error
 		}
 		if wn != 0 {

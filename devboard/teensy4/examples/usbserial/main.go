@@ -60,22 +60,21 @@ func main() {
 		in     = 2 // input endpoint, host perspective, device Tx
 		out    = 2 // output endopint, host prespective, device Rx
 		maxPkt = 512
-		config = 1
 	)
 
 	usbd = usb.NewDevice(1)
 	usbd.Init(rtos.IntPrioLow, descriptors, false)
-	se := serial.New(usbd, interf, out, in, maxPkt, config)
+	se := serial.New(usbd, interf, out, in, maxPkt)
 	usbd.Enable()
 
 	time.Sleep(5 * time.Second)
 	fmt.Println("Go!")
 
-	go send(se, config)
-	recv(se, config)
+	go send(se)
+	recv(se)
 }
 
-func send(w io.Writer, config int) {
+func send(w io.Writer) {
 	buf := make([]byte, 4096+7)[7:]
 	for i := range buf {
 		buf[i] = byte(i)
@@ -83,7 +82,7 @@ func send(w io.Writer, config int) {
 
 usbNotReady:
 	fmt.Println("\nsend: Waiting for USB...")
-	usbd.WaitConfig(config)
+	usbd.WaitConfig(1)
 	fmt.Println("\nsend: USB is ready. Sending!")
 
 	for o := 0; ; o += 256 {
@@ -100,13 +99,13 @@ usbNotReady:
 	}
 }
 
-func recv(r io.Reader, config int) {
+func recv(r io.Reader) {
 	buf := make([]byte, 512)
 	var cnt byte
 
 usbNotReady:
 	fmt.Println("\nrecv: Waiting for USB...")
-	usbd.WaitConfig(config)
+	usbd.WaitConfig(1)
 	fmt.Println("\nrecv: USB is ready. Receiving!")
 
 	for {
