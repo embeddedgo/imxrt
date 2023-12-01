@@ -14,16 +14,13 @@ package serial
 
 import (
 	"embedded/rtos"
-	"fmt"
 	"math/bits"
-	"time"
+	"sync/atomic"
 	"unsafe"
 
 	"github.com/embeddedgo/imxrt/hal/dma"
 	"github.com/embeddedgo/imxrt/hal/dtcm"
 	"github.com/embeddedgo/imxrt/hal/usb"
-
-	pusb "github.com/embeddedgo/imxrt/p/usb"
 )
 
 // A Serial is a simple CDC ACM driver.
@@ -38,18 +35,11 @@ type Serial struct {
 	buf        []byte       // buf[:len] is for Read, buf[len:cap] is for Write
 	lineCoding [7]byte
 	autoFlush  bool
-	rxto       time.Duration
-	txto       time.Duration
+	writeSink  bool
+	dtr        atomic.Int32
 }
 
-func (s *Serial) SetRxTimeout(to time.Duration) {
-	s.rxto = to
-}
-
-func (s *Serial) SetTxTimeout(to time.Duration) {
-	s.txto = to
-}
-
+/*
 func log(s *Serial) {
 	for {
 		time.Sleep(10 * time.Second)
@@ -71,6 +61,7 @@ func log(s *Serial) {
 		s.tda[1].Print()
 	}
 }
+*/
 
 // New... rxe (host out), txe (host in).
 // MaxPkt must be power of two and equal or multiple of the maximum packet size
@@ -144,16 +135,31 @@ error:
 	return n, &usb.Error{s.d.Controller(), "serial", s.rxe, status}
 }
 
-// SetAutoFlush enables/disables the AutoFlush mode. If AutoFlush is enabled
+// SetAutoFlush enables/disables the AutoFlush mode. If AutoFlush is enabled,
 // Write calls Flush before exit.
 func (s *Serial) SetAutoFlush(af bool) {
 	s.autoFlush = af
+}
+
+// SetWriteSink the WriteSink mode. Enabled WriteSink mode ensures that writes
+// will not block if the USB serial device is not open for reading on the host
+// side.
+func (s *Serial) SetWriteSink(ws bool) {
+	s.writeSink = ws
+}
+
+func writeDrop(s *Serial) bool {
+	// BUG: naive approach, the Write/Flush can hang on corner cases
+	return s.writeSink && (s.d.Config() == 0 || s.dtr.Load() == 0)
 }
 
 // Write implements io.Writer interface.
 func (s *Serial) Write(p []byte) (n int, err error) {
 	if len(p) == 0 {
 		return
+	}
+	if writeDrop(s) {
+		return len(p), nil
 	}
 	dtcm := s.buf[len(s.buf):cap(s.buf)]
 	nh := len(p) // unaligned head bytes, send through dtcm buffer
@@ -210,6 +216,9 @@ loop:
 		}
 		if wn != 0 {
 			td, done = &s.tda[(wn-1)&1], &s.donea[(wn-1)&1]
+			if writeDrop(s) {
+				return len(p), nil
+			}
 			done.Sleep(-1)
 			_, status = td.Status()
 			if status != 0 {
@@ -230,6 +239,9 @@ error:
 
 // Flush ensures that the last data written were sent to the USB host.
 func (s *Serial) Flush() error {
+	if writeDrop(s) {
+		return nil
+	}
 	if s.wn == 0 {
 		return nil
 	}
@@ -289,10 +301,11 @@ func setControlLineState(cr *usb.ControlRequest) int {
 	if s == nil {
 		return 0
 	}
+	s.dtr.Store(int32(cr.Value) & 1)
 	/*
 		fmt.Printf("cdcACMSetControlLineState:\r\n")
 		fmt.Printf(" -interface: %d\r\n", cr.Index)
-		fmt.Printf(" -DTE:       %d\r\n", cr.Value&1)
+		fmt.Printf(" -DTR:       %d\r\n", cr.Value&1)
 		fmt.Printf(" -RTS:       %d\r\n", cr.Value>>1&1)
 	*/
 	return 0
