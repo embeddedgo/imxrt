@@ -2,15 +2,16 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-// Package serial provides a simple USB CDC ACM serial driver. The main goal
+// Package usbserial provides a simple USB CDC ACM serial driver. The main goal
 // is simplicity, small code size and robustness but not speed.
 //
-// The USB protocol is packet-oriented. All this package does is simulate a
-// stream-oriented device using a packet-oriented protocol. If all you want to
-// do is sending/receiving packets of data over a CDC ACM serial its better and
-// quite easy to use the CDC ACM data endponts with the usb package directly.
-// Such approach will give you minimal overhead and the maximum possible speed.
-package serial
+// The USB protocol is packet-oriented. This package simulates a stream-oriented
+// device using a packet-oriented protocol. If all you want to do is sending
+// and/or receiving packets of data over an USB its better and quite easy to
+// use the CDC ACM data endponts with the usb package directly. Such approach
+// will use the native packet/transaction oriented interface with the minimal
+// overhead and maximum possible speed.
+package usbserial
 
 import (
 	"embedded/rtos"
@@ -24,7 +25,7 @@ import (
 )
 
 // A Serial is a simple CDC ACM driver.
-type Serial struct {
+type Driver struct {
 	d          *usb.Device
 	interf     uint8
 	txe, rxe   uint8
@@ -63,14 +64,14 @@ func log(s *Serial) {
 }
 */
 
-// New... rxe (host out), txe (host in).
+// NewDriver... rxe (host out), txe (host in).
 // MaxPkt must be power of two and equal or multiple of the maximum packet size
 // declared in the OUT endpoint descriptor used by this driver as Rx endpoint.
-func New(d *usb.Device, interf uint8, rxe, txe int8, maxPkt int) *Serial {
+func NewDriver(d *usb.Device, interf uint8, rxe, txe int8, maxPkt int) *Driver {
 	if bits.OnesCount(uint(maxPkt)) != 1 {
 		panic("serial: maxPkt must be power of two")
 	}
-	s := &Serial{
+	s := &Driver{
 		d:      d,
 		interf: interf,
 		txe:    usb.HE(txe, usb.IN),
@@ -92,7 +93,7 @@ func New(d *usb.Device, interf uint8, rxe, txe int8, maxPkt int) *Serial {
 var A, M, N int
 
 // Read implements io.Reader interface.
-func (s *Serial) Read(p []byte) (n int, err error) {
+func (s *Driver) Read(p []byte) (n int, err error) {
 	if len(p) == 0 {
 		return
 	}
@@ -137,24 +138,24 @@ error:
 
 // SetAutoFlush enables/disables the AutoFlush mode. If AutoFlush is enabled,
 // Write calls Flush before exit.
-func (s *Serial) SetAutoFlush(af bool) {
+func (s *Driver) SetAutoFlush(af bool) {
 	s.autoFlush = af
 }
 
 // SetWriteSink the WriteSink mode. Enabled WriteSink mode ensures that writes
 // will not block if the USB serial device is not open for reading on the host
 // side.
-func (s *Serial) SetWriteSink(ws bool) {
+func (s *Driver) SetWriteSink(ws bool) {
 	s.writeSink = ws
 }
 
-func writeDrop(s *Serial) bool {
+func writeDrop(s *Driver) bool {
 	// BUG: naive approach, the Write/Flush can hang on corner cases
 	return s.writeSink && (s.d.Config() == 0 || s.dtr.Load() == 0)
 }
 
 // Write implements io.Writer interface.
-func (s *Serial) Write(p []byte) (n int, err error) {
+func (s *Driver) Write(p []byte) (n int, err error) {
 	if len(p) == 0 {
 		return
 	}
@@ -238,7 +239,7 @@ error:
 }
 
 // Flush ensures that the last data written were sent to the USB host.
-func (s *Serial) Flush() error {
+func (s *Driver) Flush() error {
 	if writeDrop(s) {
 		return nil
 	}
@@ -255,7 +256,7 @@ func (s *Serial) Flush() error {
 	return nil
 }
 
-var interfaces = make(map[uint8]*Serial)
+var interfaces = make(map[uint8]*Driver)
 
 func setLineCoding(cr *usb.ControlRequest) int {
 	s := interfaces[uint8(cr.Index)]

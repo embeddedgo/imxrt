@@ -13,7 +13,7 @@ import (
 	"github.com/embeddedgo/imxrt/hal/lpuart/lpuart1"
 	"github.com/embeddedgo/imxrt/hal/system/console/uartcon"
 	"github.com/embeddedgo/imxrt/hal/usb"
-	"github.com/embeddedgo/imxrt/hal/usb/serial"
+	"github.com/embeddedgo/imxrt/hal/usb/usbserial"
 )
 
 var usbd *usb.Device
@@ -37,8 +37,9 @@ func main() {
 
 	usbd = usb.NewDevice(1)
 	usbd.Init(rtos.IntPrioLow, descriptors, false)
-	se := serial.New(usbd, interf, out, in, maxPkt)
+	se := usbserial.NewDriver(usbd, interf, out, in, maxPkt)
 	se.SetWriteSink(true)
+	//se.SetAutoFlush(true)
 	usbd.Enable()
 
 	for i := 0; ; i++ {
