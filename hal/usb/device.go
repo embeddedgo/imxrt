@@ -301,6 +301,11 @@ func (d *Device) Prime(he uint8, first, last *DTD) (primed bool) {
 	qh := &d.dtcm.qhs[he]
 	last.next = dtdEnd
 
+	if rtos.HandlerMode() {
+		sysPrime(u, qh, mask, first)
+		return true
+	}
+
 	qh.mu.Lock()
 	defer qh.mu.Unlock()
 

@@ -215,8 +215,9 @@ func (d *Device) prime(he uint8, td *DTD) {
 	mask := uint32(1) << (he & 1 * 16) << (he >> 1)
 	u := d.u
 	qh := &d.dtcm.qhs[he]
-	for u.ENDPTCOMPLETE.LoadBits(mask) == 0 && qh.next != dtdEnd {
+	for qh.next != dtdEnd && u.ENDPTCOMPLETE.LoadBits(mask) == 0 {
 		// Wait for the previous transfer to complete.
+		mmio.MB()
 	}
 	u.ENDPTCOMPLETE.Store(mask) // clear
 	qh.next = td.uintptr()
@@ -438,4 +439,23 @@ func (d *Device) controlHandlerISR(cr *ControlRequest) int {
 		}
 	}
 	return -1
+}
+
+// sysPrime is called in handler mode. It is here mainly to support print and
+// println used to print a stack trace in handler mode when USB serial is used
+// as the system console.
+// BUG: primitive and unrealiable
+func sysPrime(u *usb.Periph, qh *dQH, mask uint32, tdl *DTD) {
+	for qh.next&(dtdEnd&dtdRm) == 0 {
+		// Wait for the active transfer to complete.
+		mmio.MB()
+	}
+	qh.next = tdl.uintptr()
+	qh.token = 0
+	mmio.MB()
+	u.ENDPTPRIME.SetBits(mask)
+	for qh.next&(dtdEnd&dtdRm) == 0 {
+		// Ensure this transfer is completd before exit because the system may
+		// be halted after that (including USB).
+	}
 }
