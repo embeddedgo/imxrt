@@ -7,6 +7,7 @@ package main
 import (
 	"embedded/rtos"
 	"fmt"
+	"time"
 
 	"github.com/embeddedgo/imxrt/devboard/teensy4/board/pins"
 	"github.com/embeddedgo/imxrt/hal/lpuart"
@@ -30,8 +31,8 @@ func main() {
 
 	const (
 		interf = 0
-		in     = 2 // input endpoint, host perspective, device Tx
-		out    = 2 // output endopint, host prespective, device Rx
+		in     = 2 // input endpoint (host perspective), device Tx
+		out    = 2 // output endopint (host prespective), device Rx
 		maxPkt = 512
 	)
 
@@ -39,13 +40,14 @@ func main() {
 	usbd.Init(rtos.IntPrioLow, descriptors, false)
 	se := usbserial.NewDriver(usbd, interf, out, in, maxPkt)
 	se.SetWriteSink(true)
-	//se.SetAutoFlush(true)
+	se.SetAutoFlush(true)
 	usbd.Enable()
 
 	for i := 0; ; i++ {
 		_, err := fmt.Fprintln(se, i)
 		if err != nil {
-			fmt.Println(err)
+			fmt.Println("println:", err)
+			time.Sleep(time.Second)
 		}
 	}
 }

@@ -181,27 +181,30 @@ func (s *Driver) Write(p []byte) (n int, err error) {
 		buf    unsafe.Pointer
 		m      int
 	)
+	// The first (unaligned) part of p or the whole p if len(p) <= len(dtcm)
 	wn := int(s.wn)
 	if nh != 0 {
 		m = nh
 		goto useDTCM
 	}
 next:
+	// The middle (aligned) part of p.
 	if nm != 0 {
 		buf = unsafe.Pointer(&p[n])
 		m = nm
 		nm = 0
 		goto loop
 	}
+	// The last (unaligned) part of p.
 	if nt != 0 {
 		m = nt
 		nt = 0
 		goto useDTCM
 	}
+	// Done.
+	s.wn = uint8(2 | wn&1)
 	if s.autoFlush {
 		err = s.Flush()
-	} else {
-		s.wn = uint8(2 | wn&1)
 	}
 	return
 useDTCM:
