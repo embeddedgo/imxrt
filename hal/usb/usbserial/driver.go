@@ -90,8 +90,6 @@ func NewDriver(d *usb.Device, interf uint8, rxe, txe int8, maxPkt int) *Driver {
 	return s
 }
 
-var A, M, N int
-
 // Read implements io.Reader interface.
 func (s *Driver) Read(p []byte) (n int, err error) {
 	if len(p) == 0 {
@@ -156,6 +154,11 @@ func writeDrop(s *Driver) bool {
 
 // Write implements io.Writer interface.
 func (s *Driver) Write(p []byte) (n int, err error) {
+	return s.WriteString(*(*string)(unsafe.Pointer(&p)))
+}
+
+// WriteString implements io.StringWriter interface.
+func (s *Driver) WriteString(p string) (n int, err error) {
 	if len(p) == 0 {
 		return
 	}
@@ -168,12 +171,13 @@ func (s *Driver) Write(p []byte) (n int, err error) {
 	nt := 0      // unaligned tail bytes, send through dtcm buffer
 	if nh > len(dtcm) {
 		const align = dma.CacheLineSize - 1
-		nh = int(dma.CacheLineSize-uintptr(unsafe.Pointer(&p[0]))) & align
+		a := uintptr(unsafe.Pointer(unsafe.StringData(p)))
+		nh = int(dma.CacheLineSize-a) & align
 		nm = len(p) - nh
 		nt = nm & align
 		nm -= nt
 		if nm != 0 {
-			rtos.CacheMaint(rtos.DCacheFlush, unsafe.Pointer(&p[nh]), nm)
+			rtos.CacheMaint(rtos.DCacheFlush, unsafe.Pointer(unsafe.StringData(p[nh:])), nm)
 		}
 	}
 	var (
@@ -190,7 +194,7 @@ func (s *Driver) Write(p []byte) (n int, err error) {
 next:
 	// The middle (aligned) part of p.
 	if nm != 0 {
-		buf = unsafe.Pointer(&p[n])
+		buf = unsafe.Pointer(unsafe.StringData(p[n:]))
 		m = nm
 		nm = 0
 		goto loop
@@ -296,7 +300,9 @@ func getLineCoding(cr *usb.ControlRequest) int {
 	if s == nil {
 		return 0
 	}
-	//fmt.Printf("cdcACMGetLineCoding")
+	/*
+		fmt.Printf("cdcACMGetLineCoding")
+	*/
 	return copy(cr.Data, s.lineCoding[:])
 }
 
