@@ -152,18 +152,38 @@ func writeDrop(s *Driver) bool {
 	return s.writeSink && (s.d.Config() == 0 || s.dtr.Load() == 0)
 }
 
-// Write implements io.Writer interface.
-func (s *Driver) Write(p []byte) (n int, err error) {
-	return s.WriteString(*(*string)(unsafe.Pointer(&p)))
+type sysDTCM struct {
+	td  usb.DTD
+	buf [32]byte
 }
 
-// WriteString implements io.StringWriter interface.
-func (s *Driver) WriteString(p string) (n int, err error) {
+var sys *sysDTCM
+
+// Write implements io.Writer interface.
+//
+//go:nosplit
+func (s *Driver) Write(p []byte) (n int, err error) {
 	if len(p) == 0 {
 		return
 	}
 	if writeDrop(s) {
 		return len(p), nil
+	}
+	if rtos.HandlerMode() {
+		// The code below is here mainly to support the print and println
+		// functions used to debug or to print a stack trace in the IRQ handler
+		// mode when USB serial is used as the system console.
+		if sys == nil {
+			sys = dtcm.New[sysDTCM](32)
+		}
+		td, buf := &sys.td, &sys.buf
+		for n < len(p) {
+			m := copy(buf[:], p[n:])
+			n += m
+			td.SetupTransfer(unsafe.Pointer(&buf[0]), m)
+			s.d.Prime(s.txe, td, td) // in handler mode it waits for EOT
+		}
+		return
 	}
 	dtcm := s.buf[len(s.buf):cap(s.buf)]
 	nh := len(p) // unaligned head bytes, send through dtcm buffer
@@ -171,13 +191,12 @@ func (s *Driver) WriteString(p string) (n int, err error) {
 	nt := 0      // unaligned tail bytes, send through dtcm buffer
 	if nh > len(dtcm) {
 		const align = dma.CacheLineSize - 1
-		a := uintptr(unsafe.Pointer(unsafe.StringData(p)))
-		nh = int(dma.CacheLineSize-a) & align
+		nh = int(dma.CacheLineSize-uintptr(unsafe.Pointer(&p[0]))) & align
 		nm = len(p) - nh
 		nt = nm & align
 		nm -= nt
 		if nm != 0 {
-			rtos.CacheMaint(rtos.DCacheFlush, unsafe.Pointer(unsafe.StringData(p[nh:])), nm)
+			rtos.CacheMaint(rtos.DCacheFlush, unsafe.Pointer(&p[nh]), nm)
 		}
 	}
 	var (
@@ -194,7 +213,7 @@ func (s *Driver) WriteString(p string) (n int, err error) {
 next:
 	// The middle (aligned) part of p.
 	if nm != 0 {
-		buf = unsafe.Pointer(unsafe.StringData(p[n:]))
+		buf = unsafe.Pointer(&p[n])
 		m = nm
 		nm = 0
 		goto loop
@@ -243,6 +262,13 @@ loop:
 error:
 	s.wn = 0
 	return n, &usb.Error{s.d.Controller(), "serial", s.txe, status}
+}
+
+// WriteString implements io.StringWriter interface.
+//
+//go:nosplit
+func (s *Driver) WriteString(p string) (n int, err error) {
+	return s.Write(unsafe.Slice(unsafe.StringData(p), len(p)))
 }
 
 // Flush ensures that the last data written were sent to the USB host.

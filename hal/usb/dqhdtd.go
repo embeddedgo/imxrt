@@ -5,9 +5,7 @@
 package usb
 
 import (
-	"embedded/mmio"
 	"embedded/rtos"
-	"fmt"
 	"sync"
 	"unsafe"
 
@@ -66,6 +64,7 @@ type DTD struct {
 	note  *rtos.Note
 }
 
+/*
 func (td *DTD) Print() {
 	mmio.MB()
 	fmt.Printf(
@@ -74,6 +73,7 @@ func (td *DTD) Print() {
 		td.token>>15&1, td.token>>10&3, td.token&0xff, td.page,
 	)
 }
+*/
 
 // NewDTD returns new DTD allocated in the non-cacheable memory. Use carefully
 // because currently there is no way to release memory allocated this way.

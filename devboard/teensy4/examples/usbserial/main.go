@@ -17,7 +17,7 @@ import (
 	"github.com/embeddedgo/imxrt/hal/usb/usbserial"
 )
 
-const hello = "\nHello World from i.MX RT!\nabcdefghijklmnoprstuvwxyz\nABCDEFGHIJKLNMNOPRSTUVWXYZ\n!@#$%^&*(){}_-+=><\n\n"
+const hello = "\nHello World from i.MX RT!\nabcdefghijklmnoprstuvwxyz\nABCDEFGHIJKLMNOPRSTUVWXYZ\n!@#$%^&*(){}_-+=><\n\n"
 
 var usbd *usb.Device
 
@@ -44,8 +44,6 @@ func main() {
 	se.SetWriteSink(true)
 	se.SetAutoFlush(true)
 	usbd.Enable()
-
-	se.Write(nil)
 
 	for i := 0; ; i++ {
 		_, err := se.WriteString(hello) // USB DMA directly from Flash

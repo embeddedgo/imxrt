@@ -7,7 +7,6 @@ package usb
 import (
 	"embedded/mmio"
 	"embedded/rtos"
-	"fmt"
 	"math/bits"
 	"sync"
 	"sync/atomic"
@@ -44,7 +43,7 @@ type ctds struct {
 }
 
 // We use DTCM for buffers that require specific alignment and to avoid cache
-// maintenance operations for EP0 transactions in ISR.
+// maintenance operations for transactions performed in the IRQ handler mode.
 type dtcmem struct {
 	qhs [leNum * 2]dQH // queue heads, 1024 B, requires 4096 alignment
 	isr ctds           // used by ISR in the control data stage
@@ -74,6 +73,7 @@ type Device struct {
 	crhm map[uint32]func(cr *ControlRequest) int
 }
 
+/*
 func (d *Device) Print(he uint8) {
 	qh := &d.dtcm.qhs[he]
 	mmio.MB()
@@ -82,6 +82,7 @@ func (d *Device) Print(he uint8) {
 		d.u.ENDPTCTRL[he/2].Load(), he, qh.config>>30&3, qh.config>>29&1, qh.config>>16&0x3ff, qh.config>>15&1, qh.current, qh.next,
 	)
 }
+*/
 
 // NewDevice returns a new device controler driver for USB controller 1 or 2.
 func NewDevice(controller int) *Device {
@@ -109,6 +110,7 @@ func NewDevice(controller int) *Device {
 	for he := range m.qhs {
 		qh := &m.qhs[he]
 		qh.head = dtdEnd
+		qh.next = dtdEnd
 	}
 	d.dtcm = m
 	d.cr.Data = m.isr.data[:] // cannot be set in ISR because of write barriers
@@ -265,114 +267,6 @@ func (d *Device) WaitConfig(cn int) {
 			cw.note.Sleep(-1)
 		}
 	}
-}
-
-// Prime primes the he hardware endpoint with the list of transfer descriptors
-// specified by the first and last pointers. It reports whether the endpoint was
-// succesfully primed.
-//
-// To successfully prime an endpoint the device must be in the configured state.
-//
-// Prime can be used concurently by multiple goroutines also with the same
-// endpoint.
-//
-// The last descriptor in the tdl must have a note set to provide a way for the
-// ISR to inform about the end of transfer (see DTD.SetNote). Setting notes for
-// the preceding DTDs in the list is optional and depends on the logical
-// structure of the transfer.
-func (d *Device) Prime(he uint8, first, last *DTD) (primed bool) {
-	if uint(he-2) >= uint(len(d.dtcm.qhs)-2) {
-		panic("bad he")
-	}
-	if first == nil {
-		panic("first == nil")
-	}
-	if last == nil {
-		panic("last == nil")
-	}
-	cfg := d.config.Load()
-	if cfg == 0 {
-		return false
-	}
-
-	var status uint32
-	mask := uint32(1) << (he & 1 * 16) << (he >> 1)
-	u := d.u
-	qh := &d.dtcm.qhs[he]
-	last.next = dtdEnd
-
-	if rtos.HandlerMode() {
-		sysPrime(u, qh, mask, first)
-		return true
-	}
-
-	qh.mu.Lock()
-	defer qh.mu.Unlock()
-
-	tail := qh.tail
-	td := (*DTD)(unsafe.Pointer(tail))
-
-	if tail == 0 || !atomic.CompareAndSwapUintptr(&qh.tail, tail, last.uintptr()) {
-		// The list is empty or just been emptied by ISR.
-		qh.tail = last.uintptr()
-		goto primeEmpty
-	}
-
-	// The list seems to be non-empty. Let's try append our dTDs to its end.
-	if next := td.next; next == dtdRm || !atomic.CompareAndSwapUintptr(&td.next, next, first.uintptr()) {
-		// The ISR marked the list as empty but didn't finished its work because
-		// we managed to CAS qh.tail successfully. For this reason it didn't
-		// handled td.note so we do it here.
-		if td.note != nil {
-			td.note.Wakeup()
-		}
-		goto primeEmpty
-	}
-
-	// We appended our dTDs successfully to the non-empty list.
-
-	// Check if the endpoint has just been (re)primed.
-	if u.ENDPTPRIME.LoadBits(mask) != 0 {
-		//fmt.Printf("pp %#x %#x %#x\n", qh.current, qh.next, qh.token)
-		goto end
-	}
-
-	// Obtain the endpoint status.
-	d.atdtwm.Lock()
-	for {
-		u.USBCMD.SetBits(usb.ATDTW)
-		status = u.ENDPTSTAT.Load()
-		if u.USBCMD.LoadBits(usb.ATDTW) != 0 {
-			break
-		}
-	}
-	d.atdtwm.Unlock()
-
-	if status&mask != 0 || qh.current == last.uintptr() {
-		// The endpoint is active or the controller already finished our dTDs.
-		goto end
-	}
-	goto prime
-
-	//fmt.Printf("## %#x %#x %#x %#x\n", status, qh.current, qh.next, qh.token)
-primeEmpty:
-	qh.head = first.uintptr()
-prime:
-	qh.token = 0
-	qh.next = first.uintptr()
-	mmio.MB()
-	u.ENDPTPRIME.SetBits(mask)
-
-end:
-	if d.config.Load() == cfg {
-		return true
-	}
-	// We primed the endponint but in the meantime the active configuration
-	// changed. Reset the USB.
-	d.u.USBCMD.ClearBits(usb.RS)
-	time.Sleep(10 * time.Millisecond)
-	d.u.USBCMD.SetBits(usb.RS)
-	return false
 }
 
 // Endpoint direction.

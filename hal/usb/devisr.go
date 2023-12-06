@@ -6,8 +6,10 @@ package usb
 
 import (
 	"embedded/mmio"
+	"embedded/rtos"
 	"math/bits"
 	"sync/atomic"
+	"time"
 	"unsafe"
 
 	"github.com/embeddedgo/imxrt/hal/internal"
@@ -441,21 +443,128 @@ func (d *Device) controlHandlerISR(cr *ControlRequest) int {
 	return -1
 }
 
-// sysPrime is called in handler mode. It is here mainly to support print and
-// println used to print a stack trace in handler mode when USB serial is used
-// as the system console.
-// BUG: primitive and unrealiable
-func sysPrime(u *usb.Periph, qh *dQH, mask uint32, tdl *DTD) {
-	for qh.next&(dtdEnd&dtdRm) == 0 {
-		// Wait for the active transfer to complete.
-		mmio.MB()
+// Prime primes the he hardware endpoint with the list of transfer descriptors
+// specified by the first and last pointers. It reports whether the endpoint was
+// succesfully primed.
+//
+// To successfully prime an endpoint the device must be in the configured state.
+//
+// Prime can be used concurently by multiple goroutines also with the same
+// endpoint.
+//
+// The last descriptor in the tdl must have a note set to provide a way for the
+// ISR to inform about the end of transfer (see DTD.SetNote). Setting notes for
+// the preceding DTDs in the list is optional and depends on the logical
+// structure of the transfer.
+//
+//go:nosplit
+func (d *Device) Prime(he uint8, first, last *DTD) (primed bool) {
+	if uint(he-2) >= uint(len(d.dtcm.qhs)-2) {
+		panic("bad he")
 	}
-	qh.next = tdl.uintptr()
+	if first == nil {
+		panic("first == nil")
+	}
+	if last == nil {
+		panic("last == nil")
+	}
+	cfg := d.config.Load()
+	if cfg == 0 {
+		return false
+	}
+
+	var status uint32
+	mask := uint32(1) << (he & 1 * 16) << (he >> 1)
+	u := d.u
+	qh := &d.dtcm.qhs[he]
+	last.next = dtdEnd
+
+	if rtos.HandlerMode() {
+		// The code below is here mainly to support the print and println
+		// functions used to debug or to print a stack trace in the IRQ handler
+		// mode when USB serial is used as the system console.
+		// BUG: unrealiable because of the possible concurrent acces to qh and u
+		for qh.next&(dtdEnd&dtdRm) == 0 {
+			// Wait for the posible active transfer to complete.
+			mmio.MB()
+		}
+		u.ENDPTCOMPLETE.Store(mask) // clear
+		qh.next = first.uintptr()
+		qh.token = 0
+		mmio.MB()
+		u.ENDPTPRIME.SetBits(mask)
+		for u.ENDPTCOMPLETE.LoadBits(mask) == 0 {
+			// Ensure this transfer is completd before return because the system
+			// (including USB) may be halted after that.
+		}
+		return true
+	}
+
+	qh.mu.Lock()
+	defer qh.mu.Unlock()
+
+	tail := qh.tail
+	td := (*DTD)(unsafe.Pointer(tail))
+
+	if tail == 0 || !atomic.CompareAndSwapUintptr(&qh.tail, tail, last.uintptr()) {
+		// The list is empty or just been emptied by ISR.
+		qh.tail = last.uintptr()
+		goto primeEmpty
+	}
+
+	// The list seems to be non-empty. Let's try append our dTDs to its end.
+	if next := td.next; next == dtdRm || !atomic.CompareAndSwapUintptr(&td.next, next, first.uintptr()) {
+		// The ISR marked the list as empty but didn't finished its work because
+		// we managed to CAS qh.tail successfully. For this reason it didn't
+		// handled td.note so we do it here.
+		if td.note != nil {
+			td.note.Wakeup()
+		}
+		goto primeEmpty
+	}
+
+	// We appended our dTDs successfully to the non-empty list.
+
+	// Check if the endpoint has just been (re)primed.
+	if u.ENDPTPRIME.LoadBits(mask) != 0 {
+		//fmt.Printf("pp %#x %#x %#x\n", qh.current, qh.next, qh.token)
+		goto end
+	}
+
+	// Obtain the endpoint status.
+	d.atdtwm.Lock()
+	for {
+		u.USBCMD.SetBits(usb.ATDTW)
+		status = u.ENDPTSTAT.Load()
+		if u.USBCMD.LoadBits(usb.ATDTW) != 0 {
+			break
+		}
+	}
+	d.atdtwm.Unlock()
+
+	if status&mask != 0 || qh.current == last.uintptr() {
+		// The endpoint is active or the controller already finished our dTDs.
+		goto end
+	}
+	goto prime
+
+	//fmt.Printf("## %#x %#x %#x %#x\n", status, qh.current, qh.next, qh.token)
+primeEmpty:
+	qh.head = first.uintptr()
+prime:
 	qh.token = 0
+	qh.next = first.uintptr()
 	mmio.MB()
 	u.ENDPTPRIME.SetBits(mask)
-	for qh.next&(dtdEnd&dtdRm) == 0 {
-		// Ensure this transfer is completd before exit because the system may
-		// be halted after that (including USB).
+
+end:
+	if d.config.Load() == cfg {
+		return true
 	}
+	// We primed the endpoint but in the meantime the active configuration
+	// changed. Reset the USB.
+	d.u.USBCMD.ClearBits(usb.RS)
+	time.Sleep(10 * time.Millisecond)
+	d.u.USBCMD.SetBits(usb.RS)
+	return false
 }
