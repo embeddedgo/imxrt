@@ -169,21 +169,40 @@ func (s *Driver) Write(p []byte) (n int, err error) {
 	if writeDrop(s) {
 		return len(p), nil
 	}
-	if rtos.HandlerMode() {
-		// The code below is here mainly to support the print and println
-		// functions used to debug or to print a stack trace in the IRQ handler
-		// mode when USB serial is used as the system console.
-		if sys == nil {
-			sys = dtcm.New[sysDTCM](32)
-		}
-		td, buf := &sys.td, &sys.buf
-		for n < len(p) {
-			m := copy(buf[:], p[n:])
-			n += m
-			td.SetupTransfer(unsafe.Pointer(&buf[0]), m)
-			s.d.Prime(s.txe, td, td) // in handler mode it waits for EOT
-		}
+	if !rtos.HandlerMode() {
+		return write(s, p)
+	}
+	// The code below is here mainly to support the print and println functions
+	// in the IRQ handler mode, used for debuging or to print a stack trace when
+	// the USB serial is used as the system console.
+	if sys == nil {
+		sys = dtcm.New[sysDTCM](32)
+	}
+	td, buf := &sys.td, &sys.buf
+	for n < len(p) {
+		m := copy(buf[:], p[n:])
+		n += m
+		td.SetupTransfer(unsafe.Pointer(&buf[0]), m)
+		s.d.Prime(s.txe, td, td) // in handler mode it waits for EOT
+	}
+	return
+}
+
+// WriteString implements io.StringWriter interface.
+//
+//go:nosplit
+func (s *Driver) WriteString(p string) (n int, err error) {
+	return s.Write(unsafe.Slice(unsafe.StringData(p), len(p)))
+}
+
+func write(s *Driver, p []byte) (n int, err error) {
+	if len(p) == 0 {
 		return
+	}
+	if writeDrop(s) {
+		return len(p), nil
+	}
+	if rtos.HandlerMode() {
 	}
 	dtcm := s.buf[len(s.buf):cap(s.buf)]
 	nh := len(p) // unaligned head bytes, send through dtcm buffer
@@ -262,13 +281,6 @@ loop:
 error:
 	s.wn = 0
 	return n, &usb.Error{s.d.Controller(), "serial", s.txe, status}
-}
-
-// WriteString implements io.StringWriter interface.
-//
-//go:nosplit
-func (s *Driver) WriteString(p string) (n int, err error) {
-	return s.Write(unsafe.Slice(unsafe.StringData(p), len(p)))
 }
 
 // Flush ensures that the last data written were sent to the USB host.

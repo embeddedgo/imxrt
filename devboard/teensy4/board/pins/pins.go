@@ -5,7 +5,7 @@
 package pins
 
 import (
-	_ "github.com/embeddedgo/imxrt/devboard/teensy4/board/init"
+	_ "github.com/embeddedgo/imxrt/devboard/teensy4/board/system"
 	"github.com/embeddedgo/imxrt/hal/iomux"
 )
 

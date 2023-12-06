@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-package uartcon
+package usbcon
 
 import (
 	"embedded/rtos"
@@ -10,24 +10,29 @@ import (
 	"syscall"
 
 	"github.com/embeddedgo/fs/termfs"
-	"github.com/embeddedgo/imxrt/hal/iomux"
 	"github.com/embeddedgo/imxrt/hal/usb/usbserial"
 )
 
-var se *usbserial.Driver
+var us *usbserial.Driver
 
 func write(_ int, p []byte) int {
-	n, _ := se.Write(p)
+	n, _ := us.Write(p)
 	return n
 }
 
-// Setup setpus an USB serial to work as system console.
+func panicErr(err error) {
+	if err != nil {
+		panic(err.Error())
+	}
+}
+
+// Setup setpus an USB serial to work as the system console.
 func Setup(d *usbserial.Driver, name string) {
 	d.SetWriteSink(true)
-	//d.SetAutoFlush(true)
+	d.SetAutoFlush(true)
 
 	// Set a system writer for print, println, panic, etc.
-	se = d
+	us = d
 	rtos.SetSystemWriter(write)
 
 	// Setup a serial console (standard input and output).
@@ -38,21 +43,20 @@ func Setup(d *usbserial.Driver, name string) {
 	rtos.Mount(con, "/dev/console")
 	var err error
 	os.Stdin, err = os.OpenFile("/dev/console", syscall.O_RDONLY, 0)
-	checkErr(err)
+	panicErr(err)
 	os.Stdout, err = os.OpenFile("/dev/console", syscall.O_WRONLY, 0)
-	checkErr(err)
+	panicErr(err)
 	os.Stderr = os.Stdout
 }
 
-
-// SetupLight setpus an USB serial to work as light system console.
+// SetupLight setpus an USB serial to work as the system console.
 // It usese termfs.LightFS instead of termfs.FS.
-func SetupLight(d *usbserial.Drive, name string) {
+func SetupLight(d *usbserial.Driver, name string) {
 	d.SetWriteSink(true)
-	//d.SetAutoFlush(true)
+	d.SetAutoFlush(true)
 
 	// Set a system writer for print, println, panic, etc.
-	se = d
+	us = d
 	rtos.SetSystemWriter(write)
 
 	// Setup a serial console (standard input and output).
@@ -60,8 +64,8 @@ func SetupLight(d *usbserial.Drive, name string) {
 	rtos.Mount(con, "/dev/console")
 	var err error
 	os.Stdin, err = os.OpenFile("/dev/console", syscall.O_RDONLY, 0)
-	checkErr(err)
+	panicErr(err)
 	os.Stdout, err = os.OpenFile("/dev/console", syscall.O_WRONLY, 0)
-	checkErr(err)
+	panicErr(err)
 	os.Stderr = os.Stdout
 }

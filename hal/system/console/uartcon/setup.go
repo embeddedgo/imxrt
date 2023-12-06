@@ -21,14 +21,13 @@ func write(_ int, p []byte) int {
 	return n
 }
 
-func checkErr(err error) {
+func panicErr(err error) {
 	if err != nil {
-		println(err.Error())
-		os.Exit(1)
+		panic(err.Error())
 	}
 }
 
-// Setup setpus an LPUART peripheral to work as system console.
+// Setup setpus an LPUART peripheral to work as the system console.
 func Setup(d *lpuart.Driver, rx, tx iomux.Pin, conf lpuart.Config, baudrate int, name string) {
 	// Setup and enable the LPUART driver.
 	d.UsePin(rx, lpuart.RXD)
@@ -49,13 +48,13 @@ func Setup(d *lpuart.Driver, rx, tx iomux.Pin, conf lpuart.Config, baudrate int,
 	rtos.Mount(con, "/dev/console")
 	var err error
 	os.Stdin, err = os.OpenFile("/dev/console", syscall.O_RDONLY, 0)
-	checkErr(err)
+	panicErr(err)
 	os.Stdout, err = os.OpenFile("/dev/console", syscall.O_WRONLY, 0)
-	checkErr(err)
+	panicErr(err)
 	os.Stderr = os.Stdout
 }
 
-// SetupLight setpus an LPUART to work as light system console.
+// SetupLight setpus an LPUART to work as the system console.
 // It usese termfs.LightFS instead of termfs.FS.
 func SetupLight(d *lpuart.Driver, rx, tx iomux.Pin, conf lpuart.Config, baudrate int, name string) {
 	// Setup and enable the LPUART driver.
@@ -74,8 +73,8 @@ func SetupLight(d *lpuart.Driver, rx, tx iomux.Pin, conf lpuart.Config, baudrate
 	rtos.Mount(con, "/dev/console")
 	var err error
 	os.Stdin, err = os.OpenFile("/dev/console", syscall.O_RDONLY, 0)
-	checkErr(err)
+	panicErr(err)
 	os.Stdout, err = os.OpenFile("/dev/console", syscall.O_WRONLY, 0)
-	checkErr(err)
+	panicErr(err)
 	os.Stderr = os.Stdout
 }

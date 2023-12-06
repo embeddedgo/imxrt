@@ -2,125 +2,98 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
+// Usb works as en Echo Server on the second USB serial port, writting back all
+// received data. Additionally, it logs all I/O transaction on the system
+// console (first USB serial port).
+//
+// You can talk to this program using a terminal emulator program like Putty
+// (Windows) or picocom (Linux, Mac):
+//
+//	# Show console logs:
+//	cat /dev/ttyACM0
+//
+//	# Talk to this program:
+//	picocom --imap crcrlf /dev/ttyACM1
+//
+// Try copy/paste more text to the terminal emulator window to see slightly
+// longer than single-byte transactions.
+//
+// See also the usbserial example which works the same but uses the usbserial
+// package.
 package main
 
 import (
 	"embedded/rtos"
 	"fmt"
-	"strings"
-	"time"
 	"unsafe"
 
-	"github.com/embeddedgo/imxrt/devboard/teensy4/board/pins"
+	"github.com/embeddedgo/imxrt/devboard/teensy4/board/system"
 	"github.com/embeddedgo/imxrt/hal/dma"
-	"github.com/embeddedgo/imxrt/hal/lpuart"
-	"github.com/embeddedgo/imxrt/hal/lpuart/lpuart1"
-	"github.com/embeddedgo/imxrt/hal/system/console/uartcon"
 	"github.com/embeddedgo/imxrt/hal/usb"
 )
 
-var usbd *usb.Device
-
-func cdcSetLineCoding(cr *usb.ControlRequest) int {
-	fmt.Printf("cdcSetLineCoding: %+v\r\n", *cr)
-	return 0
-}
-
-func cdcSetControlLineState(cr *usb.ControlRequest) int {
-	fmt.Printf("cdcSetControlLineState: %+v\r\n", *cr)
-	return 0
-}
+// rtos.CacheMaint is almost always required when you transfer data using raw
+// usb package. But in fact, this code requires it only once, (after allocating
+// buf) because in this example the CPU doesn't read/modify the received data.
+// Nevertheless, both cache maintenance operations (before sending and before
+// receiving) are presented for completeness.
 
 func main() {
-	// IO pins
-	conTx := pins.P24
-	conRx := pins.P25
+	usbd, out, in, _ := system.USBIO()
+	rxe := usb.HE(out, usb.OUT)
+	txe := usb.HE(in, usb.IN)
 
-	// Serial console
-	uartcon.Setup(lpuart1.Driver(), conRx, conTx, lpuart.Word8b, 115200, "UART1")
-
-	time.Sleep(20 * time.Millisecond) // wait at least 20ms before starting USB
-
-	fmt.Println("Start!")
-
-	usbd = usb.NewDevice(1)
-	usbd.Init(rtos.IntPrioLow, descriptors, false)
-	usbd.Handle(0, 0x2021, cdcSetLineCoding)
-	usbd.Handle(0, 0x2221, cdcSetControlLineState)
-	usbd.Enable()
-
-	var done rtos.Note
-	config := 1
-	rxe := uint8(2 * 2)
-	rxtd := usb.NewDTD()
-	rxtd.SetNote(&done)
-	txe := uint8(2*2 + 1)
-	txtd := usb.NewDTD()
-	txtd.SetNote(&done)
 	buf := dma.MakeSlice[byte](512, 512)
+	td := usb.NewDTD()
+	done := new(rtos.Note)
+	td.SetNote(done)
 
 usbNotReady:
-	fmt.Println("Waiting for USB...")
-	usbd.WaitConfig(config)
-	fmt.Println("USB is ready.")
+	usbd.WaitConfig(0)
 
 	for {
-		var (
-			n    int
-			stat uint8
-		)
 		rtos.CacheMaint(rtos.DCacheInval, unsafe.Pointer(&buf[0]), len(buf))
-		rxtd.SetupTransfer(unsafe.Pointer(&buf[0]), len(buf))
+		td.SetupTransfer(unsafe.Pointer(&buf[0]), len(buf))
 		done.Clear()
 
-		if !usbd.Prime(rxe, rxtd, rxtd) {
+		if !usbd.Prime(rxe, td, td) {
 			goto usbNotReady
 		}
 		done.Sleep(-1)
 
-		n, stat = rxtd.Status()
+		n, stat := td.Status()
 		if stat != 0 {
 			if stat&usb.Active != 0 {
 				goto usbNotReady
 			}
-			fmt.Printf("Rx error: 0b%08b\n", stat)
-			time.Sleep(time.Second)
+			fmt.Printf("read error: 0b%08b\n", stat)
 			continue
 		}
-
 		n = len(buf) - n
-		fmt.Printf("received %d bytes: %s\n", n, buf[:n])
+		fmt.Println("usb recv:", n)
 
-		if strings.TrimSpace(string(buf[:n])) == "reset" {
-			fmt.Println("* Reset! *")
-			usbd.Disable()
-			usbd.Enable()
-			fmt.Println("* Go! *")
-		}
-
-		txtd.SetupTransfer(unsafe.Pointer(&buf[0]), n)
+		rtos.CacheMaint(rtos.DCacheFlush, unsafe.Pointer(&buf[0]), alignUp(n))
+		td.SetupTransfer(unsafe.Pointer(&buf[0]), n)
 		done.Clear()
 
-		if !usbd.Prime(txe, txtd, txtd) {
+		if !usbd.Prime(txe, td, td) {
 			goto usbNotReady
 		}
 		done.Sleep(-1)
 
-		_, stat = txtd.Status()
+		_, stat = td.Status()
 		if stat != 0 {
 			if stat&usb.Active != 0 {
 				goto usbNotReady
 			}
-			fmt.Printf("Tx error: 0b%08b\n", stat)
-			time.Sleep(time.Second)
+			fmt.Printf("write error: 0b%08b\n", stat)
 			continue
 		}
-
-		fmt.Printf("sent %d bytes\n", n)
+		fmt.Println("usb sent:", n)
 	}
 }
 
-//go:interrupthandler
-func USB_OTG1_Handler() {
-	usbd.ISR()
+func alignUp(n int) int {
+	const align = dma.CacheLineSize - 1
+	return (n + align) &^ align
 }
