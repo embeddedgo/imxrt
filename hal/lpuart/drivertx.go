@@ -166,6 +166,8 @@ func dmaOffsets(p unsafe.Pointer, size int) (start, end uintptr) {
 }
 
 // WriteString implements the io.StringWriter interface.
+//
+//go:nosplit
 func (d *Driver) WriteString(s string) (n int, err error) {
 	switch {
 	case len(s) == 0:
@@ -203,6 +205,8 @@ func (d *Driver) WriteString(s string) (n int, err error) {
 }
 
 // Write implements the io.Writer interface.
+//
+//go:nosplit
 func (d *Driver) Write(p []byte) (int, error) {
 	return d.WriteString(*(*string)(unsafe.Pointer(&p)))
 }
@@ -272,6 +276,8 @@ func (d *Driver) WriteByte(b byte) error {
 // sysWrite is called in handler mode. It is used by print and println mainly
 // to print a stack trace before system halt.
 // BUG: multiple cores not supported.
+//
+//go:nosplit
 func sysWrite(d *Driver, s string) (int, error) {
 	var dmux dma.Mux
 	if c := d.txdma; c.IsValid() {
