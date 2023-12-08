@@ -4,10 +4,8 @@
 
 // Usb works as en Echo Server on the second USB serial port, writting back all
 // received data. Additionally, it logs all I/O transaction on the system
-// console (first USB serial port).
-//
-// You can talk to this program using a terminal emulator program like Putty
-// (Windows) or picocom (Linux, Mac):
+// console (first USB serial port). You can talk to it using a terminal
+// emulator program like Putty (Windows) or picocom (Linux, Mac):
 //
 //	# Show console logs:
 //	cat /dev/ttyACM0
@@ -18,8 +16,8 @@
 // Try copy/paste more text to the terminal emulator window to see slightly
 // longer than single-byte transactions.
 //
-// See also the usbserial example which works the same but uses the usbserial
-// package.
+// See also the usbserial example which does the same in much simpler way, using
+// the usbserial package.
 package main
 
 import (
@@ -32,11 +30,11 @@ import (
 	"github.com/embeddedgo/imxrt/hal/usb"
 )
 
-// rtos.CacheMaint is almost always required when you transfer data using raw
-// usb package. But in fact, this code requires it only once, (after allocating
-// buf) because in this example the CPU doesn't read/modify the received data.
-// Nevertheless, both cache maintenance operations (before sending and before
-// receiving) are presented for completeness.
+// rtos.CacheMaint is almost always required when you transfer data through USB.
+// But in fact, this code requires it only once (after allocating buf), because
+// in this example the CPU doesn't read/modify the received data. Nevertheless,
+// both cache maintenance operations (before sending and before receiving) are
+// presented for completeness.
 
 func main() {
 	usbd, out, in, _ := system.USBIO()
@@ -44,8 +42,8 @@ func main() {
 	txe := usb.HE(in, usb.IN)
 
 	buf := dma.MakeSlice[byte](512, 512)
-	td := usb.NewDTD()
 	done := new(rtos.Note)
+	td := usb.NewDTD()
 	td.SetNote(done)
 
 usbNotReady:

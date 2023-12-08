@@ -5,7 +5,7 @@
 package pins
 
 import (
-	_ "github.com/embeddedgo/imxrt/devboard/fet1061/board/init"
+	_ "github.com/embeddedgo/imxrt/devboard/fet1061/board/system"
 	"github.com/embeddedgo/imxrt/hal/iomux"
 )
 

@@ -4,10 +4,8 @@
 
 // Usbserial works as en Echo Server on the second USB serial port, writting
 // back all received data. Additionally, it logs all I/O transaction on the
-// system console (first USB serial port).
-//
-// You can talk to this program using a terminal emulator program like Putty
-// (Windows) or picocom (Linux, Mac):
+// system console (first USB serial port). You can talk to it using a terminal
+// emulator program like Putty (Windows) or picocom (Linux, Mac):
 //
 //	# Show console logs:
 //	cat /dev/ttyACM0
@@ -18,7 +16,7 @@
 // Try copy/paste more text to the terminal emulator window to see slightly
 // longer than single-byte transactions.
 //
-// See also the usb example which works the same but uses the usb package
+// See also the usb example which does the same but uses the usb package
 // directly.
 package main
 
