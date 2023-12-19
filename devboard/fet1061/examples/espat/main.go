@@ -9,13 +9,10 @@ package main
 
 import (
 	"fmt"
-	"io"
-	"net"
 	"strings"
 	"time"
 
 	"github.com/embeddedgo/espat"
-	"github.com/embeddedgo/espat/espnet"
 	"github.com/embeddedgo/imxrt/devboard/fet1061/board/pins"
 	"github.com/embeddedgo/imxrt/hal/lpuart"
 	"github.com/embeddedgo/imxrt/hal/lpuart/lpuart1"
@@ -47,7 +44,6 @@ func main() {
 
 	// Serial console
 	uartcon.Setup(lpuart1.Driver(), conRx, conTx, lpuart.Word8b, 115200, "UART1")
-
 	// ESP-AT
 	u := lpuart2.Driver()
 	u.Setup(lpuart.Word8b, 115200)
@@ -59,7 +55,10 @@ func main() {
 	fmt.Print("Initializing ESP-AT module... ")
 	dev := espat.NewDevice("esp0", u, u)
 	fatalErr(dev.Init(true))
-	fatalErr(espnet.SetPasvRecv(dev, true))
+	_, err := dev.Cmd("+CIPMUX=1")
+	fatalErr(err)
+	_, err = dev.Cmd("+CIPRECVMODE=1")
+	fatalErr(err)
 	fmt.Println("OK")
 
 	fmt.Println("Waiting for an IP address...")
@@ -74,37 +73,50 @@ func main() {
 	fatalErr(err)
 	fmt.Println(strings.ReplaceAll(txt, "+CIPSTA:", ""))
 
-	ls, err := espnet.ListenDev(dev, "tcp", ":1111")
+	const port = "1111"
+
+	dev.SetServer(true)
+	_, err = dev.Cmd("+CIPSERVER=1," + port)
 	fatalErr(err)
 
-	fmt.Println("Listen on:", ls.Addr().String())
-	for {
-		c, err := ls.Accept()
-		fatalErr(err)
-		go handle(c)
+	fmt.Println("Listen on :" + port)
+	for conn := range dev.Server() {
+		go handle(conn)
 	}
 }
 
-func handle(c net.Conn) {
-	var buf [64]byte
-	fmt.Println("Connected:", c.RemoteAddr().String())
-	_, err := io.WriteString(c, "Echo Server\n\n")
-	if logErr(err) {
+var welcome = []byte("Echo Server\n\n")
+
+func handle(c *espat.Conn) {
+	fmt.Println("Connected:", c.ID)
+	if logErr(send(c, welcome)) {
 		return
 	}
+	var buf [64]byte
 	for {
-		n, err := c.Read(buf[:])
-		if err == io.EOF {
-			break
+		if _, ok := <-c.Ch; !ok {
+			break // connection closed by remote part
 		}
+		n, err := c.Dev.CmdInt("+CIPRECVDATA=", buf[:], c.ID, len(buf))
 		if logErr(err) {
 			return
 		}
-		_, err = c.Write(buf[:n])
-		if logErr(err) {
+		if logErr(send(c, buf[:n])) {
 			return
 		}
 	}
-	c.Close()
-	fmt.Println("Closed:   ", c.RemoteAddr().String())
+	fmt.Println("Closed:   ", c.ID)
+}
+
+func send(c *espat.Conn, p []byte) error {
+	c.Dev.Lock()
+	defer c.Dev.Unlock()
+	if _, err := c.Dev.UnsafeCmd("+CIPSEND=", c.ID, len(p)); err != nil {
+		return err
+	}
+	if _, err := c.Dev.UnsafeWrite(p); err != nil {
+		return err
+	}
+	_, err := c.Dev.UnsafeCmd("")
+	return err
 }

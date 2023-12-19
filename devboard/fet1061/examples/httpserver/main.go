@@ -6,7 +6,10 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"net/http"
+	"os"
+	"strings"
 	"time"
 
 	"github.com/embeddedgo/espat"
@@ -20,7 +23,7 @@ import (
 
 func logErr(err error) bool {
 	if err != nil {
-		fmt.Println("error:", err.Error())
+		log.Println("error:", err.Error())
 		return true
 	}
 	return false
@@ -28,7 +31,7 @@ func logErr(err error) bool {
 
 func fatalErr(err error) {
 	for err != nil {
-		fmt.Println("error:", err.Error())
+		log.Println("error:", err.Error())
 		time.Sleep(time.Second)
 	}
 }
@@ -42,6 +45,7 @@ func main() {
 
 	// Serial console
 	uartcon.Setup(lpuart1.Driver(), conRx, conTx, lpuart.Word8b, 115200, "UART1")
+	log.Default().SetOutput(os.Stdout)
 
 	// ESP-AT
 	u := lpuart2.Driver()
@@ -51,29 +55,33 @@ func main() {
 	u.EnableRx(256)
 	u.EnableTx()
 
-	fmt.Println("\n* Ready *\n\n")
-
+	log.Print("Initializing ESP-AT module... ")
 	dev := espat.NewDevice("esp0", u, u)
-	dev.Init(false)
+	dev.Init(true)
 	fatalErr(espnet.SetPasvRecv(dev, true))
+	log.Println("OK")
 
-	/*
-		for msg := range dev.Async() {
-			fmt.Println(msg)
-			if msg == "WIFI GOT IP" {
-				break
-			}
+	log.Println("Waiting for an IP address...")
+	for msg := range dev.Async() {
+		fatalErr(msg.Err)
+		log.Println(msg.Str)
+		if msg.Str == "WIFI GOT IP" {
+			break
 		}
-	*/
+	}
+	txt, err := dev.CmdStr("+CIPSTA?")
+	fatalErr(err)
+	log.Println(strings.ReplaceAll(txt, "+CIPSTA:", ""))
 
 	ls, err := espnet.ListenDev(dev, "tcp", ":80")
 	fatalErr(err)
-	fatalErr(err)
+	fmt.Println("Listen on:", ls.Addr())
 	fatalErr(http.Serve(ls, http.HandlerFunc(handler)))
 }
 
 func handler(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintln(w, "Welcome to the Go HTTP server!")
+	log.Println(r.RemoteAddr, r.RequestURI)
+	fmt.Fprintln(w, "Go HTTP server")
 	fmt.Fprintln(w)
 	fmt.Fprintln(w, "Method:    ", r.Method)
 	fmt.Fprintln(w, "URL:       ", r.URL)

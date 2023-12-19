@@ -3,7 +3,8 @@
 // license that can be found in the LICENSE file.
 
 // Crudeblinky flashes the on-board LED without using HAL or any other packages
-// outside the Embedded Go standard library.
+// outside the Embedded Go standard library. Check ../blinky to see a better way
+// to do the same.
 package main
 
 import (
@@ -34,8 +35,10 @@ type GPIO struct {
 }
 
 func main() {
-	// By default, access to most peripherals require the supervisor privilege
-	// level. This can be changed using in APISTZ registers.
+	// By default, access to the most peripherals require the supervisor
+	// privilege level. The standard initialization procedure sets the APISTZ
+	// register to remove this restriction but in this example we simply enter
+	// the privilege mode.
 	runtime.LockOSThread()
 	rtos.SetPrivLevel(0)
 

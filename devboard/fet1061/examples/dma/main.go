@@ -36,15 +36,16 @@ func main() {
 	dstAddr := unsafe.Pointer(&dst[0])
 
 	// Make sure all the values we wrote down in src are in place.
-	rtos.CacheMaint(rtos.DCacheClean, srcAddr, n*4)
+	rtos.CacheMaint(rtos.DCacheFlush, srcAddr, n*4)
 
 	// Ungate the DMA clock.
 	d := dma.DMA(0)
 	d.EnableClock(true)
 
 	// Allocate a free DMA channel. Because the priorities for all channels
-	// (even unused) must be unique in fixed arbitration mode AllocChannel is
-	// usually used together with round robin arbitration.
+	// (even unused) must be unique in the fixed arbitration mode, AllocChannel
+	// (which returns the first unused DMA channel) makes sense only with the
+	// round robin arbitration mode.
 	c := d.AllocChannel(false)
 
 	// Example 1. Transfer all data in the minor loop.
@@ -56,7 +57,7 @@ func main() {
 	// 100% solution because nested preemption isn't supported.
 
 	// Flush and invalidate anything in the cache related to the dst buffer.
-	rtos.CacheMaint(rtos.DCacheCleanInval, dstAddr, n*4)
+	rtos.CacheMaint(rtos.DCacheFlushInval, dstAddr, n*4)
 
 	// Prepare a Transfer Control Descriptor. As the CRS[START] bit is set, the
 	// transfer will start immediately after we write the prepared TCD to the
@@ -90,7 +91,7 @@ func main() {
 	for i := range dst {
 		dst[i] = 0
 	}
-	rtos.CacheMaint(rtos.DCacheCleanInval, dstAddr, n*4)
+	rtos.CacheMaint(rtos.DCacheFlushInval, dstAddr, n*4)
 
 	// Modify TCD to use the major loop to the extreme.
 	tcd.ML_NBYTES = 4   // extremely short (one-iteration) minor loop
