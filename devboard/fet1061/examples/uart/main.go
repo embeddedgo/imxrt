@@ -8,9 +8,10 @@ package main
 import (
 	"fmt"
 
-	"github.com/embeddedgo/imxrt/devboard/fet1061/board/pins"
 	"github.com/embeddedgo/imxrt/hal/lpuart"
 	"github.com/embeddedgo/imxrt/hal/lpuart/lpuart1"
+
+	"github.com/embeddedgo/imxrt/devboard/fet1061/board/pins"
 )
 
 func main() {

@@ -23,9 +23,10 @@ package main
 import (
 	"fmt"
 
-	"github.com/embeddedgo/imxrt/devboard/teensy4/board/system"
 	"github.com/embeddedgo/imxrt/hal/usb"
 	"github.com/embeddedgo/imxrt/hal/usb/usbserial"
+
+	"github.com/embeddedgo/imxrt/devboard/teensy4/board/system"
 )
 
 func main() {

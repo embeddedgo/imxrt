@@ -14,12 +14,13 @@ import (
 	"time"
 
 	"github.com/embeddedgo/imxrt/dci/owdci"
-	"github.com/embeddedgo/imxrt/devboard/teensy4/board/pins"
 	"github.com/embeddedgo/imxrt/hal/iomux"
 	"github.com/embeddedgo/imxrt/hal/lpuart"
 	"github.com/embeddedgo/imxrt/hal/lpuart/lpuart1"
 	"github.com/embeddedgo/imxrt/hal/lpuart/lpuart2"
 	"github.com/embeddedgo/onewire"
+
+	"github.com/embeddedgo/imxrt/devboard/teensy4/board/pins"
 )
 
 func main() {

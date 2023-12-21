@@ -25,9 +25,10 @@ import (
 	"fmt"
 	"unsafe"
 
-	"github.com/embeddedgo/imxrt/devboard/teensy4/board/system"
 	"github.com/embeddedgo/imxrt/hal/dma"
 	"github.com/embeddedgo/imxrt/hal/usb"
+
+	"github.com/embeddedgo/imxrt/devboard/teensy4/board/system"
 )
 
 // rtos.CacheMaint is almost always required when you transfer data through USB.

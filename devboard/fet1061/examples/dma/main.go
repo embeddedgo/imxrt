@@ -11,8 +11,9 @@ import (
 	"time"
 	"unsafe"
 
-	"github.com/embeddedgo/imxrt/devboard/fet1061/board/leds"
 	"github.com/embeddedgo/imxrt/hal/dma"
+
+	"github.com/embeddedgo/imxrt/devboard/fet1061/board/leds"
 )
 
 func main() {

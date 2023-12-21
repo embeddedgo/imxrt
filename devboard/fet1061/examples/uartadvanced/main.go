@@ -18,12 +18,13 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/embeddedgo/imxrt/devboard/fet1061/board/leds"
-	"github.com/embeddedgo/imxrt/devboard/fet1061/board/pins"
 	"github.com/embeddedgo/imxrt/hal/dma"
 	"github.com/embeddedgo/imxrt/hal/dma/dmairq"
 	"github.com/embeddedgo/imxrt/hal/irq"
 	"github.com/embeddedgo/imxrt/hal/lpuart"
+
+	"github.com/embeddedgo/imxrt/devboard/fet1061/board/leds"
+	"github.com/embeddedgo/imxrt/devboard/fet1061/board/pins"
 )
 
 var u *lpuart.Driver

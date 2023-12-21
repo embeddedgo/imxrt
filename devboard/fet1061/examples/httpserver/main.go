@@ -14,11 +14,12 @@ import (
 
 	"github.com/embeddedgo/espat"
 	"github.com/embeddedgo/espat/espnet"
-	"github.com/embeddedgo/imxrt/devboard/fet1061/board/pins"
 	"github.com/embeddedgo/imxrt/hal/lpuart"
 	"github.com/embeddedgo/imxrt/hal/lpuart/lpuart1"
 	"github.com/embeddedgo/imxrt/hal/lpuart/lpuart2"
 	"github.com/embeddedgo/imxrt/hal/system/console/uartcon"
+
+	"github.com/embeddedgo/imxrt/devboard/fet1061/board/pins"
 )
 
 func logErr(err error) bool {

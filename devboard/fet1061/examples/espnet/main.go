@@ -3,7 +3,7 @@
 // license that can be found in the LICENSE file.
 
 // Espnet is an ESP-AT based TCP echo server. See also ../espat that uses the
-// espat package directly and has much lower memory requirements. See also th
+// espat package directly and has much lower memory requirements. See also the
 // same example written for Teensy 4 and STM32 development boards.
 package main
 
@@ -16,11 +16,12 @@ import (
 
 	"github.com/embeddedgo/espat"
 	"github.com/embeddedgo/espat/espnet"
-	"github.com/embeddedgo/imxrt/devboard/fet1061/board/pins"
 	"github.com/embeddedgo/imxrt/hal/lpuart"
 	"github.com/embeddedgo/imxrt/hal/lpuart/lpuart1"
 	"github.com/embeddedgo/imxrt/hal/lpuart/lpuart2"
 	"github.com/embeddedgo/imxrt/hal/system/console/uartcon"
+
+	"github.com/embeddedgo/imxrt/devboard/fet1061/board/pins"
 )
 
 func logErr(err error) bool {
@@ -53,7 +54,7 @@ func main() {
 	u.Setup(lpuart.Word8b, 115200)
 	u.UsePin(espRx, lpuart.RXD)
 	u.UsePin(espTx, lpuart.TXD)
-	u.EnableRx(256)
+	u.EnableRx(512)
 	u.EnableTx()
 
 	fmt.Print("Initializing ESP-AT module... ")
