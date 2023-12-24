@@ -48,7 +48,7 @@ func main() {
 	u.EnableRx(512)
 	u.EnableTx()
 
-	time.Sleep(5 * time.Second)
+	time.Sleep(5 * time.Second) // to allow to see messages printed below
 
 	fmt.Print("Initializing ESP-AT module... ")
 	dev := espat.NewDevice("esp0", u, u)

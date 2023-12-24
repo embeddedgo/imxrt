@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
+// Httpserver runs the Go net/http server using the ESP-AT TCP/IP stack.
 package main
 
 import (
@@ -38,6 +39,8 @@ func fatalErr(err error) {
 }
 
 func main() {
+	log.Default().SetOutput(os.Stdout)
+
 	// IO pins
 	espTx := pins.P12
 	espRx := pins.P13
@@ -46,7 +49,6 @@ func main() {
 
 	// Serial console
 	uartcon.Setup(lpuart1.Driver(), conRx, conTx, lpuart.Word8b, 115200, "UART1")
-	log.Default().SetOutput(os.Stdout)
 
 	// ESP-AT
 	u := lpuart2.Driver()
