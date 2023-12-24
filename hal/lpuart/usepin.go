@@ -34,7 +34,7 @@ func (p *Periph) Pins(sig Signal) []iomux.Pin {
 // returns true on succes or false if it isn't possible to use a pin as a sig.
 // See also Periph.Pins.
 func (d *Driver) UsePin(pin iomux.Pin, sig Signal) bool {
-	af, s, daisy := periph.AltFunc(pins[:], alts[:], num(d.p)*4+int(sig), pin)
+	af, sel, daisy := periph.AltFunc(pins[:], alts[:], num(d.p)*4+int(sig), pin)
 	if af < 0 {
 		return false
 	}
@@ -44,9 +44,9 @@ func (d *Driver) UsePin(pin iomux.Pin, sig Signal) bool {
 	}
 	pin.Setup(cfg)
 	pin.SetAltFunc(af)
-	if s >= 0 {
+	if sel >= 0 {
 		iosel := (*[15]mmio.R32[int32])(unsafe.Pointer(uintptr(0x401F852C)))
-		iosel[s].Store(int32(daisy))
+		iosel[sel].Store(int32(daisy))
 	}
 	return true
 }
@@ -105,9 +105,9 @@ var pins = [...]iomux.Pin{
 
 const (
 	// no select register (one level of I/O muxing)
-	_1 = 0x10
-	_2 = 0x20
-	_3 = 0x30
+	_1 = 0x10 // only one pin for the signal exists
+	_2 = 0x20 // two alternative pins for the signal exist
+	_3 = 0x30 // three alternative pins for the signal exist
 
 	// select register exists (two levels of I/O muxing)
 	s1 = -1<<7 + _1

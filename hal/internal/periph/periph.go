@@ -19,6 +19,9 @@ func AltFuncOld(pins []iomux.Pin, afs []iomux.AltFunc, psig int, pin iomux.Pin) 
 	return -1
 }
 
+// AltFunc returns the configuration for the pin to be used as the signal number
+// sig of the peripheral number p where psig = p * numSig + sig. See Pins for
+// description of pins and afs.
 func AltFunc(pins []iomux.Pin, afs []iomux.AltFunc, psig int, pin iomux.Pin) (af iomux.AltFunc, sel, daisy int) {
 	i := 0
 	for ; psig != 0; psig-- {
@@ -46,6 +49,10 @@ func AltFunc(pins []iomux.Pin, afs []iomux.AltFunc, psig int, pin iomux.Pin) (af
 	return
 }
 
+// Pins returns the list of pins that can be used for the peripheral number p
+// and the signal number sig where psig = p * numSig + sig. Pins should contain
+// the ordered array of pins that can be used by p. Afs contains alternate
+// functions for these pins and the encoded structure of the I/O mux.
 func Pins(pins []iomux.Pin, afs []iomux.AltFunc, psig int) []iomux.Pin {
 	i := uint(0)
 	for ; psig != 0; psig-- {
