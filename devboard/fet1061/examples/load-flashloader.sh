@@ -1,8 +1,8 @@
 #!/bin/sh
 
-name="$(basename $(pwd))+mbr"
+name=$(basename $(pwd))
 
-objcopy --change-addresses 0x60000000 -I binary -O ihex $name.bin $name.hex
+# objcopy --change-addresses 0x60000000 -I binary -O ihex $name.bin $name.hex
 
 # USB
 #interface='-u'

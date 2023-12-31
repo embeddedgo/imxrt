@@ -5,7 +5,7 @@ MNT=/mnt/daplink
 name=$(basename $(pwd))
 
 mount $MNT
-cp $name+mbr.bin $MNT
+cp $name.hex $MNT
 sync
 if [ -f $MNT/FAIL.TXT ]; then
 	cat $MNT/FAIL.TXT

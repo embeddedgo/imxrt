@@ -2,4 +2,4 @@
 
 name=$(basename $(pwd))
 
-pyocd load $name+mbr.bin
+pyocd load $name.hex

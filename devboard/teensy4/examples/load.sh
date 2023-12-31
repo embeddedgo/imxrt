@@ -2,7 +2,7 @@
 
 name=$(basename $(pwd))
 
-teensy_loader_cli --mcu=TEENSY41 -v $name+mbr.hex || cat <<EOT
+teensy_loader_cli --mcu=TEENSY41 -v $name.hex || cat <<EOT
 teensy_loader_cli may fail on the first attempt. Check all connections and try again.
 
 See also:
