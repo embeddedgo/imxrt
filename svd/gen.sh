@@ -9,7 +9,7 @@ rm -rf *
 
 svdxgen github.com/embeddedgo/imxrt/p ../svd/*.svd
 
-for p in aipstz ccm ccm_analog dma dmamux gpio iomuxc iomuxc_gpr ocotp pmu src lpuart usb usb_analog usbphy wdog; do
+for p in aipstz ccm ccm_analog dma dmamux gpio iomuxc iomuxc_gpr ocotp pmu src lpspi lpuart usb usb_analog usbphy wdog; do
 	cd $p
 	xgen -g *.go
 	GOOS=noos GOARCH=thumb $(emgo env GOROOT)/bin/go build -tags imxrt1060

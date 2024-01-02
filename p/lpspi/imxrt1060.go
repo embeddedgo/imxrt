@@ -189,22 +189,6 @@ const (
 )
 
 const (
-	MATCH0 DMR0 = 0xFFFFFFFF << 0 //+ Match 0 Value
-)
-
-const (
-	MATCH0n = 0
-)
-
-const (
-	MATCH1 DMR1 = 0xFFFFFFFF << 0 //+ Match 1 Value
-)
-
-const (
-	MATCH1n = 0
-)
-
-const (
 	SCKDIV CCR = 0xFF << 0  //+ SCK Divider
 	DBT    CCR = 0xFF << 8  //+ Delay Between Transfers
 	PCSSCK CCR = 0xFF << 16 //+ PCS-to-SCK Delay
@@ -284,14 +268,6 @@ const (
 )
 
 const (
-	DATA TDR = 0xFFFFFFFF << 0 //+ Transmit Data
-)
-
-const (
-	DATAn = 0
-)
-
-const (
 	SOF     RSR = 0x01 << 0 //+ Start Of Frame
 	RXEMPTY RSR = 0x01 << 1 //+ RX FIFO Empty
 )
@@ -299,12 +275,4 @@ const (
 const (
 	SOFn     = 0
 	RXEMPTYn = 1
-)
-
-const (
-	DATA RDR = 0xFFFFFFFF << 0 //+ Receive Data
-)
-
-const (
-	DATAn = 0
 )
