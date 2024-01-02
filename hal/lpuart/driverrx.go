@@ -30,6 +30,8 @@ func (d *Driver) EnableRx(bufLen int) {
 		panic("lpuart: bufLen < 2")
 	}
 	if rxdma := d.rxdma; rxdma.IsValid() {
+		const align = dma.CacheLineSize - 1
+		bufLen = (bufLen + align) &^ align
 		if bufLen > 32767 {
 			bufLen = 32767
 		}
