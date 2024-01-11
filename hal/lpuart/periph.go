@@ -32,8 +32,8 @@ func LPUART(n int) *Periph {
 	if n--; uint(n) > 7 {
 		panic("wrong LPUART number")
 	}
-	base := mmap.LPUART1_BASE
-	step := mmap.LPUART2_BASE - mmap.LPUART1_BASE
+	const base = mmap.LPUART1_BASE
+	const step = mmap.LPUART2_BASE - mmap.LPUART1_BASE
 	return (*Periph)(unsafe.Pointer(base + uintptr(n)*step))
 }
 
