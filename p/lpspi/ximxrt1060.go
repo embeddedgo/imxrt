@@ -112,7 +112,7 @@ func PCSPOL_(p *Periph) mmio.RM32[CFGR1]  { return mmio.RM32[CFGR1]{&p.CFGR1, PC
 func MATCFG_(p *Periph) mmio.RM32[CFGR1]  { return mmio.RM32[CFGR1]{&p.CFGR1, MATCFG} }
 func PINCFG_(p *Periph) mmio.RM32[CFGR1]  { return mmio.RM32[CFGR1]{&p.CFGR1, PINCFG} }
 func OUTCFG_(p *Periph) mmio.RM32[CFGR1]  { return mmio.RM32[CFGR1]{&p.CFGR1, OUTCFG} }
-func PCSCFG_(p *Periph) mmio.RM32[CFGR1]  { return mmio.RM32[CFGR1]{&p.CFGR1, PCSCFG} }
+func PCSDATA_(p *Periph) mmio.RM32[CFGR1] { return mmio.RM32[CFGR1]{&p.CFGR1, PCSDATA} }
 
 type CCR uint32
 
@@ -141,7 +141,7 @@ func CONTC_(p *Periph) mmio.RM32[TCR]    { return mmio.RM32[TCR]{&p.TCR, CONTC} 
 func CONT_(p *Periph) mmio.RM32[TCR]     { return mmio.RM32[TCR]{&p.TCR, CONT} }
 func BYSW_(p *Periph) mmio.RM32[TCR]     { return mmio.RM32[TCR]{&p.TCR, BYSW} }
 func LSBF_(p *Periph) mmio.RM32[TCR]     { return mmio.RM32[TCR]{&p.TCR, LSBF} }
-func PCS_(p *Periph) mmio.RM32[TCR]      { return mmio.RM32[TCR]{&p.TCR, PCS} }
+func TPCS_(p *Periph) mmio.RM32[TCR]     { return mmio.RM32[TCR]{&p.TCR, TPCS} }
 func PRESCALE_(p *Periph) mmio.RM32[TCR] { return mmio.RM32[TCR]{&p.TCR, PRESCALE} }
 func CPHA_(p *Periph) mmio.RM32[TCR]     { return mmio.RM32[TCR]{&p.TCR, CPHA} }
 func CPOL_(p *Periph) mmio.RM32[TCR]     { return mmio.RM32[TCR]{&p.TCR, CPOL} }

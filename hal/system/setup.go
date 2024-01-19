@@ -50,8 +50,14 @@ func Setup528_FlexSPI() {
 	for CCM.CDHIPR.LoadBits(ccm.PERIPH_CLK_SEL_BUSY) != 0 {
 	}
 	// Select PLL_SYS 528 MHz as ARM Core clock and disable PLL_ARM to save
-	// some power.
-	CCM.CBCMR.StoreBits(ccm.PRE_PERIPH_CLK_SEL, ccm.PRE_PERIPH_CLK_SEL_0)
+	// some power. Derive LPSPI_CLK_ROOT from PLL_SYS and set it to the max.
+	// supported freq. (528MHz / 4 = 132MHz). Alternate LPSPI_CLK_ROOT source,
+	// may be PLL_USB1.PFD1 (665MHz / 5 = 133MHz, slightly overclocked but
+	// independedn of ARM Core clock).
+	CCM.CBCMR.StoreBits(
+		ccm.PRE_PERIPH_CLK_SEL|ccm.LPSPI_CLK_SEL|ccm.LPSPI_PODF,
+		ccm.PRE_PERIPH_CLK_SEL_0|ccm.LPSPI_CLK_SEL_2|ccm.LPSPI_PODF_3,
+	)
 	CCM.CBCDR.ClearBits(ccm.PERIPH_CLK_SEL)
 	CCMA.PLL_ARM_SET.Store(ccm_analog.PLL_ARM_POWERDOWN)
 	for CCM.CDHIPR.LoadBits(ccm.PERIPH_CLK_SEL_BUSY) != 0 {
@@ -108,7 +114,7 @@ func Setup528_FlexSPI() {
 	CCM.CCGR2.Store(0x003f_0003) // ipmux3, impux2, ipmux1, ocram_exsc
 	CCM.CCGR3.Store(0x300c_0000) // ocram, flexram
 	CCM.CCGR4.Store(0x0000_f3ff) // sim_*, bee, iomux_gpr, ioumxc
-	CCM.CCGR5.Store(0xc003_0003) // snvs_lp, sim_main, rom(for Teensy)
+	CCM.CCGR5.Store(0xc003_3003) // snvs_lp, sim_main, aipstz4, rom(for Teensy)
 	CCM.CCGR6.Store(0x003c_0f00) // sim_per, aips_tz3, flexspi, ipmux4
 	CCM.CCGR7.Store(0xffff_cc30) // aips_lite, axbs_l
 }

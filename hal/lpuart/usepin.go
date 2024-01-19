@@ -14,14 +14,14 @@ import (
 
 type Signal int8
 
-// Do not reorder CTSn, RXD, TXD constants. The order  reflects the sequence of
+// Do not reorder CTS, RXD, TXD constants. The order reflects the sequence of
 // select registers and is used by periph.AltFunc function.
 
 const (
-	CTSn Signal = iota
+	CTS Signal = iota
 	RXD
 	TXD
-	RTSn
+	RTS
 )
 
 // Pins return IO pins that can be used for singal sig.

@@ -7,6 +7,10 @@ package lpspi
 import (
 	"embedded/mmio"
 	"unsafe"
+
+	"github.com/embeddedgo/imxrt/hal/internal"
+	"github.com/embeddedgo/imxrt/hal/internal/ccm"
+	"github.com/embeddedgo/imxrt/p/mmap"
 )
 
 type Periph struct {
@@ -47,3 +51,19 @@ func num(p *Periph) int {
 	const step = mmap.LPSPI2_BASE - mmap.LPSPI1_BASE
 	return int((uintptr(unsafe.Pointer(p)) - mmap.LPSPI1_BASE) / step)
 }
+
+// EnableClock enables the clock for the LPSPI peripheral.
+// lp determines whether the clock remains on in low power WAIT mode.
+func (p *Periph) EnableClock(lp bool) {
+	if n := num(p); uint(n) < 4 {
+		ccm.CCGR(1).SetCG(n, ccm.ClkEn|int8(internal.BoolToInt(lp)<<1))
+	}
+}
+
+// DisableClock disables the clock for the LPSPI peripheral.
+func (p *Periph) DisableClock() {
+	if n := num(p); uint(n) < 4 {
+		ccm.CCGR(1).SetCG(n, 0)
+	}
+}
+
