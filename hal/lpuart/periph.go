@@ -54,14 +54,14 @@ var cgs = [...]uint8{
 }
 
 func cg(p *Periph) (*ccm.CCGR_, int) {
-	if n := num(p); n < len(cgs) {
+	if n := num(p); uint(n) < uint(len(cgs)) {
 		cg := cgs[n]
 		return ccm.CCGR(int(cg) >> 4), int(cg) & 15
 	}
 	return nil, 0
 }
 
-// EnableClock enables clock for LPUART peripheral.
+// EnableClock enables the clock for the LPUART peripheral.
 // lp determines whether the clock remains on in low power WAIT mode.
 func (p *Periph) EnableClock(lp bool) {
 	ccgr, cgn := cg(p)
@@ -70,7 +70,7 @@ func (p *Periph) EnableClock(lp bool) {
 	}
 }
 
-// DisableClock disables clock for LPUART peripheral.
+// DisableClock disables the clock for the LPUART peripheral.
 func (p *Periph) DisableClock() {
 	ccgr, cgn := cg(p)
 	if ccgr != nil {
