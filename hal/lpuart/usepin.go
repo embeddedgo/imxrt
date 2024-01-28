@@ -45,13 +45,12 @@ func (d *Driver) UsePin(pin iomux.Pin, sig Signal) bool {
 	pin.Setup(cfg)
 	pin.SetAltFunc(af)
 	if sel >= 0 {
-		iosel := (*[15]mmio.R32[int32])(unsafe.Pointer(uintptr(0x401F852C)))
+		const daisyBase uintptr = 0x401F_852C
+		iosel := (*[15]mmio.R32[int32])(unsafe.Pointer(daisyBase))
 		iosel[sel].Store(int32(daisy))
 	}
 	return true
 }
-
-const daisyBase = 0x401F_852C
 
 var pins = [...]iomux.Pin{
 	// LPUART1
