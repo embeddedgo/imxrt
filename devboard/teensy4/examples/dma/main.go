@@ -20,32 +20,32 @@ func main() {
 	// Number of words to copy.
 	const n = 1e4 // must be <= 32767 because of Example 2.
 
-	// We use dma.Alloc instead of builtin make function because we need cache-
-	// aligned buffers. If you have ordinary (non cache-aligned) buffers you
-	// can still use DMA with them but the beginning and end of the buffers may
-	// require special treatment.
+	// We use dma.Alloc instead of the builtin make function because we need
+	// cache-aligned buffers. In case of ordinary (non cache-aligned) buffers
+	// the beginning and end of the buffers may require special treatment.
 	src := dma.MakeSlice[uint32](n, n)
 	dst := dma.MakeSlice[uint32](n, n)
 
-	// Initialize the source memory with some pattern.
+	// Initialize the source memory with known pattern.
 	for i := range src {
 		src[i] = uint32(i<<16 | i)
 	}
 
-	// We leave the safe field if we start messing around with DMA.
+	// Unsafe pointers remember us that using DMA may be unsafe.
 	srcAddr := unsafe.Pointer(&src[0])
 	dstAddr := unsafe.Pointer(&dst[0])
 
 	// Make sure all the values we wrote down in src are in place.
-	rtos.CacheMaint(rtos.DCacheClean, srcAddr, n*4)
+	rtos.CacheMaint(rtos.DCacheFlush, srcAddr, n*4)
 
 	// Ungate the DMA clock.
 	d := dma.DMA(0)
 	d.EnableClock(true)
 
-	// Allocate a free DMA channel. Because the priorities for all channels
-	// (even unused) must be unique in fixed arbitration mode AllocChannel is
-	// usually used together with round robin arbitration.
+	// Allocate a free DMA channel. The hal/dma package, when importerted,
+	// changes the default fixed arbitration mode to round-robin. AllocChannel
+	// cannot be used with the fixed arbitration mode because in this mode,
+	// all channels, even unused, must have unique priorities.
 	c := d.AllocChannel(false)
 
 	// Example 1. Transfer all data in the minor loop.
@@ -57,7 +57,7 @@ func main() {
 	// 100% solution because nested preemption isn't supported.
 
 	// Flush and invalidate anything in the cache related to the dst buffer.
-	rtos.CacheMaint(rtos.DCacheCleanInval, dstAddr, n*4)
+	rtos.CacheMaint(rtos.DCacheFlushInval, dstAddr, n*4)
 
 	// Prepare a Transfer Control Descriptor. As the CRS[START] bit is set, the
 	// transfer will start immediately after we write the prepared TCD to the
@@ -91,7 +91,7 @@ func main() {
 	for i := range dst {
 		dst[i] = 0
 	}
-	rtos.CacheMaint(rtos.DCacheCleanInval, dstAddr, n*4)
+	rtos.CacheMaint(rtos.DCacheFlushInval, dstAddr, n*4)
 
 	// Modify TCD to use the major loop to the extreme.
 	tcd.ML_NBYTES = 4   // extremely short (one-iteration) minor loop
