@@ -50,13 +50,13 @@ func Setup528_FlexSPI() {
 	for CCM.CDHIPR.LoadBits(ccm.PERIPH_CLK_SEL_BUSY) != 0 {
 	}
 	// Select PLL_SYS 528 MHz as ARM Core clock and disable PLL_ARM to save
-	// some power. Derive LPSPI_CLK_ROOT from PLL_SYS and set it to the max.
-	// supported freq. (528MHz / 4 = 132MHz). Alternate LPSPI_CLK_ROOT source,
-	// may be PLL_USB1.PFD1 (665MHz / 5 = 133MHz, slightly overclocked but
-	// independedn of ARM Core clock).
+	// some power. Derive LPSPI_CLK_ROOT from PLL_USB1.PFD1 (665MHz / 5 =
+	// 133MHz, slightly overclocked but independedn of ARM Core clock).
+	// Alternate LPSPI_CLK_ROOT source may be PLL_SYS (528MHz / 4 = 132MHz, max.
+	// supported freq. according to datasheet).
 	CCM.CBCMR.StoreBits(
 		ccm.PRE_PERIPH_CLK_SEL|ccm.LPSPI_CLK_SEL|ccm.LPSPI_PODF,
-		ccm.PRE_PERIPH_CLK_SEL_0|ccm.LPSPI_CLK_SEL_2|ccm.LPSPI_PODF_3,
+		ccm.PRE_PERIPH_CLK_SEL_0|ccm.LPSPI_CLK_SEL_0|ccm.LPSPI_PODF_4,
 	)
 	CCM.CBCDR.ClearBits(ccm.PERIPH_CLK_SEL)
 	CCMA.PLL_ARM_SET.Store(ccm_analog.PLL_ARM_POWERDOWN)

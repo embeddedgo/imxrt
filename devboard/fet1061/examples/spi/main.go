@@ -52,13 +52,13 @@ func main() {
 		p.CR.Store(lpspi.DBGEN | lpspi.MEN)
 	*/
 
-	// CPOL0,CPHA=0,66MHz/8=8.25MHz,PCS0,MSBF,1bit
-	p.TCR.Store(lpspi.PREDIV8 | (32-1)<<lpspi.FRAMESZn)
+	// CPOL0,CPHA=0,66.5MHz/8=8.3MHz,PCS0,MSBF,1bit
+	p.TCR.Store(lpspi.PREDIV8 | (16-1)<<lpspi.FRAMESZn)
 
 	for {
 		for p.SR.LoadBits(lpspi.TDF) == 0 {
 		}
-		p.TDR.Store(0x1234_5678)
+		p.TDR.Store(0x12)
 		p.SR.Store(lpspi.TDF)
 		for p.SR.LoadBits(lpspi.RDF) == 0 {
 		}
