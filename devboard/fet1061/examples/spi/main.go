@@ -38,32 +38,20 @@ func main() {
 	spi.UsePin(csn, lpspi.PCS0)
 	spi.UsePin(sck, lpspi.SCK)
 
-	spi.Setup(lpspi.FD, 66e6)
+	spi.Setup(lpspi.FD, 19e6)
 	spi.Enable()
-	p := spi.Periph()
 
-	/*
-		p.EnableClock(true)
-		p.CR.Store(lpspi.RRF | lpspi.RTF | lpspi.RST) // resert
-		p.CR.Store(0)
-		p.CFGR1.Store(lpspi.MASTER) // | lpspi.SAMPLE)
-		p.CCR.Store(0x0409_0808)
-		p.FCR.Store(3)
-		p.CR.Store(lpspi.DBGEN | lpspi.MEN)
-	*/
+	// CPOL0,CPHA=0,19MHz/2=9.5MHz,PCS0,MSBF,1bit
+	spi.WriteCmd(lpspi.PREDIV2, 8)
 
-	// CPOL0,CPHA=0,66.5MHz/8=8.3MHz,PCS0,MSBF,1bit
-	p.TCR.Store(lpspi.PREDIV8 | (16-1)<<lpspi.FRAMESZn)
+	s := "UUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUU"
+	buf := make([]byte, len(s))
 
 	for {
-		for p.SR.LoadBits(lpspi.TDF) == 0 {
+		const N = 1e4
+		for n := N; n != 0; n-- {
+			spi.WriteStringRead(s, buf)
 		}
-		p.TDR.Store(0x12)
-		p.SR.Store(lpspi.TDF)
-		for p.SR.LoadBits(lpspi.RDF) == 0 {
-		}
-		u32 := p.RDR.Load()
-		p.SR.Store(lpspi.RDF)
-		fmt.Printf("%08x\n", u32)
+		fmt.Printf("%s\n", buf)
 	}
 }

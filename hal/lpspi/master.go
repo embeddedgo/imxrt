@@ -6,15 +6,17 @@ package lpspi
 
 import (
 	"embedded/rtos"
+	"unsafe"
 
 	"github.com/embeddedgo/imxrt/hal/dma"
 )
 
 type Master struct {
-	p     *Periph
-	rxdma dma.Channel
-	txdma dma.Channel
-	done  rtos.Note
+	p      *Periph
+	rxdma  dma.Channel
+	txdma  dma.Channel
+	rxdone rtos.Note
+	txdone rtos.Note
 }
 
 // NewMaster returns a new master-mode driver for p.
@@ -37,39 +39,130 @@ func (m *Master) Disable() {
 	m.p.CR.Store(0)
 }
 
-// TODO: calculate from CCM settings
-const lpspiClkRoot = 132.923e6 // 480e6 * 18 / 13 / 5
+const (
+	clkRoot = 133e6 // 480e6 * 18 / 13 / 5,  TODO: calculate from CCM
+	fifoLen = 16    // TODO: calculate from PARAM
+)
 
 // Setup enables the SPI clock, resets the peripheral and sets its basic
-// configuration and the base SCK clock frequency. This functions allows you to
-// set the baseFreq up to 66.5 MHz. Use Cmd to fine tune the configuration and
-// set the SCK prescaler (don't exceed the maximum supported SCK clock: 30 MHz).
+// configuration and the base SCK clock frequency. The base SPI clock frequency
+// is set to baseFreq rounded down to 133 MHz divided by the number from 2 to
+// 257. Use WriteCmd to fine tune the configuration and set the SCK prescaler
+// to obtain the desired SPI clock frequency (30 MHz max).
 func (m *Master) Setup(conf CFGR1, baseFreqHz int) {
 	p := m.p
 	p.EnableClock(true)
-	p.CR.Store(RRF | RTF | RST)
-	p.CR.Store(0)
+	p.Reset()
 	p.CFGR1.Store(conf | MASTER)
 	switch {
-	case baseFreqHz > lpspiClkRoot/2:
-		baseFreqHz = lpspiClkRoot / 2
+	case baseFreqHz > clkRoot/2:
+		baseFreqHz = clkRoot / 2
 	case baseFreqHz <= 0:
 		baseFreqHz = 1
 	}
-	sckdiv := lpspiClkRoot/baseFreqHz - 2
+	//sckdiv := clkRoot/baseFreqHz - 2 // natural way but rounds sckdiv down
+	sckdiv := clkRoot/(baseFreqHz+1) - 1
 	if sckdiv > 255 {
 		sckdiv = 255
 	}
 	p.CCR.Store(CCR(sckdiv))
-	//n := 1<<p.PARAM.LoadBits(TXFIFO)
-	p.FCR.Store(3)
 }
 
 func (m *Master) ISR() {
-	//d.p.Event(END).DisableIRQ()
-	m.done.Wakeup()
+	// ....
+	//m.done.Wakeup()
 }
 
-func (m *Master) WriteRead(out, in []byte) int {
-	return 0
+// WriteCmd writes a command to the transmit FIFO. You can encode the frame size
+// in cmd directly using the FRAMESZ field or specify it using the frameSize
+// parameter (FRAMESZ = frameSize-1). The frame size is specified as a numer of
+// bits. The minimum supported frame size is 8 bits and maximum is 4096 bits. If
+// frameSize <= 32 it also specifies the word size. If frameSize > 32 then the
+// word size is 32 except the last one wchich is equal to frameSize % 32 and
+// must be >= 2 (e.g. frameSize = 33 is not supported). Be careful to use the
+// correct WriteRead* function according to the configured word size.
+func (m *Master) WriteCmd(cmd TCR, frameSize int) {
+	m.p.TCR.Store(cmd | TCR(frameSize-1)&FRAMESZ)
+}
+
+func (m *Master) WriteWord(word uint32) {
+	p := m.p
+	for p.FSR.LoadBits(TXCOUNT) == fifoLen<<TXCOUNTn {
+	}
+	p.TDR.Store(word)
+}
+
+func (m *Master) ReadWord() uint32 {
+	p := m.p
+	for p.FSR.LoadBits(RXCOUNT) == 0 {
+	}
+	return p.RDR.Load()
+}
+
+func min(a, b int) int {
+	if a <= b {
+		return a
+	}
+	return b
+}
+
+// writeRead speed is crucial to achive fast bitrates (up to 30 MHz) so it uses
+// unsafe pointers instead of slices to speedup things (smaller code size,
+// no bound checking, only one increment operation in the loop).
+func writeRead(p *Periph, out, in unsafe.Pointer, n int) {
+	nr, nw := n, n
+	nf := fifoLen // how many words can be written to TDR to don't overflow RDR
+	for nw+nr != 0 {
+		if nw != 0 {
+			m := nf - int(p.FSR.LoadBits(TXCOUNT)>>TXCOUNTn)
+			if m <= 0 {
+				goto read
+			}
+			if m > nw {
+				m = nw
+			}
+			nw -= m
+			nf -= m
+			for end := unsafe.Add(out, m); out != end; out = unsafe.Add(out, 1) {
+				p.TDR.Store(uint32(*(*byte)(out)))
+			}
+		}
+	read:
+		if nr != 0 {
+			m := int(p.FSR.LoadBits(RXCOUNT) >> RXCOUNTn)
+			if m > nr {
+				m = nr
+			}
+			nr -= m
+			nf += m
+			for end := unsafe.Add(in, m); in != end; in = unsafe.Add(in, 1) {
+				*(*byte)(in) = byte(p.RDR.Load())
+			}
+		}
+	}
+	return
+}
+
+// WriteRead writes n = min(len(out), len(in)) words to the transmit FIFO and
+// at the same time it reads the same number of words from the receive FIFO. The
+// written words are zero-extended bytes from the out slice. The least
+// significant bytes from the read words are saved in the in slice.
+func (m *Master) WriteRead(out, in []byte) (n int) {
+	n = min(len(out), len(in))
+	if n <= dma.CacheLineSize*2 || !m.rxdma.IsValid() || !m.txdma.IsValid() {
+		writeRead(
+			m.p,
+			unsafe.Pointer(unsafe.SliceData(out)),
+			unsafe.Pointer(unsafe.SliceData(in)),
+			n,
+		)
+		return
+	}
+
+	return
+}
+
+// WriteStringRead works like WriteRead.
+func (m *Master) WriteStringRead(out string, in []byte) int {
+	return m.WriteRead(unsafe.Slice(unsafe.StringData(out), len(out)), in)
 }

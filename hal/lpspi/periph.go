@@ -67,3 +67,7 @@ func (p *Periph) DisableClock() {
 	}
 }
 
+func (p *Periph) Reset() {
+       p.CR.Store(RRF | RTF | RST)
+       p.CR.Store(0)
+}
