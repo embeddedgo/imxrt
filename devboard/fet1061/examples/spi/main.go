@@ -6,9 +6,10 @@ package main
 
 import (
 	"fmt"
-	"sync/atomic"
+	"time"
 
 	"github.com/embeddedgo/imxrt/hal/dma"
+	"github.com/embeddedgo/imxrt/hal/dma/dmairq"
 	"github.com/embeddedgo/imxrt/hal/lpspi"
 	"github.com/embeddedgo/imxrt/hal/lpuart"
 	"github.com/embeddedgo/imxrt/hal/lpuart/lpuart1"
@@ -16,8 +17,6 @@ import (
 
 	"github.com/embeddedgo/imxrt/devboard/fet1061/board/pins"
 )
-
-var a atomic.Bool
 
 func main() {
 	// Used IO pins
@@ -31,27 +30,48 @@ func main() {
 	// Serial console
 	uartcon.Setup(lpuart1.Driver(), conRx, conTx, lpuart.Word8b, 115200, "UART1")
 
+	// Enable DMA controller and allocate two channels for the LPUART driver.
+	d := dma.DMA(0)
+	d.EnableClock(true)
+	rxdma := d.AllocChannel(false)
+	txdma := d.AllocChannel(false)
+
 	// Setup LPSPI3 driver
-	spi := lpspi.NewMaster(lpspi.LPSPI(3), dma.Channel{}, dma.Channel{})
+	spi := lpspi.NewMaster(lpspi.LPSPI(3), rxdma, txdma)
 	spi.UsePin(miso, lpspi.SDI)
 	spi.UsePin(mosi, lpspi.SDO)
 	spi.UsePin(csn, lpspi.PCS0)
 	spi.UsePin(sck, lpspi.SCK)
-
+	dmairq.SetISR(rxdma, spi.RxDMAISR)
 	spi.Setup(lpspi.FD, 19e6)
 	spi.Enable()
+
+	fmt.Println("*** Start ***")
 
 	// CPOL0,CPHA=0,19MHz/2=9.5MHz,PCS0,MSBF,1bit
 	spi.WriteCmd(lpspi.PREDIV2, 8)
 
-	s := "UUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUU"
-	buf := make([]byte, len(s))
-
+	in := make([]byte, 1e5)
+	out := make([]byte, len(in))
+	for i := range in {
+		in[i] = byte(i)
+	}
 	for {
-		const N = 1e4
-		for n := N; n != 0; n-- {
-			spi.WriteStringRead(s, buf)
+		t0 := time.Now()
+		spi.WriteRead(out, in)
+		t1 := time.Now()
+		for i := range out {
+			for out[i] != in[i] {
+				fmt.Printf(
+					"out[%d] != in[%d] (%d != %d)\n",
+					i, i, out[i], in[i],
+				)
+			}
+			out[i] = 0
 		}
-		fmt.Printf("%s\n", buf)
+		fmt.Printf(
+			"%.0f kB/s\n",
+			float64(len(out))*float64(time.Second/1000)/float64(t1.Sub(t0)),
+		)
 	}
 }

@@ -68,8 +68,8 @@ const (
 
 // ELINK_CITER, ELINK_BITER ELINK fields
 const (
-	LINKCH uint16 = 0x1F << 9  //+ Minor Loop Link Channel Number
-	ELINK  uint16 = 0x01 << 15 //+ Enable channel-to-channel linking on minor-loop complete
+	LINKCH int16 = 0x1F << 9  //+ Minor Loop Link Channel Number
+	ELINK  int16 = -0x1 << 15 //+ Enable channel-to-channel linking on minor-loop complete
 
 	LINKCHn = 9
 	ELINKn  = 15

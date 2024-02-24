@@ -14,8 +14,8 @@ import (
 	"github.com/embeddedgo/imxrt/hal/internal"
 )
 
-// All dma.Mux slot constants are less than 128 so we can easily group them in
-// constant array.
+// All dma.Mux slot constants are less than 128 so we can use the string
+// conversion to group them in a constant array.
 const txDMASlots = "" +
 	string(dma.LPUART1_TX) +
 	string(dma.LPUART2_TX) +
