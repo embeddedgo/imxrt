@@ -14,11 +14,23 @@ import (
 	"github.com/embeddedgo/imxrt/hal/internal"
 )
 
+// All dma.Mux slot constants are less than 128 so we can easily group them in
+// constant array.
+const txDMASlots = "" +
+	string(dma.LPUART1_TX) +
+	string(dma.LPUART2_TX) +
+	string(dma.LPUART3_TX) +
+	string(dma.LPUART4_TX) +
+	string(dma.LPUART5_TX) +
+	string(dma.LPUART6_TX) +
+	string(dma.LPUART7_TX) +
+	string(dma.LPUART8_TX)
+
 // EnableTx enables Tx part of the LPUART peripheral.
 func (d *Driver) EnableTx() {
 	if txdma := d.txdma; txdma.IsValid() {
 		txdma.DisableReq()
-		txdma.SetMux((dma.LPUART1_TX + dma.Mux(num(d.p))*2) | dma.En)
+		txdma.SetMux(dma.Mux(txDMASlots[num(d.p)]) | dma.En)
 	}
 	internal.AtomicStoreBits(&d.p.CTRL, TE, TE)
 }

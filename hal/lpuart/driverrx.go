@@ -19,6 +19,18 @@ const (
 	nmask  = int(uint32(0xffff_ffff) >> nshift)
 )
 
+// All dma.Mux slot constants are less than 128 so we can easily group them in
+// constant array.
+const rxDMASlots = "" +
+	string(dma.LPUART1_RX) +
+	string(dma.LPUART2_RX) +
+	string(dma.LPUART3_RX) +
+	string(dma.LPUART4_RX) +
+	string(dma.LPUART5_RX) +
+	string(dma.LPUART6_RX) +
+	string(dma.LPUART7_RX) +
+	string(dma.LPUART8_RX)
+
 // EnableRx enables receiving data into internal ring buffer of size bufLen
 // characters. The minimum size of the buffer is 2 characters. The buffer size
 // is limited to 16M characters in no-DMA mode and 32767 characters in DMA mode.
@@ -50,7 +62,7 @@ func (d *Driver) EnableRx(bufLen int) {
 			ELINK_BITER: int16(len(d.rxbuf)),
 		}
 		rxdma.WriteTCD(&tcd)
-		rxdma.SetMux((dma.LPUART1_RX + dma.Mux(num(d.p))*2) | dma.En)
+		rxdma.SetMux(dma.Mux(rxDMASlots[num(d.p)]) | dma.En)
 		rxdma.EnableReq()
 	} else {
 		if bufLen > 1<<nshift {
