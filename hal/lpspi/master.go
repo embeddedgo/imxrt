@@ -237,30 +237,30 @@ func writeRead[T dataWord](d *Master, po, pi unsafe.Pointer, n int) {
 	return
 }
 
-func write[T dataWord](d *Master, out unsafe.Pointer, n int) (end unsafe.Pointer) {
+func write[T dataWord](d *Master, po unsafe.Pointer, n int) (end unsafe.Pointer) {
 	p, slow := d.p, d.slow
 	sz := int(unsafe.Sizeof(T(0)))
-	for end = unsafe.Add(out, n*sz); out != end; out = unsafe.Add(out, sz) {
+	for end = unsafe.Add(po, n*sz); po != end; po = unsafe.Add(po, sz) {
 		for p.FSR.LoadBits(TXCOUNT) == fifoLen<<TXCOUNTn {
 			if slow {
 				runtime.Gosched()
 			}
 		}
-		p.TDR.Store(uint32(*(*T)(out)))
+		p.TDR.Store(uint32(*(*T)(po)))
 	}
 	return
 }
 
-func read[T dataWord](d *Master, in unsafe.Pointer, n int) (end unsafe.Pointer) {
+func read[T dataWord](d *Master, pi unsafe.Pointer, n int) (end unsafe.Pointer) {
 	p, slow := d.p, d.slow
 	sz := int(unsafe.Sizeof(T(0)))
-	for end = unsafe.Add(in, n*sz); in != end; in = unsafe.Add(in, sz) {
+	for end = unsafe.Add(pi, n*sz); pi != end; pi = unsafe.Add(pi, sz) {
 		for p.FSR.LoadBits(RXCOUNT) == 0 {
 			if slow {
 				runtime.Gosched()
 			}
 		}
-		*(*T)(in) = T(p.RDR.Load())
+		*(*T)(pi) = T(p.RDR.Load())
 	}
 	return
 }
@@ -270,7 +270,7 @@ func read[T dataWord](d *Master, in unsafe.Pointer, n int) (end unsafe.Pointer) 
 // aligned and the cache maintenance operations performed for the d*dmaBurst
 // words in the middle of the po, pi doesn't affect the memory outside these
 // buffers. The following inequalities are true: ho >= hi, ti >= to.
-func writeReadSizes(po, pi unsafe.Pointer, n int, lsz uint) (ho, hi, dn, to, ti int) {
+func bidirSizes(po, pi unsafe.Pointer, n int, lsz uint) (ho, hi, dn, to, ti int) {
 	const cacheAlignMask = dma.CacheLineSize - 1
 	ho = int(-uintptr(po)) & cacheAlignMask
 	hi = int(-uintptr(pi)) & cacheAlignMask
@@ -313,7 +313,7 @@ func writeReadDMA[T dataWord](d *Master, out, in []T) (n int) {
 		return
 	}
 
-	ho, hi, dn, to, ti := writeReadSizes(po, pi, n, lsz)
+	ho, hi, dn, to, ti := bidirSizes(po, pi, n, lsz)
 
 	// Use CPU to transfer the buffers heads to align them for DMA.
 	writeRead[T](d, po, pi, hi)
@@ -412,12 +412,12 @@ func (d *Master) WriteRead32(out, in []uint32) (n int) {
 	return writeReadDMA(d, out, in)
 }
 
-func writeSizes(po unsafe.Pointer, n int, lsz uint) (hn, dn, tn int) {
+func unidirSizes(ptr unsafe.Pointer, n int, lsz uint) (hn, dn, tn int) {
 	const cacheAlignMask = dma.CacheLineSize - 1
-	hn = int(-uintptr(po)) & cacheAlignMask
+	hn = int(-uintptr(ptr)) & cacheAlignMask
 	lenBytes := n << lsz
 	burstBytes := dmaBurst << lsz
-	tn = int(uintptr(po)+uintptr(lenBytes)) & cacheAlignMask
+	tn = int(uintptr(ptr)+uintptr(lenBytes)) & cacheAlignMask
 	dn = (lenBytes - hn - tn) / burstBytes
 	tn = lenBytes - hn - dn*burstBytes
 	// Convert to words
@@ -441,9 +441,9 @@ func writeDMA[T dataWord](d *Master, out []T) {
 		return
 	}
 
-	hn, dn, tn := writeSizes(po, len(out), lsz)
+	hn, dn, tn := unidirSizes(po, len(out), lsz)
 
-	// Use CPU to transfer the buffer head to align it for DMA.
+	// Use CPU to write the buffer head to align it for DMA.
 	po = write[T](d, po, hn)
 
 	burstBytes := dmaBurst * sz
@@ -474,7 +474,6 @@ func writeDMA[T dataWord](d *Master, out []T) {
 			m = maxMajorIter
 		}
 		dn -= m
-
 		if m != maxMajorIter {
 			tcdio.ELINK_CITER.Store(int16(m))
 			tcdio.ELINK_BITER.Store(int16(m))
@@ -486,24 +485,112 @@ func writeDMA[T dataWord](d *Master, out []T) {
 
 	// Use CPU to handle the unaligned tail.
 	write[T](d, po, tn)
-
-	return
 }
 
+// Write implements io.Writer interface. It works like Write32 but for 8-bit
+// words.
 func (d *Master) Write(p []byte) (int, error) {
 	writeDMA(d, p)
 	return len(p), nil
 }
 
+// WriteString implemets io.StringWriter interface. See Write for more
+// information.
 func (d *Master) WriteString(s string) (int, error) {
 	writeDMA(d, unsafe.Slice(unsafe.StringData(s), len(s)))
 	return len(s), nil
 }
 
+// Write16 works like Write32 but for 16-bit words.
 func (d *Master) Write16(p []uint16) {
 	writeDMA(d, p)
 }
 
-func (d *Master) Write32(p []uint16) {
+// Write32 is designed for unidirectional mode of operation, e.g. the TCR.RXMSK
+// bit was set by the last command. It may also be used for bidirectional
+// transfers, provided len(p) is less than the free space in the receive FIFO
+// (not recommended, use WriteRead32 instead).
+// always returns len(p), nil.
+func (d *Master) Write32(p []uint32) {
 	writeDMA(d, p)
+}
+
+func readDMA[T dataWord](d *Master, in []T) {
+	if len(in) == 0 {
+		return
+	}
+	pi := unsafe.Pointer(unsafe.SliceData(in))
+	sz := int(unsafe.Sizeof(T(0)))
+	lsz := uint(sz >> 1) // log2(sz) for 1, 2, 4
+	rxdma := d.rxdma
+
+	// Use DMA only for long transfers. Short ones are handled by CPU.
+	if len(in) <= 3*dma.CacheLineSize/sz || !rxdma.IsValid() {
+		read[T](d, pi, len(in))
+		return
+	}
+
+	hn, dn, tn := unidirSizes(pi, len(in), lsz)
+
+	// Use CPU to read the buffer head to align it for DMA.
+	pi = read[T](d, pi, hn)
+
+	burstBytes := dmaBurst * sz
+	rtos.CacheMaint(rtos.DCacheFlushInval, pi, dn*burstBytes)
+
+	// Now read into the aligned middle of the buffer using DMA.
+
+	const maxMajorIter = 1<<dma.ELINKn - 1 // = 32767
+
+	// Configure Rx DMA channel.
+	tcd := dma.TCD{
+		SADDR:       unsafe.Pointer(d.p.RDR.Addr()),
+		ATTR:        dma.ATTR(lsz)<<dma.SSIZEn | dma.D32b,
+		ML_NBYTES:   uint32(burstBytes),
+		DADDR:       pi,
+		ELINK_CITER: maxMajorIter,
+		ELINK_BITER: maxMajorIter,
+		CSR:         dma.DREQ | dma.INTMAJOR,
+	}
+	pi = unsafe.Add(pi, dn*burstBytes)
+	rxdma.WriteTCD(&tcd)
+
+	tcdio := rxdma.TCD()
+	for dn != 0 {
+		m := dn
+		if m > maxMajorIter {
+			m = maxMajorIter
+		}
+		dn -= m
+		if m != maxMajorIter {
+			tcdio.ELINK_CITER.Store(int16(m))
+			tcdio.ELINK_BITER.Store(int16(m))
+		}
+		d.done.Clear()
+		rxdma.EnableReq() // accept DMA requests from Rx FIFO
+		d.done.Sleep(-1)  // wait until the major loop complete
+	}
+
+	// Use CPU to handle the unaligned tail.
+	read[T](d, pi, tn)
+}
+
+/*
+func (d *Master) Read(p []byte) (int, error) {
+	readDMA(d, p)
+	return len(p), nil
+}
+
+// Read16 works like Read but for 16-bit words instead of bytes.
+func (d *Master) Read16(p []uint16) {
+	readDMA(d, p)
+}
+*/
+
+// Read32 is designed for unidirectional mode of operation, e.g. the TCR.TXMSK
+// bit and the proper frame size were set by the last command. It may also be
+// used for bidirectional transfers provided there are at least len(p) words
+// available in the recevie FIFO (not recommended, use WriteRead32 instead).
+func (d *Master) Read32(p []uint32) {
+	readDMA(d, p)
 }
