@@ -2,11 +2,15 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
+// Display draws on the connected display.
 package main
 
 import (
-	"fmt"
+	"github.com/embeddedgo/display/pix/displays"
+	"github.com/embeddedgo/display/pix/driver/tftdrv/ili9341"
+	"github.com/embeddedgo/display/pix/examples"
 
+	"github.com/embeddedgo/imxrt/dci/tftdci"
 	"github.com/embeddedgo/imxrt/hal/dma"
 	"github.com/embeddedgo/imxrt/hal/dma/dmairq"
 	"github.com/embeddedgo/imxrt/hal/lpspi"
@@ -18,13 +22,15 @@ import (
 )
 
 func main() {
-	// Used IO pins
+	// Assign GPIO pins
 	conRx := pins.P23
 	conTx := pins.P24
+
 	miso := pins.P91 // AD_B1_13
 	mosi := pins.P92 // AD_B1_14
 	csn := pins.P93  // AD_B1_12
 	sck := pins.P94  // AD_B1_15
+	dc := pins.P95   // AD_B1_11
 
 	// Serial console
 	uartcon.Setup(lpuart1.Driver(), conRx, conTx, lpuart.Word8b, 115200, "UART1")
@@ -47,46 +53,41 @@ func main() {
 	dmairq.SetISR(rxdma, spi.RxDMAISR)
 	dmairq.SetISR(txdma, spi.TxDMAISR)
 
-	fmt.Println("*** Start ***")
+	writeClk := min(ili9341.MaxSPIWriteClock, 33e6)
+	readClk := min(ili9341.MaxSPIReadClock, 33e6)
 
-	out := make([]byte, 5e4)
-	for i := range out {
-		out[i] = byte(i)
-	}
+	dci := tftdci.NewLPSPI(spi, dc, lpspi.CPOL0|lpspi.CPHA0, writeClk, readClk)
+
+	cmd := []byte{1, 2, 3, 4, 5, 6, 7}
 
 	for {
-		spi.WriteCmd(lpspi.PREDIV2|lpspi.RXMSK|lpspi.CONT, 8)
-		spi.Write(out)
+		dci.Cmd(cmd)
+		dci.WriteBytes(cmd)
+		dci.End()
 	}
 
-	/*
-		// CPOL0,CPHA=0,19MHz/2=9.5MHz,PCS0,MSBF,1bit
-		spi.WriteCmd(lpspi.PREDIV2, 8)
+	return
+	// Run
 
-		in := make([]byte, 5e4)
-		out := make([]byte, len(in))
-		for i := range out {
-			out[i] = byte(i)
-		}
-		for {
-			t0 := time.Now()
-			spi.WriteRead(out, in)
-			t1 := time.Now()
-			for i := range in {
-				if in[i] != out[i] {
-					fmt.Printf(
-						"in[%d] != out[%d] (%d != %d)\n",
-						i, i, in[i], out[i],
-					)
-					time.Sleep(5 * time.Second)
-					break
-				}
-				in[i] = 0
-			}
-			fmt.Printf(
-				"%.0f kB/s\n",
-				float64(len(out))*float64(time.Second/1000)/float64(t1.Sub(t0)),
-			)
-		}
-	*/
+	disp := displays.Adafruit_2i8_240x320_TFT_ILI9341(dci)
+
+	//disp := displays.Adafruit_0i96_128x64_OLED_SSD1306(dci)
+	//disp := displays.Adafruit_1i5_128x128_OLED_SSD1351(dci)
+	//disp := displays.Adafruit_1i54_240x240_IPS_ST7789(dci)
+	//disp := displays.ERTFTM_1i54_240x240_IPS_ST7789(dci)
+	//disp := displays.MSP4022_4i0_320x480_TFT_ILI9486(dci)
+	//disp := displays.Waveshare_1i5_128x128_OLED_SSD1351(dci)
+
+	for {
+		examples.RotateDisplay(disp)
+		examples.DrawText(disp)
+		examples.GraphicsTest(disp)
+	}
+}
+
+func min(a, b int) int {
+	if a <= b {
+		return a
+	}
+	return b
 }

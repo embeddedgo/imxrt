@@ -73,26 +73,28 @@ const (
 	slowPresc = clkRoot / 100e3
 )
 
-// Setup enables the SPI clock, resets the peripheral and sets its basic
-// configuration and the base SCK clock frequency. The base SPI clock frequency
-// is set to baseFreq rounded down to 133 MHz divided by the number from 2 to
-// 257. Use WriteCmd to fine tune the configuration and set the SCK prescaler
-// to obtain the desired SPI clock frequency (datasheet says 30 MHz max, 33 MHz
-// seems to work as well and there are reports that even 2x overclocking is
-// achievable).
-func (d *Master) Setup(conf CFGR1, baseFreqHz int) {
+// Setup enables the SPI clock, resets the peripheral and sets the base SCK
+// clock frequency to baseFreqHz rounded down to 133/n MHz, where n is an
+// integer number from 2 to 257. The LPSPI controller is configured as master
+// (CFGR1=MASTER). Other configuration registers have their default values. For
+// custom configuration use the Periph method to access all configuration
+// registers. Different slave devices on the bust may require different SPI
+// mode (CPOL, CPHA) and clock speed therefore, these types of settings are
+// configured per transaction (see WriteCmd). The resulting SPI clock frequency
+// should not exceed 30 MHz. (33 MHz seems to work as well and there are reports
+// that even 2x overclocking is achievable).
+func (d *Master) Setup(baseFreqHz int) {
 	p := d.p
 	p.EnableClock(true)
 	p.Reset()
-	p.CFGR1.Store(conf | MASTER)
+	p.CFGR1.Store(MASTER)
 	switch {
 	case baseFreqHz > clkRoot/2:
 		baseFreqHz = clkRoot / 2
 	case baseFreqHz <= 0:
 		baseFreqHz = 1
 	}
-	//sckdiv := clkRoot/baseFreqHz - 2 // natural way but rounds sckdiv down
-	sckdiv := clkRoot/(baseFreqHz+1) - 1
+	sckdiv := (clkRoot+baseFreqHz-1)/baseFreqHz - 2
 	if sckdiv > 255 {
 		sckdiv = 255
 	}
@@ -113,6 +115,11 @@ func (d *Master) Setup(conf CFGR1, baseFreqHz int) {
 	}
 }
 
+func (d *Master) BaseFreqHz() int {
+	div := int(d.sckdiv)
+	return (clkRoot + div - 1) / div
+}
+
 // RxDMAISR is required in DMA mode if Read* or WriteRead* methods are used.
 func (d *Master) RxDMAISR() {
 	d.rxdma.ClearInt()
@@ -126,13 +133,16 @@ func (d *Master) TxDMAISR() {
 	d.done.Wakeup()
 }
 
-// WriteCmd writes a command to the transmit FIFO. You can encode the frame size
-// in cmd directly using the FRAMESZ field or specify it using the frameSize
-// parameter (FRAMESZ = frameSize-1). The frame size is specified as a numer of
-// bits. The minimum supported frame size is 8 bits and maximum is 4096 bits. If
-// frameSize <= 32 it also specifies the word size. If frameSize > 32 then the
-// word size is 32 except the last one which is equal to frameSize % 32 and
-// must be >= 2 (e.g. frameSize = 33 is not supported).
+// WriteCmd writes a command to the transmit FIFO. The command allows you to
+// select a slave device by asserting PCSx pin. It also alows you to select
+// clock prescaler, polarity, phase and other things in different way for every
+// transaction. You can encode the frame size in cmd directly using the FRAMESZ
+// field or specify it using the frameSize parameter (FRAMESZ = frameSize-1).
+// The frame size is specified as a numer of bits. The minimum supported frame
+// size is 8 bits and maximum is 4096 bits. If frameSize <= 32 it also specifies
+// the word size. If frameSize > 32 then the word size is 32 except the last one
+// which is equal to frameSize % 32 and must be >= 2 (e.g. frameSize = 33 is
+// not supported).
 func (d *Master) WriteCmd(cmd TCR, frameSize int) {
 	p, slow := d.p, d.slow
 	for p.FSR.LoadBits(TXCOUNT) == fifoLen<<TXCOUNTn {
