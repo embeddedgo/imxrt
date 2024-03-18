@@ -6,8 +6,9 @@
 package main
 
 import (
+	"fmt"
+
 	"github.com/embeddedgo/display/pix/displays"
-	"github.com/embeddedgo/display/pix/driver/tftdrv/ili9341"
 	"github.com/embeddedgo/display/pix/examples"
 
 	"github.com/embeddedgo/imxrt/dci/tftdci"
@@ -26,6 +27,7 @@ func main() {
 	conRx := pins.P23
 	conTx := pins.P24
 
+	// If the reset signal exists connect it to VCC.
 	miso := pins.P91 // AD_B1_13
 	mosi := pins.P92 // AD_B1_14
 	csn := pins.P93  // AD_B1_12
@@ -47,37 +49,24 @@ func main() {
 	spi.UsePin(mosi, lpspi.SDO)
 	spi.UsePin(csn, lpspi.PCS0)
 	spi.UsePin(sck, lpspi.SCK)
-	spi.Setup(19e6)
-	spi.Enable()
+	spi.Setup(33.25e6)
 
 	dmairq.SetISR(rxdma, spi.RxDMAISR)
 	dmairq.SetISR(txdma, spi.TxDMAISR)
 
-	writeClk := min(ili9341.MaxSPIWriteClock, 33e6)
-	readClk := min(ili9341.MaxSPIReadClock, 33e6)
+	//dp := displays.Adafruit_0i96_128x64_OLED_SSD1306()
+	//dp := displays.Adafruit_1i5_128x128_OLED_SSD1351()
+	//dp := displays.Adafruit_1i54_240x240_IPS_ST7789()
+	//dp := displays.Adafruit_2i8_240x320_TFT_ILI9341()
+	//dp := displays.ERTFTM_1i54_240x240_IPS_ST7789()
+	//dp := displays.MSP4022_4i0_320x480_TFT_ILI9486()
+	dp := displays.Waveshare_1i5_128x128_OLED_SSD1351()
 
-	dci := tftdci.NewLPSPI(spi, dc, lpspi.CPOL0|lpspi.CPHA0, writeClk, readClk)
+	dci := tftdci.NewLPSPI(spi, dc, lpspi.CPOL0|lpspi.CPHA0, dp.MaxReadClk, dp.MaxWriteClk)
 
-	cmd := []byte{1, 2, 3, 4, 5, 6, 7}
+	fmt.Println("*** Start ***")
 
-	for {
-		dci.Cmd(cmd)
-		dci.WriteBytes(cmd)
-		dci.End()
-	}
-
-	return
-	// Run
-
-	disp := displays.Adafruit_2i8_240x320_TFT_ILI9341(dci)
-
-	//disp := displays.Adafruit_0i96_128x64_OLED_SSD1306(dci)
-	//disp := displays.Adafruit_1i5_128x128_OLED_SSD1351(dci)
-	//disp := displays.Adafruit_1i54_240x240_IPS_ST7789(dci)
-	//disp := displays.ERTFTM_1i54_240x240_IPS_ST7789(dci)
-	//disp := displays.MSP4022_4i0_320x480_TFT_ILI9486(dci)
-	//disp := displays.Waveshare_1i5_128x128_OLED_SSD1351(dci)
-
+	disp := dp.New(dci)
 	for {
 		examples.RotateDisplay(disp)
 		examples.DrawText(disp)

@@ -2,10 +2,12 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
+// SPI loop test: wire P91 and P92 together.
 package main
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/embeddedgo/imxrt/hal/dma"
 	"github.com/embeddedgo/imxrt/hal/dma/dmairq"
@@ -16,6 +18,8 @@ import (
 
 	"github.com/embeddedgo/imxrt/devboard/fet1061/board/pins"
 )
+
+var run bool
 
 func main() {
 	// Used IO pins
@@ -49,44 +53,32 @@ func main() {
 
 	fmt.Println("*** Start ***")
 
-	out := make([]byte, 5e4)
+	// CPOL0,CPHA=0,19MHz/2=9.5MHz,PCS0,MSBF,1bit
+	spi.WriteCmd(lpspi.PREDIV2, 8)
+
+	in := make([]byte, 5e4)
+	out := make([]byte, len(in))
 	for i := range out {
 		out[i] = byte(i)
 	}
-
 	for {
-		spi.WriteCmd(lpspi.PREDIV2|lpspi.RXMSK|lpspi.CONT, 8)
-		spi.Write(out)
-	}
-
-	/*
-		// CPOL0,CPHA=0,19MHz/2=9.5MHz,PCS0,MSBF,1bit
-		spi.WriteCmd(lpspi.PREDIV2, 8)
-
-		in := make([]byte, 5e4)
-		out := make([]byte, len(in))
-		for i := range out {
-			out[i] = byte(i)
-		}
-		for {
-			t0 := time.Now()
-			spi.WriteRead(out, in)
-			t1 := time.Now()
-			for i := range in {
-				if in[i] != out[i] {
-					fmt.Printf(
-						"in[%d] != out[%d] (%d != %d)\n",
-						i, i, in[i], out[i],
-					)
-					time.Sleep(5 * time.Second)
-					break
-				}
-				in[i] = 0
+		t0 := time.Now()
+		spi.WriteRead(out, in)
+		t1 := time.Now()
+		for i := range in {
+			if in[i] != out[i] {
+				fmt.Printf(
+					"in[%d] != out[%d] (%d != %d)\n",
+					i, i, in[i], out[i],
+				)
+				time.Sleep(5 * time.Second)
+				break
 			}
-			fmt.Printf(
-				"%.0f kB/s\n",
-				float64(len(out))*float64(time.Second/1000)/float64(t1.Sub(t0)),
-			)
+			in[i] = 0
 		}
-	*/
+		fmt.Printf(
+			"%.0f kB/s\n",
+			float64(len(out))*float64(time.Second/1000)/float64(t1.Sub(t0)),
+		)
+	}
 }

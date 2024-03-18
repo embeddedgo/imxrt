@@ -140,6 +140,23 @@ func (d *Master) TxDMAISR() {
 // the word size. If frameSize > 32 then the word size is 32 except the last one
 // which is equal to frameSize % 32 and must be >= 2 (e.g. frameSize = 33 is
 // not supported).
+//
+// LPSPI BUGS
+//
+// The LPSPI peripheral has two bugs not mentioned in the errata that reveal in
+// the master mode when the TCR.CONT bit is set:
+//
+// 1. In bidirectional mode, when you write n words to TDR, you can read only
+// n-1 words from RDR. The last word can be read after CONT is cleared or the
+// peripheral is disabled in the CR register. It seems the received word is
+// stored somewhere before it enters the receive FIFO so the writes to TDR and
+// reads from RDR are out of sync for one word.
+//
+// 2. In Rx-only mode, LPSPI starts reading data just after the command with the
+// CONT and TXMSK bits is written to TCR. If you do not read from RDR then 17
+// words are read from BUS (16 into FIFO and 1 elsewhere) and the REF error flag
+// is set. If you next will read 1 word from the FIFO the LPSPI will read
+// next 2 words from the BUS (one of them is lost).
 func (d *Master) WriteCmd(cmd TCR, frameSize int) {
 	p, slow := d.p, d.slow
 	for p.FSR.LoadBits(TXCOUNT) == fifoLen<<TXCOUNTn {
@@ -582,22 +599,25 @@ func readDMA[T dataWord](d *Master, in []T) {
 	read[T](d, pi, tn)
 }
 
-/*
+// Read implements io.Reader interface. It works like Read32 but for 16-bit
+// words instead of bytes.
 func (d *Master) Read(p []byte) (int, error) {
 	readDMA(d, p)
 	return len(p), nil
 }
 
-// Read16 works like Read but for 16-bit words instead of bytes.
+// Read16 works like Read32 but for 16-bit words instead of bytes.
 func (d *Master) Read16(p []uint16) {
 	readDMA(d, p)
 }
-*/
 
 // Read32 is designed for unidirectional mode of operation, e.g. the TCR.TXMSK
 // bit and the proper frame size were set by the last command. It may also be
 // used for bidirectional transfers provided there are at least len(p) words
 // available in the recevie FIFO (not recommended, use WriteRead32 instead).
+//
+// BUGS: There are known bugs related to Rx-only mode. See WriteCmd for more
+// information.
 func (d *Master) Read32(p []uint32) {
 	readDMA(d, p)
 }
