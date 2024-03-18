@@ -50,19 +50,14 @@ const (
 
 // Enable enables LPSPI peripheral.
 func (d *Master) Enable() {
-	if rxdma := d.rxdma; rxdma.IsValid() {
-		rxdma.DisableReq()
-		rxdma.ClearInt()
-	}
-	if txdma := d.txdma; txdma.IsValid() {
-		txdma.DisableReq()
-		txdma.ClearInt()
-	}
 	d.p.CR.Store(DBGEN | MEN)
 }
 
 // Disable disables LPSPI peripheral.
 func (d *Master) Disable() {
+	fsr := &d.p.FSR
+	for fsr.LoadBits(TXCOUNT) != 0 {
+	}
 	d.p.CR.Store(0)
 }
 
@@ -104,12 +99,14 @@ func (d *Master) Setup(baseFreqHz int) {
 	if txdma := d.txdma; txdma.IsValid() {
 		txdma.DisableReq()
 		txdma.DisableErrInt()
+		txdma.ClearInt()
 		txdma.SetMux(dma.Mux(txDMASlots[num(d.p)]) | dma.En)
 		p.DER.SetBits(TDDE)
 	}
 	if rxdma := d.rxdma; rxdma.IsValid() {
 		rxdma.DisableReq()
 		rxdma.DisableErrInt()
+		rxdma.ClearInt()
 		rxdma.SetMux(dma.Mux(rxDMASlots[num(d.p)]) | dma.En)
 		p.DER.SetBits(RDDE)
 	}
