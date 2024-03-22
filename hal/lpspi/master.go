@@ -601,23 +601,33 @@ func readDMA[T dataWord](d *Master, in []T) {
 
 // Read implements io.Reader interface. It works like Read32 but for 16-bit
 // words instead of bytes.
+//
+// BUG: Typical usage scenarios of this function require 8-bit frame size with
+// the TXMSK and CONT bits set but there is a hardware bug that makes this
+// configuration unusable (see WriteCmd for more information).
 func (d *Master) Read(p []byte) (int, error) {
 	readDMA(d, p)
 	return len(p), nil
 }
 
 // Read16 works like Read32 but for 16-bit words instead of bytes.
+//
+// BUG: Typical usage scenarios of this function require 16-bit frame size with
+// the TXMSK and CONT bits set but there is a hardware bug that makes this
+// configuration unusable (see WriteCmd for more information).
 func (d *Master) Read16(p []uint16) {
 	readDMA(d, p)
 }
 
-// Read32 is designed for unidirectional mode of operation, e.g. the TCR.TXMSK
-// bit and the proper frame size were set by the last command. It may also be
+// Read32 is designed for the unidirectional mode of operation, e.g. the TXMSK
+// bit and the proper frame size were set by the last command. It  may also be
 // used for bidirectional transfers provided there are at least len(p) words
 // available in the recevie FIFO (not recommended, use WriteRead32 instead).
 //
-// BUGS: There are known bugs related to Rx-only mode. See WriteCmd for more
-// information.
+// BUG: There are known hardware bugs related to Rx-only mode (see WriteCmd for
+// more information). In contrast to Read and Read16 this function can be used
+// with TXMSK set provided the frame size is set to 8*len(p) and the CONT bit
+// is cleared.
 func (d *Master) Read32(p []uint32) {
 	readDMA(d, p)
 }

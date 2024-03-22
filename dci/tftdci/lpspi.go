@@ -25,13 +25,21 @@ type LPSPI struct {
 }
 
 func presc(base, clk int) lpspi.TCR {
-	x := (base+clk-1)/clk - 1
-	if x < 0 {
-		x = 0
-	}
-	x = bits.Len(uint(x))
-	if x > 7 {
+	var x int
+	switch {
+	case clk < 0:
+		panic("LPSPI clock < 0")
+	case clk == 0:
 		x = 7
+	default:
+		x = (base+clk-1)/clk - 1
+		if x < 0 {
+			x = 0
+		}
+		x = bits.Len(uint(x))
+		if x > 7 {
+			x = 7
+		}
 	}
 	return lpspi.TCR(x) << lpspi.PRESCALEn
 }
