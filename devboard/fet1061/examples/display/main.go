@@ -7,14 +7,16 @@ package main
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/embeddedgo/display/pix/displays"
 	"github.com/embeddedgo/display/pix/examples"
 
 	"github.com/embeddedgo/imxrt/dci/tftdci"
-	"github.com/embeddedgo/imxrt/hal/dma"
-	"github.com/embeddedgo/imxrt/hal/dma/dmairq"
+	"github.com/embeddedgo/imxrt/hal/gpio"
+	"github.com/embeddedgo/imxrt/hal/iomux"
 	"github.com/embeddedgo/imxrt/hal/lpspi"
+	"github.com/embeddedgo/imxrt/hal/lpspi/lpspi3dma"
 	"github.com/embeddedgo/imxrt/hal/lpuart"
 	"github.com/embeddedgo/imxrt/hal/lpuart/lpuart1"
 	"github.com/embeddedgo/imxrt/hal/system/console/uartcon"
@@ -28,6 +30,7 @@ func main() {
 	conTx := pins.P24
 
 	// If the reset signal exists connect it to VCC.
+	rst := pins.P12  // AD_B1_02
 	miso := pins.P91 // AD_B1_13
 	mosi := pins.P92 // AD_B1_14
 	csn := pins.P93  // AD_B1_12
@@ -37,24 +40,26 @@ func main() {
 	// Serial console
 	uartcon.Setup(lpuart1.Driver(), conRx, conTx, lpuart.Word8b, 115200, "UART1")
 
-	// Enable DMA controller and allocate two channels for the LPUART driver.
-	d := dma.DMA(0)
-	d.EnableClock(true)
-	rxdma := d.AllocChannel(false)
-	txdma := d.AllocChannel(false)
+	reset := gpio.UsePin(rst, false)
+	reset.Port().EnableClock(true)
+	reset.SetDirOut(true)
+	reset.Set()
+	rst.Setup(iomux.Drive2)
 
 	// Setup LPSPI3 driver
-	spi := lpspi.NewMaster(lpspi.LPSPI(3), rxdma, txdma)
+	spi := lpspi3dma.Master()
 	spi.UsePin(miso, lpspi.SDI)
 	spi.UsePin(mosi, lpspi.SDO)
 	spi.UsePin(csn, lpspi.PCS0)
 	spi.UsePin(sck, lpspi.SCK)
 	spi.Setup(33.25e6)
 
-	dmairq.SetISR(rxdma, spi.RxDMAISR)
-	dmairq.SetISR(txdma, spi.TxDMAISR)
+	// Hardware reset. Optional for most controllers (exception SSD1306).
+	reset.Clear()
+	time.Sleep(time.Millisecond)
+	reset.Set()
 
-	//dp := displays.Adafruit_0i96_128x64_OLED_SSD1306() requires hardware reset
+	//dp := displays.Adafruit_0i96_128x64_OLED_SSD1306()
 	//dp := displays.Adafruit_1i5_128x128_OLED_SSD1351()
 	//dp := displays.Adafruit_1i54_240x240_IPS_ST7789()
 	dp := displays.Adafruit_2i8_240x320_TFT_ILI9341()
