@@ -50,7 +50,7 @@ func presc(base, clk int) lpspi.TCR {
 // controller specification. Note that the maximum speed may be limited by th LPSPI peripheral, the bus topology or
 // the specific display design.
 func NewLPSPI(drv *lpspi.Master, dc iomux.Pin, mode lpspi.TCR, rclkHz, wclkHz int) *LPSPI {
-	dc.Setup(iomux.Drive7)
+	dc.Setup(iomux.Drive2)
 	dcio := gpio.UsePin(dc, false)
 	dcio.Port().EnableClock(true)
 	dcio.Clear()

@@ -42,8 +42,8 @@ func (d *Driver) UsePin(pin iomux.Pin, sig Signal) bool {
 	if sig >= TXD {
 		cfg = iomux.Drive2 // 75Ω @ 3.3V, 130Ω @ 1.8V
 	}
-	pin.Setup(cfg)
 	pin.SetAltFunc(af)
+	pin.Setup(cfg)
 	if sel >= 0 {
 		const daisyBase uintptr = 0x401F_852C
 		iosel := (*[15]mmio.R32[int32])(unsafe.Pointer(daisyBase))

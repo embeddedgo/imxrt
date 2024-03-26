@@ -22,7 +22,7 @@ func (d LED) Get() int      { return d.bit.Load() }
 func (d LED) Pin() gpio.Bit { return d.bit }
 
 func init() {
-	iomux.B0_03.Setup(iomux.Drive7)
 	User.bit = gpio.UsePin(iomux.B0_03, true)
 	User.bit.SetDirOut(true)
+	iomux.B0_03.Setup(iomux.Drive7)
 }
