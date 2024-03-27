@@ -16,29 +16,19 @@ import (
 	"github.com/embeddedgo/imxrt/hal/gpio"
 	"github.com/embeddedgo/imxrt/hal/iomux"
 	"github.com/embeddedgo/imxrt/hal/lpspi"
-	"github.com/embeddedgo/imxrt/hal/lpspi/lpspi3dma"
-	"github.com/embeddedgo/imxrt/hal/lpuart"
-	"github.com/embeddedgo/imxrt/hal/lpuart/lpuart1"
-	"github.com/embeddedgo/imxrt/hal/system/console/uartcon"
+	"github.com/embeddedgo/imxrt/hal/lpspi/lpspi4dma"
 
-	"github.com/embeddedgo/imxrt/devboard/fet1061/board/pins"
+	"github.com/embeddedgo/imxrt/devboard/teensy4/board/pins"
 )
 
 func main() {
-	// Serial console pins
-	conRx := pins.P23
-	conTx := pins.P24
-
-	// Display pins
-	rst := pins.P12  // AD_B1_02 // optional, connect to 3V (exception SSD1306)
-	miso := pins.P91 // AD_B1_13
-	mosi := pins.P92 // AD_B1_14
-	csn := pins.P93  // AD_B1_12
-	sck := pins.P94  // AD_B1_15
-	dc := pins.P95   // AD_B1_11
-
-	// Serial console
-	uartcon.Setup(lpuart1.Driver(), conRx, conTx, lpuart.Word8b, 115200, "UART1")
+	// IO pins
+	csn := pins.P10  // B0_00
+	mosi := pins.P11 // B0_02
+	miso := pins.P12 // B0_01
+	sck := pins.P13  // B0_03 // shared with the onboard LED
+	dc := pins.P14   // AD_B1_02
+	rst := pins.P15  // AD_B1_03 // optional, connect to 3V (exception SSD1306)
 
 	// GPIO output for the display reset signal (optional, exception SSD1306).
 	reset := gpio.UsePin(rst, false)
@@ -50,11 +40,11 @@ func main() {
 	reset.Set()
 
 	// Setup LPSPI driver
-	spi := lpspi3dma.Master() // lpspi3.Master() is better for small displays
+	spi := lpspi4dma.Master() // lpspi4.Master() is better for small displays
 	spi.UsePin(miso, lpspi.SDI)
 	spi.UsePin(mosi, lpspi.SDO)
 	spi.UsePin(csn, lpspi.PCS0)
-	spi.UsePin(sck, lpspi.SCK)
+	spi.UsePin(sck, lpspi.SCK) // disabled leds.User
 	spi.Setup(33.25e6)
 
 	//dp := displays.Adafruit_0i96_128x64_OLED_SSD1306()
