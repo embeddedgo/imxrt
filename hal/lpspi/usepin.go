@@ -49,7 +49,7 @@ func (d *Master) UsePin(pin iomux.Pin, sig Signal) bool {
 	pin.SetAltFunc(af)
 	pin.Setup(cfg)
 	if sel >= 0 {
-		iosel := (*[15]mmio.R32[int32])(unsafe.Pointer(daisyBase))
+		iosel := (*[16]mmio.R32[int32])(unsafe.Pointer(daisyBase))
 		iosel[sel].Store(int32(daisy))
 	}
 	return true
