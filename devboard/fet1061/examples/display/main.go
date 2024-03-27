@@ -24,13 +24,15 @@ import (
 	"github.com/embeddedgo/imxrt/devboard/fet1061/board/pins"
 )
 
+var run bool
+
 func main() {
-	// Assign GPIO pins
+	// Serial console pins
 	conRx := pins.P23
 	conTx := pins.P24
 
-	// If the reset signal exists connect it to VCC.
-	rst := pins.P12  // AD_B1_02
+	// Display pins
+	rst := pins.P12  // AD_B1_02 // optional, connect to 3V (exception SSD1306)
 	miso := pins.P91 // AD_B1_13
 	mosi := pins.P92 // AD_B1_14
 	csn := pins.P93  // AD_B1_12
@@ -40,24 +42,24 @@ func main() {
 	// Serial console
 	uartcon.Setup(lpuart1.Driver(), conRx, conTx, lpuart.Word8b, 115200, "UART1")
 
+	// GPIO output for the display reset signal (optional, exception SSD1306).
 	reset := gpio.UsePin(rst, false)
 	reset.Port().EnableClock(true)
 	reset.SetDirOut(true)
+	reset.Clear()           // set reset initial steate low
+	rst.Setup(iomux.Drive2) // set rst as output, low state resets the display
+	time.Sleep(time.Millisecond)
 	reset.Set()
-	rst.Setup(iomux.Drive2)
 
-	// Setup LPSPI3 driver
-	spi := lpspi3dma.Master()
+	// Setup LPSPI driver
+	spi := lpspi3dma.Master() // lpspi3.Master() is better for small displays
+	for !run {
+	}
 	spi.UsePin(miso, lpspi.SDI)
 	spi.UsePin(mosi, lpspi.SDO)
 	spi.UsePin(csn, lpspi.PCS0)
 	spi.UsePin(sck, lpspi.SCK)
 	spi.Setup(33.25e6)
-
-	// Hardware reset. Optional for most controllers (exception SSD1306).
-	reset.Clear()
-	time.Sleep(time.Millisecond)
-	reset.Set()
 
 	//dp := displays.Adafruit_0i96_128x64_OLED_SSD1306()
 	//dp := displays.Adafruit_1i5_128x128_OLED_SSD1351()
@@ -81,11 +83,4 @@ func main() {
 		examples.DrawText(disp)
 		examples.GraphicsTest(disp)
 	}
-}
-
-func min(a, b int) int {
-	if a <= b {
-		return a
-	}
-	return b
 }
