@@ -24,7 +24,7 @@ import (
 	"github.com/embeddedgo/imxrt/hal/usb"
 )
 
-// A Serial is a simple CDC ACM driver.
+// A Driver is a simple CDC ACM driver.
 type Driver struct {
 	d          *usb.Device
 	interf     uint8
@@ -64,9 +64,10 @@ func log(s *Serial) {
 }
 */
 
-// NewDriver... rxe (host out), txe (host in).
-// MaxPkt must be power of two and equal or multiple of the maximum packet size
-// declared in the OUT endpoint descriptor used by this driver as Rx endpoint.
+// NewDriver returns new ready to use CDC ACM driver that uses rxe (host out)
+// and txe (host in) endpoints to communicate with the USB host. MaxPkt must be
+// power of two and equal or multiple of the maximum packet size declared in the
+// OUT endpoint descriptor used by this driver as Rx endpoint.
 func NewDriver(d *usb.Device, interf uint8, rxe, txe int8, maxPkt int) *Driver {
 	if bits.OnesCount(uint(maxPkt)) != 1 {
 		panic("serial: maxPkt must be power of two")
@@ -159,7 +160,8 @@ type sysDTCM struct {
 
 var sys *sysDTCM
 
-// Write implements io.Writer interface.
+// Write implements io.Writer interface. It can be called in handler mode (e.g.
+// can be used to implement the system writer).
 //
 //go:nosplit
 func (s *Driver) Write(p []byte) (n int, err error) {
@@ -201,8 +203,6 @@ func write(s *Driver, p []byte) (n int, err error) {
 	}
 	if writeDrop(s) {
 		return len(p), nil
-	}
-	if rtos.HandlerMode() {
 	}
 	dtcm := s.buf[len(s.buf):cap(s.buf)]
 	nh := len(p) // unaligned head bytes, send through dtcm buffer
