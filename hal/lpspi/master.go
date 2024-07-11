@@ -12,7 +12,7 @@ import (
 	"github.com/embeddedgo/imxrt/hal/dma"
 )
 
-// Master is a driver to the LPSPI peripheral used in master mode.
+// A Master is a driver to the LPSPI peripheral used in master mode.
 type Master struct {
 	p      *Periph
 	rxdma  dma.Channel
@@ -72,12 +72,12 @@ const (
 // clock frequency to baseFreqHz rounded down to 133/n MHz, where n is an
 // integer number from 2 to 257. The LPSPI controller is configured as master
 // (CFGR1=MASTER). Other configuration registers have their default values. For
-// custom configuration use the Periph method to access all configuration
-// registers. Different slave devices on the bust may require different SPI
-// mode (CPOL, CPHA) and clock speed therefore, these types of settings are
-// configured per transaction (see WriteCmd). The resulting SPI clock frequency
-// should not exceed 30 MHz. (33 MHz seems to work as well and there are reports
-// that even 2x overclocking is achievable).
+// custom configuration use the Periph method to access configuration registers.
+// Different slave devices on the bust may require different SPI mode (CPOL,
+// CPHA) and clock speed therefore, these types of settings are configured per
+// transaction (see WriteCmd). The resulting SPI clock frequency should not
+// exceed 30 MHz (33 MHz seems to work as well and there are reports that even
+// 60 MHz is achievable).
 func (d *Master) Setup(baseFreqHz int) {
 	p := d.p
 	p.EnableClock(true)
@@ -112,27 +112,33 @@ func (d *Master) Setup(baseFreqHz int) {
 	}
 }
 
+// BaseFreqHz returns the base frequency configured by the Setup method.
 func (d *Master) BaseFreqHz() int {
 	div := int(d.sckdiv)
 	return (clkRoot + div - 1) / div
 }
 
-// RxDMAISR is required in DMA mode if Read* or WriteRead* methods are used.
+// RxDMAISR should be configured as an Rx DMA interrupt handler if DMA is used
+// for read or write-read transactions (Write*, WriteRead* methods).
+//
+//go:nosplit
 func (d *Master) RxDMAISR() {
 	d.rxdma.ClearInt()
 	d.done.Wakeup()
 }
 
-// TxDMAISR is required in DMA mode if Write* (excluding WriteRead*) methods are
-// used.
+// TxDMAISR should be configured as a Tx DMA interrupt handler if DMA is used
+// for write-only transactions (Write* methods, excluding WriteRead*).
+//
+//go:nosplit
 func (d *Master) TxDMAISR() {
 	d.txdma.ClearInt()
 	d.done.Wakeup()
 }
 
-// WriteCmd writes a command to the transmit FIFO. The command allows you to
-// select a slave device by asserting PCSx pin. It also alows you to select
-// clock prescaler, polarity, phase and other things in different way for every
+// WriteCmd writes a command to the transmit FIFO. These commands should be used
+// to select a slave device by asserting PCSx pin, configure clock prescaler,
+// signal polarity, phase and other things in different way for every
 // transaction. You can encode the frame size in cmd directly using the FRAMESZ
 // field or specify it using the frameSize parameter (FRAMESZ = frameSize-1).
 // The frame size is specified as a numer of bits. The minimum supported frame
@@ -141,22 +147,22 @@ func (d *Master) TxDMAISR() {
 // which is equal to frameSize % 32 and must be >= 2 (e.g. frameSize = 33 is
 // not supported).
 //
-// LPSPI BUGS
+// # LPSPI BUGS
 //
 // The LPSPI peripheral has two bugs not mentioned in the errata that reveal in
-// the master mode when the TCR.CONT bit is set:
+// the master mode when the TCR.CONT bit (continuous transfer) is set:
 //
-// 1. In bidirectional mode, when you write n words to TDR, you can read only
-// n-1 words from RDR. The last word can be read after CONT is cleared or the
-// peripheral is disabled in the CR register. It seems the received word is
-// stored somewhere before it enters the receive FIFO so the writes to TDR and
-// reads from RDR are out of sync for one word.
+// 1. In bidirectional mode, when you write n words to the TDR, you can read
+// only n-1 words from RDR. The last word can be read after CONT is cleared or
+// the peripheral is disabled in the CR register. It seems the received word is
+// stored somewhere before it enters the receive FIFO so the writes to the TDR
+// and reads from the RDR are out of sync for one word.
 //
-// 2. In Rx-only mode, LPSPI starts reading data just after the command with the
-// CONT and TXMSK bits is written to TCR. If you do not read from RDR then 17
-// words are read from BUS (16 into FIFO and 1 elsewhere) and the REF error flag
-// is set. If you next will read 1 word from the FIFO the LPSPI will read
-// next 2 words from the BUS (one of them is lost).
+// 2. In Rx-only mode, the LPSPI starts reading data just after the command with
+// the CONT and TXMSK bits is written to TCR. If you do not read from the RDR
+// then 17 words are read from BUS (16 into FIFO and 1 elsewhere) and the REF
+// error flag is set. If you next will read 1 word from the FIFO the LPSPI will
+// read next 2 words from the BUS (one of them is lost).
 func (d *Master) WriteCmd(cmd TCR, frameSize int) {
 	p, slow := d.p, d.slow
 	for p.FSR.LoadBits(TXCOUNT) == fifoLen<<TXCOUNTn {
@@ -194,20 +200,6 @@ func (d *Master) ReadWord() uint32 {
 		}
 	}
 	return p.RDR.Load()
-}
-
-func min[T int | uint | uintptr](a, b T) T {
-	if a <= b {
-		return a
-	}
-	return b
-}
-
-func max[T int | uint | uintptr](a, b T) T {
-	if a >= b {
-		return a
-	}
-	return b
 }
 
 type dataWord interface {
@@ -289,9 +281,9 @@ func read[T dataWord](d *Master, pi unsafe.Pointer, n int) (end unsafe.Pointer) 
 	return
 }
 
-// WriteReadSizes calculates the transfer sizes to be performed by CPU (ho, hi,
-// to, ti) and DMA (d). It ensures that the middle dn*dmaBurst words are 32bit
-// aligned and the cache maintenance operations performed for the d*dmaBurst
+// BidirSizes calculates the transfer sizes to be performed by CPU (ho, hi, to,
+// ti) and DMA (dn). It ensures that the middle dn*dmaBurst words are 32-bit
+// aligned and the cache maintenance operations performed for the dn*dmaBurst
 // words in the middle of the po, pi doesn't affect the memory outside these
 // buffers. The following inequalities are true: ho >= hi, ti >= to.
 func bidirSizes(po, pi unsafe.Pointer, n int, lsz uint) (ho, hi, dn, to, ti int) {
@@ -511,14 +503,14 @@ func writeDMA[T dataWord](d *Master, out []T) {
 	write[T](d, po, tn)
 }
 
-// Write implements io.Writer interface. It works like Write32 but for 8-bit
+// Write implements the io.Writer interface. It works like Write32 but for 8-bit
 // words.
 func (d *Master) Write(p []byte) (int, error) {
 	writeDMA(d, p)
 	return len(p), nil
 }
 
-// WriteString implemets io.StringWriter interface. See Write for more
+// WriteString implemets the io.StringWriter interface. See Write for more
 // information.
 func (d *Master) WriteString(s string) (int, error) {
 	writeDMA(d, unsafe.Slice(unsafe.StringData(s), len(s)))
@@ -599,7 +591,7 @@ func readDMA[T dataWord](d *Master, in []T) {
 	read[T](d, pi, tn)
 }
 
-// Read implements io.Reader interface. It works like Read32 but for 16-bit
+// Read implements the io.Reader interface. It works like Read32 but for 8-bit
 // words instead of bytes.
 //
 // BUG: Typical usage scenarios of this function require 8-bit frame size with
@@ -626,7 +618,7 @@ func (d *Master) Read16(p []uint16) {
 //
 // BUG: There are known hardware bugs related to Rx-only mode (see WriteCmd for
 // more information). In contrast to Read and Read16 this function can be used
-// with TXMSK set provided the frame size is set to 8*len(p) and the CONT bit
+// with TXMSK set provided the frame size is set to 32*len(p) and the CONT bit
 // is cleared.
 func (d *Master) Read32(p []uint32) {
 	readDMA(d, p)
