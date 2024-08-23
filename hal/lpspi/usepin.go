@@ -29,7 +29,7 @@ const (
 
 // Pins return IO pins that can be used for singal sig.
 func (p *Periph) Pins(sig Signal) []iomux.Pin {
-	return periph.Pins(pins[:], alts[:], num(p)*4+int(sig))
+	return periph.Pins(pins[:], alts[:], num(p)*7+int(sig))
 }
 
 // UsePin is a helper function that can be used to configure IO pins as required

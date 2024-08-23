@@ -38,6 +38,7 @@ type Periph struct {
 	RDR   mmio.R32[uint32]
 }
 
+// LPSPI returns the LPSPIn peripheral.
 func LPSPI(n int) *Periph {
 	if n--; uint(n) > 3 {
 		panic("wrong LPSPI number")
