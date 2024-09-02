@@ -6,19 +6,6 @@ package periph
 
 import "github.com/embeddedgo/imxrt/hal/iomux"
 
-func AltFuncOld(pins []iomux.Pin, afs []iomux.AltFunc, psig int, pin iomux.Pin) iomux.AltFunc {
-	i := uint(0)
-	for ; psig != 0; psig-- {
-		i += uint(afs[i]) >> 4
-	}
-	for m := i + uint(afs[i]>>4); i < m; i++ {
-		if pins[i] == pin {
-			return afs[i] & 0x0f
-		}
-	}
-	return -1
-}
-
 // AltFunc returns the configuration for the pin to be used as the signal number
 // sig of the peripheral number p where psig = p * numSig + sig. See Pins for
 // description of pins and afs.
