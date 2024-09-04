@@ -157,9 +157,9 @@ const (
 
 	OpenDrain Config = 1 << 11 // Enable open drain mode
 
-	PK Config = 1 << 12 // Enable pull/keep mode
-
-	Pull Config = 1 << 13 // Use pull mode instead of keep mode
+	PK   Config = 3 << 12 // Pull / keep field
+	Keep Config = 1 << 12 // Enable pull/keep mode
+	Pull Config = 3 << 12 // Use pull mode instead of keep mode
 
 	PullSel  Config = 3 << 14 // Select pull direction and strength
 	Down100k Config = 0 << 14 // 100kΩ pull-down
