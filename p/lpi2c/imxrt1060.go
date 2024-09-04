@@ -13,33 +13,34 @@
 //
 // Registers:
 //
-//	0x000 32  VERID      Version ID Register
-//	0x004 32  PARAM      Parameter Register
-//	0x010 32  MCR        Master Control Register
-//	0x014 32  MSR        Master Status Register
-//	0x018 32  MIER(MSR)  Master Interrupt Enable Register
-//	0x01C 32  MDER(DER)  Master DMA Enable Register
-//	0x020 32  MCFGR0     Master Configuration Register 0
-//	0x024 32  MCFGR1     Master Configuration Register 1
-//	0x028 32  MCFGR2     Master Configuration Register 2
-//	0x02C 32  MCFGR3     Master Configuration Register 3
-//	0x040 32  MDMR       Master Data Match Register
-//	0x048 32  MCCR[2]    Master Clock Configuration Register 0
-//	0x058 32  MFCR       Master FIFO Control Register
-//	0x05C 32  MFSR       Master FIFO Status Register
-//	0x060 32  MTDR       Master Transmit Data Register
-//	0x070 32  MRDR(RDR)  Master Receive Data Register
-//	0x110 32  SCR        Slave Control Register
-//	0x114 32  SSR        Slave Status Register
-//	0x118 32  SIER(SSR)  Slave Interrupt Enable Register
-//	0x11C 32  SDER(DER)  Slave DMA Enable Register
-//	0x124 32  SCFGR1     Slave Configuration Register 1
-//	0x128 32  SCFGR2     Slave Configuration Register 2
-//	0x140 32  SAMR       Slave Address Match Register
-//	0x150 32  SASR       Slave Address Status Register
-//	0x154 32  STAR       Slave Transmit ACK Register
-//	0x160 32  STDR       Slave Transmit Data Register
-//	0x170 32  SRDR(RDR)  Slave Receive Data Register
+//	0x000 32  VERID        Version ID Register
+//	0x004 32  PARAM        Parameter Register
+//	0x010 32  MCR          Master Control Register
+//	0x014 32  MSR          Master Status Register
+//	0x018 32  MIER(MSR)    Master Interrupt Enable Register
+//	0x01C 32  MDER(DER)    Master DMA Enable Register
+//	0x020 32  MCFGR0       Master Configuration Register 0
+//	0x024 32  MCFGR1       Master Configuration Register 1
+//	0x028 32  MCFGR2       Master Configuration Register 2
+//	0x02C 32  MCFGR3       Master Configuration Register 3
+//	0x040 32  MDMR         Master Data Match Register
+//	0x048 32  MCCR0(MCCR)  Master Clock Configuration Register 0
+//	0x050 32  MCCR1(MCCR)  Master Clock Configuration Register 1
+//	0x058 32  MFCR         Master FIFO Control Register
+//	0x05C 32  MFSR         Master FIFO Status Register
+//	0x060 32  MTDR         Master Transmit Data Register
+//	0x070 32  MRDR(RDR)    Master Receive Data Register
+//	0x110 32  SCR          Slave Control Register
+//	0x114 32  SSR          Slave Status Register
+//	0x118 32  SIER(SSR)    Slave Interrupt Enable Register
+//	0x11C 32  SDER(DER)    Slave DMA Enable Register
+//	0x124 32  SCFGR1       Slave Configuration Register 1
+//	0x128 32  SCFGR2       Slave Configuration Register 2
+//	0x140 32  SAMR         Slave Address Match Register
+//	0x150 32  SASR         Slave Address Status Register
+//	0x154 32  STAR         Slave Transmit ACK Register
+//	0x160 32  STDR         Slave Transmit Data Register
+//	0x170 32  SRDR(RDR)    Slave Receive Data Register
 //
 // Import:
 //
@@ -71,7 +72,7 @@ const (
 )
 
 const (
-	MMEN   MCR = 0x01 << 0 //+ Master Enable
+	MEN    MCR = 0x01 << 0 //+ Master Enable
 	MRST   MCR = 0x01 << 1 //+ Software Reset
 	MDOZEN MCR = 0x01 << 2 //+ Doze mode enable
 	MDBGEN MCR = 0x01 << 3 //+ Debug Enable
@@ -80,7 +81,7 @@ const (
 )
 
 const (
-	MMENn   = 0
+	MENn    = 0
 	MRSTn   = 1
 	MDOZENn = 2
 	MDBGENn = 3
@@ -98,7 +99,7 @@ const (
 	MFEF  MSR = 0x01 << 12 //+ FIFO Error Flag
 	MPLTF MSR = 0x01 << 13 //+ Pin Low Timeout Flag
 	MDMF  MSR = 0x01 << 14 //+ Data Match Flag
-	MMBF  MSR = 0x01 << 24 //+ Master Busy Flag
+	MBF   MSR = 0x01 << 24 //+ Master Busy Flag
 	MBBF  MSR = 0x01 << 25 //+ Bus Busy Flag
 )
 
@@ -112,7 +113,7 @@ const (
 	MFEFn  = 12
 	MPLTFn = 13
 	MDMFn  = 14
-	MMBFn  = 24
+	MBFn   = 24
 	MBBFn  = 25
 )
 
@@ -256,7 +257,7 @@ const (
 )
 
 const (
-	SSEN    SCR = 0x01 << 0 //+ Slave Enable
+	SEN     SCR = 0x01 << 0 //+ Slave Enable
 	SRST    SCR = 0x01 << 1 //+ Software Reset
 	SFILTEN SCR = 0x01 << 4 //+ Filter Enable
 	SFILTDZ SCR = 0x01 << 5 //+ Filter Doze Enable
@@ -265,7 +266,7 @@ const (
 )
 
 const (
-	SSENn    = 0
+	SENn     = 0
 	SRSTn    = 1
 	SFILTENn = 4
 	SFILTDZn = 5
@@ -286,7 +287,7 @@ const (
 	SAM1F SSR = 0x01 << 13 //+ Address Match 1 Flag
 	SGCF  SSR = 0x01 << 14 //+ General Call Flag
 	SSARF SSR = 0x01 << 15 //+ SMBus Alert Response Flag
-	SSBF  SSR = 0x01 << 24 //+ Slave Busy Flag
+	SBF   SSR = 0x01 << 24 //+ Slave Busy Flag
 	SBBF  SSR = 0x01 << 25 //+ Bus Busy Flag
 )
 
@@ -303,7 +304,7 @@ const (
 	SAM1Fn = 13
 	SGCFn  = 14
 	SSARFn = 15
-	SSBFn  = 24
+	SBFn   = 24
 	SBBFn  = 25
 )
 

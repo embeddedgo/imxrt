@@ -26,8 +26,10 @@ type Periph struct {
 	_      [4]uint32
 	MDMR   mmio.R32[MDMR]
 	_      uint32
-	MCCR   [2]mmio.R32[MCCR]
-	_      [2]uint32
+	MCCR0  mmio.R32[MCCR]
+	_      uint32
+	MCCR1  mmio.R32[MCCR]
+	_      uint32
 	MFCR   mmio.R32[MFCR]
 	MFSR   mmio.R32[MFSR]
 	MTDR   mmio.R32[MTDR]
@@ -74,7 +76,7 @@ func MRXFIFO_(p *Periph) mmio.RM32[PARAM] { return mmio.RM32[PARAM]{&p.PARAM, MR
 
 type MCR uint32
 
-func MMEN_(p *Periph) mmio.RM32[MCR]   { return mmio.RM32[MCR]{&p.MCR, MMEN} }
+func MEN_(p *Periph) mmio.RM32[MCR]    { return mmio.RM32[MCR]{&p.MCR, MEN} }
 func MRST_(p *Periph) mmio.RM32[MCR]   { return mmio.RM32[MCR]{&p.MCR, MRST} }
 func MDOZEN_(p *Periph) mmio.RM32[MCR] { return mmio.RM32[MCR]{&p.MCR, MDOZEN} }
 func MDBGEN_(p *Periph) mmio.RM32[MCR] { return mmio.RM32[MCR]{&p.MCR, MDBGEN} }
@@ -92,7 +94,7 @@ func MALF_(p *Periph) mmio.RM32[MSR]  { return mmio.RM32[MSR]{&p.MSR, MALF} }
 func MFEF_(p *Periph) mmio.RM32[MSR]  { return mmio.RM32[MSR]{&p.MSR, MFEF} }
 func MPLTF_(p *Periph) mmio.RM32[MSR] { return mmio.RM32[MSR]{&p.MSR, MPLTF} }
 func MDMF_(p *Periph) mmio.RM32[MSR]  { return mmio.RM32[MSR]{&p.MSR, MDMF} }
-func MMBF_(p *Periph) mmio.RM32[MSR]  { return mmio.RM32[MSR]{&p.MSR, MMBF} }
+func MBF_(p *Periph) mmio.RM32[MSR]   { return mmio.RM32[MSR]{&p.MSR, MBF} }
 func MBBF_(p *Periph) mmio.RM32[MSR]  { return mmio.RM32[MSR]{&p.MSR, MBBF} }
 
 type DER uint32
@@ -131,11 +133,6 @@ func MATCH1_(p *Periph) mmio.RM32[MDMR] { return mmio.RM32[MDMR]{&p.MDMR, MATCH1
 
 type MCCR uint32
 
-func CLKLO_(p *Periph, i int) mmio.RM32[MCCR]   { return mmio.RM32[MCCR]{&p.MCCR[i], CLKLO} }
-func CLKHI_(p *Periph, i int) mmio.RM32[MCCR]   { return mmio.RM32[MCCR]{&p.MCCR[i], CLKHI} }
-func SETHOLD_(p *Periph, i int) mmio.RM32[MCCR] { return mmio.RM32[MCCR]{&p.MCCR[i], SETHOLD} }
-func DATAVD_(p *Periph, i int) mmio.RM32[MCCR]  { return mmio.RM32[MCCR]{&p.MCCR[i], DATAVD} }
-
 type MFCR uint32
 
 func TXWATER_(p *Periph) mmio.RM32[MFCR] { return mmio.RM32[MFCR]{&p.MFCR, TXWATER} }
@@ -155,7 +152,7 @@ type RDR uint32
 
 type SCR uint32
 
-func SSEN_(p *Periph) mmio.RM32[SCR]    { return mmio.RM32[SCR]{&p.SCR, SSEN} }
+func SEN_(p *Periph) mmio.RM32[SCR]     { return mmio.RM32[SCR]{&p.SCR, SEN} }
 func SRST_(p *Periph) mmio.RM32[SCR]    { return mmio.RM32[SCR]{&p.SCR, SRST} }
 func SFILTEN_(p *Periph) mmio.RM32[SCR] { return mmio.RM32[SCR]{&p.SCR, SFILTEN} }
 func SFILTDZ_(p *Periph) mmio.RM32[SCR] { return mmio.RM32[SCR]{&p.SCR, SFILTDZ} }
@@ -176,7 +173,7 @@ func SAM0F_(p *Periph) mmio.RM32[SSR] { return mmio.RM32[SSR]{&p.SSR, SAM0F} }
 func SAM1F_(p *Periph) mmio.RM32[SSR] { return mmio.RM32[SSR]{&p.SSR, SAM1F} }
 func SGCF_(p *Periph) mmio.RM32[SSR]  { return mmio.RM32[SSR]{&p.SSR, SGCF} }
 func SSARF_(p *Periph) mmio.RM32[SSR] { return mmio.RM32[SSR]{&p.SSR, SSARF} }
-func SSBF_(p *Periph) mmio.RM32[SSR]  { return mmio.RM32[SSR]{&p.SSR, SSBF} }
+func SBF_(p *Periph) mmio.RM32[SSR]   { return mmio.RM32[SSR]{&p.SSR, SBF} }
 func SBBF_(p *Periph) mmio.RM32[SSR]  { return mmio.RM32[SSR]{&p.SSR, SBBF} }
 
 type SCFGR1 uint32

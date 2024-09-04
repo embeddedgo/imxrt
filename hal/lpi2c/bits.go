@@ -33,7 +33,7 @@ const (
 type MCR uint32
 
 const (
-	MMEN   MCR = 0x01 << 0 //+ Master Enable
+	MEN    MCR = 0x01 << 0 //+ Master Enable
 	MRST   MCR = 0x01 << 1 //+ Software Reset
 	MDOZEN MCR = 0x01 << 2 //+ Doze mode enable
 	MDBGEN MCR = 0x01 << 3 //+ Debug Enable
@@ -42,7 +42,7 @@ const (
 )
 
 const (
-	MMENn   = 0
+	MENn    = 0
 	MRSTn   = 1
 	MDOZENn = 2
 	MDBGENn = 3
@@ -62,7 +62,7 @@ const (
 	MFEF  MSR = 0x01 << 12 //+ FIFO Error Flag
 	MPLTF MSR = 0x01 << 13 //+ Pin Low Timeout Flag
 	MDMF  MSR = 0x01 << 14 //+ Data Match Flag
-	MMBF  MSR = 0x01 << 24 //+ Master Busy Flag
+	MBF   MSR = 0x01 << 24 //+ Master Busy Flag
 	MBBF  MSR = 0x01 << 25 //+ Bus Busy Flag
 )
 
@@ -76,7 +76,7 @@ const (
 	MFEFn  = 12
 	MPLTFn = 13
 	MDMFn  = 14
-	MMBFn  = 24
+	MBFn   = 24
 	MBBFn  = 25
 )
 
@@ -240,7 +240,7 @@ const (
 type SCR uint32
 
 const (
-	SSEN    SCR = 0x01 << 0 //+ Slave Enable
+	SEN     SCR = 0x01 << 0 //+ Slave Enable
 	SRST    SCR = 0x01 << 1 //+ Software Reset
 	SFILTEN SCR = 0x01 << 4 //+ Filter Enable
 	SFILTDZ SCR = 0x01 << 5 //+ Filter Doze Enable
@@ -249,7 +249,7 @@ const (
 )
 
 const (
-	SSENn    = 0
+	SENn     = 0
 	SRSTn    = 1
 	SFILTENn = 4
 	SFILTDZn = 5
@@ -272,7 +272,7 @@ const (
 	SAM1F SSR = 0x01 << 13 //+ Address Match 1 Flag
 	SGCF  SSR = 0x01 << 14 //+ General Call Flag
 	SSARF SSR = 0x01 << 15 //+ SMBus Alert Response Flag
-	SSBF  SSR = 0x01 << 24 //+ Slave Busy Flag
+	SBF   SSR = 0x01 << 24 //+ Slave Busy Flag
 	SBBF  SSR = 0x01 << 25 //+ Bus Busy Flag
 )
 
@@ -289,7 +289,7 @@ const (
 	SAM1Fn = 13
 	SGCFn  = 14
 	SSARFn = 15
-	SSBFn  = 24
+	SBFn   = 24
 	SBBFn  = 25
 )
 

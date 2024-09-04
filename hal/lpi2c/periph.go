@@ -28,8 +28,10 @@ type Periph struct {
 	_      [4]uint32
 	MDMR   mmio.R32[MDMR]
 	_      uint32
-	MCCR   [2]mmio.R32[MCCR]
-	_      [2]uint32
+	MCCR0  mmio.R32[MCCR]
+	_      uint32
+	MCCR1  mmio.R32[MCCR]
+	_      uint32
 	MFCR   mmio.R32[MFCR]
 	MFSR   mmio.R32[MFSR]
 	MTDR   mmio.R32[MTDR]
