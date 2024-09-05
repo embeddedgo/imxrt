@@ -21,6 +21,28 @@ func pr[T ~uint32](name string, v T) {
 	)
 }
 
+func write(p *lpi2c.Periph, cmds ...lpi2c.MTDR) {
+	for _, cmd := range cmds {
+		for p.MSR.LoadBits(lpi2c.MTDF) == 0 {
+		}
+		fmt.Printf("MFSR: %#x\n", p.MFSR.Load())
+		p.MTDR.Store(cmd)
+	}
+}
+
+func read(p *lpi2c.Periph, buf []byte) {
+	for i := range buf {
+		var v lpi2c.RDR
+		for {
+			v = p.MRDR.Load()
+			if v&lpi2c.RXEMPTY == 0 {
+				break
+			}
+		}
+		buf[i] = byte(v)
+	}
+}
+
 func main() {
 	// Used IO pins
 	sda := pins.P18 // AD_B1_01
@@ -34,7 +56,7 @@ func main() {
 	d.UsePin(scl, lpi2c.SCL)
 	d.UsePin(sda, lpi2c.SDA)
 
-	d.Setup(lpi2c.Fast)
+	d.Setup(lpi2c.Std)
 
 	pr("MCR:   ", p.MCR.Load())
 	pr("MSR:   ", p.MSR.Load())
@@ -47,11 +69,31 @@ func main() {
 	pr("MDMR:  ", p.MDMR.Load())
 	pr("MCCR0: ", p.MCCR0.Load())
 	pr("MCCR1: ", p.MCCR1.Load())
+	pr("MFCR:  ", p.MFCR.Load())
 
 	fmt.Println()
 
+	const (
+		prefix = 0x5 << 4 // 0b1010 address prefix
+		a2a1   = 0 << 2   // address pins
+		p0     = 0 << 1   // page
+		wr     = 0        // write transaction
+		rd     = 1        // read transaction
+		addr   = 0        // address in page
+	)
+
 	for {
-		time.Sleep(2 * time.Second)
+		var buf [16]byte
+		write(
+			p,
+			lpi2c.Start|prefix|a2a1|p0|rd,
+			lpi2c.Recv|lpi2c.MTDR(len(buf)-1),
+			lpi2c.Stop,
+		)
 		pr("MSR:   ", p.MSR.Load())
+		read(p, buf[:])
+		fmt.Printf("%s\n", buf[:])
+		time.Sleep(time.Second)
 	}
+
 }

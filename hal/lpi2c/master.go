@@ -27,8 +27,8 @@ func (d *Master) Periph() *Periph {
 
 // See Table 47-5. LPI2C Example Timing Configurations
 const (
-	clk = 60_000_000 / 8
-	pre = 1 // for 60 MHz clock (PLL_USB1 / 8)
+	clk = 60_000_000 / 8 // PLL_USB1 / 8
+	pre = 1              // divides by two the 60 MHz clock
 	st  = 0x3<<6 | 0x44<<SETHOLDn | 0x90<<CLKLOn | 0x98<<CLKHIn | 0x20<<DATAVDn
 	fa  = 0x2<<6 | 0x11<<SETHOLDn | 0x28<<CLKLOn | 0x1f<<CLKHIn | 0x08<<DATAVDn
 	pl  = 0x2<<6 | 0x07<<SETHOLDn | 0x0f<<CLKLOn | 0x0b<<CLKHIn | 0x01<<DATAVDn
@@ -59,5 +59,6 @@ func (d *Master) Setup(mode uint64) {
 	p.MCFGR2.Store(MCFGR2(gf<<MFILTSDAn | gf<<MFILTSCLn))
 	const timeout = clk * 15 / 1000 // number of clock cycles that equals 15 ms
 	p.MCFGR3.Store(timeout / 256 >> uint(pre) << PINLOWn)
+	p.MFCR.Store(3 << TXWATERn)
 	p.MCR.Store(MEN)
 }

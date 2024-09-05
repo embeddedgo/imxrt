@@ -14,46 +14,46 @@ import (
 )
 
 type Periph struct {
-	VERID  mmio.R32[uint32]
-	PARAM  mmio.R32[uint32]
+	VERID  mmio.R32[uint32] // Version ID Register
+	PARAM  mmio.R32[uint32] // Parameter Register
 	_      [2]uint32
-	MCR    mmio.R32[MCR]
-	MSR    mmio.R32[MSR]
-	MIER   mmio.R32[MSR]
-	MDER   mmio.R32[DER]
-	MCFGR0 mmio.R32[MCFGR0]
-	MCFGR1 mmio.R32[MCFGR1]
-	MCFGR2 mmio.R32[MCFGR2]
-	MCFGR3 mmio.R32[MCFGR3]
+	MCR    mmio.R32[MCR]    // Master Control Register
+	MSR    mmio.R32[MSR]    // Master Status Register
+	MIER   mmio.R32[MSR]    // Master Interrupt Enable Register
+	MDER   mmio.R32[DER]    // Master DMA Enable Register
+	MCFGR0 mmio.R32[MCFGR0] // Master Configuration Register 0
+	MCFGR1 mmio.R32[MCFGR1] // Master Configuration Register 1
+	MCFGR2 mmio.R32[MCFGR2] // Master Configuration Register 2
+	MCFGR3 mmio.R32[MCFGR3] // Master Configuration Register 3
 	_      [4]uint32
-	MDMR   mmio.R32[MDMR]
+	MDMR   mmio.R32[MDMR] // Master Data Match Register
 	_      uint32
-	MCCR0  mmio.R32[MCCR]
+	MCCR0  mmio.R32[MCCR] // Master Clock Configuration Register 0
 	_      uint32
-	MCCR1  mmio.R32[MCCR]
+	MCCR1  mmio.R32[MCCR] // Master Clock Configuration Register 1
 	_      uint32
-	MFCR   mmio.R32[MFCR]
-	MFSR   mmio.R32[MFSR]
-	MTDR   mmio.R32[MTDR]
+	MFCR   mmio.R32[MFCR] // Master FIFO Control Register
+	MFSR   mmio.R32[MFSR] // Master FIFO Status Register
+	MTDR   mmio.R32[MTDR] // Master Transmit Data Register
 	_      [3]uint32
-	MRDR   mmio.R32[RDR]
+	MRDR   mmio.R32[RDR] // Master Receive Data Register
 	_      [39]uint32
-	SCR    mmio.R32[SCR]
-	SSR    mmio.R32[SSR]
-	SIER   mmio.R32[SSR]
-	SDER   mmio.R32[DER]
+	SCR    mmio.R32[SCR] // Slave Control Register
+	SSR    mmio.R32[SSR] // Slave Status Register
+	SIER   mmio.R32[SSR] // Slave Interrupt Enable Register
+	SDER   mmio.R32[DER] // Slave DMA Enable Register
 	_      uint32
-	SCFGR1 mmio.R32[SCFGR1]
-	SCFGR2 mmio.R32[SCFGR2]
+	SCFGR1 mmio.R32[SCFGR1] // Slave Configuration Register 1
+	SCFGR2 mmio.R32[SCFGR2] // Slave Configuration Register 2
 	_      [5]uint32
-	SAMR   mmio.R32[SAMR]
+	SAMR   mmio.R32[SAMR] // Slave Address Match Register
 	_      [3]uint32
-	SASR   mmio.R32[SASR]
-	STAR   mmio.R32[STAR]
+	SASR   mmio.R32[SASR] // Slave Address Status Register
+	STAR   mmio.R32[STAR] // Slave Transmit ACK Register
 	_      [2]uint32
-	STDR   mmio.R32[uint32]
+	STDR   mmio.R32[uint32] // Slave Transmit Data Register
 	_      [3]uint32
-	SRDR   mmio.R32[RDR]
+	SRDR   mmio.R32[RDR] // Slave Receive Data Register
 }
 
 // LPI2C returns the LPI2Cn peripheral.
