@@ -27,23 +27,34 @@ func (d *Master) Periph() *Periph {
 
 // See Table 47-5. LPI2C Example Timing Configurations
 const (
-	clk = 60_000_000 / 8 // PLL_USB1 / 8
-	pre = 1              // divides by two the 60 MHz clock
-	st  = 0x3<<6 | 0x44<<SETHOLDn | 0x90<<CLKLOn | 0x98<<CLKHIn | 0x20<<DATAVDn
-	fa  = 0x2<<6 | 0x11<<SETHOLDn | 0x28<<CLKLOn | 0x1f<<CLKHIn | 0x08<<DATAVDn
-	pl  = 0x2<<6 | 0x07<<SETHOLDn | 0x0f<<CLKLOn | 0x0b<<CLKHIn | 0x01<<DATAVDn
-	hs  = 0x0<<6 | 0x04<<SETHOLDn | 0x04<<CLKLOn | 0x02<<CLKHIn | 0x01<<DATAVDn
+	clk  = 60_000_000 // peripheral clock (PLL_USB1 / 8)
+	pre8 = 3
+	sl   = 0xf<<30 | 0x20<<SETHOLDn | 0x3f<<CLKLOn | 0x3f<<CLKHIn | 0x10<<DATAVDn
+	pre4 = 2 // divides by 4 the 60 MHz clock
+	st   = 0xf<<30 | 0x20<<SETHOLDn | 0x3f<<CLKLOn | 0x3f<<CLKHIn | 0x10<<DATAVDn
+	fa   = 0x1<<30 | 0x08<<SETHOLDn | 0x14<<CLKLOn | 0x10<<CLKHIn | 0x04<<DATAVDn
+	pl   = 0x1<<30 | 0x03<<SETHOLDn | 0x08<<CLKLOn | 0x05<<CLKHIn | 0x01<<DATAVDn
+	pre2 = 1 // divides by 2 the 60 MHz clock
+	fahs = 0x2<<30 | 0x11<<SETHOLDn | 0x28<<CLKLOn | 0x1f<<CLKHIn | 0x08<<DATAVDn
+	plhs = 0x2<<30 | 0x07<<SETHOLDn | 0x0f<<CLKLOn | 0x0b<<CLKHIn | 0x02<<DATAVDn
+	hs   = 0x0<<30 | 0x04<<SETHOLDn | 0x04<<CLKLOn | 0x02<<CLKHIn | 0x01<<DATAVDn
 
-	setupStd  = pre<<60 | hs<<30 | st
-	setupFast = pre<<60 | hs<<30 | fa
-	setupPlus = pre<<60 | hs<<30 | pl
+	setupSlow   = pre8<<6 | hs<<34 | sl
+	setupStd    = pre4<<6 | hs<<34 | st
+	setupFast   = pre4<<6 | hs<<34 | fa
+	setupPlus   = pre4<<6 | hs<<34 | pl
+	setupFastHS = pre2<<6 | hs<<34 | fahs
+	setupPlusHS = pre2<<6 | hs<<34 | plhs
 )
 
-// Mode of operation for Master.Setup method.
+// Mode of operation (argument for Master.Setup method).
 const (
-	Std      uint64 = setupStd  // 100 kb/s (Std)   and 3.33 Mb/s HS
-	Fast     uint64 = setupFast // 400 kb/s (Fast)  and 3.33 Mb/s HS
-	FastPlus uint64 = setupPlus //   1 Mb/s (Fast+) and 3.33 Mb/s HS
+	Slow       uint64 = setupSlow
+	Std        uint64 = setupStd    // 116 kb/s (Std)   and 1.7 Mb/s HS
+	Fast       uint64 = setupFast   // 400 kb/s (Fast)  and 1.7 Mb/s HS
+	FastPlus   uint64 = setupPlus   //   1 Mb/s (Fast+) and 1.7 Mb/s HS
+	FastHS     uint64 = setupFastHS // 400 kb/s (Fast)  and 3.3 Mb/s HS
+	FastPlusHS uint64 = setupPlusHS //   1 Mb/s (Fast+) and 3.3 Mb/s HS
 )
 
 func (d *Master) Setup(mode uint64) {
@@ -52,13 +63,13 @@ func (d *Master) Setup(mode uint64) {
 	p.MCR.Store(MRST)
 	p.MCR.Store(0)
 	p.MCCR0.Store(MCCR(mode) & (DATAVD | SETHOLD | CLKHI | CLKLO))
-	p.MCCR1.Store(MCCR(mode>>30) & (DATAVD | SETHOLD | CLKHI | CLKLO))
-	pre := mode >> 60
+	p.MCCR1.Store(MCCR(mode>>34) & (DATAVD | SETHOLD | CLKHI | CLKLO))
+	pre := uint(mode) >> 6 & 3 // max. supported MPRESCALE is 3
 	p.MCFGR1.Store(MCFGR1(pre) << MPRESCALEn)
-	gf := mode >> 6 & 3 // mode supports only up to 3 cycles glitch filter
-	p.MCFGR2.Store(MCFGR2(gf<<MFILTSDAn | gf<<MFILTSCLn))
-	const timeout = clk * 15 / 1000 // number of clock cycles that equals 15 ms
-	p.MCFGR3.Store(timeout / 256 >> uint(pre) << PINLOWn)
+	gf := MCFGR2(mode>>30) & 0xf // max. supported MFILT is 15
+	p.MCFGR2.Store(gf<<MFILTSDAn | gf<<MFILTSCLn)
+	const timeout = clk * 15 / 1000 // number of peripheral clock cycles that equals 15 ms
+	p.MCFGR3.Store(timeout / 256 >> pre << PINLOWn)
 	p.MFCR.Store(3 << TXWATERn)
 	p.MCR.Store(MEN)
 }

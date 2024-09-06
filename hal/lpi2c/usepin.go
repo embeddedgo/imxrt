@@ -44,12 +44,12 @@ func (d *Master) UsePin(pin iomux.Pin, sig Signal) bool {
 	if af < 0 {
 		return false
 	}
-	pin.SetAltFunc(af)
-	pin.Setup(iomux.Drive2 | iomux.OpenDrain | iomux.Pull | iomux.Up22k | iomux.Hys)
+	pin.SetAltFunc(af | iomux.SION)
 	if sel >= 0 {
 		iosel := (*[16]mmio.R32[int32])(unsafe.Pointer(daisyBase))
 		iosel[sel].Store(int32(daisy))
 	}
+	pin.Setup(iomux.Drive2 | iomux.OpenDrain | iomux.Pull | iomux.Up22k | iomux.Hys)
 	return true
 }
 

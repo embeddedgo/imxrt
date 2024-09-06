@@ -114,12 +114,12 @@ func Setup528_FlexSPI() {
 	wdog.WDOG2().WMCR.ClearBits(wdog.PDE)
 
 	// Gate all possible clocks, exceptions in comments
-	CCM.CCGR0.Store(0x0000_00cf) // flexspi_exsc, apis_tz1, apis_tz2
-	CCM.CCGR1.Store(0x000c_0000) // semc_exsc (why?)
-	CCM.CCGR2.Store(0x003f_0003) // ipmux3, impux2, ipmux1, ocram_exsc
-	CCM.CCGR3.Store(0x300c_0000) // ocram, flexram
-	CCM.CCGR4.Store(0x0000_f3ff) // sim_*, bee, iomux_gpr, ioumxc
-	CCM.CCGR5.Store(0xc003_3003) // snvs_lp, sim_main, aipstz4, rom(for Teensy)
-	CCM.CCGR6.Store(0x003c_0f00) // sim_per, aips_tz3, flexspi, ipmux4
-	CCM.CCGR7.Store(0xffff_cc30) // aips_lite, axbs_l
+	//CCM.CCGR0.Store(0x0000_00cf) // flexspi_exsc, apis_tz1, apis_tz2
+	//CCM.CCGR1.Store(0x000c_0000) // semc_exsc (why?)
+	//CCM.CCGR2.Store(0x003f_0003) // ipmux3, impux2, ipmux1, ocram_exsc
+	//CCM.CCGR3.Store(0x300c_0000) // ocram, flexram
+	//CCM.CCGR4.Store(0x0000_f3ff) // sim_*, bee, iomux_gpr, ioumxc
+	//CCM.CCGR5.Store(0xc003_3003) // snvs_lp, sim_main, aipstz4, rom(for Teensy)
+	//CCM.CCGR6.Store(0x003c_0f00) // sim_per, aips_tz3, flexspi, ipmux4
+	//CCM.CCGR7.Store(0xffff_cc30) // aips_lite, axbs_l
 }

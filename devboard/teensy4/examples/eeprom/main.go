@@ -25,9 +25,9 @@ func write(p *lpi2c.Periph, cmds ...lpi2c.MTDR) {
 	for _, cmd := range cmds {
 		for p.MSR.LoadBits(lpi2c.MTDF) == 0 {
 		}
-		fmt.Printf("MFSR: %#x\n", p.MFSR.Load())
 		p.MTDR.Store(cmd)
 	}
+	fmt.Printf("MFSR: %#x\n", p.MFSR.Load())
 }
 
 func read(p *lpi2c.Periph, buf []byte) {
@@ -56,7 +56,7 @@ func main() {
 	d.UsePin(scl, lpi2c.SCL)
 	d.UsePin(sda, lpi2c.SDA)
 
-	d.Setup(lpi2c.Std)
+	d.Setup(lpi2c.Slow)
 
 	pr("MCR:   ", p.MCR.Load())
 	pr("MSR:   ", p.MSR.Load())
@@ -71,7 +71,9 @@ func main() {
 	pr("MCCR1: ", p.MCCR1.Load())
 	pr("MFCR:  ", p.MFCR.Load())
 
-	fmt.Println()
+	time.Sleep(5 * time.Second)
+
+	fmt.Println("Go!")
 
 	const (
 		prefix = 0x5 << 4 // 0b1010 address prefix
@@ -79,20 +81,28 @@ func main() {
 		p0     = 0 << 1   // page
 		wr     = 0        // write transaction
 		rd     = 1        // read transaction
-		addr   = 0        // address in page
+		addr   = 0xf0     // address in page
 	)
 
 	for {
 		var buf [16]byte
 		write(
 			p,
-			lpi2c.Start|prefix|a2a1|p0|rd,
-			lpi2c.Recv|lpi2c.MTDR(len(buf)-1),
+			lpi2c.Start|prefix|a2a1|p0|wr,
+			0xf0,
+			//lpi2c.Recv|lpi2c.MTDR(len(buf)-1),
 			lpi2c.Stop,
 		)
-		pr("MSR:   ", p.MSR.Load())
+
+		for {
+			time.Sleep(2 * time.Second)
+			pr("MSR:   ", p.MSR.Load())
+			fmt.Printf("MFSR: %#x\n", p.MFSR.Load())
+		}
+
 		read(p, buf[:])
 		fmt.Printf("%s\n", buf[:])
+
 		time.Sleep(time.Second)
 	}
 
