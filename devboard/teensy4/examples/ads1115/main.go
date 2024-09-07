@@ -27,7 +27,6 @@ func write(p *lpi2c.Periph, cmds ...lpi2c.MTDR) {
 		}
 		p.MTDR.Store(cmd)
 	}
-	fmt.Printf("MFSR: %#x\n", p.MFSR.Load())
 }
 
 func read(p *lpi2c.Periph, buf []byte) {
@@ -48,16 +47,15 @@ func main() {
 	sda := pins.P18 // AD_B1_01
 	scl := pins.P19 // AD_B1_00
 
-	time.Sleep(5 * time.Second)
-
 	// Setup LPSPI3 driver
 	p := lpi2c.LPI2C(1)
 	d := lpi2c.NewMaster(p, dma.Channel{}, dma.Channel{})
 	d.UsePin(scl, lpi2c.SCL)
 	d.UsePin(sda, lpi2c.SDA)
 
-	d.Setup(lpi2c.Slow50k)
+	d.Setup(lpi2c.FastHS)
 
+	time.Sleep(5 * time.Second)
 	pr("MCR:   ", p.MCR.Load())
 	pr("MSR:   ", p.MSR.Load())
 	pr("MIER   ", p.MIER.Load())
@@ -71,30 +69,26 @@ func main() {
 	pr("MCCR1: ", p.MCCR1.Load())
 	pr("MFCR:  ", p.MFCR.Load())
 
-	time.Sleep(5 * time.Second)
-
-	fmt.Println("Go!")
-
 	const (
-		prefix = 0x5 << 4 // 0b1010 address prefix
-		a2a1   = 0 << 2   // address pins
-		p0     = 0 << 1   // page
-		wr     = 0        // write transaction
-		rd     = 1        // read transaction
-		addr   = 0xf0     // address in page
+		addr = 0b1001000 << 1 // address when the ADDR pin is connected to GND
+		wr   = 0              // write transaction
+		rd   = 1              // read transaction
 	)
 
-	for {
-		var buf [16]byte
+	var buf [2]byte
+
+	for i := 0; ; i++ {
 		write(
 			p,
-			lpi2c.Start|prefix|a2a1|p0|rd,
+			lpi2c.StartNACK|0b0000_1000, // switch to High Speed mode
+			lpi2c.StartHS|addr|wr,
+			lpi2c.Send|lpi2c.MTDR(1),
+			lpi2c.StartHS|addr|rd,
 			lpi2c.Recv|lpi2c.MTDR(len(buf)-1),
 			lpi2c.Stop,
 		)
-
 		read(p, buf[:])
-		fmt.Printf("%s\n", buf[:])
+		fmt.Printf("%d: %08b %08b\n", i, buf[0], buf[1])
 
 		time.Sleep(time.Second)
 	}

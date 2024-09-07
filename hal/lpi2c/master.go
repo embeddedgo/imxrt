@@ -5,10 +5,16 @@
 package lpi2c
 
 import (
+	"sync"
+
 	"github.com/embeddedgo/imxrt/hal/dma"
 )
 
+// A Master is a driver for the LPI2C peripheral to perform a master access to
+// an I2C bus.
 type Master struct {
+	sync.Mutex // useful to share driver, used by connection interface
+
 	p     *Periph
 	rxdma dma.Channel
 	txdma dma.Channel
@@ -25,48 +31,65 @@ func (d *Master) Periph() *Periph {
 	return d.p
 }
 
-// See Table 47-5. LPI2C Example Timing Configurations
+// Timing constants.
+//
+// sclClk = clk / ((CLKHI + CLKLO + 2 + sclLatency) << divN)
+//
+// sclLatency = roundDown((2 + FILTSCL) >> divN)
 const (
 	clk  = 60_000_000 // peripheral clock (PLL_USB1 / 8)
-	div4 = 2          // divides by 4 the 60 MHz clock
-	st   = 9<<30 | 32<<SETHOLDn | 63<<CLKLOn | 63<<CLKHIn | 16<<DATAVDn
-	fa   = 2<<30 | 10<<SETHOLDn | 20<<CLKLOn | 16<<CLKHIn | 5<<DATAVDn
-	pl   = 2<<30 | 4<<SETHOLDn | 8<<CLKLOn | 5<<CLKHIn | 1<<DATAVDn
-	div2 = 1 // divides by 2 the 60 MHz clock
-	fahs = 2<<30 | 0x11<<SETHOLDn | 0x28<<CLKLOn | 0x1f<<CLKHIn | 0x08<<DATAVDn
-	plhs = 2<<30 | 0x07<<SETHOLDn | 0x0f<<CLKLOn | 0x0b<<CLKHIn | 0x02<<DATAVDn
-	hs   = 0<<30 | 0x04<<SETHOLDn | 0x04<<CLKLOn | 0x02<<CLKHIn | 0x01<<DATAVDn
+	div2 = 1          // divide the 60 MHz clock by 2 (30 MHz)
+	div4 = 2          // divide the 60 MHz clock by 4 (15 MHz)
+	div8 = 3          // divide the 60 MHz clock by 8 (7.5 MHz)
 
-	setupStd    = div4<<6 | hs<<34 | st
-	setupFast   = div4<<6 | hs<<34 | fa
-	setupPlus   = div4<<6 | hs<<34 | pl
-	setupFastHS = div2<<6 | hs<<34 | fahs
-	setupPlusHS = div2<<6 | hs<<34 | plhs
+	// Values copied from Table 47-5. LPI2C Example Timing Configurations.
+	fahs = 2<<30 | 17<<SETHOLDn | 40<<CLKLOn | 31<<CLKHIn | 8<<DATAVDn
+	plhs = 2<<30 | 7<<SETHOLDn | 15<<CLKLOn | 11<<CLKHIn | 2<<DATAVDn
+	hs   = 4<<SETHOLDn | 4<<CLKLOn | 2<<CLKHIn | 1<<DATAVDn
+
+	// The above values divided by 2 with small corrections to work with div4.
+	fa = 2<<30 | 9<<SETHOLDn | 20<<CLKLOn | 16<<CLKHIn | 4<<DATAVDn
+	pl = 2<<30 | 4<<SETHOLDn | 8<<CLKLOn | 5<<CLKHIn | 1<<DATAVDn
+
+	// Values to obtain the minimal possible sclClk for any div.
+	sl = 15<<30 | 31<<SETHOLDn | 63<<CLKLOn | 63<<CLKHIn | 15<<DATAVDn
+
+	timingSlow   = div8<<6 | hs<<34 | sl
+	timingStd    = div4<<6 | hs<<34 | sl
+	timingFast   = div4<<6 | hs<<34 | fa
+	timingPlus   = div4<<6 | hs<<34 | pl
+	timingFastHS = div2<<6 | hs<<34 | fahs
+	timingPlusHS = div2<<6 | hs<<34 | plhs
+
+	stuckBusTimeout = 40 // ms (TI "I2C Stuck Bus: Prevention and Workarounds")
 )
 
-// Mode of operation (argument for Master.Setup method).
+// Speed encodes the timing configuration that determines the maximum
+// communication speed (the actual speed depends also on the SCL rise time).
+type Speed uint64
+
 const (
-	Std100k    uint64 = setupStd    // ≤115 kb/s (Std)   and 1.7 Mb/s HS
-	Fast400k   uint64 = setupFast   // ≤400 kb/s (Fast)  and 1.7 Mb/s HS
-	FastPlus1M uint64 = setupPlus   //   ≤1 Mb/s (Fast+) and 1.7 Mb/s HS
-	FastHS     uint64 = setupFastHS // ≤400 kb/s (Fast)  and 3.3 Mb/s HS
-	FastPlusHS uint64 = setupPlusHS //   ≤1 Mb/s (Fast+) and 3.3 Mb/s HS
+	Slow50k    Speed = timingSlow   //  ≤58 kb/s (Slow)  and 0.83 Mb/s HS
+	Std100k    Speed = timingStd    // ≤114 kb/s (Std)   and 1.65 Mb/s HS
+	Fast400k   Speed = timingFast   // ≤400 kb/s (Fast)  and 1.65 Mb/s HS
+	FastPlus1M Speed = timingPlus   //   ≤1 Mb/s (Fast+) and 1.65 Mb/s HS
+	FastHS     Speed = timingFastHS // ≤400 kb/s (Fast)  and 3.33 Mb/s HS
+	FastPlusHS Speed = timingPlusHS //   ≤1 Mb/s (Fast+) and 3.33 Mb/s HS
 )
 
-func (d *Master) Setup(mode uint64) {
+func (d *Master) Setup(sp Speed) {
 	p := d.p
 	p.EnableClock(true)
 	p.MCR.Store(MRST)
 	p.MCR.Store(0)
-	p.MCCR0.Store(MCCR(mode) & (DATAVD | SETHOLD | CLKHI | CLKLO))
-	p.MCCR1.Store(MCCR(mode>>34) & (DATAVD | SETHOLD | CLKHI | CLKLO))
-	pre := MCFGR1(mode) >> 6 & 3 // max. supported MPRESCALE is 3
+	p.MCCR0.Store(MCCR(sp) & (DATAVD | SETHOLD | CLKHI | CLKLO))
+	p.MCCR1.Store(MCCR(sp>>34) & (DATAVD | SETHOLD | CLKHI | CLKLO))
+	pre := MCFGR1(sp) >> 6 & 3 // max. supported MPRESCALE is 3
 	p.MCFGR1.Store(pre << MPRESCALEn)
-	gf := MCFGR2(mode>>30) & 0xf // max. supported MFILT is 15
-	bi := (MCFGR2(mode)>>CLKLOn&63 + MCFGR2(mode)>>SETHOLDn&63 + 2) * 2
+	gf := MCFGR2(sp>>30) & 0xf // the used encoding supports MFILT <= 15
+	bi := (MCFGR2(sp)>>CLKLOn&63 + MCFGR2(sp)>>SETHOLDn&63 + 2) * 2
 	p.MCFGR2.Store(gf<<MFILTSDAn | gf<<MFILTSCLn | bi<<MBUSIDLEn)
-	const timeout = clk * 15 / 1000 // number of clock cycles that equals 15 ms
-	p.MCFGR3.Store(timeout / 256 >> pre << PINLOWn)
+	p.MCFGR3.Store(clk * stuckBusTimeout / 1000 / 256 >> pre << PINLOWn)
 	p.MFCR.Store(3 << TXWATERn)
 	p.MCR.Store(MEN)
 }

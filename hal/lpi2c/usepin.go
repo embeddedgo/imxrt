@@ -31,13 +31,12 @@ func (p *Periph) Pins(sig Signal) []iomux.Pin {
 }
 
 // UsePin is a helper function that can be used to configure IO pins as required
-// by LPI2C peripheral. By default it configures the pin as an input with the
-// internal 22 kΩ pull-up resistor enadbled so for low-capacitance bus and
-// low-speed transfers the external pull-up resistors are not needed. Only
-// certain pins can be used forLPI2C peripheral (see datasheet).
+// by LPI2C peripheral. It configures the pin as open-drain output with the
+// internal 22 kΩ pull-up resistor enadbled so you can avoid external pull-up
+// resistors for low-capacitance bus and low-speed transfers.
 //
-// UsePin returns true on succes or false if it isn't possible to use a pin as
-// a sig. See also Periph.Pins.
+// Only certain pins can be used forLPI2C peripheral (see datasheet). UsePin
+// returns true on succes or false if it isn't possible to use a pin as a sig.
 func (d *Master) UsePin(pin iomux.Pin, sig Signal) bool {
 	n := num(d.p)
 	af, sel, daisy := periph.AltFunc(pins[:], alts[:], n*5+int(sig), pin)
