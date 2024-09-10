@@ -32,9 +32,10 @@ type Periph struct {
 	_      uint32
 	MCCR1  mmio.R32[MCCR] // Master Clock Configuration Register 1
 	_      uint32
-	MFCR   mmio.R32[MFCR] // Master FIFO Control Register
-	MFSR   mmio.R32[MFSR] // Master FIFO Status Register
-	MTDR   mmio.R32[MTDR] // Master Transmit Data Register
+	MFCR   mmio.R32[MFCR]  // Master FIFO Control Register
+	MFSR   mmio.R32[MFSR]  // Master FIFO Status Register
+	MTDR   mmio.R16[int16] // Master Transmit Data Register
+	_      uint16
 	_      [3]uint32
 	MRDR   mmio.R32[RDR] // Master Receive Data Register
 	_      [39]uint32

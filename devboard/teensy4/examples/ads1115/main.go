@@ -21,7 +21,7 @@ func pr[T ~uint32](name string, v T) {
 	)
 }
 
-func write(p *lpi2c.Periph, cmds ...lpi2c.MTDR) {
+func write(p *lpi2c.Periph, cmds ...int16) {
 	for _, cmd := range cmds {
 		for p.MSR.LoadBits(lpi2c.MTDF) == 0 {
 		}
@@ -82,9 +82,9 @@ func main() {
 			p,
 			lpi2c.StartNACK|0b0000_1000, // switch to High Speed mode
 			lpi2c.StartHS|addr|wr,
-			lpi2c.Send|lpi2c.MTDR(1),
+			lpi2c.Send|1,
 			lpi2c.StartHS|addr|rd,
-			lpi2c.Recv|lpi2c.MTDR(len(buf)-1),
+			lpi2c.Recv|int16(len(buf)-1),
 			lpi2c.Stop,
 		)
 		read(p, buf[:])

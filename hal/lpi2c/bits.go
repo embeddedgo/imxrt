@@ -217,19 +217,17 @@ const (
 	RXCOUNTn = 16
 )
 
-type MTDR uint32
-
 const (
-	DATA        MTDR = 0xFF << 0 //+ Transmit Data
-	CMD         MTDR = 0x07 << 8 //+ Command Data
-	Send        MTDR = 0x00 << 8 //  Transmit DATA[7:0]
-	Recv        MTDR = 0x01 << 8 //  Receive (DATA[7:0] + 1) bytes
-	Stop        MTDR = 0x02 << 8 //  Generate STOP condition
-	Discard     MTDR = 0x03 << 8 //  Receive and discard (DATA[7:0] + 1) bytes
-	Start       MTDR = 0x04 << 8 //  Generate (repeated) START and transmit address in DATA[7:0]
-	StartNACK   MTDR = 0x05 << 8 //  Generate (repeated) START and transmit address in DATA[7:0]. This transfer expects a NACK to be returned.
-	StartHS     MTDR = 0x06 << 8 //  Generate (repeated) START and transmit address in DATA[7:0] using high speed mode
-	StartHSNACK MTDR = 0x07 << 8 //  Generate (repeated) START and transmit address in DATA[7:0] using high speed mode. This transfer expects a NACK to be returned.
+	DATA        int16 = 0xFF << 0 //+ Transmit Data
+	CMD         int16 = 0x07 << 8 //+ Command Data
+	Send        int16 = 0x00 << 8 //  Transmit DATA[7:0]
+	Recv        int16 = 0x01 << 8 //  Receive (DATA[7:0] + 1) bytes
+	Stop        int16 = 0x02 << 8 //  Generate STOP condition
+	Discard     int16 = 0x03 << 8 //  Receive and discard (DATA[7:0] + 1) bytes
+	Start       int16 = 0x04 << 8 //  Generate (repeated) START and transmit address in DATA[7:0]
+	StartNACK   int16 = 0x05 << 8 //  Generate (repeated) START and transmit address in DATA[7:0]. This transfer expects a NACK to be returned.
+	StartHS     int16 = 0x06 << 8 //  Generate (repeated) START and transmit address in DATA[7:0] using high speed mode
+	StartHSNACK int16 = 0x07 << 8 //  Generate (repeated) START and transmit address in DATA[7:0] using high speed mode. This transfer expects a NACK to be returned.
 )
 
 const (
