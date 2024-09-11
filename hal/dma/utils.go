@@ -8,11 +8,10 @@ import "unsafe"
 
 // AlignOffsets calculatest the start and end offsets to the cache aligned
 // portion of the memory described by ptr and size.
-func AlignOffsets(ptr unsafe.Pointer, size int) (start, end uintptr) {
+func AlignOffsets(ptr unsafe.Pointer, size uintptr) (start, end uintptr) {
 	const cacheAlignMask = CacheLineSize - 1
 	p := uintptr(ptr)
-	n := uintptr(size)
 	start = -p & cacheAlignMask
-	end = n - (p+2*n)&cacheAlignMask
+	end = size - (p+size)&cacheAlignMask
 	return
 }
