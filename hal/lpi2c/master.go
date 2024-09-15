@@ -14,13 +14,14 @@ import (
 	"github.com/embeddedgo/imxrt/hal/dma"
 )
 
-// A Master is a driver for the LPI2C peripheral to perform a master access to
-// an I2C bus. It provides two interfaces.
+// A Master is a driver for the LPI2C peripheral. It provides two kinds of
+// interfaces to communicate with slave devices on the I2C bus.
 //
-// A low-level one for direct interraction with the Data / Command FIFOs of the
-// underlying LPI2C peripheral.
+// The first interface is a low-level one. It provides a set of methods to
+// directly interract with the Data / Command FIFOs of the underlying LPI2C
+// peripheral.
 //
-// Example (error checking omitted for clarity):
+// Example:
 //
 //	d.WriteCmd(
 //		lpi2c.Start|eepromAddr<<1|wr,
@@ -30,13 +31,20 @@ import (
 //		lpi2c.Stop,
 //	)
 //	d.Read(buf)
+//	if err := d.Err(true); err {
 //
 // Write methods in the low-level interface are asynchronous, that is, they may
-// return before the end of writting all commands/data to the internal FIFO.
-// Therefore you cannot modify the data/command buffer pass to last write until
-// calling the Flush method. The returned errors are also asynchronous (i.e.
-// event the ReadData method may return an error caused by prievious write).
+// return before the end of writting all commands/data to the FIFO. Therefore
+// you must not modify the data/command buffer pass to the last write method
+// until the return of the subsequent Flush method or another write method.
 //
+// The read/write methods doesn't return errors. Instead, they check the status
+// of the LPI2C peripheral before starting doing anything and return in case of
+// error. There is an Err method that allow to check and reset the LPI2C error
+// flags at a convenient time. Even if you call Err after every method call the
+// returned error is still asynchronous due to the asynchronous nature of write
+// methods and the delayed execution of commands by the LPI2C peripheral itself.
+
 // The second interface is a connection oriented one that implements the
 // i2cbus.Conn interface.
 //
@@ -77,7 +85,7 @@ type Master struct {
 func NewMaster(p *Periph, rdma, wdma dma.Channel) *Master {
 	return &Master{
 		name: string([]byte{'L', 'P', 'I', '2', 'C', '1' + byte(num(p))}),
-		p, rdma: rdma, wdma: wdma,
+		p:    p, rdma: rdma, wdma: wdma,
 	}
 }
 
@@ -148,14 +156,14 @@ func (d *Master) Setup(sp Speed) {
 	p.MCR.Store(MEN)
 }
 
-// Error contains value of the Master Status Register with one or more error
-// flags set.
-type Error struct {
+// MasterError contains value of the Master Status Register with one or more
+// error flags set.
+type MasterError struct {
 	Name string // name of the master
 	SR   MSR    // value of the Master Status Register as read by Master.Err
 }
 
-func (e *Error) Error() string {
+func (e *MasterError) Error() string {
 	var a [4]string
 	es := a[:0:4]
 	if e.SR&MNDF != 0 {
@@ -179,20 +187,14 @@ func (d *Master) Err(clear bool) error {
 		if clear {
 			p.MCR.SetBits(MRRF | MRTF) // clear FIFOs
 			p.MSR.Store(sr & errFlags) // clear the error flags
-
-			// Is this required to recover from error?
-			//if sr&MSDF == 0 {
-			//	p.MTDR.Store(Stop) // stop not detected
-			//}
 		}
-		return &Error{sr} // return all flags for the better context
+		return &MasterError{d.name, sr} // all flags for the better context
 	}
 	return nil
 }
 
 // WriteCmd starts writing commands into the Tx FIFO in the background using
-// interrupts and/or DMA. WriteCmd is no-op if len(cmd) == 0 so in such case
-// it doesn't wait for the end of previous write.
+// interrupts and/or DMA. WriteCmd is no-op if len(cmd) == 0 so.
 //
 // The concept of a combined command and data FIFO greatly simplifies use of the
 // I2C protocol. Thanks to this concept an I2C transaction or even multiple
@@ -231,6 +233,7 @@ func (d *Master) WriteCmd(cmd ...int16) {
 	masterWrite(d, unsafe.Pointer(&cmd[0]), len(cmd), 1)
 }
 
+// Write is like WriteCmd but writes only Send commands with the provided data.
 func (d *Master) Write(p []byte) {
 	if len(p) == 0 {
 		return
@@ -261,14 +264,19 @@ const (
 	errFlags = MNDF | MALF | MFEF | MPLTF
 )
 
+// Wait until the ISR will end the previously scheduled transfer.
+func masterWaitWrite(d *Master) {
+	// Wait for the ISR to end the previously scheduled transfer.
+	d.wdone.Sleep(-1)
+	d.wdone.Clear()
+	d.wcmds = nil
+	d.wdata = nil
+	d.wn = 0
+}
+
 func masterWrite(d *Master, ptr unsafe.Pointer, n int, lsz uint) {
 	if d.wn != 0 {
-		// Wait for the ISR to end the previously scheduled transfer.
-		d.wdone.Sleep(-1)
-		d.wdone.Clear()
-		d.wcmds = nil
-		d.wdata = nil
-		d.wn = 0
+		masterWaitWrite(d)
 	}
 	p := d.p
 	if p.MSR.Load()&errFlags != 0 {
@@ -302,9 +310,11 @@ func masterWrite(d *Master, ptr unsafe.Pointer, n int, lsz uint) {
 }
 
 func masterWriteDMA(d *Master, ptr unsafe.Pointer, n int, lsz uint) {
-
+	// TODO:
 }
 
+// Read reads len(p) data bytes from Rx FIFO. The read data is valid if Err
+// returns nil.
 func (d *Master) Read(p []byte) {
 	if len(p) == 0 {
 		return
@@ -328,6 +338,8 @@ func (d *Master) Read(p []byte) {
 	masterRead(d, &p[0], len(p))
 }
 
+// ReadByte reads a byte from Rx FIFO. The returned byte is valid if Err
+// returns nil.
 func (d *Master) ReadByte() byte {
 	var b byte
 	masterRead(d, &b, 1)
@@ -366,18 +378,17 @@ func masterRead(d *Master, ptr *byte, n int) {
 }
 
 func masterReadDMA(d *Master, ptr *byte, n int) {
-
+	// TODO:
 }
 
-func pr[T ~uint32](name string, v T) {
-	print(name, ": ")
-	for i := 32; i != 0; i-- {
-		if i&7 == 0 && i != 32 {
-			print("_")
-		}
-		print(v >> (i - 1) & 1)
+// Flush waits for the last command passed to the last WriteCmd call or last
+// data byte passed to the last Write call to be written to the Tx FIFO. Return
+// from Flush doesn't mean the written commands/data were or even will be
+// executed/sent because any error may interrupt fetching from FIFO.
+func (d *Master) Flush() {
+	if d.wn != 0 {
+		masterWaitWrite(d)
 	}
-	print("\r\n")
 }
 
 //go:nosplit
@@ -462,3 +473,16 @@ next:
 		}
 	}
 }
+
+/*
+func pr[T ~uint32](name string, v T) {
+	print(name, ": ")
+	for i := 32; i != 0; i-- {
+		if i&7 == 0 && i != 32 {
+			print("_")
+		}
+		print(v >> (i - 1) & 1)
+	}
+	print("\r\n")
+}
+*/
