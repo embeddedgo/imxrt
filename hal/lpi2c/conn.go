@@ -72,7 +72,7 @@ func connErr(c *conn) (err error) {
 	d := c.d
 	err = d.Err(true)
 	if err != nil {
-		err = &i2cbus.Error{d.name, err}
+		err = &i2cbus.MasterError{d.name, err}
 	}
 	return
 }

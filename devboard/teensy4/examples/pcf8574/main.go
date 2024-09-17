@@ -21,7 +21,7 @@ func pr[T ~uint32](name string, v T) {
 	)
 }
 
-func write(p *lpi2c.Periph, cmds ...lpi2c.MTDR) {
+func write(p *lpi2c.Periph, cmds ...int16) {
 	for _, cmd := range cmds {
 		for p.MSR.LoadBits(lpi2c.MTDF) == 0 {
 		}
@@ -85,7 +85,7 @@ func main() {
 		write(
 			p,
 			lpi2c.Start|prefix|a2a1a0|wr,
-			lpi2c.Send|lpi2c.MTDR(i&0xff),
+			lpi2c.Send|int16(i&0xff),
 			lpi2c.Stop,
 		)
 		time.Sleep(time.Second)
