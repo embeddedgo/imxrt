@@ -2,10 +2,28 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
+// Pcf8574 writes consecutive numbers to the remote I/O expander chip (PCF8574)
+// using I2C protocol.
+//
+// The easiest way to try this example is to use a PCF8574  based module
+// intended for LCD displays and one or more LEDs. Low-voltage LEDs like red
+// ones require a current limiting resistor of the order 150-200 Ω. High voltage
+// LEDs like the white ones may work without any resistor.
+//
+// Connect your LEDs between pin 1 (closest to the I2C connector, 3.3V) and
+// pins 4, 5, 6 (PCF8574 P0, P1, P2 outputs). Polarity matters. Pin 1 should be
+// connected to the anodes of all LEDS. The easiest way to do it is to use a
+// breadboard. Next connect the module pins GND, VCC, SDA, SCL to the Teensy
+// pins G, 3V, 18, 19. After programming your Teensy with this example the LEDs
+// should start blinking with different frequencies.
+//
+// As the LEDs are connected between 3,3V and P0, P1, P2 writing the
+// corresponding bit zero turns the LED on, writtin one turns it off. Because of
+// its quasi-bidirectional I/O the PCF8574 can't source enough current to stable
+// light a LED connected between Px pin and GND.
 package main
 
 import (
-	"fmt"
 	"time"
 
 	"github.com/embeddedgo/imxrt/hal/dma"
@@ -14,33 +32,10 @@ import (
 	"github.com/embeddedgo/imxrt/devboard/teensy4/board/pins"
 )
 
-func pr[T ~uint32](name string, v T) {
-	fmt.Printf(
-		"%s %08b_%08b %08b_%08b\n", name,
-		v>>24&0xff, v>>16&0xff, v>>8&0xff, v&0xff,
-	)
-}
-
-func write(p *lpi2c.Periph, cmds ...int16) {
-	for _, cmd := range cmds {
-		for p.MSR.LoadBits(lpi2c.MTDF) == 0 {
-		}
-		p.MTDR.Store(cmd)
-	}
-}
-
-func read(p *lpi2c.Periph, buf []byte) {
-	for i := range buf {
-		var v lpi2c.RDR
-		for {
-			v = p.MRDR.Load()
-			if v&lpi2c.RXEMPTY == 0 {
-				break
-			}
-		}
-		buf[i] = byte(v)
-	}
-}
+const (
+	prefix = 0x4 << 3 // 0b1010 address prefix
+	a2a1a0 = 0x7      // address pins
+)
 
 func main() {
 	// Used IO pins
@@ -49,46 +44,18 @@ func main() {
 
 	time.Sleep(5 * time.Second)
 
-	// Setup LPSPI3 driver
+	// Setup LPI2C driver
 	p := lpi2c.LPI2C(1)
 	d := lpi2c.NewMaster(p, dma.Channel{}, dma.Channel{})
+	d.Setup(lpi2c.Std100k)
 	d.UsePin(scl, lpi2c.SCL)
 	d.UsePin(sda, lpi2c.SDA)
 
-	d.Setup(lpi2c.Std100k)
-
-	pr("MCR:   ", p.MCR.Load())
-	pr("MSR:   ", p.MSR.Load())
-	pr("MIER   ", p.MIER.Load())
-	pr("MDER:  ", p.MDER.Load())
-	pr("MCFGR0:", p.MCFGR0.Load())
-	pr("MCFGR1:", p.MCFGR1.Load())
-	pr("MCFGR2:", p.MCFGR2.Load())
-	pr("MCFGR3:", p.MCFGR3.Load())
-	pr("MDMR:  ", p.MDMR.Load())
-	pr("MCCR0: ", p.MCCR0.Load())
-	pr("MCCR1: ", p.MCCR1.Load())
-	pr("MFCR:  ", p.MFCR.Load())
-
-	time.Sleep(5 * time.Second)
-
-	fmt.Println("Go!")
-
-	const (
-		prefix = 0x4 << 4 // 0b1010 address prefix
-		a2a1a0 = 0x7 << 1 // address pins
-		wr     = 0        // write transaction
-		rd     = 1        // read transaction
-	)
+	c := d.NewConn(prefix | a2a1a0)
 
 	for i := 0; ; i++ {
-		write(
-			p,
-			lpi2c.Start|prefix|a2a1a0|wr,
-			lpi2c.Send|int16(i&0xff),
-			lpi2c.Stop,
-		)
+		c.WriteByte(byte(i))
+		c.Close() // stop required
 		time.Sleep(time.Second)
 	}
-
 }

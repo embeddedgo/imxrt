@@ -2,6 +2,25 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
+// Ads1115 communicates with the ADS1115 analog to digital converter using I2C
+// protocol. It uses the single-shot mode of operation to periodically start an
+// A/D conversion to read a voltage between the AIN0 and ANI1 pins.
+//
+// This example presents two possible ways to communicate with an I2C device.
+// The first one uses the low-level interface (lowLevelWay function), the second
+// one uset the connection interface (connWay function). The low-level interface
+// may be more efficient and simpler in some specific cases. The connection
+// interface is more portable. Both can be used simultaneously as in this
+// example. If used concurently by multiple gorutines, the low-level interface
+// require using the Master.Mutex to ensure exclusive access to the Master
+// driver (the connection interface does it by default).
+//
+// This exapmle also presents how to use the I2C High-Sped mode. If you
+// encounter errors try to disable it. In case of the connection interface it's
+// easy: simply remove the i2cbus.HS flag from the adderess. In case of the
+// low-level interface you have to some remove/change Start* commands so it
+// requires more knowledge. If you are unsure how to do it simply comment out
+// the lowLevelWay function call.
 package main
 
 import (
