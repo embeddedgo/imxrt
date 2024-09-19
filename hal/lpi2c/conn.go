@@ -33,15 +33,16 @@ func (d *Master) ID() uint8 {
 
 type conn struct {
 	d      *Master
-	rstart [4]int16
+	a      i2cbus.Addr
 	wstart [3]int16
+	rstart [4]int16
 	n      int8
 	open   bool
 	wr     bool
 }
 
 func (d *Master) NewConn(a i2cbus.Addr) i2cbus.Conn {
-	c := &conn{d: d}
+	c := &conn{d: d, a: a}
 	start := Start
 	if a&i2cbus.HS != 0 {
 		start = StartHS
@@ -66,6 +67,14 @@ func (d *Master) NewConn(a i2cbus.Addr) i2cbus.Conn {
 		c.n++
 	}
 	return c
+}
+
+func (c *conn) Addr() i2cbus.Addr {
+	return c.a
+}
+
+func (c *conn) Master() i2cbus.Master {
+	return c.d
 }
 
 func connErr(c *conn) (err error) {
