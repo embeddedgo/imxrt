@@ -42,8 +42,6 @@ func main() {
 	sda := pins.P18 // AD_B1_01
 	scl := pins.P19 // AD_B1_00
 
-	time.Sleep(5 * time.Second)
-
 	// Setup LPI2C driver
 	p := lpi2c.LPI2C(1)
 	d := lpi2c.NewMaster(p, dma.Channel{}, dma.Channel{})
@@ -53,8 +51,8 @@ func main() {
 
 	c := d.NewConn(prefix | a2a1a0)
 
-	for i := 0; ; i++ {
-		c.WriteByte(byte(i))
+	for {
+		err := c.WriteByte(byte(i))
 		c.Close() // stop required
 		time.Sleep(time.Second)
 	}

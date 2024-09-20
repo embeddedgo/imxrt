@@ -159,8 +159,7 @@ func (d *Master) Setup(sp Speed) {
 // MasterError contains value of the Master Status Register with one or more
 // error flags set.
 type MasterError struct {
-	Name string // name of the master
-	SR   MSR    // value of the Master Status Register as read by Master.Err
+	SR MSR // value of the Master Status Register as read by Master.Err
 }
 
 func (e *MasterError) Error() string {
@@ -178,17 +177,19 @@ func (e *MasterError) Error() string {
 	if e.SR&MPLTF != 0 {
 		es = append(es, "PinLow")
 	}
-	return "lpi2c: " + strings.Join(es, ",")
+	return "lpi2c master: " + strings.Join(es, ",")
 }
 
 func (d *Master) Err(clear bool) error {
 	p := d.p
 	if sr := p.MSR.Load(); sr&errFlags != 0 {
 		if clear {
-			p.MCR.SetBits(MRRF | MRTF) // clear FIFOs
+			if sr&(errFlags&^MNDF) != 0 {
+				p.MCR.SetBits(MRRF | MRTF) // clear FIFOs
+			}
 			p.MSR.Store(sr & errFlags) // clear the error flags
 		}
-		return &MasterError{d.name, sr} // all flags for the better context
+		return &MasterError{sr} // all flags for the better context
 	}
 	return nil
 }

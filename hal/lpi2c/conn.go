@@ -159,7 +159,7 @@ func (c *conn) ReadByte() (b byte, err error) {
 
 func (c *conn) Close() error {
 	if !c.open {
-		panic("already closed")
+		return nil // already closed
 	}
 	c.d.WriteCmd(Stop)
 	c.d.Flush()
