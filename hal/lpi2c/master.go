@@ -195,7 +195,7 @@ func (d *Master) Err(clear bool) error {
 }
 
 // WriteCmd starts writing commands into the Tx FIFO in the background using
-// interrupts and/or DMA. WriteCmd is no-op if len(cmd) == 0 so.
+// interrupts and/or DMA. WriteCmd is no-op if len(cmd) == 0.
 //
 // The concept of a combined command and data FIFO greatly simplifies use of the
 // I2C protocol. Thanks to this concept an I2C transaction or even multiple
@@ -256,6 +256,11 @@ func (d *Master) Write(p []byte) {
 		p = p[dmaEnd:]
 	}
 	masterWrite(d, unsafe.Pointer(&p[0]), len(p), 0)
+}
+
+// WriteString is like Write but writes bytes from string instead of slice.
+func (d *Master) WriteString(s string) {
+	d.Write(unsafe.Slice(unsafe.StringData(s), len(s)))
 }
 
 const (
