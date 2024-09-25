@@ -2,7 +2,8 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-// Eeprom writes and read the memory of the 24C64 I2C EEPROM.
+// Eeprom writes and read the memory of the 24C64 I2C EEPROM (64 Kb = 8192 B =
+// 256 pages * 32 B/page).
 package main
 
 import (
@@ -42,45 +43,56 @@ func main() {
 
 	//c := d.NewConn(prefix | e2e1e0)
 
-again:
-	time.Sleep(2 * time.Second)
+	var buf [32]byte
 
-	for i := 0; ; i++ {
-		mah := byte(i >> 8) // memory address high byte
-		mal := byte(i)      // memory address low byte
+loop:
+	for page := 0; ; page++ {
+		time.Sleep(2 * time.Second)
+		a := page * 32
+		mah := byte(a >> 8) // memory address high byte
+		mal := byte(a)      // memory address low byte
 
-		/*
-			fmt.Println(i, "write:", mal)
-			// Write a byte
-			master.WriteCmd(
-				lpi2c.Start|slaveAddr<<1|wr,
-				lpi2c.Send|int16(mah),
-				lpi2c.Send|int16(mal),
-				lpi2c.Send|int16(mal), // data byte
-				lpi2c.Stop,
-			)
+		// Write string
+		fmt.Println(page, "write:")
+		master.WriteCmd(
+			lpi2c.Start|slaveAddr<<1|wr,
+			lpi2c.Send|int16(mah),
+			lpi2c.Send|int16(mal),
+		)
+		s := fmt.Sprintf("> page %#x <", page)
+		master.WriteString(s)
+		master.WriteCmd(lpi2c.Stop)
+		if err := master.Err(true); err != nil {
+			fmt.Println("write error:", err)
+			continue
+		}
+		for {
+			master.WriteCmd(lpi2c.StartNACK | slaveAddr<<1 | wr)
 			if err := master.Err(true); err != nil {
-				fmt.Println(err)
-				goto again
+				e := err.(*lpi2c.MasterError)
+				if e.SR&lpi2c.MasterErrFlags != lpi2c.MNDF {
+					fmt.Println("wait error:", err)
+					continue loop
+				}
+				break
 			}
-			time.Sleep(time.Second)
-		*/
+		}
 
-		// Read a byte
+		// Read string
 		master.WriteCmd(
 			lpi2c.Start|slaveAddr<<1|wr,
 			lpi2c.Send|int16(mah),
 			lpi2c.Send|int16(mal),
 			lpi2c.Start|slaveAddr<<1|rd,
-			lpi2c.Recv,
+			lpi2c.Recv|int16(len(s)-1),
 			lpi2c.Stop,
 		)
-		fmt.Println(i, "read:", master.ReadByte())
+		master.Read(buf[:len(s)])
 		if err := master.Err(true); err != nil {
-			fmt.Println(err)
-			goto again
+			fmt.Println("read error:", err)
+			continue
 		}
-		time.Sleep(time.Second)
+		fmt.Println(page, "read:", string(buf[:len(s)]))
 	}
 
 }

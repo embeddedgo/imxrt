@@ -5,6 +5,8 @@
 package lpi2c
 
 import (
+	"unsafe"
+
 	"github.com/embeddedgo/device/bus/i2cbus"
 )
 
@@ -77,15 +79,6 @@ func (c *conn) Master() i2cbus.Master {
 	return c.d
 }
 
-func connErr(c *conn) (err error) {
-	d := c.d
-	err = d.Err(true)
-	if err != nil {
-		err = &i2cbus.MasterError{d.name, err}
-	}
-	return
-}
-
 func startWrite(c *conn) {
 	open := c.open
 	if !open {
@@ -103,13 +96,21 @@ func startWrite(c *conn) {
 }
 
 func (c *conn) Write(p []byte) (n int, err error) {
+	if len(p) == 0 {
+		return
+	}
 	startWrite(c)
 	c.d.Write(p)
+	c.d.Flush() // ensure p isn't used after return
 	err = connErr(c)
 	if err == nil {
 		n = len(p)
 	}
 	return
+}
+
+func (c *conn) WriteString(s string) (n int, err error) {
+	return c.Write(unsafe.Slice(unsafe.StringData(s), len(s)))
 }
 
 func (c *conn) WriteByte(b byte) error {
@@ -164,8 +165,22 @@ func (c *conn) Close() error {
 	c.d.WriteCmd(Stop)
 	c.d.Flush()
 	err := connErr(c)
-	c.d.Unlock()
-	c.open = false
-	c.wr = false
+	if err == nil {
+		c.d.Unlock()
+		c.open = false
+		c.wr = false
+	}
 	return err
+}
+
+func connErr(c *conn) (err error) {
+	d := c.d
+	err = d.Err(true)
+	if err != nil {
+		err = &i2cbus.MasterError{d.name, err}
+		c.d.Unlock()
+		c.open = false
+		c.wr = false
+	}
+	return
 }

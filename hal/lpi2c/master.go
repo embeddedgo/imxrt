@@ -182,12 +182,10 @@ func (e *MasterError) Error() string {
 
 func (d *Master) Err(clear bool) error {
 	p := d.p
-	if sr := p.MSR.Load(); sr&errFlags != 0 {
+	if sr := p.MSR.Load(); sr&MasterErrFlags != 0 {
 		if clear {
-			if sr&(errFlags&^MNDF) != 0 {
-				p.MCR.SetBits(MRRF | MRTF) // clear FIFOs
-			}
-			p.MSR.Store(sr & errFlags) // clear the error flags
+			p.MCR.SetBits(MRRF | MRTF)       // clear FIFOs
+			p.MSR.Store(sr & MasterErrFlags) // clear the error flags
 		}
 		return &MasterError{sr} // all flags for the better context
 	}
@@ -266,9 +264,9 @@ func (d *Master) WriteString(s string) {
 const (
 	txFIFOLen = 4
 	rxFIFOLen = 4
-
-	errFlags = MNDF | MALF | MFEF | MPLTF
 )
+
+const MasterErrFlags = MNDF | MALF | MFEF | MPLTF
 
 // Wait until the ISR will end the previously scheduled transfer.
 func masterWaitWrite(d *Master) {
@@ -285,7 +283,7 @@ func masterWrite(d *Master, ptr unsafe.Pointer, n int, lsz uint) {
 		masterWaitWrite(d)
 	}
 	p := d.p
-	if p.MSR.Load()&errFlags != 0 {
+	if p.MSR.Load()&MasterErrFlags != 0 {
 		return
 	}
 	// Avoid interrupts if there is a free space in the FIFO.
@@ -312,7 +310,7 @@ func masterWrite(d *Master, ptr unsafe.Pointer, n int, lsz uint) {
 	// The remaining data/commands will be writtend to the FIFO by the ISR.
 	d.wi = 0
 	atomic.StoreInt32(&d.wn, int32(n-i))
-	p.MIER.Store(MTDF | errFlags) // use Store because there is no pending read
+	p.MIER.Store(MTDF | MasterErrFlags) // use Store because there is no pending read
 }
 
 func masterWriteDMA(d *Master, ptr unsafe.Pointer, n int, lsz uint) {
@@ -354,7 +352,7 @@ func (d *Master) ReadByte() byte {
 
 func masterRead(d *Master, ptr *byte, n int) {
 	p := d.p
-	if p.MSR.Load()&errFlags != 0 {
+	if p.MSR.Load()&MasterErrFlags != 0 {
 		return
 	}
 	// Avoid interrupts if there is data in the FIFO.
@@ -377,7 +375,7 @@ func masterRead(d *Master, ptr *byte, n int) {
 	d.rn = int32(n)
 	d.rdone.Clear() // memory barrier
 	p.MFCR.Store(MFCR(min(n, rxFIFOLen)-1) << RXWATERn)
-	p.MIER.SetBits(MRDF | errFlags)
+	p.MIER.SetBits(MRDF | MasterErrFlags)
 	d.rdone.Sleep(-1)
 	d.rdata = nil
 	d.rn = 0
@@ -388,9 +386,9 @@ func masterReadDMA(d *Master, ptr *byte, n int) {
 }
 
 // Flush waits for the last command passed to the last WriteCmd call or last
-// data byte passed to the last Write call to be written to the Tx FIFO. Return
-// from Flush doesn't mean the written commands/data were or even will be
-// executed/sent because any error may interrupt fetching from FIFO.
+// data byte passed to the last Write/WriteString call to be written to the Tx
+// FIFO. Return from Flush doesn't mean the written commands/data were or even
+// will be executed/sent because any error may interrupt fetching from FIFO.
 func (d *Master) Flush() {
 	if d.wn != 0 {
 		masterWaitWrite(d)
@@ -402,7 +400,7 @@ func (d *Master) Flush() {
 func (d *Master) ISR() {
 	p := d.p
 	sr := p.MSR.Load()
-	if sr&errFlags != 0 {
+	if sr&MasterErrFlags != 0 {
 		// Goroutnies first set d.txn/d.rxn and next set MIER so the ISR must
 		// clear MIER before checking d.txn/d.rxn to avoid goroutine stall.
 		p.MIER.Store(0)
@@ -441,7 +439,7 @@ func (d *Master) ISR() {
 			p.MIER.Store(0) // disable all interrupts and fix this in a moment
 			if atomic.LoadInt32(&d.rn) > 0 {
 				// There is a pending read so reenable read interrupts
-				p.MIER.Store(MRDF | errFlags)
+				p.MIER.Store(MRDF | MasterErrFlags)
 			}
 			d.wdone.Wakeup()
 		}
@@ -469,7 +467,7 @@ next:
 			if ier&MTDF == 0 {
 				ier = 0 // no pending write, disable all interrupts
 			} else {
-				ier = MTDF | errFlags // disable only read interrupt
+				ier = MTDF | MasterErrFlags // disable only read interrupt
 			}
 			p.MIER.Store(ier)
 			d.rdone.Wakeup()
