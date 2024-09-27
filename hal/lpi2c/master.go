@@ -34,17 +34,18 @@ import (
 //	if err := d.Err(true); err {
 //
 // Write methods in the low-level interface are asynchronous, that is, they may
-// return before the end of writting all commands/data to the FIFO. Therefore
-// you must not modify the data/command buffer pass to the last write method
-// until the return of the subsequent Flush method or another write method.
+// return before all commands/data will be written to the FIFO. Therefore you
+// must not modify the data/command buffer pass to the last write method until
+// the return of the subsequent Flush method or another write method.
 //
 // The read/write methods doesn't return errors. Instead, they check the status
 // of the LPI2C peripheral before starting doing anything and return in case of
 // error. There is an Err method that allow to check and reset the LPI2C error
 // flags at a convenient time. Even if you call Err after every method call the
-// returned error is still asynchronous due to the asynchronous nature of write
-// methods and the delayed execution of commands by the LPI2C peripheral itself.
-
+// returned error is still asynchronous due to the asynchronous nature of the
+// write methods and the delayed execution of commands by the LPI2C peripheral
+// itself.
+//
 // The second interface is a connection oriented one that implements the
 // i2cbus.Conn interface.
 //
@@ -124,7 +125,7 @@ const (
 	timingFastHS = div2<<6 | hs<<34 | fahs
 	timingPlusHS = div2<<6 | hs<<34 | plhs
 
-	stuckBusTimeout = 40 // ms (TI "I2C Stuck Bus: Prevention and Workarounds")
+	stuckBusTimeout = 40 // ms, see "I2C Stuck Bus: Prevention and Workarounds"
 )
 
 // Speed encodes the timing configuration that determines the maximum
@@ -152,7 +153,12 @@ func (d *Master) Setup(sp Speed) {
 	gf := MCFGR2(sp>>30) & 0xf // the used encoding supports MFILT <= 15
 	bi := (MCFGR2(sp)>>CLKLOn&63 + MCFGR2(sp)>>SETHOLDn&63 + 2) * 2
 	p.MCFGR2.Store(gf<<MFILTSDAn | gf<<MFILTSCLn | bi<<MBUSIDLEn)
-	p.MCFGR3.Store(clk * stuckBusTimeout / 1000 / 256 >> pre << PINLOWn)
+
+	// Don't use Pin Low Timeout because it detects the low state of the SCK pin
+	// held low by the LPI2C state machine after Start command when it waits for
+	// more data/command in the Tx FIFO or a free space in the Rx FIFO.
+	//p.MCFGR3.Store(clk * stuckBusTimeout / 1000 / 256 >> pre << PINLOWn)
+
 	p.MCR.Store(MEN)
 }
 
@@ -192,30 +198,46 @@ func (d *Master) Err(clear bool) error {
 	return nil
 }
 
-// WriteCmd starts writing commands into the Tx FIFO in the background using
-// interrupts and/or DMA. WriteCmd is no-op if len(cmd) == 0.
+// WriteCmd writes one command to the Tx FIFO. It's a lightweight operation if
+// there is a free space in the Tx FIFO but if the FIFO is full it busy waits
+// for an empty slot.
+func (d *Master) WriteCmd(cmd int16) {
+	if d.wn != 0 {
+		masterWaitWrite(d)
+	}
+	p := d.p
+	for p.MFSR.LoadBits(TXCOUNT)>>TXCOUNTn == txFIFOLen {
+		if p.MSR.LoadBits(MasterErrFlags) != 0 {
+			return
+		}
+	}
+	p.MTDR.Store(cmd)
+}
+
+// WriteCmds starts writing commands into the Tx FIFO in the background using
+// interrupts and/or DMA. WriteCmd is no-op if len(cmds) == 0.
 //
-// The concept of a combined command and data FIFO greatly simplifies use of the
-// I2C protocol. Thanks to this concept an I2C transaction or even multiple
-// transactions can be prepared in advance as array of commands and data. This
-// includes receive transactions if the amount of receive data is known.
+// The LPI2C concept of a combined command and data FIFO greatly simplifies use
+// of the I2C protocol. Thanks to this concept an I2C transaction or even
+// multiple transactions can be prepared in advance as an array of commands and
+// data, including receive transactions if the amount of data is known.
 //
 // There is, however, a certain weakness of the LPI2C peripheral when it comes
 // to receiving data of an unknown quantity or if the data should be slowly
 // received in chunks of size less than the Rx FIFO. Such transfers may require
-// issuing repeat start conditions after each chunk to avoid FIFO error
-// (MSR[FEF]). This is because the LPI2C periperal transmits NACK at the end of
-// the Recv command if the Rx FIFO isn't full and there is no next Recv or
-// Discard command in the Tx FIFO. Two or more consecutive Recv commands in the
-// list passed to WriteCmd may also cause the FIFO error because there is no
-// guarantee that they will all get in the Tx FIFO on time.
-func (d *Master) WriteCmd(cmd ...int16) {
-	if len(cmd) == 0 {
+// issuing repeat start conditions after each chunk to avoid MSR[FEF] error.
+// This is because the LPI2C periperal transmits NACK at the end of the Recv
+// command if the Rx FIFO isn't full and there is no next Recv or Discard
+// command in the Tx FIFO. Two or more consecutive Recv commands in the list
+// passed to WriteCmds may also cause the FIFO error because there is no
+// guarantee that they will all get into the Tx FIFO on time.
+func (d *Master) WriteCmds(cmds []int16) {
+	if len(cmds) == 0 {
 		return
 	}
-	if d.wdma.IsValid() && len(cmd)*2 >= 2*dma.CacheLineSize {
-		ptr := unsafe.Pointer(&cmd[0])
-		ds, de := dma.AlignOffsets(ptr, uintptr(len(cmd)*2))
+	if d.wdma.IsValid() && len(cmds)*2 >= 2*dma.CacheLineSize {
+		ptr := unsafe.Pointer(&cmds[0])
+		ds, de := dma.AlignOffsets(ptr, uintptr(len(cmds)*2))
 		dmaStart := int(ds / 2)
 		dmaEnd := int(de / 2)
 		dmaPtr := unsafe.Add(ptr, ds)
@@ -224,15 +246,15 @@ func (d *Master) WriteCmd(cmd ...int16) {
 			masterWrite(d, ptr, dmaStart, 1)
 		}
 		masterWriteDMA(d, dmaPtr, dmaN, 1)
-		if dmaEnd == len(cmd) {
+		if dmaEnd == len(cmds) {
 			return
 		}
-		cmd = cmd[dmaEnd:]
+		cmds = cmds[dmaEnd:]
 	}
-	masterWrite(d, unsafe.Pointer(&cmd[0]), len(cmd), 1)
+	masterWrite(d, unsafe.Pointer(&cmds[0]), len(cmds), 1)
 }
 
-// Write is like WriteCmd but writes only Send commands with the provided data.
+// Write is like WriteCmds but writes only Send commands with the provided data.
 func (d *Master) Write(p []byte) {
 	if len(p) == 0 {
 		return
@@ -310,7 +332,7 @@ func masterWrite(d *Master, ptr unsafe.Pointer, n int, lsz uint) {
 	// The remaining data/commands will be writtend to the FIFO by the ISR.
 	d.wi = 0
 	atomic.StoreInt32(&d.wn, int32(n-i))
-	p.MIER.Store(MTDF | MasterErrFlags) // use Store because there is no pending read
+	p.MIER.Store(MTDF | MasterErrFlags) // plain Store because there is no pending read
 }
 
 func masterWriteDMA(d *Master, ptr unsafe.Pointer, n int, lsz uint) {
@@ -385,12 +407,19 @@ func masterReadDMA(d *Master, ptr *byte, n int) {
 	// TODO:
 }
 
-// Flush waits for the last command passed to the last WriteCmd call or last
-// data byte passed to the last Write/WriteString call to be written to the Tx
+// Flush waits for the last command passed to the last WriteCmd call or the last
+// data byte passed to the last Write/WriteString call. If fifo is false it
+// ensusres only that the last byte written to the Tx FIFO so the buffer to be written to the Tx
 // FIFO. Return from Flush doesn't mean the written commands/data were or even
-// will be executed/sent because any error may interrupt fetching from FIFO.
-func (d *Master) Flush() {
+// will be executed/sent because any error may stop the LPI2C state machine
+// fetching commands/data from the Tx FIFO.
+func (d *Master) Flush(fifo bool) {
 	if d.wn != 0 {
+		masterWaitWrite(d)
+	}
+	if p := d.p; fifo && p.MSR.LoadBits(MTDF) == 0 {
+		atomic.StoreInt32(&d.wn, -1)
+		p.MIER.Store(MTDF | MasterErrFlags) // plain Store because there is no pending read
 		masterWaitWrite(d)
 	}
 }
@@ -420,29 +449,33 @@ func (d *Master) ISR() {
 	if sr&MTDF == 0 {
 		goto next
 	}
-	if n := atomic.LoadInt32(&d.wn); n > 0 {
-		// Because MFCR[TXWATER]=0 (see Setup) the FIFO is now empty.
-		i := d.wi
-		m := min(i+txFIFOLen, n)
-		if d.wdata != nil {
-			for _, b := range unsafe.Slice(d.wdata, n)[i:m] {
-				p.MTDR.Store(int16(b))
+	if n := atomic.LoadInt32(&d.wn); n != 0 {
+		// n=-1 is from Flush(true)
+		if n > 0 {
+			// Because MFCR[TXWATER]=0 (see Setup) the FIFO is now empty.
+			i := d.wi
+			m := min(i+txFIFOLen, n)
+			if d.wdata != nil {
+				for _, b := range unsafe.Slice(d.wdata, n)[i:m] {
+					p.MTDR.Store(int16(b))
+				}
+			} else {
+				for _, cmd := range unsafe.Slice(d.wcmds, n)[i:m] {
+					p.MTDR.Store(cmd)
+				}
 			}
-		} else {
-			for _, cmd := range unsafe.Slice(d.wcmds, n)[i:m] {
-				p.MTDR.Store(cmd)
+			d.wi = m
+			if m != n {
+				goto next
 			}
-		}
-		d.wi = m
-		if m == n {
 			// Done
-			p.MIER.Store(0) // disable all interrupts and fix this in a moment
-			if atomic.LoadInt32(&d.rn) > 0 {
-				// There is a pending read so reenable read interrupts
-				p.MIER.Store(MRDF | MasterErrFlags)
-			}
-			d.wdone.Wakeup()
 		}
+		p.MIER.Store(0) // disable all interrupts and fix this in a moment
+		if atomic.LoadInt32(&d.rn) > 0 {
+			// There is a pending read so reenable read interrupts
+			p.MIER.Store(MRDF | MasterErrFlags)
+		}
+		d.wdone.Wakeup()
 	}
 next:
 	// Read

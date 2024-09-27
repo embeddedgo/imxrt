@@ -5,25 +5,26 @@
 package lpi2c
 
 import (
+	"time"
 	"unsafe"
 
 	"github.com/embeddedgo/device/bus/i2cbus"
 )
 
-// Name returns the driver name. The default name is the name of the underlying
-// peripheral (e.g. "LPI2C1") but can be changed using SetName.
+// Name implements the i2cbus.Master interface. The default name is the name of
+// the underlying peripheral (e.g. "LPI2C1") but can be changed using SetName.
 func (d *Master) Name() string {
 	return d.name
 }
 
-// SetName allows to change the default driver name.
+// SetName allows to change the default master name (see Name).
 func (d *Master) SetName(s string) {
 	d.name = s
 }
 
-// SetID sets the Master ID. The three least significant bits of this ID are
-// used for arbitration between competing masters while switching to the high
-// speed mode.
+// SetID sets the Master ID. The id is used by connections returned by the
+// NewConn method. Its three least significant bits are used for arbitration
+// between competing masters while switching to the high speed mode.
 func (d *Master) SetID(id uint8) {
 	d.id = id
 }
@@ -43,6 +44,7 @@ type conn struct {
 	wr     bool
 }
 
+// NewConn implements the i2cbus.Master interface.
 func (d *Master) NewConn(a i2cbus.Addr) i2cbus.Conn {
 	c := &conn{d: d, a: a}
 	start := Start
@@ -71,10 +73,12 @@ func (d *Master) NewConn(a i2cbus.Addr) i2cbus.Conn {
 	return c
 }
 
+// Addr implements the i2cbus.Conn interface.
 func (c *conn) Addr() i2cbus.Addr {
 	return c.a
 }
 
+// Master implements the i2cbus.Conn interface.
 func (c *conn) Master() i2cbus.Master {
 	return c.d
 }
@@ -91,17 +95,18 @@ func startWrite(c *conn) {
 		if open && c.wstart[0]>>8 == StartNACK>>8 {
 			i = 1
 		}
-		c.d.WriteCmd(c.wstart[i:c.n]...)
+		c.d.WriteCmds(c.wstart[i:c.n])
 	}
 }
 
+// Write implements the i2cbus.Conn interface and the io.Writer interface.
 func (c *conn) Write(p []byte) (n int, err error) {
 	if len(p) == 0 {
 		return
 	}
 	startWrite(c)
 	c.d.Write(p)
-	c.d.Flush() // ensure p isn't used after return
+	c.d.Flush(false) // ensure p isn't used after return
 	err = connErr(c)
 	if err == nil {
 		n = len(p)
@@ -109,10 +114,13 @@ func (c *conn) Write(p []byte) (n int, err error) {
 	return
 }
 
+// WriteString implements the io.StringWriter interface.
 func (c *conn) WriteString(s string) (n int, err error) {
 	return c.Write(unsafe.Slice(unsafe.StringData(s), len(s)))
 }
 
+// WriteByte implements the i2cbus.Conn interface and the io.ByteWriter
+// interface.
 func (c *conn) WriteByte(b byte) error {
 	startWrite(c)
 	c.d.WriteCmd(Send | int16(b))
@@ -131,9 +139,10 @@ func startRead(c *conn, arg byte) {
 		i = 1
 	}
 	c.rstart[c.n] = Recv | int16(arg)
-	c.d.WriteCmd(c.rstart[i : c.n+1]...)
+	c.d.WriteCmds(c.rstart[i : c.n+1])
 }
 
+// Read implements the i2cbus.Conn interface and the io.Reader interface.
 func (c *conn) Read(p []byte) (n int, err error) {
 	n = len(p)
 	if n == 0 {
@@ -151,6 +160,8 @@ func (c *conn) Read(p []byte) (n int, err error) {
 	return
 }
 
+// ReadByte implements the i2cbus.Conn interface and the io.ByteReader
+// interface.
 func (c *conn) ReadByte() (b byte, err error) {
 	startRead(c, 0)
 	b = c.d.ReadByte()
@@ -158,12 +169,23 @@ func (c *conn) ReadByte() (b byte, err error) {
 	return
 }
 
+func (c *conn) Wait(timeout time.Duration) error {
+	if c.open {
+		panic("wait on open I2C conn")
+	}
+	d := c.d
+	d.Lock()
+	startWrite(c)
+	d.Unlock()
+	return nil
+}
+
+// Close implements the i2cbus.Conn interface and the io.Closer interface.
 func (c *conn) Close() error {
 	if !c.open {
 		return nil // already closed
 	}
 	c.d.WriteCmd(Stop)
-	c.d.Flush()
 	err := connErr(c)
 	if err == nil {
 		c.d.Unlock()
