@@ -400,28 +400,41 @@ func masterRead(d *Master, ptr *byte, n int) {
 	p.MIER.SetBits(MRDF | MasterErrFlags)
 	d.rdone.Sleep(-1)
 	d.rdata = nil
-	d.rn = 0
 }
 
 func masterReadDMA(d *Master, ptr *byte, n int) {
 	// TODO:
 }
 
-// Flush waits for the last command passed to the last WriteCmd call or the last
-// data byte passed to the last Write/WriteString call. If fifo is false it
-// ensusres only that the last byte written to the Tx FIFO so the buffer to be written to the Tx
+// Flush waits for the last command passed to the last WriteCmd call or last
+// data byte passed to the last Write/WriteString call to be written to the Tx
 // FIFO. Return from Flush doesn't mean the written commands/data were or even
-// will be executed/sent because any error may stop the LPI2C state machine
-// fetching commands/data from the Tx FIFO.
-func (d *Master) Flush(fifo bool) {
+// will be executed/sent.
+func (d *Master) Flush() {
 	if d.wn != 0 {
 		masterWaitWrite(d)
 	}
-	if p := d.p; fifo && p.MSR.LoadBits(MTDF) == 0 {
-		atomic.StoreInt32(&d.wn, -1)
-		p.MIER.Store(MTDF | MasterErrFlags) // plain Store because there is no pending read
-		masterWaitWrite(d)
+}
+
+// Clear allows to clear the MEPF, MSDF, MDMF in the MSR register. It is
+// intended to be used together with the Wait method to wait for one of these
+// flags to be set again.
+func (d *Master) Clear(flags MSR) {
+	d.p.MSR.Store(flags & (MEPF | MSDF | MDMF))
+}
+
+// Wait waits for an event described by the MEPF, MSDF, MDMF flags. You should
+// clear a flag first, before wait for the corresponding event.
+func (d *Master) Wait(flags MSR) {
+	flags &= MEPF | MSDF | MDMF
+	if flags == 0 {
+		return
 	}
+	flags |= MasterErrFlags
+	d.rn = -int32(flags)
+	d.rdone.Clear() // memory barrier
+	d.p.MIER.SetBits(flags)
+	d.rdone.Sleep(-1)
 }
 
 //go:nosplit
@@ -445,13 +458,11 @@ func (d *Master) ISR() {
 		}
 		return
 	}
-	// Write
-	if sr&MTDF == 0 {
-		goto next
-	}
-	if n := atomic.LoadInt32(&d.wn); n != 0 {
-		// n=-1 is from Flush(true)
-		if n > 0 {
+	ier := p.MIER.Load()
+	sr &= ier
+	if sr&MTDF != 0 {
+		// Write. May work concurently with the thread Read or Wait code.
+		if n := atomic.LoadInt32(&d.wn); n > 0 {
 			// Because MFCR[TXWATER]=0 (see Setup) the FIFO is now empty.
 			i := d.wi
 			m := min(i+txFIFOLen, n)
@@ -465,48 +476,55 @@ func (d *Master) ISR() {
 				}
 			}
 			d.wi = m
-			if m != n {
-				goto next
+			if m == n {
+				// Done
+				p.MIER.Store(0) // disable all irqs and fix this in a moment
+				if rn := atomic.LoadInt32(&d.rn); rn > 0 {
+					// There is a pending read so reenable read interrupts
+					p.MIER.Store(MRDF | MasterErrFlags) // BUG: race
+				} else if rn < 0 {
+					// There is a pending wait so reenable wait interrupts
+					p.MIER.Store(MSR(-rn)) // BUG: race
+				}
+				d.wdone.Wakeup()
+				ier &^= MTDF
 			}
-			// Done
 		}
-		p.MIER.Store(0) // disable all interrupts and fix this in a moment
-		if atomic.LoadInt32(&d.rn) > 0 {
-			// There is a pending read so reenable read interrupts
-			p.MIER.Store(MRDF | MasterErrFlags)
-		}
-		d.wdone.Wakeup()
 	}
-next:
-	// Read
-	if sr&MRDF == 0 {
-		return
-	}
-	if n := atomic.LoadInt32(&d.rn); n > 0 {
-		data := unsafe.Slice(d.rdata, n)
-		i := d.ri
-		for int(i) < len(data) {
-			v := p.MRDR.Load()
-			if v&RXEMPTY != 0 {
-				break
+	if sr&(MRDF|MEPF|MSDF|MDMF) != 0 {
+		done := false
+		if n := atomic.LoadInt32(&d.rn); n > 0 {
+			// Read
+			data := unsafe.Slice(d.rdata, n)
+			i := d.ri
+			for int(i) < len(data) {
+				v := p.MRDR.Load()
+				if v&RXEMPTY != 0 {
+					break
+				}
+				data[i] = byte(v)
+				i++
 			}
-			data[i] = byte(v)
-			i++
+			d.ri = i
+			if n := len(data) - int(i); n == 0 {
+				done = true
+			} else if n < rxFIFOLen {
+				// Reduce MFCR[RXWATER] to the size of the last chunk of data.
+				p.MFCR.Store(MFCR(n-1) << RXWATERn)
+			}
+		} else if n < 0 {
+			// Wait
+			done = true
 		}
-		d.ri = i
-		if n := len(data) - int(i); n == 0 {
-			// Done
-			ier := p.MIER.Load()
+		if done {
 			if ier&MTDF == 0 {
 				ier = 0 // no pending write, disable all interrupts
 			} else {
-				ier = MTDF | MasterErrFlags // disable only read interrupt
+				ier = MTDF | MasterErrFlags // disable only read/wait interrupts
 			}
 			p.MIER.Store(ier)
+			d.rn = 0 // must clear it here because the ISR write code checks it
 			d.rdone.Wakeup()
-		} else if n < rxFIFOLen {
-			// Reduce MFCR[RXWATER] to the size of the last chunk of data.
-			p.MFCR.Store(MFCR(n-1) << RXWATERn)
 		}
 	}
 }

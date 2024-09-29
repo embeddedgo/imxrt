@@ -45,7 +45,7 @@ func main() {
 
 	var buf [32]byte
 
-	var log [32]uint16
+	//	var log [64]uint16
 
 loop:
 	for page := 0; ; page++ {
@@ -61,7 +61,7 @@ loop:
 			lpi2c.Send | int16(mah),
 			lpi2c.Send | int16(mal),
 		})
-		s := fmt.Sprintf("> Strona %#x <    .", page)
+		s := fmt.Sprintf("> str %#x <    .", page)
 		master.WriteString(s)
 		master.WriteCmd(lpi2c.Stop)
 		if err := master.Err(true); err != nil {
@@ -70,16 +70,16 @@ loop:
 		}
 
 		i := 0
+		p := master.Periph()
+		for p.MSR.LoadBits(lpi2c.MasterErrFlags|lpi2c.MTDF) == 0 {
+		}
+
+		time.Sleep(time.Second)
+		master.WriteCmd(lpi2c.Start | slaveAddr<<1 | wr)
 		for {
+			p.MSR.Store(lpi2c.MEPF)
 			master.WriteCmd(lpi2c.Start | slaveAddr<<1 | wr)
-			p := master.Periph()
-			for {
-				sr := p.MSR.Load()
-				copy(log[:], log[1:])
-				log[len(log)-1] = uint16(sr&0x3fff | sr>>10&0xc000)
-				if sr&lpi2c.MBF == 0 || sr&lpi2c.MasterErrFlags != 0 {
-					break
-				}
+			for p.MSR.LoadBits(lpi2c.MasterErrFlags|lpi2c.MEPF) == 0 {
 			}
 			err := master.Err(true)
 			if err == nil {
@@ -92,16 +92,23 @@ loop:
 			}
 			i++
 		}
-		time.Sleep(50 * time.Millisecond)
-		if err := master.Err(true); err != nil {
-			fmt.Println("wait1 error:", err)
-			continue
-		}
-		fmt.Println("wait log: ", i)
-		for _, u16 := range log {
-			fmt.Printf("%d: %08b %08b\n", i, byte(u16>>8), byte(u16))
-		}
-		time.Sleep(2 * time.Second)
+		/*
+			fmt.Println("wait log: ", i)
+			for _, u16 := range log {
+				fmt.Printf("%d: %08b %08b\n", i, byte(u16>>8), byte(u16))
+			}
+			sr := p.MSR.Load()
+			u16 := uint16(sr&0x3fff | sr>>10&0xc000)
+			fmt.Printf(
+				".: %08b %08b %d\n", byte(u16>>8), byte(u16),
+				p.MFSR.LoadBits(lpi2c.TXCOUNT)>>lpi2c.TXCOUNTn,
+			)
+			if err := master.Err(true); err != nil {
+				fmt.Println("wait1 error:", err)
+				continue
+			}
+			time.Sleep(2 * time.Second)
+		*/
 
 		// Read string
 		master.WriteCmds([]int16{

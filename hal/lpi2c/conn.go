@@ -106,7 +106,7 @@ func (c *conn) Write(p []byte) (n int, err error) {
 	}
 	startWrite(c)
 	c.d.Write(p)
-	c.d.Flush(false) // ensure p isn't used after return
+	c.d.Flush() // ensure p isn't used after return
 	err = connErr(c)
 	if err == nil {
 		n = len(p)
