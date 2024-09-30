@@ -10,6 +10,8 @@ import (
 	"unsafe"
 )
 
+// BUG? Does MMIO space implements STREX, LDREX?
+
 //go:nosplit
 func AtomicStoreBits[T mmio.T32](r *mmio.R32[T], mask, bits T) {
 	bits &= mask

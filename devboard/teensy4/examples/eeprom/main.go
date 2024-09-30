@@ -45,8 +45,6 @@ func main() {
 
 	var buf [32]byte
 
-	//	var log [64]uint16
-
 loop:
 	for page := 0; ; page++ {
 		time.Sleep(2 * time.Second)
@@ -56,63 +54,40 @@ loop:
 
 		// Write string
 		fmt.Println(page, "write:")
+		master.Clear(lpi2c.MSDF)
 		master.WriteCmds([]int16{
 			lpi2c.Start | slaveAddr<<1 | wr,
 			lpi2c.Send | int16(mah),
 			lpi2c.Send | int16(mal),
 		})
-		s := fmt.Sprintf("> str %#x <    .", page)
+		s := fmt.Sprintf("> string %#x <    .", page)
 		master.WriteString(s)
 		master.WriteCmd(lpi2c.Stop)
 		if err := master.Err(true); err != nil {
 			fmt.Println("write error:", err)
 			continue
 		}
-
-		i := 0
-		p := master.Periph()
-		for p.MSR.LoadBits(lpi2c.MasterErrFlags|lpi2c.MTDF) == 0 {
-		}
-
-		time.Sleep(time.Second)
-		master.WriteCmd(lpi2c.Start | slaveAddr<<1 | wr)
+		master.Wait(lpi2c.MSDF)
 		for {
-			p.MSR.Store(lpi2c.MEPF)
+			master.Clear(lpi2c.MEPF)
 			master.WriteCmd(lpi2c.Start | slaveAddr<<1 | wr)
-			for p.MSR.LoadBits(lpi2c.MasterErrFlags|lpi2c.MEPF) == 0 {
-			}
+			master.WriteCmd(lpi2c.Start | slaveAddr<<1 | wr)
+			master.Wait(lpi2c.MEPF)
 			err := master.Err(true)
 			if err == nil {
 				break
 			}
-			sr := err.(*lpi2c.MasterError).SR
-			if sr&lpi2c.MasterErrFlags != lpi2c.MNDF {
+			if e, ok := err.(*lpi2c.MasterError); ok && e.SR&lpi2c.MasterErrFlags != lpi2c.MNDF {
 				fmt.Println("wait error:", err)
 				continue loop
 			}
-			i++
 		}
-		/*
-			fmt.Println("wait log: ", i)
-			for _, u16 := range log {
-				fmt.Printf("%d: %08b %08b\n", i, byte(u16>>8), byte(u16))
-			}
-			sr := p.MSR.Load()
-			u16 := uint16(sr&0x3fff | sr>>10&0xc000)
-			fmt.Printf(
-				".: %08b %08b %d\n", byte(u16>>8), byte(u16),
-				p.MFSR.LoadBits(lpi2c.TXCOUNT)>>lpi2c.TXCOUNTn,
-			)
-			if err := master.Err(true); err != nil {
-				fmt.Println("wait1 error:", err)
-				continue
-			}
-			time.Sleep(2 * time.Second)
-		*/
+
+		time.Sleep(time.Second)
 
 		// Read string
+		fmt.Println(page, "read:")
 		master.WriteCmds([]int16{
-			lpi2c.Start | slaveAddr<<1 | wr,
 			lpi2c.Send | int16(mah),
 			lpi2c.Send | int16(mal),
 			lpi2c.Start | slaveAddr<<1 | rd,
@@ -132,4 +107,15 @@ loop:
 //go:interrupthandler
 func LPI2C1_Handler() {
 	master.ISR()
+}
+
+func pr[T ~uint32](name string, v T) {
+	print(name, ": ")
+	for i := 32; i != 0; i-- {
+		if i&7 == 0 && i != 32 {
+			print("_")
+		}
+		print(v >> (i - 1) & 1)
+	}
+	print("\r\n")
 }

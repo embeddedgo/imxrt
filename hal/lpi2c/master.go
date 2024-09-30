@@ -200,7 +200,8 @@ func (d *Master) Err(clear bool) error {
 
 // WriteCmd writes one command to the Tx FIFO. It's a lightweight operation if
 // there is a free space in the Tx FIFO but if the FIFO is full it busy waits
-// for an empty slot.
+// for an empty slot. WriteCmd may stuck if the FIFO is full and the last
+// consumed command was the Recv one and there is no free space in the Rx FIFO.
 func (d *Master) WriteCmd(cmd int16) {
 	if d.wn != 0 {
 		masterWaitWrite(d)
@@ -332,7 +333,8 @@ func masterWrite(d *Master, ptr unsafe.Pointer, n int, lsz uint) {
 	// The remaining data/commands will be writtend to the FIFO by the ISR.
 	d.wi = 0
 	atomic.StoreInt32(&d.wn, int32(n-i))
-	p.MIER.Store(MTDF | MasterErrFlags) // plain Store because there is no pending read
+	// The ISR may already finish here so the next line may reenable IRQs.
+	p.MIER.Store(MTDF | MasterErrFlags)
 }
 
 func masterWriteDMA(d *Master, ptr unsafe.Pointer, n int, lsz uint) {
@@ -394,11 +396,16 @@ func masterRead(d *Master, ptr *byte, n int) {
 	// The remaining data/commands will be read by the ISR.
 	d.rdata = &data[i]
 	d.ri = 0
-	d.rn = int32(n)
-	d.rdone.Clear() // memory barrier
 	p.MFCR.Store(MFCR(min(n, rxFIFOLen)-1) << RXWATERn)
-	p.MIER.SetBits(MRDF | MasterErrFlags)
+	flags := MRDF | MasterErrFlags
+	atomic.StoreInt32(&d.rn, int32(n))
+	if d.wn > 0 /* can avoid atomic.Load because of the above atomic.Store */ {
+		flags |= MTDF
+	}
+	// The ISR may already finish here so the next line may reenable IRQs.
+	p.MIER.Store(flags)
 	d.rdone.Sleep(-1)
+	d.rdone.Clear()
 	d.rdata = nil
 }
 
@@ -423,108 +430,126 @@ func (d *Master) Clear(flags MSR) {
 	d.p.MSR.Store(flags & (MEPF | MSDF | MDMF))
 }
 
-// Wait waits for an event described by the MEPF, MSDF, MDMF flags. You should
-// clear a flag first, before wait for the corresponding event.
+// Wait waits for an event described by the MEPF, MSDF, MDMF flags. You must
+// clear a flag first, before starting waiting for the corresponding event.
 func (d *Master) Wait(flags MSR) {
 	flags &= MEPF | MSDF | MDMF
 	if flags == 0 {
 		return
 	}
 	flags |= MasterErrFlags
-	d.rn = -int32(flags)
-	d.rdone.Clear() // memory barrier
-	d.p.MIER.SetBits(flags)
+	p := d.p
+	if p.MSR.LoadBits(flags) != 0 {
+		return
+	}
+	atomic.StoreInt32(&d.rn, -1)
+	if d.wn > 0 /* can avoid atomic.Load because of the above atomic.Store */ {
+		flags |= MTDF
+	}
+	// The ISR may already finish here so the next line may reenable IRQs.
+	p.MIER.Store(flags)
 	d.rdone.Sleep(-1)
+	d.rdone.Clear()
 }
 
 //go:nosplit
 //go:nowritebarrierrec
 func (d *Master) ISR() {
+	// The tricky part of this code is the concurrent access of the MIER
+	// register by this ISR and read/write/wait functions in thread mode. There
+	// isn't clear that the MMIO supports RDEX/STREX instruction so we don't use
+	// atomics.
 	p := d.p
-	sr := p.MSR.Load()
-	if sr&MasterErrFlags != 0 {
-		// Goroutnies first set d.txn/d.rxn and next set MIER so the ISR must
-		// clear MIER before checking d.txn/d.rxn to avoid goroutine stall.
-		p.MIER.Store(0)
-		// Wake up goroutines. In the meantime they may reenable interrupts so
-		// set d.wn/d.rn to -1 as mark that the Wakeup was already called.
+	p.MIER.Store(0) // disable all IRQs and fix it later
+
+	if p.MSR.LoadBits(MasterErrFlags) != 0 {
 		if atomic.LoadInt32(&d.wn) > 0 {
 			d.wn = -1
 			d.wdone.Wakeup()
 		}
-		if atomic.LoadInt32(&d.rn) > 0 {
-			d.rn = -1
+		if atomic.LoadInt32(&d.rn) != 0 {
+			d.rn = 0
 			d.rdone.Wakeup()
 		}
 		return
 	}
-	ier := p.MIER.Load()
-	sr &= ier
-	if sr&MTDF != 0 {
-		// Write. May work concurently with the thread Read or Wait code.
-		if n := atomic.LoadInt32(&d.wn); n > 0 {
-			// Because MFCR[TXWATER]=0 (see Setup) the FIFO is now empty.
-			i := d.wi
-			m := min(i+txFIFOLen, n)
-			if d.wdata != nil {
-				for _, b := range unsafe.Slice(d.wdata, n)[i:m] {
-					p.MTDR.Store(int16(b))
-				}
-			} else {
-				for _, cmd := range unsafe.Slice(d.wcmds, n)[i:m] {
-					p.MTDR.Store(cmd)
-				}
+
+	var ie MSR
+
+	// Write part. May work concurently with masterRead.
+	if n := atomic.LoadInt32(&d.wn); n > 0 {
+		// Because MFCR[TXWATER]=0 (see Setup) the FIFO is now empty.
+		i := d.wi
+		m := min(i+txFIFOLen, n)
+		if d.wdata != nil {
+			for _, b := range unsafe.Slice(d.wdata, n)[i:m] {
+				p.MTDR.Store(int16(b))
 			}
-			d.wi = m
-			if m == n {
-				// Done
-				p.MIER.Store(0) // disable all irqs and fix this in a moment
-				if rn := atomic.LoadInt32(&d.rn); rn > 0 {
-					// There is a pending read so reenable read interrupts
-					p.MIER.Store(MRDF | MasterErrFlags) // BUG: race
-				} else if rn < 0 {
-					// There is a pending wait so reenable wait interrupts
-					p.MIER.Store(MSR(-rn)) // BUG: race
-				}
-				d.wdone.Wakeup()
-				ier &^= MTDF
+		} else {
+			for _, cmd := range unsafe.Slice(d.wcmds, n)[i:m] {
+				p.MTDR.Store(cmd)
 			}
 		}
+		d.wi = m
+		if m == n {
+			// Done
+			d.wn = -1 // avoid rentry because of possible race on MIER
+			d.wdone.Wakeup()
+		} else {
+			ie = MTDF | MasterErrFlags
+		}
 	}
-	if sr&(MRDF|MEPF|MSDF|MDMF) != 0 {
-		done := false
-		if n := atomic.LoadInt32(&d.rn); n > 0 {
-			// Read
-			data := unsafe.Slice(d.rdata, n)
-			i := d.ri
-			for int(i) < len(data) {
-				v := p.MRDR.Load()
-				if v&RXEMPTY != 0 {
-					break
-				}
-				data[i] = byte(v)
-				i++
+
+	// Read or wait part.
+	done := false
+	if n := atomic.LoadInt32(&d.rn); n > 0 {
+		// Read
+		data := unsafe.Slice(d.rdata, n)
+		i := d.ri
+		for int(i) < len(data) {
+			v := p.MRDR.Load()
+			if v&RXEMPTY != 0 {
+				break
 			}
-			d.ri = i
-			if n := len(data) - int(i); n == 0 {
-				done = true
-			} else if n < rxFIFOLen {
+			data[i] = byte(v)
+			i++
+		}
+		d.ri = i
+		if n := len(data) - int(i); n == 0 {
+			done = true
+		} else {
+			ie |= MRDF | MasterErrFlags
+			if n < rxFIFOLen {
 				// Reduce MFCR[RXWATER] to the size of the last chunk of data.
 				p.MFCR.Store(MFCR(n-1) << RXWATERn)
 			}
-		} else if n < 0 {
-			// Wait
-			done = true
 		}
-		if done {
-			if ier&MTDF == 0 {
-				ier = 0 // no pending write, disable all interrupts
-			} else {
-				ier = MTDF | MasterErrFlags // disable only read/wait interrupts
-			}
-			p.MIER.Store(ier)
-			d.rn = 0 // must clear it here because the ISR write code checks it
-			d.rdone.Wakeup()
+	} else if n < 0 {
+		// Wait
+		println("w\r")
+		done = true
+	}
+	if done {
+		d.rn = 0 // avoid rentry because  of possible race on MIER
+		d.rdone.Wakeup()
+	}
+
+	// The situation is clear if ie=0 because we cleared whole MIER at entry and
+	// next checked d.wn and d.rn. Thread code does this in reverse order so we
+	// are sure that there is no any new work for ISR with interrupts disabled.
+	if ie != 0 {
+		// MIER must be set. There is no problem if read part set ie because in
+		// this case we are sure that the thread read code waits for this ISR
+		// and there is no thread write code doing anything. The problem is if
+		// only the write part set ie. In this case the thread read code may
+		// have set MRDF in the meantime and we don't wont disable it here.
+
+		// First store ie as is.
+		p.MIER.Store(ie)
+
+		// Then fix MRDF if the read work was scheduled in the meantime.
+		if ie&MRDF == 0 && atomic.LoadInt32(&d.rn) != 0 {
+			p.MIER.Store(ie | MRDF)
 		}
 	}
 }
