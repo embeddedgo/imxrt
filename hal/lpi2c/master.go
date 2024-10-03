@@ -190,7 +190,7 @@ func (d *Master) Err(clear bool) error {
 	p := d.p
 	if sr := p.MSR.Load(); sr&MasterErrFlags != 0 {
 		if clear {
-			p.MCR.SetBits(MRRF | MRTF)       // clear FIFOs
+			p.MCR.SetBits(MRTF)              // clear Tx FIFOs
 			p.MSR.Store(sr & MasterErrFlags) // clear the error flags
 		}
 		return &MasterError{sr} // all flags for the better context
@@ -423,17 +423,22 @@ func (d *Master) Flush() {
 	}
 }
 
+func (d *Master) Status() MSR {
+	return d.p.MSR.Load()
+}
+
 // Clear allows to clear the MEPF, MSDF, MDMF in the MSR register. It is
-// intended to be used together with the Wait method to wait for one of these
-// flags to be set again.
+// intended to be used together with the Wait method to wait for events
+// signaled by these flags.
 func (d *Master) Clear(flags MSR) {
 	d.p.MSR.Store(flags & (MEPF | MSDF | MDMF))
 }
 
-// Wait waits for an event described by the MEPF, MSDF, MDMF flags. You must
-// clear a flag first, before starting waiting for the corresponding event.
+// Wait waits for an event described by the MEPF, MSDF, MDMF, MTDF flags or an
+// error.  The MTDF flag allows to wait for an empty Tx FIFO. In most cases you
+// should clear the flag you want to wait for.
 func (d *Master) Wait(flags MSR) {
-	flags &= MEPF | MSDF | MDMF
+	flags &= MEPF | MSDF | MDMF | MTDF
 	if flags == 0 {
 		return
 	}
@@ -442,8 +447,8 @@ func (d *Master) Wait(flags MSR) {
 	if p.MSR.LoadBits(flags) != 0 {
 		return
 	}
-	atomic.StoreInt32(&d.rn, -1)
-	if d.wn > 0 /* can avoid atomic.Load because of the above atomic.Store */ {
+	atomic.StoreInt32(&d.rn, -int32(flags))
+	if flags&MTDF == 0 && d.wn > 0 /* no atomic.Load because of the above atomic.Store */ {
 		flags |= MTDF
 	}
 	// The ISR may already finish here so the next line may reenable IRQs.
@@ -461,8 +466,9 @@ func (d *Master) ISR() {
 	// atomics.
 	p := d.p
 	p.MIER.Store(0) // disable all IRQs and fix it later
+	sr := p.MSR.Load()
 
-	if p.MSR.LoadBits(MasterErrFlags) != 0 {
+	if sr&MasterErrFlags != 0 {
 		if atomic.LoadInt32(&d.wn) > 0 {
 			d.wn = -1
 			d.wdone.Wakeup()
@@ -524,13 +530,12 @@ func (d *Master) ISR() {
 				p.MFCR.Store(MFCR(n-1) << RXWATERn)
 			}
 		}
-	} else if n < 0 {
+	} else if n < 0 && MSR(-n)&sr != 0 {
 		// Wait
-		println("w\r")
 		done = true
 	}
 	if done {
-		d.rn = 0 // avoid rentry because  of possible race on MIER
+		d.rn = 0 // avoid rentry because of possible race on MIER
 		d.rdone.Wakeup()
 	}
 

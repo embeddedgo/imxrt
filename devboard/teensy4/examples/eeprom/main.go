@@ -43,6 +43,30 @@ func main() {
 
 	//c := d.NewConn(prefix | e2e1e0)
 
+	/*
+		for i := 0; ; i++ {
+			//time.Sleep(2 * time.Second)
+			//fmt.Println("wait", i)
+			if i&0xfff == 0 {
+				fmt.Println(i)
+			}
+			master.WriteCmd(lpi2c.Start | slaveAddr<<1 | wr)
+			for {
+				master.WriteCmd(lpi2c.Start | slaveAddr<<1 | wr)
+				master.Wait(lpi2c.MEPF)
+				master.Clear(lpi2c.MEPF)
+				sr := p.MSR.Load()
+				e := sr & lpi2c.MasterErrFlags
+				if e == 0 {
+					break
+				}
+				p.MCR.SetBits(lpi2c.MRRF | lpi2c.MRTF)
+				p.MSR.Store(e)
+				pr("SR", sr)
+			}
+			//fmt.Println("OK")
+		}
+	*/
 	var buf [32]byte
 
 loop:
@@ -52,27 +76,37 @@ loop:
 		mah := byte(a >> 8) // memory address high byte
 		mal := byte(a)      // memory address low byte
 
+		s := fmt.Sprintf("> string %#x <", page)
+
 		// Write string
-		fmt.Println(page, "write:")
+		fmt.Println("write", len(s), "bytes to page", page)
 		master.Clear(lpi2c.MSDF)
 		master.WriteCmds([]int16{
 			lpi2c.Start | slaveAddr<<1 | wr,
 			lpi2c.Send | int16(mah),
 			lpi2c.Send | int16(mal),
 		})
-		s := fmt.Sprintf("> string %#x <    .", page)
 		master.WriteString(s)
 		master.WriteCmd(lpi2c.Stop)
 		if err := master.Err(true); err != nil {
 			fmt.Println("write error:", err)
 			continue
 		}
+
+		fmt.Print("wait")
 		master.Wait(lpi2c.MSDF)
+		master.Clear(lpi2c.MEPF)
+		master.WriteCmd(lpi2c.Start | slaveAddr<<1 | wr)
 		for {
-			master.Clear(lpi2c.MEPF)
-			master.WriteCmd(lpi2c.Start | slaveAddr<<1 | wr)
 			master.WriteCmd(lpi2c.Start | slaveAddr<<1 | wr)
 			master.Wait(lpi2c.MEPF)
+			sr := master.Status()
+			if sr&(lpi2c.MNDF|lpi2c.MEPF) == lpi2c.MNDF {
+				fmt.Println("MNDF, !MEPF")
+				master.Clear(lpi2c.MNDF)
+				master.Wait(lpi2c.MEPF)
+			}
+			master.Clear(lpi2c.MEPF)
 			err := master.Err(true)
 			if err == nil {
 				break
@@ -81,12 +115,13 @@ loop:
 				fmt.Println("wait error:", err)
 				continue loop
 			}
+			fmt.Print(".")
 		}
+		fmt.Println()
 
 		time.Sleep(time.Second)
 
 		// Read string
-		fmt.Println(page, "read:")
 		master.WriteCmds([]int16{
 			lpi2c.Send | int16(mah),
 			lpi2c.Send | int16(mal),
