@@ -53,7 +53,7 @@ func main() {
 
 	// Setup LPI2C driver
 	p := lpi2c.LPI2C(1)
-	master = lpi2c.NewMaster(p, dma.Channel{}, dma.Channel{})
+	master = lpi2c.NewMaster(p, dma.Channel{})
 	master.Setup(lpi2c.Std100k)
 	master.UsePin(scl, lpi2c.SCL)
 	master.UsePin(sda, lpi2c.SDA)
@@ -76,23 +76,21 @@ func lowLevelWay(d *lpi2c.Master) {
 	var buf [2]byte
 
 	// Start a new A/D conversion.
-	d.WriteCmd(
-		lpi2c.StartNACK|0b0000_1000, // switch to I2C High Speed mode
-		lpi2c.StartHS|addr<<1|wr,
-		lpi2c.Send|ads111x.RegCfg,
-		lpi2c.Send|int16(cfg>>8),
-		lpi2c.Send|int16(cfg&0xff),
-	)
+	d.WriteCmds([]int16{
+		lpi2c.StartNACK | 0b0000_1000, // switch to I2C High Speed mode
+		lpi2c.StartHS | addr<<1 | wr,
+		lpi2c.Send | ads111x.RegCfg,
+		lpi2c.Send | int16(cfg>>8),
+		lpi2c.Send | int16(cfg&0xff),
+	})
 	if logErr(d.Err(true)) {
 		return
 	}
 
 	// Wait for the end of conversion.
 	for {
-		d.WriteCmd(
-			lpi2c.StartHS|addr<<1|rd,
-			lpi2c.Recv|int16(len(buf)-1),
-		)
+		d.WriteCmd(lpi2c.StartHS | addr<<1 | rd)
+		d.WriteCmd(lpi2c.Recv | int16(len(buf)-1))
 		d.Read(buf[:])
 		if logErr(d.Err(true)) {
 			return
@@ -103,13 +101,13 @@ func lowLevelWay(d *lpi2c.Master) {
 	}
 
 	// Read the result of ADC.
-	d.WriteCmd(
-		lpi2c.StartHS|addr<<1|wr,
-		lpi2c.Send|ads111x.RegV,
-		lpi2c.StartHS|addr<<1|rd,
-		lpi2c.Recv|int16(len(buf)-1),
+	d.WriteCmds([]int16{
+		lpi2c.StartHS | addr<<1 | wr,
+		lpi2c.Send | ads111x.RegV,
+		lpi2c.StartHS | addr<<1 | rd,
+		lpi2c.Recv | int16(len(buf)-1),
 		lpi2c.Stop,
-	)
+	})
 	d.Read(buf[:])
 	if logErr(d.Err(true)) {
 		return

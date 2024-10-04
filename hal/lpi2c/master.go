@@ -77,16 +77,15 @@ type Master struct {
 	rn    int32
 	rdone rtos.Note
 
-	wdma dma.Channel
-	rdma dma.Channel
+	dma dma.Channel
 }
 
-// NewMaster returns a new master-mode driver for p. If valid DMA channels are
+// NewMaster returns a new master-mode driver for p. If valid DMA channel is
 // given, the DMA will be used for bigger data transfers.
-func NewMaster(p *Periph, rdma, wdma dma.Channel) *Master {
+func NewMaster(p *Periph, dma dma.Channel) *Master {
 	return &Master{
 		name: string([]byte{'L', 'P', 'I', '2', 'C', '1' + byte(num(p))}),
-		p:    p, rdma: rdma, wdma: wdma,
+		p:    p, dma: dma,
 	}
 }
 
@@ -141,6 +140,14 @@ const (
 	FastPlusHS Speed = timingPlusHS //   ≤1 Mb/s (Fast+)    and 3.33 Mb/s HS
 )
 
+// All dma.Mux slot constants are less than 128 so we can use the string
+// conversion to group them in a constant array.
+const dmaSlots = "" +
+	string(dma.LPI2C1) +
+	string(dma.LPI2C2) +
+	string(dma.LPI2C3) +
+	string(dma.LPI2C4)
+
 func (d *Master) Setup(sp Speed) {
 	p := d.p
 	p.EnableClock(true)
@@ -159,6 +166,12 @@ func (d *Master) Setup(sp Speed) {
 	// more data/command in the Tx FIFO or a free space in the Rx FIFO.
 	//p.MCFGR3.Store(clk * stuckBusTimeout / 1000 / 256 >> pre << PINLOWn)
 
+	if dc := d.dma; dc.IsValid() {
+		dc.DisableReq()
+		dc.DisableErrInt()
+		dc.ClearInt()
+		dc.SetMux(dma.Mux(dmaSlots[num(d.p)]) | dma.En)
+	}
 	p.MCR.Store(MEN)
 }
 
@@ -236,23 +249,11 @@ func (d *Master) WriteCmds(cmds []int16) {
 	if len(cmds) == 0 {
 		return
 	}
-	if d.wdma.IsValid() && len(cmds)*2 >= 2*dma.CacheLineSize {
-		ptr := unsafe.Pointer(&cmds[0])
-		ds, de := dma.AlignOffsets(ptr, uintptr(len(cmds)*2))
-		dmaStart := int(ds / 2)
-		dmaEnd := int(de / 2)
-		dmaPtr := unsafe.Add(ptr, ds)
-		dmaN := dmaEnd - dmaStart
-		if dmaStart != 0 {
-			masterWrite(d, ptr, dmaStart, 1)
-		}
-		masterWriteDMA(d, dmaPtr, dmaN, 1)
-		if dmaEnd == len(cmds) {
-			return
-		}
-		cmds = cmds[dmaEnd:]
-	}
-	masterWrite(d, unsafe.Pointer(&cmds[0]), len(cmds), 1)
+	// Can't use DMA for commands because the DMA request/channel is shared
+	// between Tx and Rx so we must wait for the end of Tx DMA before starting
+	// Rx DMA. At the same time the Tx transfer may contain Recv command which
+	// may not end before the subsequent read operation will complete.
+	masterWrite(d, unsafe.Pointer(&cmds[0]), len(cmds), true)
 }
 
 // Write is like WriteCmds but writes only Send commands with the provided data.
@@ -260,7 +261,7 @@ func (d *Master) Write(p []byte) {
 	if len(p) == 0 {
 		return
 	}
-	if d.wdma.IsValid() && len(p) >= 2*dma.CacheLineSize {
+	if d.dma.IsValid() && len(p) >= 3*dma.CacheLineSize {
 		ptr := unsafe.Pointer(&p[0])
 		ds, de := dma.AlignOffsets(ptr, uintptr(len(p)))
 		dmaStart := int(ds)
@@ -268,15 +269,15 @@ func (d *Master) Write(p []byte) {
 		dmaPtr := unsafe.Add(ptr, ds)
 		dmaN := dmaEnd - dmaStart
 		if dmaStart != 0 {
-			masterWrite(d, ptr, dmaStart, 0)
+			masterWrite(d, ptr, dmaStart, false)
 		}
-		masterWriteDMA(d, dmaPtr, dmaN, 0)
+		masterWriteDMA(d, dmaPtr, dmaN)
 		if dmaEnd == len(p) {
 			return
 		}
 		p = p[dmaEnd:]
 	}
-	masterWrite(d, unsafe.Pointer(&p[0]), len(p), 0)
+	masterWrite(d, unsafe.Pointer(&p[0]), len(p), false)
 }
 
 // WriteString is like Write but writes bytes from string instead of slice.
@@ -301,7 +302,7 @@ func masterWaitWrite(d *Master) {
 	d.wn = 0
 }
 
-func masterWrite(d *Master, ptr unsafe.Pointer, n int, lsz uint) {
+func masterWrite(d *Master, ptr unsafe.Pointer, n int, cmd bool) {
 	if d.wn != 0 {
 		masterWaitWrite(d)
 	}
@@ -311,7 +312,7 @@ func masterWrite(d *Master, ptr unsafe.Pointer, n int, lsz uint) {
 	}
 	// Avoid interrupts if there is a free space in the FIFO.
 	i := 0
-	if lsz == 0 {
+	if !cmd {
 		data := unsafe.Slice((*byte)(ptr), n)
 		for p.MFSR.LoadBits(TXCOUNT)>>TXCOUNTn < txFIFOLen {
 			p.MTDR.Store(int16(data[i]))
@@ -337,8 +338,44 @@ func masterWrite(d *Master, ptr unsafe.Pointer, n int, lsz uint) {
 	p.MIER.Store(MTDF | MasterErrFlags)
 }
 
-func masterWriteDMA(d *Master, ptr unsafe.Pointer, n int, lsz uint) {
-	// TODO:
+const dmaMaxMajorIter = 1<<dma.ELINKn - 1 // = 32767
+
+func masterWriteDMA(d *Master, ptr unsafe.Pointer, n int) {
+	if d.wn != 0 {
+		masterWaitWrite(d)
+	}
+	tcd := dma.TCD{
+		SADDR:       ptr,
+		SOFF:        4,
+		ATTR:        dma.S32b | dma.D8b,
+		ML_NBYTES:   uint32(txFIFOLen),
+		DADDR:       unsafe.Pointer(d.p.MTDR.Addr()),
+		ELINK_CITER: dmaMaxMajorIter,
+		ELINK_BITER: dmaMaxMajorIter,
+		CSR:         dma.DREQ | dma.INTMAJOR,
+	}
+	d.p.MDER.Store(TDDE)
+	dma := d.dma
+	dma.WriteTCD(&tcd)
+	tcdio := dma.TCD()
+	for {
+		m := n
+		if m > dmaMaxMajorIter {
+			m = dmaMaxMajorIter
+		}
+		n -= m
+		if m != dmaMaxMajorIter {
+			tcdio.ELINK_CITER.Store(int16(m))
+			tcdio.ELINK_BITER.Store(int16(m))
+		}
+		dma.EnableReq()   // accept DMA requests from Tx FIFO
+		d.wdone.Sleep(-1) // wait until the major loop complete
+		d.wdone.Clear()
+		if n == 0 {
+			break
+		}
+	}
+	d.p.MDER.Store(0)
 }
 
 // Read reads len(p) data bytes from Rx FIFO. The read data is valid if Err
@@ -347,7 +384,7 @@ func (d *Master) Read(p []byte) {
 	if len(p) == 0 {
 		return
 	}
-	if d.rdma.IsValid() && len(p) >= 2*dma.CacheLineSize {
+	if d.dma.IsValid() && len(p) >= 3*dma.CacheLineSize {
 		ptr := &p[0]
 		ds, de := dma.AlignOffsets(unsafe.Pointer(ptr), uintptr(len(p)))
 		dmaStart := int(ds)

@@ -35,7 +35,7 @@ func main() {
 
 	// Setup LPI2C driver
 	p := lpi2c.LPI2C(1)
-	master = lpi2c.NewMaster(p, dma.Channel{}, dma.Channel{})
+	master = lpi2c.NewMaster(p, dma.Channel{})
 	master.Setup(lpi2c.Slow50k)
 	master.UsePin(scl, lpi2c.SCL)
 	master.UsePin(sda, lpi2c.SDA)
@@ -43,30 +43,24 @@ func main() {
 
 	//c := d.NewConn(prefix | e2e1e0)
 
-	/*
-		for i := 0; ; i++ {
-			//time.Sleep(2 * time.Second)
-			//fmt.Println("wait", i)
-			if i&0xfff == 0 {
-				fmt.Println(i)
+	for {
+		time.Sleep(5 * time.Second)
+		fmt.Println("start")
+		pr("+MSR", p.MSR.Load())
+		master.WriteCmd(lpi2c.Start | slaveAddr<<1 | wr)
+		master.Wait(lpi2c.MTDF)
+		for {
+			sr := p.MSR.Load()
+			pr(" MSR", sr)
+			if sr&lpi2c.MBF == 0 || sr&lpi2c.MasterErrFlags != 0 {
+				break
 			}
-			master.WriteCmd(lpi2c.Start | slaveAddr<<1 | wr)
-			for {
-				master.WriteCmd(lpi2c.Start | slaveAddr<<1 | wr)
-				master.Wait(lpi2c.MEPF)
-				master.Clear(lpi2c.MEPF)
-				sr := p.MSR.Load()
-				e := sr & lpi2c.MasterErrFlags
-				if e == 0 {
-					break
-				}
-				p.MCR.SetBits(lpi2c.MRRF | lpi2c.MRTF)
-				p.MSR.Store(e)
-				pr("SR", sr)
-			}
-			//fmt.Println("OK")
 		}
-	*/
+		p.MSR.Store(lpi2c.MasterErrFlags)
+		master.WriteCmd(lpi2c.Stop)
+		pr("-MSR", p.MSR.Load())
+	}
+
 	var buf [32]byte
 
 loop:

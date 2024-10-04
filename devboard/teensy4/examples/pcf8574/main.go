@@ -48,7 +48,7 @@ func main() {
 
 	// Setup LPI2C driver
 	p := lpi2c.LPI2C(1)
-	master = lpi2c.NewMaster(p, dma.Channel{}, dma.Channel{})
+	master = lpi2c.NewMaster(p, dma.Channel{})
 	master.Setup(lpi2c.Std100k)
 	master.UsePin(scl, lpi2c.SCL)
 	master.UsePin(sda, lpi2c.SDA)
