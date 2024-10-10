@@ -5,7 +5,6 @@
 package lpi2c
 
 import (
-	"time"
 	"unsafe"
 
 	"github.com/embeddedgo/device/bus/i2cbus"
@@ -101,12 +100,11 @@ func startWrite(c *conn) {
 
 // Write implements the i2cbus.Conn interface and the io.Writer interface.
 func (c *conn) Write(p []byte) (n int, err error) {
-	if len(p) == 0 {
-		return
-	}
 	startWrite(c)
-	c.d.Write(p)
-	c.d.Flush() // ensure p isn't used after return
+	if len(p) != 0 {
+		c.d.Write(p)
+		c.d.Flush() // ensure p isn't used after return
+	}
 	err = connErr(c)
 	if err == nil {
 		n = len(p)
@@ -127,7 +125,7 @@ func (c *conn) WriteByte(b byte) error {
 	return connErr(c)
 }
 
-func startRead(c *conn, arg byte) {
+func startRead(c *conn, m int) {
 	open := c.open
 	if !open {
 		c.open = true
@@ -136,22 +134,23 @@ func startRead(c *conn, arg byte) {
 	c.wr = false
 	i := 0
 	if open && c.rstart[0]>>8 == StartNACK>>8 {
-		i = 1
+		i = 1 // already in the High Speed mode
 	}
-	c.rstart[c.n] = Recv | int16(arg)
-	c.d.WriteCmds(c.rstart[i : c.n+1])
+	n := c.n
+	if m != 0 {
+		c.rstart[c.n] = Recv | int16(m-1)
+		n++
+	}
+	c.d.WriteCmds(c.rstart[i:n])
 }
 
 // Read implements the i2cbus.Conn interface and the io.Reader interface.
 func (c *conn) Read(p []byte) (n int, err error) {
 	n = len(p)
-	if n == 0 {
-		return
-	}
 	if n > 256 {
 		n = 256
 	}
-	startRead(c, byte(n-1))
+	startRead(c, n)
 	c.d.Read(p)
 	err = connErr(c)
 	if err != nil {
@@ -163,21 +162,10 @@ func (c *conn) Read(p []byte) (n int, err error) {
 // ReadByte implements the i2cbus.Conn interface and the io.ByteReader
 // interface.
 func (c *conn) ReadByte() (b byte, err error) {
-	startRead(c, 0)
+	startRead(c, 1)
 	b = c.d.ReadByte()
 	err = connErr(c)
 	return
-}
-
-func (c *conn) Wait(timeout time.Duration) error {
-	if c.open {
-		panic("wait on open I2C conn")
-	}
-	d := c.d
-	d.Lock()
-	startWrite(c)
-	d.Unlock()
-	return nil
 }
 
 // Close implements the i2cbus.Conn interface and the io.Closer interface.
@@ -185,10 +173,13 @@ func (c *conn) Close() error {
 	if !c.open {
 		return nil // already closed
 	}
-	c.d.WriteCmd(Stop)
+	d := c.d
+	d.Clear(MSDF)
+	d.WriteCmd(Stop)
+	d.Wait(MSDF)
 	err := connErr(c)
 	if err == nil {
-		c.d.Unlock()
+		d.Unlock()
 		c.open = false
 		c.wr = false
 	}
@@ -199,6 +190,9 @@ func connErr(c *conn) (err error) {
 	d := c.d
 	err = d.Err(true)
 	if err != nil {
+		if err.(*MasterError).Status&MasterErrFlags == MNDF {
+			err = i2cbus.ErrACK
+		}
 		err = &i2cbus.MasterError{d.name, err}
 		c.d.Unlock()
 		c.open = false

@@ -5,26 +5,27 @@
 // Pcf8574 writes consecutive numbers to the remote I/O expander chip (PCF8574)
 // using I2C protocol.
 //
-// The easiest way to try this example is to use a PCF8574  based module
-// intended for LCD displays and one or more LEDs. Low-voltage LEDs like red
-// ones require a current limiting resistor of the order 150-200 Ω. High voltage
-// LEDs like the white ones may work without any resistor.
+// The easiest way to try this example is to use a PCF8574 based module intended
+// for LCD displays and one or more LEDs. Low-voltage LEDs like red ones
+// require a current limiting resistor of the order 150-200 Ω. High voltage LEDs
+// like the white ones may work without any resistor.
 //
-// Connect your LEDs between pin 1 (closest to the I2C connector, 3.3V) and
-// pins 4, 5, 6 (PCF8574 P0, P1, P2 outputs). Polarity matters. Pin 1 should be
+// Connect your LEDs between pin 1 (closest to the I2C connector, 3.3V) and pins
+// 4, 5, 6 (PCF8574 P0, P1, P2 outputs). Polarity matters. Pin 1 should be
 // connected to the anodes of all LEDS. The easiest way to do it is to use a
 // breadboard. Next connect the module pins GND, VCC, SDA, SCL to the Teensy
 // pins G, 3V, 18, 19. After programming your Teensy with this example the LEDs
 // should start blinking with different frequencies.
 //
 // As the LEDs are connected between 3,3V and P0, P1, P2 writing the
-// corresponding bit zero turns the LED on, writtin one turns it off. Because of
-// its quasi-bidirectional I/O the PCF8574 can't source enough current to stable
-// light a LED connected between Px pin and GND.
+// corresponding bit zero turns the LED on, writting one turns it off. Because
+// of its quasi-bidirectional I/O the PCF8574 can't source enough current to
+// stable light a LED connected between Px pin and GND.
 package main
 
 import (
 	"embedded/rtos"
+	"fmt"
 	"time"
 
 	"github.com/embeddedgo/imxrt/hal/dma"
@@ -57,9 +58,11 @@ func main() {
 	c := master.NewConn(prefix | a2a1a0)
 
 	for i := 0; ; i++ {
-		c.WriteByte(byte(i))
-		c.Close() // stop required
-		time.Sleep(time.Second)
+		err := c.WriteByte(byte(i))
+		if err != nil {
+			fmt.Println(err)
+		}
+		time.Sleep(time.Second / 4)
 	}
 }
 

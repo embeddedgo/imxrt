@@ -2,15 +2,19 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-// Eeprom writes and read the memory of the 24C64 I2C EEPROM (64 Kb = 8192 B =
-// 256 pages * 32 B/page).
+// Eeprom writes and reads the memory of the 24C64/128/256 I2C EEPROM. The
+// difference to the less dense 24C0x EEPROMs is the use of 16 bit memory
+// address instead of 8 bit one.
 package main
 
 import (
 	"embedded/rtos"
+	"errors"
 	"fmt"
+	"io"
 	"time"
 
+	"github.com/embeddedgo/device/bus/i2cbus"
 	"github.com/embeddedgo/imxrt/hal/dma"
 	"github.com/embeddedgo/imxrt/hal/irq"
 	"github.com/embeddedgo/imxrt/hal/lpi2c"
@@ -36,30 +40,12 @@ func main() {
 	// Setup LPI2C driver
 	p := lpi2c.LPI2C(1)
 	master = lpi2c.NewMaster(p, dma.Channel{})
-	master.Setup(lpi2c.Slow50k)
+	master.Setup(lpi2c.Std100k)
 	master.UsePin(scl, lpi2c.SCL)
 	master.UsePin(sda, lpi2c.SDA)
 	irq.LPI2C1.Enable(rtos.IntPrioLow, 0)
 
-	//c := d.NewConn(prefix | e2e1e0)
-
-	for {
-		time.Sleep(5 * time.Second)
-		fmt.Println("start")
-		pr("+MSR", p.MSR.Load())
-		master.WriteCmd(lpi2c.Start | slaveAddr<<1 | wr)
-		master.Wait(lpi2c.MTDF)
-		for {
-			sr := p.MSR.Load()
-			pr(" MSR", sr)
-			if sr&lpi2c.MBF == 0 || sr&lpi2c.MasterErrFlags != 0 {
-				break
-			}
-		}
-		p.MSR.Store(lpi2c.MasterErrFlags)
-		master.WriteCmd(lpi2c.Stop)
-		pr("-MSR", p.MSR.Load())
-	}
+	c := master.NewConn(slaveAddr)
 
 	var buf [32]byte
 
@@ -67,68 +53,42 @@ loop:
 	for page := 0; ; page++ {
 		time.Sleep(2 * time.Second)
 		a := page * 32
-		mah := byte(a >> 8) // memory address high byte
-		mal := byte(a)      // memory address low byte
+		addr := []byte{byte(a >> 8), byte(a)}
 
-		s := fmt.Sprintf("> string %#x <", page)
+		s := fmt.Sprintf(">> %#x <<", page)
 
-		// Write string
-		fmt.Println("write", len(s), "bytes to page", page)
-		master.Clear(lpi2c.MSDF)
-		master.WriteCmds([]int16{
-			lpi2c.Start | slaveAddr<<1 | wr,
-			lpi2c.Send | int16(mah),
-			lpi2c.Send | int16(mal),
-		})
-		master.WriteString(s)
-		master.WriteCmd(lpi2c.Stop)
-		if err := master.Err(true); err != nil {
+		fmt.Printf("\nWrite page %d: %s\n", page, s)
+		c.Write(addr) // replace with c.WriteByte(addr) for 24C0x EEPROMs
+		io.WriteString(c, s)
+		err := c.Close()
+		if err != nil {
 			fmt.Println("write error:", err)
 			continue
 		}
 
-		fmt.Print("wait")
-		master.Wait(lpi2c.MSDF)
-		master.Clear(lpi2c.MEPF)
-		master.WriteCmd(lpi2c.Start | slaveAddr<<1 | wr)
+		// Wait for the end of write
 		for {
-			master.WriteCmd(lpi2c.Start | slaveAddr<<1 | wr)
-			master.Wait(lpi2c.MEPF)
-			sr := master.Status()
-			if sr&(lpi2c.MNDF|lpi2c.MEPF) == lpi2c.MNDF {
-				fmt.Println("MNDF, !MEPF")
-				master.Clear(lpi2c.MNDF)
-				master.Wait(lpi2c.MEPF)
-			}
-			master.Clear(lpi2c.MEPF)
-			err := master.Err(true)
+			c.Write(nil)
+			err := c.Close()
 			if err == nil {
 				break
 			}
-			if e, ok := err.(*lpi2c.MasterError); ok && e.SR&lpi2c.MasterErrFlags != lpi2c.MNDF {
+			if !errors.Is(err, i2cbus.ErrACK) {
 				fmt.Println("wait error:", err)
 				continue loop
 			}
 			fmt.Print(".")
 		}
-		fmt.Println()
+		fmt.Println(" done")
 
-		time.Sleep(time.Second)
-
-		// Read string
-		master.WriteCmds([]int16{
-			lpi2c.Send | int16(mah),
-			lpi2c.Send | int16(mal),
-			lpi2c.Start | slaveAddr<<1 | rd,
-			lpi2c.Recv | int16(len(s)-1),
-			lpi2c.Stop,
-		})
-		master.Read(buf[:len(s)])
-		if err := master.Err(true); err != nil {
+		c.Write(addr) // replace with c.WriteByte(addr) for 24C0x EEPROMs
+		n, _ := c.Read(buf[:len(s)])
+		err = c.Close()
+		if err != nil {
 			fmt.Println("read error:", err)
 			continue
 		}
-		fmt.Println(page, "read:", string(buf[:len(s)]))
+		fmt.Printf("Read %d bytes from page %d: %s\n", n, page, string(buf[:n]))
 	}
 
 }

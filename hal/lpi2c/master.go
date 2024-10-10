@@ -23,7 +23,7 @@ import (
 //
 // Example:
 //
-//	d.WriteCmd(
+//	d.WriteCmds(
 //		lpi2c.Start|eepromAddr<<1|wr,
 //		lpi2c.Send|int16(memAddr),
 //		lpi2c.Start|eepromAddr<<1|rd,
@@ -31,12 +31,12 @@ import (
 //		lpi2c.Stop,
 //	)
 //	d.Read(buf)
-//	if err := d.Err(true); err {
+//	if err := d.Err(true); err != nil {
 //
 // Write methods in the low-level interface are asynchronous, that is, they may
 // return before all commands/data will be written to the FIFO. Therefore you
 // must not modify the data/command buffer pass to the last write method until
-// the return of the subsequent Flush method or another write method.
+// the return of the Flush method or another write method.
 //
 // The read/write methods doesn't return errors. Instead, they check the status
 // of the LPI2C peripheral before starting doing anything and return in case of
@@ -44,17 +44,19 @@ import (
 // flags at a convenient time. Even if you call Err after every method call the
 // returned error is still asynchronous due to the asynchronous nature of the
 // write methods and the delayed execution of commands by the LPI2C peripheral
-// itself.
+// itself. You can use Wait to synchronise things but all status flags other
+// than MSDF (Stop Condition) seems to be inherently asynchronous too.
 //
 // The second interface is a connection oriented one that implements the
 // i2cbus.Conn interface.
 //
-// Example (error checking omitted for clarity):
+// Example:
 //
 //	conn := d.NewConn(eepromAddr)
 //	conn.WriteByte(memAaddr)
 //	conn.Read(buf)
-//	conn.Close()
+//	err := conn.Close()
+//	if err != nil {
 //
 // Both interfaces may be used concurently by multiple goroutines but in such
 // a case users of the low-level interface must gain an exclusive access to the
@@ -63,8 +65,11 @@ type Master struct {
 	sync.Mutex // use with the low-level interface to share the driver
 
 	name string
-	id   uint8
 	p    *Periph
+	id   uint8
+
+	rbuf byte
+	wbuf int16
 
 	wcmds *int16
 	wdata *byte
@@ -178,54 +183,46 @@ func (d *Master) Setup(sp Speed) {
 // MasterError contains value of the Master Status Register with one or more
 // error flags set.
 type MasterError struct {
-	SR MSR // value of the Master Status Register as read by Master.Err
+	Status MSR // value of the Master Status Register as read by Master.Err
 }
 
 func (e *MasterError) Error() string {
 	var a [4]string
 	es := a[:0:4]
-	if e.SR&MNDF != 0 {
+	if e.Status&MNDF != 0 {
 		es = append(es, "NACK")
 	}
-	if e.SR&MALF != 0 {
+	if e.Status&MALF != 0 {
 		es = append(es, "Arbitr")
 	}
-	if e.SR&MFEF != 0 {
+	if e.Status&MFEF != 0 {
 		es = append(es, "FIFO")
 	}
-	if e.SR&MPLTF != 0 {
+	if e.Status&MPLTF != 0 {
 		es = append(es, "PinLow")
 	}
 	return "lpi2c master: " + strings.Join(es, ",")
 }
 
+// Err returns the content of the MSR register wrapped into the MasterError type
+// if any error flag (see MasterErrFlags) is set. Othewrise it returns nil.
+// If clear is true Err clears the Tx FIFO and the error flags in the MSR
+// register and if the LPI2C peripheral is in the busy state (MSR[MBF] is set)
+// it also releases the bus by writing the Stop command into Tx FIFO.
 func (d *Master) Err(clear bool) error {
 	p := d.p
-	if sr := p.MSR.Load(); sr&MasterErrFlags != 0 {
+	status := p.MSR.Load()
+	if e := status & MasterErrFlags; e != 0 {
 		if clear {
-			p.MCR.SetBits(MRTF)              // clear Tx FIFOs
-			p.MSR.Store(sr & MasterErrFlags) // clear the error flags
+			p.MCR.SetBits(MRTF) // clear Tx FIFOs
+			p.MSR.Store(e)      // clear the error flags
+			if p.MSR.LoadBits(MBF) != 0 {
+				p.MTDR.Store(Stop) // release the bus
+			}
 		}
-		return &MasterError{sr} // all flags for the better context
+		return &MasterError{status} // all flags for the better context
 	}
 	return nil
-}
-
-// WriteCmd writes one command to the Tx FIFO. It's a lightweight operation if
-// there is a free space in the Tx FIFO but if the FIFO is full it busy waits
-// for an empty slot. WriteCmd may stuck if the FIFO is full and the last
-// consumed command was the Recv one and there is no free space in the Rx FIFO.
-func (d *Master) WriteCmd(cmd int16) {
-	if d.wn != 0 {
-		masterWaitWrite(d)
-	}
-	p := d.p
-	for p.MFSR.LoadBits(TXCOUNT)>>TXCOUNTn == txFIFOLen {
-		if p.MSR.LoadBits(MasterErrFlags) != 0 {
-			return
-		}
-	}
-	p.MTDR.Store(cmd)
 }
 
 // WriteCmds starts writing commands into the Tx FIFO in the background using
@@ -285,6 +282,45 @@ func (d *Master) WriteString(s string) {
 	d.Write(unsafe.Slice(unsafe.StringData(s), len(s)))
 }
 
+func (d *Master) WriteCmd1(cmd int16) {
+	masterWrite(d, unsafe.Pointer(&cmd), 1, true)
+	return
+
+	if d.wn != 0 {
+		masterWaitWrite(d)
+	}
+	p := d.p
+	for p.MFSR.LoadBits(TXCOUNT)>>TXCOUNTn == txFIFOLen {
+		if p.MSR.LoadBits(MasterErrFlags) != 0 {
+			return
+		}
+	}
+	p.MTDR.Store(cmd)
+}
+
+// WriteCmd works like WriteCmds but writes only one command word into the Tx
+// FIFO. It's lighter than WriteCmds([]int16{cmd}) or Write([]byte{b}) mainly
+// because it avoids allocation.
+func (d *Master) WriteCmd(cmd int16) {
+	//masterWrite(d, unsafe.Pointer(&cmd), 1, true)
+	//return
+
+	if d.wn != 0 {
+		masterWaitWrite(d)
+	}
+	p := d.p
+	if p.MFSR.LoadBits(TXCOUNT)>>TXCOUNTn != txFIFOLen {
+		p.MTDR.Store(cmd)
+		return
+	}
+	d.wbuf = cmd
+	d.wcmds = &d.wbuf
+	d.wi = 0
+	atomic.StoreInt32(&d.wn, 1)
+	// The ISR may already finish here so the next line may reenable IRQs.
+	p.MIER.Store(MTDF | MasterErrFlags)
+}
+
 const (
 	txFIFOLen = 4
 	rxFIFOLen = 4
@@ -307,10 +343,7 @@ func masterWrite(d *Master, ptr unsafe.Pointer, n int, cmd bool) {
 		masterWaitWrite(d)
 	}
 	p := d.p
-	if p.MSR.Load()&MasterErrFlags != 0 {
-		return
-	}
-	// Avoid interrupts if there is a free space in the FIFO.
+	// To speed things up, first try to write directly into the FIFO.
 	i := 0
 	if !cmd {
 		data := unsafe.Slice((*byte)(ptr), n)
@@ -403,12 +436,29 @@ func (d *Master) Read(p []byte) {
 	masterRead(d, &p[0], len(p))
 }
 
-// ReadByte reads a byte from Rx FIFO. The returned byte is valid if Err
-// returns nil.
+// ReadByte works like Read but reads only one byte from the Rx FIFO. It should
+// be lighter than Read(oneByteSlice) because the way Read works causes that its
+// argument definitely escapes so may require allocation, in worst case on every
+// call.
 func (d *Master) ReadByte() byte {
-	var b byte
-	masterRead(d, &b, 1)
-	return b
+	p := d.p
+	v := p.MRDR.Load()
+	if v&RXEMPTY != 0 {
+		return byte(v)
+	}
+	d.rdata = &d.rbuf
+	d.ri = 0
+	p.MFCR.Store(0)
+	flags := MRDF | MasterErrFlags
+	atomic.StoreInt32(&d.rn, 1)
+	if d.wn > 0 /* can avoid atomic.Load because of the above atomic.Store */ {
+		flags |= MTDF
+	}
+	// The ISR may already finish here so the next line may reenable IRQs.
+	p.MIER.Store(flags)
+	d.rdone.Sleep(-1)
+	d.rdone.Clear()
+	return d.rbuf
 }
 
 func masterRead(d *Master, ptr *byte, n int) {
@@ -460,6 +510,21 @@ func (d *Master) Flush() {
 	}
 }
 
+// Status returns the current status of the LPSPI Master. It's intended do to
+// be used with together with the Clear and Wait methods to check which of the
+// events we were waiting for actually took place.
+//
+// You won't read this in the RM:
+//
+// In caes of repeated START the detection of NACK causes setting of both MSDF
+// and MEPF flags. Usually MNDF flag is set before MSDF, MEPF but sometimes
+// it happens in the reverse order. After NACK the SDA stays high, the SCL
+// stays low which probably causes that the MBF and MBBF flags are set. The
+// only way to clear MBF,MBBF is to write the Stop command into MTDR or reset
+// the peripheral (disabling and reenabling it doesn't work). After the Stop
+// command SCL is momentarily pulled low to allow releasing SDA and next SCL
+// what corresponds to the Stop Condition on the bus. SM says that MBBF reflets
+// the bus state. But it's not cleare how MBF and MBBF relate to each other.
 func (d *Master) Status() MSR {
 	return d.p.MSR.Load()
 }
@@ -567,9 +632,13 @@ func (d *Master) ISR() {
 				p.MFCR.Store(MFCR(n-1) << RXWATERn)
 			}
 		}
-	} else if n < 0 && MSR(-n)&sr != 0 {
+	} else if n < 0 {
 		// Wait
-		done = true
+		if flags := MSR(-n); flags&sr != 0 {
+			done = true
+		} else {
+			ie |= flags // already contain MasterErrFlags
+		}
 	}
 	if done {
 		d.rn = 0 // avoid rentry because of possible race on MIER
@@ -589,14 +658,20 @@ func (d *Master) ISR() {
 		// First store ie as is.
 		p.MIER.Store(ie)
 
-		// Then fix MRDF if the read work was scheduled in the meantime.
-		if ie&MRDF == 0 && atomic.LoadInt32(&d.rn) != 0 {
-			p.MIER.Store(ie | MRDF)
+		if ie&^(MTDF|MasterErrFlags) == 0 {
+			// Then fix MIER if the read work was scheduled in the meantime.
+			if n := atomic.LoadInt32(&d.rn); n != 0 {
+				if n > 0 {
+					ie |= MRDF
+				} else {
+					ie |= MSR(-n)
+				}
+				p.MIER.Store(ie)
+			}
 		}
 	}
 }
 
-/*
 func pr[T ~uint32](name string, v T) {
 	print(name, ": ")
 	for i := 32; i != 0; i-- {
@@ -607,4 +682,3 @@ func pr[T ~uint32](name string, v T) {
 	}
 	print("\r\n")
 }
-*/
