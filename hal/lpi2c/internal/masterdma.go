@@ -7,16 +7,14 @@ package internal
 import (
 	"github.com/embeddedgo/imxrt/hal/dma"
 	"github.com/embeddedgo/imxrt/hal/dma/dmairq"
-	"github.com/embeddedgo/imxrt/hal/lpspi"
+	"github.com/embeddedgo/imxrt/hal/lpi2c"
 )
 
-func NewMasterDMA(p *lpspi.Periph) *lpspi.Master {
+func NewMasterDMA(p *lpi2c.Periph) *lpi2c.Master {
 	d := dma.DMA(0)
 	d.EnableClock(true)
-	rxdma := d.AllocChannel(false)
-	txdma := d.AllocChannel(false)
-	m := lpspi.NewMaster(p, rxdma, txdma)
-	dmairq.SetISR(rxdma, m.RxDMAISR)
-	dmairq.SetISR(txdma, m.TxDMAISR)
+	dc := d.AllocChannel(false)
+	m := lpi2c.NewMaster(p, dc)
+	dmairq.SetISR(dc, m.DMAISR)
 	return m
 }

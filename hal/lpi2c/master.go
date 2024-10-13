@@ -82,7 +82,8 @@ type Master struct {
 	rn    int32
 	rdone rtos.Note
 
-	dma dma.Channel
+	dma   dma.Channel
+	ddone rtos.Note
 }
 
 // NewMaster returns a new master-mode driver for p. If valid DMA channel is
@@ -258,7 +259,7 @@ func (d *Master) Write(p []byte) {
 	if len(p) == 0 {
 		return
 	}
-	if d.dma.IsValid() && len(p) >= 3*dma.CacheLineSize {
+	if d.dma.IsValid() && len(p) >= 2*dma.CacheLineSize {
 		ptr := unsafe.Pointer(&p[0])
 		ds, de := dma.AlignOffsets(ptr, uintptr(len(p)))
 		dmaStart := int(ds)
@@ -282,25 +283,10 @@ func (d *Master) WriteString(s string) {
 	d.Write(unsafe.Slice(unsafe.StringData(s), len(s)))
 }
 
-func (d *Master) WriteCmd1(cmd int16) {
-	masterWrite(d, unsafe.Pointer(&cmd), 1, true)
-	return
-
-	if d.wn != 0 {
-		masterWaitWrite(d)
-	}
-	p := d.p
-	for p.MFSR.LoadBits(TXCOUNT)>>TXCOUNTn == txFIFOLen {
-		if p.MSR.LoadBits(MasterErrFlags) != 0 {
-			return
-		}
-	}
-	p.MTDR.Store(cmd)
-}
-
 // WriteCmd works like WriteCmds but writes only one command word into the Tx
 // FIFO. It's lighter than WriteCmds([]int16{cmd}) or Write([]byte{b}) mainly
-// because it avoids allocation.
+// because there is no slice allocation required but its code is also much
+// simpler.
 func (d *Master) WriteCmd(cmd int16) {
 	//masterWrite(d, unsafe.Pointer(&cmd), 1, true)
 	//return
@@ -374,12 +360,13 @@ func masterWrite(d *Master, ptr unsafe.Pointer, n int, cmd bool) {
 const dmaMaxMajorIter = 1<<dma.ELINKn - 1 // = 32767
 
 func masterWriteDMA(d *Master, ptr unsafe.Pointer, n int) {
+	rtos.CacheMaint(rtos.DCacheFlush, ptr, n)
 	if d.wn != 0 {
 		masterWaitWrite(d)
 	}
 	tcd := dma.TCD{
 		SADDR:       ptr,
-		SOFF:        4,
+		SOFF:        txFIFOLen,
 		ATTR:        dma.S32b | dma.D8b,
 		ML_NBYTES:   uint32(txFIFOLen),
 		DADDR:       unsafe.Pointer(d.p.MTDR.Addr()),
@@ -391,6 +378,7 @@ func masterWriteDMA(d *Master, ptr unsafe.Pointer, n int) {
 	dma := d.dma
 	dma.WriteTCD(&tcd)
 	tcdio := dma.TCD()
+	n /= txFIFOLen
 	for {
 		m := n
 		if m > dmaMaxMajorIter {
@@ -402,8 +390,8 @@ func masterWriteDMA(d *Master, ptr unsafe.Pointer, n int) {
 			tcdio.ELINK_BITER.Store(int16(m))
 		}
 		dma.EnableReq()   // accept DMA requests from Tx FIFO
-		d.wdone.Sleep(-1) // wait until the major loop complete
-		d.wdone.Clear()
+		d.ddone.Sleep(-1) // wait until the major loop complete
+		d.ddone.Clear()
 		if n == 0 {
 			break
 		}
@@ -436,10 +424,10 @@ func (d *Master) Read(p []byte) {
 	masterRead(d, &p[0], len(p))
 }
 
-// ReadByte works like Read but reads only one byte from the Rx FIFO. It should
-// be lighter than Read(oneByteSlice) because the way Read works causes that its
+// ReadByte works like Read but reads only one byte from the Rx FIFO. It's
+// lighter than Read(oneByteSlice) because the way Read works causes that its
 // argument definitely escapes so may require allocation, in worst case on every
-// call.
+// call. The ReadByte code is also much simpler than the Read code.
 func (d *Master) ReadByte() byte {
 	p := d.p
 	v := p.MRDR.Load()
@@ -670,6 +658,14 @@ func (d *Master) ISR() {
 			}
 		}
 	}
+}
+
+// DMAISR should be configured as a DMA interrupt handler if DMA is used.
+//
+//go:nosplit
+func (d *Master) DMAISR() {
+	d.dma.ClearInt()
+	d.ddone.Wakeup()
 }
 
 func pr[T ~uint32](name string, v T) {

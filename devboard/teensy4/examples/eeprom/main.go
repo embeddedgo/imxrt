@@ -8,16 +8,14 @@
 package main
 
 import (
-	"embedded/rtos"
 	"errors"
 	"fmt"
 	"io"
 	"time"
 
 	"github.com/embeddedgo/device/bus/i2cbus"
-	"github.com/embeddedgo/imxrt/hal/dma"
-	"github.com/embeddedgo/imxrt/hal/irq"
 	"github.com/embeddedgo/imxrt/hal/lpi2c"
+	"github.com/embeddedgo/imxrt/hal/lpi2c/lpi2c1dma"
 
 	"github.com/embeddedgo/imxrt/devboard/teensy4/board/pins"
 )
@@ -30,24 +28,20 @@ const (
 	rd        = 1 // read transaction
 )
 
-var master *lpi2c.Master
-
 func main() {
 	// Used IO pins
 	sda := pins.P18 // AD_B1_01
 	scl := pins.P19 // AD_B1_00
 
 	// Setup LPI2C driver
-	p := lpi2c.LPI2C(1)
-	master = lpi2c.NewMaster(p, dma.Channel{})
+	master := lpi2c1dma.Master()
 	master.Setup(lpi2c.Std100k)
 	master.UsePin(scl, lpi2c.SCL)
 	master.UsePin(sda, lpi2c.SDA)
-	irq.LPI2C1.Enable(rtos.IntPrioLow, 0)
 
 	c := master.NewConn(slaveAddr)
 
-	var buf [32]byte
+	var buf [128]byte
 
 loop:
 	for page := 0; ; page++ {
@@ -55,7 +49,7 @@ loop:
 		a := page * 32
 		addr := []byte{byte(a >> 8), byte(a)}
 
-		s := fmt.Sprintf(">> %#x <<", page)
+		s := fmt.Sprintf("+ 1234567890..1234567890..1234567890..1234567890..1234567890 %#x +", page)
 
 		fmt.Printf("\nWrite page %d: %s\n", page, s)
 		c.Write(addr) // replace with c.WriteByte(addr) for 24C0x EEPROMs
@@ -91,20 +85,4 @@ loop:
 		fmt.Printf("Read %d bytes from page %d: %s\n", n, page, string(buf[:n]))
 	}
 
-}
-
-//go:interrupthandler
-func LPI2C1_Handler() {
-	master.ISR()
-}
-
-func pr[T ~uint32](name string, v T) {
-	print(name, ": ")
-	for i := 32; i != 0; i-- {
-		if i&7 == 0 && i != 32 {
-			print("_")
-		}
-		print(v >> (i - 1) & 1)
-	}
-	print("\r\n")
 }

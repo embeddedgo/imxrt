@@ -531,6 +531,7 @@ func (d *Master) Write32(p []uint32) {
 	writeDMA(d, p)
 }
 
+// TODO: abandon generics, use unsafe.Pointer and lsz instead.
 func readDMA[T dataWord](d *Master, in []T) {
 	if len(in) == 0 {
 		return
