@@ -41,7 +41,7 @@ func main() {
 
 	c := master.NewConn(slaveAddr)
 
-	var buf [128]byte
+	var buf [64]byte
 
 loop:
 	for page := 0; ; page++ {
@@ -49,7 +49,7 @@ loop:
 		a := page * 32
 		addr := []byte{byte(a >> 8), byte(a)}
 
-		s := fmt.Sprintf("+ 1234567890..1234567890..1234567890..1234567890..1234567890 %#x +", page)
+		s := fmt.Sprintf(">> %#x <<", page)
 
 		fmt.Printf("\nWrite page %d: %s\n", page, s)
 		c.Write(addr) // replace with c.WriteByte(addr) for 24C0x EEPROMs

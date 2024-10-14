@@ -82,8 +82,7 @@ type Master struct {
 	rn    int32
 	rdone rtos.Note
 
-	dma   dma.Channel
-	ddone rtos.Note
+	dma dma.Channel
 }
 
 // NewMaster returns a new master-mode driver for p. If valid DMA channel is
@@ -284,13 +283,8 @@ func (d *Master) WriteString(s string) {
 }
 
 // WriteCmd works like WriteCmds but writes only one command word into the Tx
-// FIFO. It's lighter than WriteCmds([]int16{cmd}) or Write([]byte{b}) mainly
-// because there is no slice allocation required but its code is also much
-// simpler.
+// FIFO.
 func (d *Master) WriteCmd(cmd int16) {
-	//masterWrite(d, unsafe.Pointer(&cmd), 1, true)
-	//return
-
 	if d.wn != 0 {
 		masterWaitWrite(d)
 	}
@@ -360,25 +354,28 @@ func masterWrite(d *Master, ptr unsafe.Pointer, n int, cmd bool) {
 const dmaMaxMajorIter = 1<<dma.ELINKn - 1 // = 32767
 
 func masterWriteDMA(d *Master, ptr unsafe.Pointer, n int) {
-	rtos.CacheMaint(rtos.DCacheFlush, ptr, n)
 	if d.wn != 0 {
 		masterWaitWrite(d)
 	}
+	rtos.CacheMaint(rtos.DCacheFlush, ptr, n)
+	const dmaChunk = 4 // eqals 1 x S32b and 4 x D8b, <=txFIFOLen
 	tcd := dma.TCD{
 		SADDR:       ptr,
-		SOFF:        txFIFOLen,
+		SOFF:        dmaChunk,
 		ATTR:        dma.S32b | dma.D8b,
-		ML_NBYTES:   uint32(txFIFOLen),
+		ML_NBYTES:   dmaChunk,
 		DADDR:       unsafe.Pointer(d.p.MTDR.Addr()),
 		ELINK_CITER: dmaMaxMajorIter,
 		ELINK_BITER: dmaMaxMajorIter,
 		CSR:         dma.DREQ | dma.INTMAJOR,
 	}
-	d.p.MDER.Store(TDDE)
+	p := d.p
+	p.MDER.Store(TDDE)
 	dma := d.dma
 	dma.WriteTCD(&tcd)
 	tcdio := dma.TCD()
-	n /= txFIFOLen
+	n /= dmaChunk
+	atomic.StoreInt32(&d.wn, -2) // DMA write in progress
 	for {
 		m := n
 		if m > dmaMaxMajorIter {
@@ -389,14 +386,13 @@ func masterWriteDMA(d *Master, ptr unsafe.Pointer, n int) {
 			tcdio.ELINK_CITER.Store(int16(m))
 			tcdio.ELINK_BITER.Store(int16(m))
 		}
-		dma.EnableReq()   // accept DMA requests from Tx FIFO
-		d.ddone.Sleep(-1) // wait until the major loop complete
-		d.ddone.Clear()
+		dma.EnableReq() // accept DMA requests from Tx FIFO
 		if n == 0 {
-			break
+			break // we don't have to wait for the end of write
 		}
+		d.wdone.Sleep(-1) // wait until the major loop complete
+		d.wdone.Clear()
 	}
-	d.p.MDER.Store(0)
 }
 
 // Read reads len(p) data bytes from Rx FIFO. The read data is valid if Err
@@ -405,7 +401,7 @@ func (d *Master) Read(p []byte) {
 	if len(p) == 0 {
 		return
 	}
-	if d.dma.IsValid() && len(p) >= 3*dma.CacheLineSize {
+	if d.dma.IsValid() && len(p) >= 2*dma.CacheLineSize {
 		ptr := &p[0]
 		ds, de := dma.AlignOffsets(unsafe.Pointer(ptr), uintptr(len(p)))
 		dmaStart := int(ds)
@@ -415,7 +411,7 @@ func (d *Master) Read(p []byte) {
 		if dmaStart != 0 {
 			masterRead(d, ptr, dmaStart)
 		}
-		masterReadDMA(d, dmaPtr, dmaN)
+		masterReadDMA(d, unsafe.Pointer(dmaPtr), dmaN)
 		if dmaEnd == len(p) {
 			return
 		}
@@ -424,10 +420,7 @@ func (d *Master) Read(p []byte) {
 	masterRead(d, &p[0], len(p))
 }
 
-// ReadByte works like Read but reads only one byte from the Rx FIFO. It's
-// lighter than Read(oneByteSlice) because the way Read works causes that its
-// argument definitely escapes so may require allocation, in worst case on every
-// call. The ReadByte code is also much simpler than the Read code.
+// ReadByte works like Read but reads only one byte from the Rx FIFO.
 func (d *Master) ReadByte() byte {
 	p := d.p
 	v := p.MRDR.Load()
@@ -484,8 +477,46 @@ func masterRead(d *Master, ptr *byte, n int) {
 	d.rdata = nil
 }
 
-func masterReadDMA(d *Master, ptr *byte, n int) {
-	// TODO:
+func masterReadDMA(d *Master, ptr unsafe.Pointer, n int) {
+	if d.wn == -2 {
+		masterWaitWrite(d) // wait for the end of DMA write
+	}
+	rtos.CacheMaint(rtos.DCacheFlushInval, ptr, n)
+	const dmaChunk = 4 // equals 4 x S8b and 1 x D32b, <=rxFIFOLen
+	tcd := dma.TCD{
+		SADDR:       unsafe.Pointer(d.p.MRDR.Addr()),
+		ATTR:        dma.S8b | dma.D32b,
+		ML_NBYTES:   dmaChunk,
+		DADDR:       ptr,
+		DOFF:        dmaChunk,
+		ELINK_CITER: dmaMaxMajorIter,
+		ELINK_BITER: dmaMaxMajorIter,
+		CSR:         dma.DREQ | dma.INTMAJOR,
+	}
+	p := d.p
+	p.MFCR.Store((dmaChunk - 1) << RXWATERn)
+	p.MDER.Store(RDDE)
+	dma := d.dma
+	dma.WriteTCD(&tcd)
+	tcdio := dma.TCD()
+	n /= dmaChunk
+	for {
+		m := n
+		if m > dmaMaxMajorIter {
+			m = dmaMaxMajorIter
+		}
+		n -= m
+		if m != dmaMaxMajorIter {
+			tcdio.ELINK_CITER.Store(int16(m))
+			tcdio.ELINK_BITER.Store(int16(m))
+		}
+		dma.EnableReq()   // accept DMA requests from Rx FIFO
+		d.rdone.Sleep(-1) // wait until the major loop complete
+		d.rdone.Clear()
+		if n == 0 {
+			break
+		}
+	}
 }
 
 // Flush waits for the last command passed to the last WriteCmd call or last
@@ -547,6 +578,8 @@ func (d *Master) Wait(flags MSR) {
 	d.rdone.Clear()
 }
 
+// ISR is the interrupt handler for the LPI2C peripheral used by Master.
+//
 //go:nosplit
 //go:nowritebarrierrec
 func (d *Master) ISR() {
@@ -660,12 +693,17 @@ func (d *Master) ISR() {
 	}
 }
 
-// DMAISR should be configured as a DMA interrupt handler if DMA is used.
+// DMAISR is a DMA interrupt handler for the DMA channel used by Master.
 //
 //go:nosplit
+//go:nowritebarrierrec
 func (d *Master) DMAISR() {
 	d.dma.ClearInt()
-	d.ddone.Wakeup()
+	if atomic.LoadInt32(&d.wn) == -2 {
+		d.wdone.Wakeup()
+	} else {
+		d.rdone.Wakeup()
+	}
 }
 
 func pr[T ~uint32](name string, v T) {

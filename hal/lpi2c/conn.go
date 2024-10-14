@@ -62,7 +62,7 @@ func (d *Master) NewConn(a i2cbus.Addr) i2cbus.Conn {
 	} else {
 		cmd := start | 0xf0 | int16(a&0x300)>>7
 		c.wstart[c.n] = cmd
-		c.rstart[c.n] = cmd | 1
+		c.rstart[c.n] = cmd | 1 // BUG: should be 0, read transfer requires Repeated Start for read
 		c.n++
 		cmd = Send | int16(a&0xff)
 		c.wstart[c.n] = cmd
