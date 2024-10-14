@@ -21,9 +21,8 @@ func (d *Master) SetName(s string) {
 	d.name = s
 }
 
-// SetID sets the Master ID. The id is used by connections returned by the
-// NewConn method. Its three least significant bits are used for arbitration
-// between competing masters while switching to the high speed mode.
+// SetID sets the Master ID. Its three least significant bits are used for
+// arbitration between competing masters while switching to the High Speed mode.
 func (d *Master) SetID(id uint8) {
 	d.id = id
 }
@@ -37,8 +36,9 @@ type conn struct {
 	d      *Master
 	a      i2cbus.Addr
 	wstart [3]int16
-	rstart [4]int16
-	n      int8
+	rstart [6]int16
+	wn     int8
+	rn     int8
 	open   bool
 	wr     bool
 }
@@ -47,27 +47,37 @@ type conn struct {
 func (d *Master) NewConn(a i2cbus.Addr) i2cbus.Conn {
 	c := &conn{d: d, a: a}
 	start := Start
+	i := 0
 	if a&i2cbus.HS != 0 {
-		start = StartHS
+		// High Speed mode
 		cmd := StartNACK | 0x08 | int16(d.id&3)
-		c.wstart[c.n] = cmd
-		c.rstart[c.n] = cmd
-		c.n++
+		c.wstart[i] = cmd
+		c.rstart[i] = cmd
+		i++
+		start = StartHS
 	}
 	if a&i2cbus.A10 == 0 {
+		// 7b address
 		cmd := start | int16(a&0x7f)<<1
-		c.wstart[c.n] = cmd
-		c.rstart[c.n] = cmd | 1
-		c.n++
+		c.wstart[i] = cmd
+		c.rstart[i] = cmd | 1
+		i++
+		c.wn = int8(i)
+		c.rn = int8(i)
 	} else {
-		cmd := start | 0xf0 | int16(a&0x300)>>7
-		c.wstart[c.n] = cmd
-		c.rstart[c.n] = cmd | 1 // BUG: should be 0, read transfer requires Repeated Start for read
-		c.n++
-		cmd = Send | int16(a&0xff)
-		c.wstart[c.n] = cmd
-		c.rstart[c.n] = cmd
-		c.n++
+		// 10b address
+		cmd0 := start | 0xf0 | int16(a&0x300)>>7
+		c.wstart[i] = cmd0
+		c.rstart[i] = cmd0
+		i++
+		cmd1 := Send | int16(a&0xff)
+		c.wstart[i] = cmd1
+		c.rstart[i] = cmd1
+		i++
+		c.wn = int8(i)
+		c.rstart[i] = cmd0 | 1
+		i++
+		c.rn = int8(i)
 	}
 	return c
 }
@@ -94,7 +104,7 @@ func startWrite(c *conn) {
 		if open && c.wstart[0]>>8 == StartNACK>>8 {
 			i = 1
 		}
-		c.d.WriteCmds(c.wstart[i:c.n])
+		c.d.WriteCmds(c.wstart[i:c.wn])
 	}
 }
 
@@ -136,9 +146,9 @@ func startRead(c *conn, m int) {
 	if open && c.rstart[0]>>8 == StartNACK>>8 {
 		i = 1 // already in the High Speed mode
 	}
-	n := c.n
+	n := c.rn
 	if m != 0 {
-		c.rstart[c.n] = Recv | int16(m-1)
+		c.rstart[n] = Recv | int16(m-1)
 		n++
 	}
 	c.d.WriteCmds(c.rstart[i:n])

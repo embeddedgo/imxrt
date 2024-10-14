@@ -24,23 +24,19 @@
 package main
 
 import (
-	"embedded/rtos"
 	"fmt"
 	"time"
 
-	"github.com/embeddedgo/imxrt/hal/dma"
-	"github.com/embeddedgo/imxrt/hal/irq"
 	"github.com/embeddedgo/imxrt/hal/lpi2c"
+	"github.com/embeddedgo/imxrt/hal/lpi2c/lpi2c1"
 
 	"github.com/embeddedgo/imxrt/devboard/teensy4/board/pins"
 )
 
 const (
-	prefix = 0x4 << 3 // 0b1010 address prefix
-	a2a1a0 = 0x7      // address pins
+	prefix = 0b0100 // address prefix (0x4)
+	a2a1a0 = 0b111  // address pins
 )
-
-var master *lpi2c.Master
 
 func main() {
 	// Used IO pins
@@ -48,14 +44,12 @@ func main() {
 	scl := pins.P19 // AD_B1_00
 
 	// Setup LPI2C driver
-	p := lpi2c.LPI2C(1)
-	master = lpi2c.NewMaster(p, dma.Channel{})
+	master := lpi2c1.Master()
 	master.Setup(lpi2c.Std100k)
 	master.UsePin(scl, lpi2c.SCL)
 	master.UsePin(sda, lpi2c.SDA)
-	irq.LPI2C1.Enable(rtos.IntPrioLow, 0)
 
-	c := master.NewConn(prefix | a2a1a0)
+	c := master.NewConn(prefix<<3 | a2a1a0)
 
 	for i := 0; ; i++ {
 		err := c.WriteByte(byte(i))
@@ -64,9 +58,4 @@ func main() {
 		}
 		time.Sleep(time.Second / 4)
 	}
-}
-
-//go:interrupthandler
-func LPI2C1_Handler() {
-	master.ISR()
 }

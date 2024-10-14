@@ -15,17 +15,14 @@ import (
 
 	"github.com/embeddedgo/device/bus/i2cbus"
 	"github.com/embeddedgo/imxrt/hal/lpi2c"
-	"github.com/embeddedgo/imxrt/hal/lpi2c/lpi2c1dma"
+	"github.com/embeddedgo/imxrt/hal/lpi2c/lpi2c1"
 
 	"github.com/embeddedgo/imxrt/devboard/teensy4/board/pins"
 )
 
 const (
-	prefix    = 0b1010 // address prefix
-	e2e1e0    = 0      // address pins
-	slaveAddr = prefix<<3 | e2e1e0
-	wr        = 0 // write transaction
-	rd        = 1 // read transaction
+	prefix = 0b1010 // address prefix (0xa)
+	a2a1a0 = 0b000  // address pins
 )
 
 func main() {
@@ -34,12 +31,12 @@ func main() {
 	scl := pins.P19 // AD_B1_00
 
 	// Setup LPI2C driver
-	master := lpi2c1dma.Master()
+	master := lpi2c1.Master()
 	master.Setup(lpi2c.Std100k)
 	master.UsePin(scl, lpi2c.SCL)
 	master.UsePin(sda, lpi2c.SDA)
 
-	c := master.NewConn(slaveAddr)
+	c := master.NewConn(prefix<<3 | a2a1a0)
 
 	var buf [64]byte
 
@@ -51,7 +48,7 @@ loop:
 
 		s := fmt.Sprintf(">> %#x <<", page)
 
-		fmt.Printf("\nWrite page %d: %s\n", page, s)
+		fmt.Printf("\nWrite page %d: %s ", page, s)
 		c.Write(addr) // replace with c.WriteByte(addr) for 24C0x EEPROMs
 		io.WriteString(c, s)
 		err := c.Close()
