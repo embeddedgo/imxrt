@@ -38,29 +38,29 @@ import (
 // must not modify the data/command buffer pass to the last write method until
 // the return of the Flush method or another write method.
 //
-// The read/write methods doesn't return errors. Instead, they check the status
-// of the LPI2C peripheral before starting doing anything and return in case of
-// error. There is an Err method that allow to check and reset the LPI2C error
-// flags at a convenient time. Even if you call Err after every method call the
-// returned error is still asynchronous due to the asynchronous nature of the
-// write methods and the delayed execution of commands by the LPI2C peripheral
-// itself. You can use Wait to synchronise things but all status flags other
-// than MSDF (Stop Condition) seems to be inherently asynchronous too.
+// The read/write methods doesn't return errors. There is an Err method that
+// allow to check and reset the LPI2C error flags at a convenient time. Even if
+// you call Err after every method call the returned error is still asynchronous
+// due to the asynchronous nature of the write methods and the delayed execution
+// of commands by the LPI2C peripheral itself. You can use Wait to synchronise
+// things but it seems that only the MSDF flag (Stop Condition) can be used to
+// to synchronize errors.
 //
 // The second interface is a connection oriented one that implements the
 // i2cbus.Conn interface.
 //
 // Example:
 //
-//	conn := d.NewConn(eepromAddr)
-//	conn.WriteByte(memAaddr)
-//	conn.Read(buf)
-//	err := conn.Close()
+//	c := d.NewConn(eepromAddr)
+//	c.WriteByte(memAaddr)
+//	c.Read(buf)
+//	err := c.Close()
 //	if err != nil {
 //
 // Both interfaces may be used concurently by multiple goroutines but in such
 // a case users of the low-level interface must gain an exclusive access to the
-// driver using the embedded mutex.
+// driver using the embedded mutex and wait for the Stop Condition before
+// unlocking the Master.
 type Master struct {
 	sync.Mutex // use with the low-level interface to share the driver
 
