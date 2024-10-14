@@ -18,17 +18,17 @@ type Channel struct {
 
 // A TCD represents a Transfer Control Descriptor
 type TCD struct {
-	SADDR       unsafe.Pointer
-	SOFF        int16
-	ATTR        ATTR
-	ML_NBYTES   uint32
-	SLAST       int32
-	DADDR       unsafe.Pointer
-	DOFF        int16
-	ELINK_CITER int16
-	DLAST_SGA   int32
-	CSR         CSR
-	ELINK_BITER int16
+	SADDR       unsafe.Pointer // source address
+	SOFF        int16          // added to SADDR after each read
+	ATTR        ATTR           // transfer attributes
+	ML_NBYTES   uint32         // bytes per request (minor loop) or ML config
+	SLAST       int32          // added to SADDR at tranrfer end
+	DADDR       unsafe.Pointer // destination address
+	DOFF        int16          // added to DADDR after each read
+	ELINK_CITER int16          // current major loop iter. count, chan. linking
+	DLAST_SGA   int32          // added to DADDR at transfer end or next TCD
+	CSR         CSR            // controll and status
+	ELINK_BITER int16          // starting major loop iteration count
 }
 
 type ATTR uint16
