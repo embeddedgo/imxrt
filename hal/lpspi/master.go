@@ -213,7 +213,7 @@ type dataWord interface {
 // speed is crucial to achive fast bitrates (up to 30 MHz) so we use unsafe
 // pointers instead of slices to speed things up (smaller code size, no bound
 // checking, only one increment operation in the loop).
-func writeRead[T dataWord](d *Master, po, pi unsafe.Pointer, n int) {
+func writeReadCPU[T dataWord](d *Master, po, pi unsafe.Pointer, n int) {
 	p, slow := d.p, d.slow
 	sz := int(unsafe.Sizeof(T(0)))
 	nr, nw := n, n
@@ -253,7 +253,7 @@ func writeRead[T dataWord](d *Master, po, pi unsafe.Pointer, n int) {
 	return
 }
 
-func write[T dataWord](d *Master, po unsafe.Pointer, n int) (end unsafe.Pointer) {
+func writeCPU[T dataWord](d *Master, po unsafe.Pointer, n int) (end unsafe.Pointer) {
 	p, slow := d.p, d.slow
 	sz := int(unsafe.Sizeof(T(0)))
 	for end = unsafe.Add(po, n*sz); po != end; po = unsafe.Add(po, sz) {
@@ -267,7 +267,7 @@ func write[T dataWord](d *Master, po unsafe.Pointer, n int) (end unsafe.Pointer)
 	return
 }
 
-func read[T dataWord](d *Master, pi unsafe.Pointer, n int) (end unsafe.Pointer) {
+func readCPU[T dataWord](d *Master, pi unsafe.Pointer, n int) (end unsafe.Pointer) {
 	p, slow := d.p, d.slow
 	sz := int(unsafe.Sizeof(T(0)))
 	for end = unsafe.Add(pi, n*sz); pi != end; pi = unsafe.Add(pi, sz) {
@@ -312,39 +312,16 @@ func bidirSizes(po, pi unsafe.Pointer, n int, lsz uint) (ho, hi, dn, to, ti int)
 	return
 }
 
-func writeReadDMA[T dataWord](d *Master, out, in []T) (n int) {
-	n = min(len(out), len(in))
-	if n == 0 {
-		return
-	}
-	po := unsafe.Pointer(unsafe.SliceData(out))
-	pi := unsafe.Pointer(unsafe.SliceData(in))
-	sz := int(unsafe.Sizeof(T(0)))
-	lsz := uint(sz >> 1) // log2(sz) for 1, 2, 4
-	rxdma, txdma := d.rxdma, d.txdma
-
-	// Use DMA only for long transfers. Short ones are handled by CPU.
-	if n <= 3*dma.CacheLineSize/sz || !rxdma.IsValid() || !txdma.IsValid() {
-		writeRead[T](d, po, pi, n)
-		return
-	}
-
-	ho, hi, dn, to, ti := bidirSizes(po, pi, n, lsz)
-
-	// Use CPU to transfer the buffers heads to align them for DMA.
-	writeRead[T](d, po, pi, hi)
-	po = unsafe.Add(po, hi*sz)
-	pi = unsafe.Add(pi, hi*sz)
-	po = write[T](d, po, ho-hi)
-
-	burstBytes := dmaBurst * sz
-	rtos.CacheMaint(rtos.DCacheFlush, po, dn*burstBytes)
-	rtos.CacheMaint(rtos.DCacheFlushInval, pi, dn*burstBytes)
+func writeReadDMA(d *Master, po, pi unsafe.Pointer, n int, lsz uint) (npo, npi unsafe.Pointer) {
+	burstBytes := dmaBurst << lsz
+	rtos.CacheMaint(rtos.DCacheFlush, po, n*burstBytes)
+	rtos.CacheMaint(rtos.DCacheFlushInval, pi, n*burstBytes)
 
 	// Now perform the bidirectional DMA transfer using two DMA channels. The
 	// whole transfer is synhronized by Rx channel only.
 
 	const maxMajorIter = 1<<dma.LINKCHn - 1 // only 511 because of ELINK Rx->Tx
+	rxdma, txdma := d.rxdma, d.txdma
 
 	// Configure Tx DMA channel.
 	tcd := dma.TCD{
@@ -356,7 +333,6 @@ func writeReadDMA[T dataWord](d *Master, out, in []T) (n int) {
 		ELINK_CITER: maxMajorIter,
 		ELINK_BITER: maxMajorIter,
 	}
-	po = unsafe.Add(po, dn*burstBytes)
 	txdma.WriteTCD(&tcd)
 
 	// Configure Rx DMA channel. It uses ELINK to start the Tx channel minor
@@ -370,16 +346,18 @@ func writeReadDMA[T dataWord](d *Master, out, in []T) (n int) {
 	tcd.ELINK_CITER = dma.ELINK | int16(txdma.Num()<<dma.LINKCHn) | maxMajorIter
 	tcd.ELINK_BITER = tcd.ELINK_CITER
 	tcd.CSR = dma.DREQ | dma.INTMAJOR
-	pi = unsafe.Add(pi, dn*burstBytes)
 	rxdma.WriteTCD(&tcd)
 
+	npo = unsafe.Add(po, n*burstBytes)
+	npi = unsafe.Add(pi, n*burstBytes)
+
 	rxtcd, txtcd := rxdma.TCD(), txdma.TCD()
-	for dn != 0 {
-		m := dn
+	for n != 0 {
+		m := n
 		if m > maxMajorIter {
 			m = maxMajorIter
 		}
-		dn -= m
+		n -= m
 
 		if m != maxMajorIter {
 			txtcd.ELINK_CITER.Store(int16(m))
@@ -397,9 +375,39 @@ func writeReadDMA[T dataWord](d *Master, out, in []T) (n int) {
 		d.done.Sleep(-1)  // wait until the Rx DMA major loop complete
 	}
 
+	return
+}
+
+func writeRead[T dataWord](d *Master, out, in []T) (n int) {
+	n = min(len(out), len(in))
+	if n == 0 {
+		return
+	}
+	po := unsafe.Pointer(unsafe.SliceData(out))
+	pi := unsafe.Pointer(unsafe.SliceData(in))
+	sz := int(unsafe.Sizeof(T(0)))
+	lsz := uint(sz >> 1) // log2(sz) for 1, 2, 4
+
+	// Use DMA only for long transfers. Short ones are handled by CPU.
+	if n <= 3*dma.CacheLineSize/sz || !d.rxdma.IsValid() || !d.txdma.IsValid() {
+		writeReadCPU[T](d, po, pi, n)
+		return
+	}
+
+	ho, hi, dn, to, ti := bidirSizes(po, pi, n, lsz)
+
+	// Use CPU to transfer the buffers heads to align them for DMA.
+	writeReadCPU[T](d, po, pi, hi)
+	po = unsafe.Add(po, hi*sz)
+	pi = unsafe.Add(pi, hi*sz)
+	po = writeCPU[T](d, po, ho-hi)
+
+	// Used DMA to write and read the aligned middle.
+	po, pi = writeReadDMA(d, po, pi, dn, lsz)
+
 	// Use CPU to handle the unaligned tails.
-	pi = read[T](d, pi, ti-to)
-	writeRead[T](d, po, pi, to)
+	pi = readCPU[T](d, pi, ti-to)
+	writeReadCPU[T](d, po, pi, to)
 
 	return
 }
@@ -409,23 +417,23 @@ func writeReadDMA[T dataWord](d *Master, out, in []T) (n int) {
 // reads the same number of bytes from the receive FIFO, using only the low
 // significant bytes from the available 32-bit FIFO words.
 func (d *Master) WriteRead(out, in []byte) (n int) {
-	return writeReadDMA(d, out, in)
+	return writeRead(d, out, in)
 }
 
 // WriteStringRead works like WriteRead but the output bytes are taken from the
 // string.
 func (d *Master) WriteStringRead(out string, in []byte) int {
-	return writeReadDMA(d, unsafe.Slice(unsafe.StringData(out), len(out)), in)
+	return writeRead(d, unsafe.Slice(unsafe.StringData(out), len(out)), in)
 }
 
 // WriteRead16 works like WriteRead but with 16-bit words instead of bytes.
 func (d *Master) WriteRead16(out, in []uint16) (n int) {
-	return writeReadDMA(d, out, in)
+	return writeRead(d, out, in)
 }
 
 // WriteRead32 works like WriteRead but with 32-bit words instead of bytes.
 func (d *Master) WriteRead32(out, in []uint32) (n int) {
-	return writeReadDMA(d, out, in)
+	return writeRead(d, out, in)
 }
 
 func unidirSizes(ptr unsafe.Pointer, n int, lsz uint) (hn, dn, tn int) {
@@ -442,36 +450,18 @@ func unidirSizes(ptr unsafe.Pointer, n int, lsz uint) (hn, dn, tn int) {
 	return
 }
 
-func writeDMA[T dataWord](d *Master, out []T) {
-	if len(out) == 0 {
-		return
-	}
-	po := unsafe.Pointer(unsafe.SliceData(out))
-	sz := int(unsafe.Sizeof(T(0)))
-	lsz := uint(sz >> 1) // log2(sz) for 1, 2, 4
-	txdma := d.txdma
-
-	// Use DMA only for long transfers. Short ones are handled by CPU.
-	if len(out) <= 3*dma.CacheLineSize/sz || !txdma.IsValid() {
-		write[T](d, po, len(out))
-		return
-	}
-
-	hn, dn, tn := unidirSizes(po, len(out), lsz)
-
-	// Use CPU to write the buffer head to align it for DMA.
-	po = write[T](d, po, hn)
-
-	burstBytes := dmaBurst * sz
-	rtos.CacheMaint(rtos.DCacheFlush, po, dn*burstBytes)
+func writeDMA(d *Master, p unsafe.Pointer, n int, lsz uint) (np unsafe.Pointer) {
+	burstBytes := dmaBurst << lsz
+	rtos.CacheMaint(rtos.DCacheFlush, p, n*burstBytes)
 
 	// Now write the aligned middle of the buffer using DMA.
 
 	const maxMajorIter = 1<<dma.ELINKn - 1 // = 32767
+	txdma := d.txdma
 
 	// Configure Tx DMA channel.
 	tcd := dma.TCD{
-		SADDR:       po,
+		SADDR:       p,
 		SOFF:        4,
 		ATTR:        dma.S32b | dma.ATTR(lsz)<<dma.DSIZEn,
 		ML_NBYTES:   uint32(burstBytes),
@@ -480,16 +470,17 @@ func writeDMA[T dataWord](d *Master, out []T) {
 		ELINK_BITER: maxMajorIter,
 		CSR:         dma.DREQ | dma.INTMAJOR,
 	}
-	po = unsafe.Add(po, dn*burstBytes)
 	txdma.WriteTCD(&tcd)
 
+	np = unsafe.Add(p, n*burstBytes)
+
 	tcdio := txdma.TCD()
-	for dn != 0 {
-		m := dn
+	for n != 0 {
+		m := n
 		if m > maxMajorIter {
 			m = maxMajorIter
 		}
-		dn -= m
+		n -= m
 		if m != maxMajorIter {
 			tcdio.ELINK_CITER.Store(int16(m))
 			tcdio.ELINK_BITER.Store(int16(m))
@@ -499,27 +490,52 @@ func writeDMA[T dataWord](d *Master, out []T) {
 		d.done.Sleep(-1)  // wait until the major loop complete
 	}
 
+	return
+}
+
+func write[T dataWord](d *Master, out []T) {
+	if len(out) == 0 {
+		return
+	}
+	po := unsafe.Pointer(unsafe.SliceData(out))
+	sz := int(unsafe.Sizeof(T(0)))
+	lsz := uint(sz >> 1) // log2(sz) for 1, 2, 4
+
+	// Use DMA only for long transfers. Short ones are handled by CPU.
+	if len(out) <= 3*dma.CacheLineSize/sz || !d.txdma.IsValid() {
+		writeCPU[T](d, po, len(out))
+		return
+	}
+
+	hn, dn, tn := unidirSizes(po, len(out), lsz)
+
+	// Use CPU to write the buffer head to align it for DMA.
+	po = writeCPU[T](d, po, hn)
+
+	// Used DMA to write the aligned middle.
+	po = writeDMA(d, po, dn, lsz)
+
 	// Use CPU to handle the unaligned tail.
-	write[T](d, po, tn)
+	writeCPU[T](d, po, tn)
 }
 
 // Write implements the io.Writer interface. It works like Write32 but for 8-bit
 // words.
 func (d *Master) Write(p []byte) (int, error) {
-	writeDMA(d, p)
+	write(d, p)
 	return len(p), nil
 }
 
 // WriteString implemets the io.StringWriter interface. See Write for more
 // information.
 func (d *Master) WriteString(s string) (int, error) {
-	writeDMA(d, unsafe.Slice(unsafe.StringData(s), len(s)))
+	write(d, unsafe.Slice(unsafe.StringData(s), len(s)))
 	return len(s), nil
 }
 
 // Write16 works like Write32 but for 16-bit words.
 func (d *Master) Write16(p []uint16) {
-	writeDMA(d, p)
+	write(d, p)
 }
 
 // Write32 is designed for unidirectional mode of operation, e.g. the TCR.RXMSK
@@ -528,57 +544,38 @@ func (d *Master) Write16(p []uint16) {
 // (not recommended, use WriteRead32 instead).
 // always returns len(p), nil.
 func (d *Master) Write32(p []uint32) {
-	writeDMA(d, p)
+	write(d, p)
 }
 
-// TODO: abandon generics, use unsafe.Pointer and lsz instead.
-func readDMA[T dataWord](d *Master, in []T) {
-	if len(in) == 0 {
-		return
-	}
-	pi := unsafe.Pointer(unsafe.SliceData(in))
-	sz := int(unsafe.Sizeof(T(0)))
-	lsz := uint(sz >> 1) // log2(sz) for 1, 2, 4
-	rxdma := d.rxdma
-
-	// Use DMA only for long transfers. Short ones are handled by CPU.
-	if len(in) <= 3*dma.CacheLineSize/sz || !rxdma.IsValid() {
-		read[T](d, pi, len(in))
-		return
-	}
-
-	hn, dn, tn := unidirSizes(pi, len(in), lsz)
-
-	// Use CPU to read the buffer head to align it for DMA.
-	pi = read[T](d, pi, hn)
-
-	burstBytes := dmaBurst * sz
-	rtos.CacheMaint(rtos.DCacheFlushInval, pi, dn*burstBytes)
+func readDMA(d *Master, p unsafe.Pointer, n int, lsz uint) (np unsafe.Pointer) {
+	burstBytes := dmaBurst << lsz
+	rtos.CacheMaint(rtos.DCacheFlushInval, p, n*burstBytes)
 
 	// Now read into the aligned middle of the buffer using DMA.
 
 	const maxMajorIter = 1<<dma.ELINKn - 1 // = 32767
+	rxdma := d.rxdma
 
 	// Configure Rx DMA channel.
 	tcd := dma.TCD{
 		SADDR:       unsafe.Pointer(d.p.RDR.Addr()),
 		ATTR:        dma.ATTR(lsz)<<dma.SSIZEn | dma.D32b,
 		ML_NBYTES:   uint32(burstBytes),
-		DADDR:       pi,
+		DADDR:       p,
 		ELINK_CITER: maxMajorIter,
 		ELINK_BITER: maxMajorIter,
 		CSR:         dma.DREQ | dma.INTMAJOR,
 	}
-	pi = unsafe.Add(pi, dn*burstBytes)
+	p = unsafe.Add(p, n*burstBytes)
 	rxdma.WriteTCD(&tcd)
 
 	tcdio := rxdma.TCD()
-	for dn != 0 {
-		m := dn
+	for n != 0 {
+		m := n
 		if m > maxMajorIter {
 			m = maxMajorIter
 		}
-		dn -= m
+		n -= m
 		if m != maxMajorIter {
 			tcdio.ELINK_CITER.Store(int16(m))
 			tcdio.ELINK_BITER.Store(int16(m))
@@ -588,8 +585,33 @@ func readDMA[T dataWord](d *Master, in []T) {
 		d.done.Sleep(-1)  // wait until the major loop complete
 	}
 
+	return
+}
+
+func read[T dataWord](d *Master, in []T) {
+	if len(in) == 0 {
+		return
+	}
+	pi := unsafe.Pointer(unsafe.SliceData(in))
+	sz := int(unsafe.Sizeof(T(0)))
+	lsz := uint(sz >> 1) // log2(sz) for 1, 2, 4
+
+	// Use DMA only for long transfers. Short ones are handled by CPU.
+	if len(in) <= 3*dma.CacheLineSize/sz || !d.rxdma.IsValid() {
+		readCPU[T](d, pi, len(in))
+		return
+	}
+
+	hn, dn, tn := unidirSizes(pi, len(in), lsz)
+
+	// Use CPU to read the buffer head to align it for DMA.
+	pi = readCPU[T](d, pi, hn)
+
+	// Used DMA to read the aligned middle.
+	pi = readDMA(d, pi, dn, lsz)
+
 	// Use CPU to handle the unaligned tail.
-	read[T](d, pi, tn)
+	readCPU[T](d, pi, tn)
 }
 
 // Read implements the io.Reader interface. It works like Read32 but for 8-bit
@@ -599,7 +621,7 @@ func readDMA[T dataWord](d *Master, in []T) {
 // the TXMSK and CONT bits set but there is a hardware bug that makes this
 // configuration unusable (see WriteCmd for more information).
 func (d *Master) Read(p []byte) (int, error) {
-	readDMA(d, p)
+	read(d, p)
 	return len(p), nil
 }
 
@@ -609,7 +631,7 @@ func (d *Master) Read(p []byte) (int, error) {
 // the TXMSK and CONT bits set but there is a hardware bug that makes this
 // configuration unusable (see WriteCmd for more information).
 func (d *Master) Read16(p []uint16) {
-	readDMA(d, p)
+	read(d, p)
 }
 
 // Read32 is designed for the unidirectional mode of operation, e.g. the TXMSK
@@ -622,5 +644,5 @@ func (d *Master) Read16(p []uint16) {
 // with TXMSK set provided the frame size is set to 32*len(p) and the CONT bit
 // is cleared.
 func (d *Master) Read32(p []uint32) {
-	readDMA(d, p)
+	read(d, p)
 }

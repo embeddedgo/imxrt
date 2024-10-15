@@ -33,7 +33,7 @@ func main() {
 	// Serial console
 	uartcon.Setup(lpuart1.Driver(), conRx, conTx, lpuart.Word8b, 115200, "UART1")
 
-	// Enable DMA controller and allocate two channels for the LPUART driver.
+	// Enable DMA controller and allocate two channels for the LPI2C driver.
 	d := dma.DMA(0)
 	d.EnableClock(true)
 	rxdma := d.AllocChannel(false)
