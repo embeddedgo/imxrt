@@ -1,5 +1,5 @@
-github.com/embeddedgo/device v0.0.2 h1:Fmz60Aa7IUNVi9KWESSbpkqNtDbmr1f57oObZp7yHks=
-github.com/embeddedgo/device v0.0.2/go.mod h1:XwomFIf0LGyAaaGTCrqOs7CxpJoNrsUNJqdMex/rAAo=
+github.com/embeddedgo/device v0.0.5 h1:5VYWf9xLspyDqEGy5dc0IlSnPGIsGk2hoy+DpjeAhcI=
+github.com/embeddedgo/device v0.0.5/go.mod h1:7nayW2m93gb8t3z1r+1/FrkIb+6DK3CWVq2xBm/n6Ak=
 github.com/embeddedgo/display v1.2.1 h1:ZbUfDWNhNBwC+HgEEUw/WnnsqsXsPrctJtpK5hjtECY=
 github.com/embeddedgo/display v1.2.1/go.mod h1:0sxxBoklqMbA1uBqEAg8Plntmwvt7cNsgxaf7UaS4yw=
 github.com/embeddedgo/espat v0.2.3 h1:mHYd9b5WDOPwIPSj1ES/yPIDZ9gtv4Lc7ULrIfDCO18=
