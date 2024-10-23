@@ -169,7 +169,7 @@ func writeDMA(d *Driver, s string, s16 []uint16) error {
 
 // dmaOffsets calculates a part of the string that is cache aligned
 func dmaOffsets(p unsafe.Pointer, size int) (start, end uintptr) {
-	const alignMask = dma.CacheLineSize - 1
+	const alignMask = dma.MemAlign - 1
 	ptr := uintptr(p)
 	start = -ptr & alignMask
 	ptr += uintptr(size)

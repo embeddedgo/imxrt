@@ -258,7 +258,7 @@ func (d *Master) Write(p []byte) {
 	if len(p) == 0 {
 		return
 	}
-	if d.dma.IsValid() && len(p) >= 2*dma.CacheLineSize {
+	if d.dma.IsValid() && len(p) >= 2*dma.MemAlign {
 		ptr := unsafe.Pointer(&p[0])
 		ds, de := dma.AlignOffsets(ptr, uintptr(len(p)))
 		dmaStart := int(ds)
@@ -401,7 +401,7 @@ func (d *Master) Read(p []byte) {
 	if len(p) == 0 {
 		return
 	}
-	if d.dma.IsValid() && len(p) >= 2*dma.CacheLineSize {
+	if d.dma.IsValid() && len(p) >= 2*dma.MemAlign {
 		ptr := &p[0]
 		ds, de := dma.AlignOffsets(unsafe.Pointer(ptr), uintptr(len(p)))
 		dmaStart := int(ds)

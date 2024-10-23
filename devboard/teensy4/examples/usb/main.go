@@ -93,6 +93,6 @@ usbNotReady:
 }
 
 func alignUp(n int) int {
-	const align = dma.CacheLineSize - 1
+	const align = dma.MemAlign - 1
 	return (n + align) &^ align
 }

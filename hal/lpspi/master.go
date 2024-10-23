@@ -287,13 +287,13 @@ func readCPU[T dataWord](d *Master, pi unsafe.Pointer, n int) (end unsafe.Pointe
 // words in the middle of the po, pi doesn't affect the memory outside these
 // buffers. The following inequalities are true: ho >= hi, ti >= to.
 func bidirSizes(po, pi unsafe.Pointer, n int, lsz uint) (ho, hi, dn, to, ti int) {
-	const cacheAlignMask = dma.CacheLineSize - 1
-	ho = int(-uintptr(po)) & cacheAlignMask
-	hi = int(-uintptr(pi)) & cacheAlignMask
+	const alignMask = dma.MemAlign - 1
+	ho = int(-uintptr(po)) & alignMask
+	hi = int(-uintptr(pi)) & alignMask
 	lenBytes := n << lsz
 	burstBytes := dmaBurst << lsz
-	to = int(uintptr(po)+uintptr(lenBytes)) & cacheAlignMask
-	ti = int(uintptr(pi)+uintptr(lenBytes)) & cacheAlignMask
+	to = int(uintptr(po)+uintptr(lenBytes)) & alignMask
+	ti = int(uintptr(pi)+uintptr(lenBytes)) & alignMask
 	if a := hi - ho; a > 0 {
 		// We cannot read more than what was written.
 		ho += (a + 3) &^ 3
@@ -389,7 +389,7 @@ func writeRead[T dataWord](d *Master, out, in []T) (n int) {
 	lsz := uint(sz >> 1) // log2(sz) for 1, 2, 4
 
 	// Use DMA only for long transfers. Short ones are handled by CPU.
-	if n <= 3*dma.CacheLineSize/sz || !d.rxdma.IsValid() || !d.txdma.IsValid() {
+	if n <= 3*dma.MemAlign/sz || !d.rxdma.IsValid() || !d.txdma.IsValid() {
 		writeReadCPU[T](d, po, pi, n)
 		return
 	}
@@ -437,11 +437,11 @@ func (d *Master) WriteRead32(out, in []uint32) (n int) {
 }
 
 func unidirSizes(ptr unsafe.Pointer, n int, lsz uint) (hn, dn, tn int) {
-	const cacheAlignMask = dma.CacheLineSize - 1
-	hn = int(-uintptr(ptr)) & cacheAlignMask
+	const alignMask = dma.MemAlign - 1
+	hn = int(-uintptr(ptr)) & alignMask
 	lenBytes := n << lsz
 	burstBytes := dmaBurst << lsz
-	tn = int(uintptr(ptr)+uintptr(lenBytes)) & cacheAlignMask
+	tn = int(uintptr(ptr)+uintptr(lenBytes)) & alignMask
 	dn = (lenBytes - hn - tn) / burstBytes
 	tn = lenBytes - hn - dn*burstBytes
 	// Convert to words
@@ -502,7 +502,7 @@ func write[T dataWord](d *Master, out []T) {
 	lsz := uint(sz >> 1) // log2(sz) for 1, 2, 4
 
 	// Use DMA only for long transfers. Short ones are handled by CPU.
-	if len(out) <= 3*dma.CacheLineSize/sz || !d.txdma.IsValid() {
+	if len(out) <= 3*dma.MemAlign/sz || !d.txdma.IsValid() {
 		writeCPU[T](d, po, len(out))
 		return
 	}
@@ -597,7 +597,7 @@ func read[T dataWord](d *Master, in []T) {
 	lsz := uint(sz >> 1) // log2(sz) for 1, 2, 4
 
 	// Use DMA only for long transfers. Short ones are handled by CPU.
-	if len(in) <= 3*dma.CacheLineSize/sz || !d.rxdma.IsValid() {
+	if len(in) <= 3*dma.MemAlign/sz || !d.rxdma.IsValid() {
 		readCPU[T](d, pi, len(in))
 		return
 	}

@@ -13,6 +13,10 @@ import (
 	"github.com/embeddedgo/imxrt/hal/internal"
 )
 
+// TODO(md): The Rx code is too tangled and unclear. Simplify it and avoid using
+// atomics for MMIO registers because it's unclear does they work as intended.
+// See lpi2c for example of well written code that doesn't use atomics.
+
 const (
 	nshift = 24
 	imask  = uint32(0xffff_ffff) >> (32 - nshift)
@@ -42,7 +46,7 @@ func (d *Driver) EnableRx(bufLen int) {
 		panic("lpuart: bufLen < 2")
 	}
 	if rxdma := d.rxdma; rxdma.IsValid() {
-		const align = dma.CacheLineSize - 1
+		const align = dma.MemAlign - 1
 		bufLen = (bufLen + align) &^ align
 		if bufLen > 32767 {
 			bufLen = 32767
@@ -293,7 +297,7 @@ dataInBuffer:
 			rtos.CacheMaint(rtos.DCacheInval, ptr, n*2)
 		case n < 0:
 			ptr := unsafe.Pointer(&d.rxbuf[0])
-			if n > -64*dma.CacheLineSize/2 {
+			if n > -64*dma.MemAlign/2 {
 				n = len(d.rxbuf) // invalidate the entire buffer at once
 			} else {
 				n = iw // first, invalidate the bottom part of the buffer

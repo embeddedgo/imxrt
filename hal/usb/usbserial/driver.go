@@ -78,7 +78,7 @@ func NewDriver(d *usb.Device, interf uint8, rxe, txe int8, maxPkt int) *Driver {
 		txe:    usb.HE(txe, usb.IN),
 		rxe:    usb.HE(rxe, usb.OUT),
 		tda:    (*[3]usb.DTD)(usb.MakeSliceDTD(3, 3)),
-		buf:    dtcm.MakeSlice[byte](1, maxPkt, maxPkt+2*dma.CacheLineSize),
+		buf:    dtcm.MakeSlice[byte](1, maxPkt, maxPkt+2*dma.MemAlign),
 	}
 	s.tda[0].SetNote(&s.donea[0])
 	s.tda[1].SetNote(&s.donea[1])
@@ -102,7 +102,7 @@ func (s *Driver) Read(p []byte) (n int, err error) {
 		s.ri += n
 		return
 	}
-	if uintptr(unsafe.Pointer(&p[0]))&(dma.CacheLineSize-1) == 0 {
+	if uintptr(unsafe.Pointer(&p[0]))&(dma.MemAlign-1) == 0 {
 		if m := len(p) &^ (len(buf) - 1); m != 0 {
 			// p is cache-aligned and can hold at least one packet.
 			buf = p[:m] // so use it directly as the receive buffer
@@ -209,8 +209,8 @@ func write(s *Driver, p []byte) (n int, err error) {
 	nm := 0      // middle bytes, send directly from p, require rtos.DCacheFlush
 	nt := 0      // unaligned tail bytes, send through dtcm buffer
 	if nh > len(dtcm) {
-		const align = dma.CacheLineSize - 1
-		nh = int(dma.CacheLineSize-uintptr(unsafe.Pointer(&p[0]))) & align
+		const align = dma.MemAlign - 1
+		nh = int(dma.MemAlign-uintptr(unsafe.Pointer(&p[0]))) & align
 		nm = len(p) - nh
 		nt = nm & align
 		nm -= nt

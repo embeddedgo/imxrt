@@ -8,7 +8,23 @@ import "unsafe"
 
 const cacheLineSize = 32 // Cortex-M7
 
-const CacheLineSize = cacheLineSize
+// An MemAlign is the prefered memory alignment for DMA operations. It's always
+// power of 2 and defined in such a way that a fully MemAlign aligned (top and
+// bottom) memory region corresponds to the complete data cache lines.
+const MemAlign = cacheLineSize
+
+// A CacheMaint indicates whether DMA requires cache maintenance.
+const CacheMaint = true
+
+// AlignOffsets calculatest the start and end offsets to the MemAlign aligned
+// portion of the memory described by ptr and size.
+func AlignOffsets(ptr unsafe.Pointer, size uintptr) (start, end uintptr) {
+	const alignMask = MemAlign - 1
+	p := uintptr(ptr)
+	start = -p & alignMask
+	end = size - (p+size)&alignMask
+	return
+}
 
 func alloc(size uintptr) unsafe.Pointer {
 	size = (size + (cacheLineSize - 1)) &^ (cacheLineSize - 1)
@@ -19,14 +35,14 @@ func alloc(size uintptr) unsafe.Pointer {
 	return unsafe.Pointer(addr)
 }
 
-// New works like new(T) but guarantees that the allocated variable does not
-// share the same line in data cache with any other variable.
+// New works like new(T) but guarantees that the allocated variable has the
+// prefered DMA alignment (see MemAlign).
 func New[T any]() (ptr *T) {
 	return (*T)(alloc(unsafe.Sizeof(*ptr)))
 }
 
 // MakeSlice works like make([]T, len, cap) but guarantees that the returned
-// slice does not share the same line in data cache with any other variable.
+// slice has the prefered DMA alignment (see MemAlign).
 func MakeSlice[T any](len, cap int) (slice []T) {
 	ptr := alloc(unsafe.Sizeof(slice[0]) * uintptr(cap))
 	return unsafe.Slice((*T)(ptr), cap)[:len]
