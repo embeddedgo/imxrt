@@ -23,19 +23,19 @@ import (
 //
 // Example:
 //
-//	d.WriteCmds(
+//	d.WriteCmds([]int16{
 //		lpi2c.Start|eepromAddr<<1|wr,
 //		lpi2c.Send|int16(memAddr),
 //		lpi2c.Start|eepromAddr<<1|rd,
 //		lpi2c.Recv|int16(len(buf) - 1),
 //		lpi2c.Stop,
-//	)
+//	})
 //	d.Read(buf)
 //	if err := d.Err(true); err != nil {
 //
 // Write methods in the low-level interface are asynchronous, that is, they may
 // return before all commands/data will be written to the FIFO. Therefore you
-// must not modify the data/command buffer pass to the last write method until
+// must not modify the data/command buffer passed to the last write method until
 // the return of the Flush method or another write method.
 //
 // The read/write methods doesn't return errors. There is an Err method that
@@ -43,8 +43,8 @@ import (
 // you call Err after every method call the returned error is still asynchronous
 // due to the asynchronous nature of the write methods and the delayed execution
 // of commands by the LPI2C peripheral itself. You can use Wait to synchronise
-// things but it seems that only the MSDF flag (Stop Condition) can be used to
-// to synchronize errors.
+// things but it seems that only the MSDF flag (wait for the Stop Condition) can
+// be used to synchronize errors.
 //
 // The second interface is a connection oriented one that implements the
 // i2cbus.Conn interface.
@@ -62,7 +62,7 @@ import (
 // driver using the embedded mutex and wait for the Stop Condition before
 // unlocking the Master.
 type Master struct {
-	sync.Mutex // use with the low-level interface to share the driver
+	sync.Mutex
 
 	name string
 	p    *Periph
