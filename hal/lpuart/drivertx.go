@@ -124,7 +124,7 @@ func writeDMA(d *Driver, s string, s16 []uint16) error {
 		n = len(s16) * 2
 		attr = dma.S32b | dma.D16b
 	}
-	rtos.CacheMaint(rtos.DCacheClean, ptr, n)
+	rtos.CacheMaint(rtos.DCacheFlush, ptr, n)
 	n >>= d.txlog2max // number of minor loops (major loop iterations)
 	m := n
 	if m > 32767 {

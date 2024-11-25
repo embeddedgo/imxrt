@@ -53,7 +53,7 @@ func (d *Driver) EnableRx(bufLen int) {
 		}
 		d.rxbuf = dma.MakeSlice[uint16](bufLen, bufLen)
 		ptr, size := unsafe.Pointer(&d.rxbuf[0]), len(d.rxbuf)*2
-		rtos.CacheMaint(rtos.DCacheCleanInval, ptr, size)
+		rtos.CacheMaint(rtos.DCacheFlushInval, ptr, size) // Why not DCacheInval ?
 		tcd := dma.TCD{
 			SADDR:       unsafe.Pointer(d.p.DATA.Addr()),
 			ATTR:        dma.S16b | dma.D16b,
@@ -313,6 +313,10 @@ dataInBuffer:
 			// iw points to new data, cannot be equal im, undetected overflow
 			return 0, ErrBufOverflow
 		}
+
+		// TODO: Why such complicated D-cache invalidation pattern. Isn't
+		// better to invalidate the whole circular buffer after reaching it's
+		// end and wrapping to the beggining?
 	}
 	return nextw, nil
 }
