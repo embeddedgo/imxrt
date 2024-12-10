@@ -44,7 +44,7 @@ func pr() *periph {
 func Lock() {
 	runtime.LockOSThread()
 	pl, _ := rtos.SetPrivLevel(0)
-	internal.AtomicStoreBits(&aipstz.P(2).OPACR[3], aipstz.WP<<4, aipstz.WP<<4)
+	internal.ExclusiveStoreBits(&aipstz.P(2).OPACR[3], aipstz.WP<<4, aipstz.WP<<4)
 	rtos.SetPrivLevel(pl)
 	runtime.UnlockOSThread()
 }
@@ -53,7 +53,7 @@ func Lock() {
 func Unlock() {
 	runtime.LockOSThread()
 	pl, _ := rtos.SetPrivLevel(0)
-	internal.AtomicStoreBits(&aipstz.P(2).OPACR[3], aipstz.WP<<4, 0)
+	internal.ExclusiveStoreBits(&aipstz.P(2).OPACR[3], aipstz.WP<<4, 0)
 	rtos.SetPrivLevel(pl)
 	runtime.UnlockOSThread()
 }

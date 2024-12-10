@@ -74,14 +74,14 @@ func (d *Driver) EnableRx(bufLen int) {
 		}
 		d.rxbuf = make([]uint16, bufLen)
 	}
-	internal.AtomicStoreBits(&d.p.CTRL, RE|RIE, RE|RIE)
+	internal.ExclusiveStoreBits(&d.p.CTRL, RE|RIE, RE|RIE)
 }
 
 // DisableRx disables receiver and discards all data in Rx buffer. Disabled
 // driver cannot be used to read data.
 func (d *Driver) DisableRx() {
 	p := d.p
-	internal.AtomicStoreBits(&p.CTRL, RE|RIE, 0)
+	internal.ExclusiveStoreBits(&p.CTRL, RE|RIE, 0)
 	for p.CTRL.LoadBits(RE) != 0 {
 		// wait for receiver to finish receiving the last character
 	}
@@ -108,7 +108,7 @@ func (d *Driver) DiscardRx() {
 	if d.rxdma.IsValid() {
 		d.nextr = uint32(len(d.rxbuf) - int(d.rxdma.TCD().ELINK_CITER.Load()))
 	}
-	internal.AtomicStoreBits(&d.p.CTRL, RE|RIE, RE|RIE)
+	internal.ExclusiveStoreBits(&d.p.CTRL, RE|RIE, RE|RIE)
 }
 
 // Len returns the number of buffered characters in the Rx ring buffre or -1
@@ -232,12 +232,12 @@ func getNextwDMA(d *Driver) uint32 {
 }
 
 func disableIRQenableDMAifnoISR(d *Driver) (noisr bool) {
-	internal.AtomicStoreBits(&d.p.CTRL, RIE, 0) // ensure valid noisr below
+	internal.ExclusiveStoreBits(&d.p.CTRL, RIE, 0) // ensure valid noisr below
 	noisr = atomic.CompareAndSwapUint32(&d.rxwake, 1, 0)
 	if noisr {
 		d.p.BAUD.StoreBits(RDMAE, RDMAE) // enable DMA and gate IRQ
 	}
-	internal.AtomicStoreBits(&d.p.CTRL, RIE, RIE) // reanable gated IRQ
+	internal.ExclusiveStoreBits(&d.p.CTRL, RIE, RIE) // reanable gated IRQ
 	return
 }
 

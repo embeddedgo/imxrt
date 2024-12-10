@@ -17,15 +17,15 @@ import (
 type Shared struct{ mmio.R32[uint32] }
 
 func (b *Shared) StoreBits(mask, bits uint32) {
-	internal.AtomicStoreBits(&b.R32, mask, bits)
+	internal.ExclusiveStoreBits(&b.R32, mask, bits)
 }
 
 func (b *Shared) SetBits(mask uint32) {
-	internal.AtomicStoreBits(&b.R32, mask, mask)
+	internal.ExclusiveStoreBits(&b.R32, mask, mask)
 }
 
 func (b *Shared) ClearBits(mask uint32) {
-	internal.AtomicStoreBits(&b.R32, mask, 0)
+	internal.ExclusiveStoreBits(&b.R32, mask, 0)
 }
 
 type Port struct {
@@ -138,5 +138,5 @@ func (p *Port) ConnectMux(mask uint32) {
 		v = 0xffffffff
 		n -= 5
 	}
-	internal.AtomicStoreBits(iomux.GPR(25+n), mask, v)
+	internal.ExclusiveStoreBits(iomux.GPR(25+n), mask, v)
 }

@@ -32,7 +32,7 @@ func (d *Driver) EnableTx() {
 		txdma.DisableReq()
 		txdma.SetMux(dma.Mux(txDMASlots[num(d.p)]) | dma.En)
 	}
-	internal.AtomicStoreBits(&d.p.CTRL, TE, TE)
+	internal.ExclusiveStoreBits(&d.p.CTRL, TE, TE)
 }
 
 // DisableTx disables Tx part of the LPUART peripheral.
@@ -40,7 +40,7 @@ func (d *Driver) DisableTx() {
 	for d.p.STAT.LoadBits(TC) == 0 {
 		runtime.Gosched()
 	}
-	internal.AtomicStoreBits(&d.p.CTRL, TE, 0)
+	internal.ExclusiveStoreBits(&d.p.CTRL, TE, 0)
 	if c := d.txdma; c.IsValid() {
 		c.SetMux(0)
 	}
@@ -73,7 +73,7 @@ func txISR(d *Driver) {
 		}
 	}
 	if d.txi += m; d.txi == n {
-		internal.AtomicStoreBits(&d.p.CTRL, TIE, 0)
+		d.p.CTRL.ClearBits(TIE) // BUG: CTRL may be used concurently
 		d.txdone.Wakeup()
 	}
 }
@@ -98,9 +98,9 @@ func write(d *Driver, s string, s16 []uint16) (err error) {
 		d.txn = -len(s16)
 	}
 	d.txdone.Clear()
-	internal.AtomicStoreBits(&d.p.CTRL, TIE, TIE)
+	internal.ExclusiveStoreBits(&d.p.CTRL, TIE, TIE)
 	if !d.txdone.Sleep(d.txtimeout) {
-		internal.AtomicStoreBits(&d.p.CTRL, TIE, 0)
+		internal.ExclusiveStoreBits(&d.p.CTRL, TIE, 0)
 		err = ErrTimeout
 	}
 	d.txd = nil

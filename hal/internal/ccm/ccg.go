@@ -34,7 +34,7 @@ func (r *CCGR_) CG(i int) int8 {
 
 func (r *CCGR_) SetCG(i int, cg int8) {
 	i *= 2
-	internal.AtomicStoreBits(&r.R32, 3<<uint(i), uint32(cg)<<uint(i))
+	internal.ExclusiveStoreBits(&r.R32, 3<<uint(i), uint32(cg)<<uint(i))
 }
 
 func CCGR(i int) *CCGR_ {
