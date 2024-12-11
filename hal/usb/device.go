@@ -13,7 +13,7 @@ import (
 	"time"
 	"unsafe"
 
-	"github.com/embeddedgo/imxrt/hal/dtcm"
+	"github.com/embeddedgo/imxrt/hal/mem/dtcm"
 	"github.com/embeddedgo/imxrt/hal/irq"
 
 	"github.com/embeddedgo/imxrt/p/ccm"

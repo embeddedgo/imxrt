@@ -9,7 +9,7 @@ import (
 	"sync"
 	"unsafe"
 
-	"github.com/embeddedgo/imxrt/hal/dtcm"
+	"github.com/embeddedgo/imxrt/hal/mem/dtcm"
 )
 
 const (

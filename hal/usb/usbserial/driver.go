@@ -20,7 +20,7 @@ import (
 	"unsafe"
 
 	"github.com/embeddedgo/imxrt/hal/dma"
-	"github.com/embeddedgo/imxrt/hal/dtcm"
+	"github.com/embeddedgo/imxrt/hal/mem/dtcm"
 	"github.com/embeddedgo/imxrt/hal/usb"
 )
 
