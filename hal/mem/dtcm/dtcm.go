@@ -24,7 +24,7 @@ const (
 var free = base
 
 func init() {
-	runtime_memclrNoHeapPointers(unsafe.Pointer(base), end-base)
+	clear((*[end - base]byte)(unsafe.Pointer(base))[:])
 }
 
 func alloc(align, size uintptr) unsafe.Pointer {
@@ -56,6 +56,3 @@ func MakeSlice[T any](align uintptr, len, cap int) (slice []T) {
 	ptr := alloc(align, unsafe.Sizeof(slice[0])*uintptr(cap))
 	return unsafe.Slice((*T)(ptr), cap)[:len]
 }
-
-//go:linkname runtime_memclrNoHeapPointers runtime.memclrNoHeapPointers
-func runtime_memclrNoHeapPointers(ptr unsafe.Pointer, n uintptr)
