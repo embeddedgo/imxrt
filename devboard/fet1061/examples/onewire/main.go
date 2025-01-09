@@ -47,7 +47,7 @@ func main() {
 	owRx.Setup(pullUp22k)
 	owTx.Setup(iomux.Drive2 | iomux.OpenDrain | pullUp22k)
 
-	owm := onewire.Master{owdci.SetupLPUART(ow)}
+	owm := onewire.Master{DCI: owdci.SetupLPUART(ow)}
 
 	dtypes := []onewire.Type{onewire.DS18S20, onewire.DS18B20, onewire.DS1822}
 

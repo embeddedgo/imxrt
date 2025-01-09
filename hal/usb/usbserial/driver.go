@@ -132,7 +132,12 @@ func (s *Driver) Read(p []byte) (n int, err error) {
 	}
 	return
 error:
-	return n, &usb.Error{s.d.Controller(), "serial", s.rxe, status}
+	return n, &usb.Error{
+		Controller: s.d.Controller(),
+		Function:   "serial",
+		HE:         s.rxe,
+		Status:     status,
+	}
 }
 
 // SetAutoFlush enables/disables the AutoFlush mode. If AutoFlush is enabled,
@@ -280,7 +285,12 @@ loop:
 	}
 error:
 	s.wn = 0
-	return n, &usb.Error{s.d.Controller(), "serial", s.txe, status}
+	return n, &usb.Error{
+		Controller: s.d.Controller(),
+		Function:   "serial",
+		HE:         s.txe,
+		Status:     status,
+	}
 }
 
 // Flush ensures that the last data written were sent to the USB host.
@@ -296,7 +306,12 @@ func (s *Driver) Flush() error {
 	td, done := &s.tda[wn], &s.donea[wn]
 	done.Sleep(-1)
 	if _, status := td.Status(); status != 0 {
-		return &usb.Error{s.d.Controller(), "serial", s.txe, status}
+		return &usb.Error{
+			Controller: s.d.Controller(),
+			Function:   "serial",
+			HE:         s.txe,
+			Status:     status,
+		}
 	}
 	return nil
 }

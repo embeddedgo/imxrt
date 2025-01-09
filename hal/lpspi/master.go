@@ -37,15 +37,15 @@ func (d *Master) Periph() *Periph {
 // conversion to group them in a constant array.
 const (
 	txDMASlots = "" +
-		string(dma.LPSPI1_TX) +
-		string(dma.LPSPI2_TX) +
-		string(dma.LPSPI3_TX) +
-		string(dma.LPSPI4_TX)
+		string(rune(dma.LPSPI1_TX)) +
+		string(rune(dma.LPSPI2_TX)) +
+		string(rune(dma.LPSPI3_TX)) +
+		string(rune(dma.LPSPI4_TX))
 	rxDMASlots = "" +
-		string(dma.LPSPI1_RX) +
-		string(dma.LPSPI2_RX) +
-		string(dma.LPSPI3_RX) +
-		string(dma.LPSPI4_RX)
+		string(rune(dma.LPSPI1_RX)) +
+		string(rune(dma.LPSPI2_RX)) +
+		string(rune(dma.LPSPI3_RX)) +
+		string(rune(dma.LPSPI4_RX))
 )
 
 // Enable enables LPSPI peripheral.

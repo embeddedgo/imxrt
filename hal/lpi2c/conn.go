@@ -203,7 +203,7 @@ func connErr(c *conn) (err error) {
 		if err.(*MasterError).Status&MasterErrFlags == MNDF {
 			err = i2cbus.ErrACK
 		}
-		err = &i2cbus.MasterError{d.name, err}
+		err = &i2cbus.MasterError{Name: d.name, Err: err}
 		c.d.Unlock()
 		c.open = false
 		c.wr = false

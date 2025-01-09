@@ -26,14 +26,14 @@ const (
 // All dma.Mux slot constants are less than 128 so we can easily group them in
 // constant array.
 const rxDMASlots = "" +
-	string(dma.LPUART1_RX) +
-	string(dma.LPUART2_RX) +
-	string(dma.LPUART3_RX) +
-	string(dma.LPUART4_RX) +
-	string(dma.LPUART5_RX) +
-	string(dma.LPUART6_RX) +
-	string(dma.LPUART7_RX) +
-	string(dma.LPUART8_RX)
+	string(rune(dma.LPUART1_RX)) +
+	string(rune(dma.LPUART2_RX)) +
+	string(rune(dma.LPUART3_RX)) +
+	string(rune(dma.LPUART4_RX)) +
+	string(rune(dma.LPUART5_RX)) +
+	string(rune(dma.LPUART6_RX)) +
+	string(rune(dma.LPUART7_RX)) +
+	string(rune(dma.LPUART8_RX))
 
 // EnableRx enables receiving data into internal ring buffer of size bufLen
 // characters. The minimum size of the buffer is 2 characters. The buffer size

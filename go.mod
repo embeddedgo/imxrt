@@ -9,3 +9,5 @@ require (
 	github.com/embeddedgo/fs v0.1.3
 	github.com/embeddedgo/onewire v0.0.2
 )
+
+//GOTARGET=imxrt1060

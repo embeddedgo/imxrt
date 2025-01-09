@@ -17,14 +17,14 @@ import (
 // All dma.Mux slot constants are less than 128 so we can use the string
 // conversion to group them in a constant array.
 const txDMASlots = "" +
-	string(dma.LPUART1_TX) +
-	string(dma.LPUART2_TX) +
-	string(dma.LPUART3_TX) +
-	string(dma.LPUART4_TX) +
-	string(dma.LPUART5_TX) +
-	string(dma.LPUART6_TX) +
-	string(dma.LPUART7_TX) +
-	string(dma.LPUART8_TX)
+	string(rune(dma.LPUART1_TX)) +
+	string(rune(dma.LPUART2_TX)) +
+	string(rune(dma.LPUART3_TX)) +
+	string(rune(dma.LPUART4_TX)) +
+	string(rune(dma.LPUART5_TX)) +
+	string(rune(dma.LPUART6_TX)) +
+	string(rune(dma.LPUART7_TX)) +
+	string(rune(dma.LPUART8_TX))
 
 // EnableTx enables Tx part of the LPUART peripheral.
 func (d *Driver) EnableTx() {

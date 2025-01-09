@@ -148,10 +148,10 @@ const (
 // All dma.Mux slot constants are less than 128 so we can use the string
 // conversion to group them in a constant array.
 const dmaSlots = "" +
-	string(dma.LPI2C1) +
-	string(dma.LPI2C2) +
-	string(dma.LPI2C3) +
-	string(dma.LPI2C4)
+	string(rune(dma.LPI2C1)) +
+	string(rune(dma.LPI2C2)) +
+	string(rune(dma.LPI2C3)) +
+	string(rune(dma.LPI2C4))
 
 func (d *Master) Setup(sp Speed) {
 	p := d.p
