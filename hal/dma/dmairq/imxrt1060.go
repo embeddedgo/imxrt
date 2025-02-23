@@ -21,6 +21,7 @@ func setISR(c dma.Channel, isr func()) {
 	atomic.StorePointer(&handlers[c.Num()], h)
 }
 
+//go:nosplit
 func dispatch(cn int) {
 	d := dma.DMA(0)
 	for {
