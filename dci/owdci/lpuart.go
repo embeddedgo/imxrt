@@ -30,12 +30,6 @@ func checkErr(d *lpuart.Driver, err error) error {
 	if err == nil {
 		return nil
 	}
-	if e, ok := err.(lpuart.Error); ok {
-		if e == lpuart.ENOISE {
-			return nil
-		}
-		err = e &^ lpuart.ENOISE
-	}
 	d.DiscardRx()
 	return err
 }

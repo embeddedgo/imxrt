@@ -6,7 +6,10 @@ package dma
 
 import "unsafe"
 
-const cacheLineSize = 32 // Cortex-M7
+const (
+	cacheLineSize = 32 // Cortex-M7
+	cacheMaint = true
+)
 
 // An MemAlign is the prefered memory alignment for DMA operations. It's always
 // power of 2 and defined in such a way that a fully MemAlign aligned (top and
@@ -14,7 +17,7 @@ const cacheLineSize = 32 // Cortex-M7
 const MemAlign = cacheLineSize
 
 // A CacheMaint indicates whether DMA requires cache maintenance.
-const CacheMaint = true
+const CacheMaint = cacheMaint
 
 // AlignOffsets calculatest the start and end offsets to the MemAlign aligned
 // portion of the memory described by ptr and size.
@@ -27,12 +30,12 @@ func AlignOffsets(ptr unsafe.Pointer, size uintptr) (start, end uintptr) {
 }
 
 func alloc(size uintptr) unsafe.Pointer {
-	size = (size + (cacheLineSize - 1)) &^ (cacheLineSize - 1)
-	size += cacheLineSize // extra space for address alignment
+	const alignMask = MemAlign - 1
+	size = (size + alignMask) &^ alignMask
+	size += MemAlign // extra space for address alignment
 	buf := make([]byte, size)
-	addr := uintptr(unsafe.Pointer(&buf[0]))
-	addr = (addr + (cacheLineSize - 1)) &^ (cacheLineSize - 1)
-	return unsafe.Pointer(addr)
+	addr := unsafe.Pointer(&buf[0])
+	return unsafe.Pointer((uintptr(addr) + alignMask) &^ alignMask)
 }
 
 // New works like new(T) but guarantees that the allocated variable has the
