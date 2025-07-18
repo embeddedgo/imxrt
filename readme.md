@@ -2,9 +2,27 @@
 
 Embedded Go supports the i.MX RT106x family. You may know it as Teensy 4 which is a family of the popular development boards based on the i.MX RT1062.
 
+### Prerequisites
+
+1. Go complier.
+
+   You can download it from [go.dev/dl](https://go.dev/dl/).
+
+2. Git command.
+
+   To instll git on Linux use the package manager provided by your Linux distribution (apt, pacman, rpm, ...).
+
+   Windows users may check the [git for Windows](https://gitforwindows.org/) website.
+
+   The Mac users may use the git command provided by the [Xcode](https://developer.apple.com/xcode/) commandline tools. Another way is to use the [Homebrew](https://brew.sh/) package manager.
+
 ### Getting started
 
 1. Install the Embedded Go toolchain.
+
+   Make sure the `$GOPATH/bin` directory is in your `PATH`, as tools installed with the `go install` command will be placed here. If you didn't set the `GOPATH` environment variable manually you can find its default value using the `go env GOPATH` command.
+
+   Then install the Embedded Go toolchain using the following two commands:
 
    ```sh
    go install github.com/embeddedgo/dl/go1.24.5-embedded@latest
@@ -58,6 +76,14 @@ Embedded Go supports the i.MX RT106x family. You may know it as Teensy 4 which i
    GOENV=go.env go build
    ```
 
+   or
+
+   ```sh
+   egtool build
+   ```
+
+   The last one is like `GOENV=go.env go build` but looks for the `go.env` file up the current module directory tree.
+
 7. Connect your Teensy to your computer and press the onboard button.
 
 8. Load and run.
@@ -65,6 +91,8 @@ Embedded Go supports the i.MX RT106x family. You may know it as Teensy 4 which i
    ```sh
    egtool load
    ```
+
+9. See the [Embedded Go](https://embeddedgo.github.io/) website for more information.
 
 ### Examples
 

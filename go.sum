@@ -1,7 +1,7 @@
-github.com/embeddedgo/device v0.0.5 h1:5VYWf9xLspyDqEGy5dc0IlSnPGIsGk2hoy+DpjeAhcI=
-github.com/embeddedgo/device v0.0.5/go.mod h1:7nayW2m93gb8t3z1r+1/FrkIb+6DK3CWVq2xBm/n6Ak=
-github.com/embeddedgo/display v1.2.1 h1:ZbUfDWNhNBwC+HgEEUw/WnnsqsXsPrctJtpK5hjtECY=
-github.com/embeddedgo/display v1.2.1/go.mod h1:0sxxBoklqMbA1uBqEAg8Plntmwvt7cNsgxaf7UaS4yw=
+github.com/embeddedgo/device v0.0.6 h1:p1YnNoQLeRsK5KldHMZrXy+7S8Z6B3lpREWxD1K848U=
+github.com/embeddedgo/device v0.0.6/go.mod h1:7nayW2m93gb8t3z1r+1/FrkIb+6DK3CWVq2xBm/n6Ak=
+github.com/embeddedgo/display v1.4.0 h1:qodWVbUnxw3PihQbqjbTYLSzsnAd9JWbMTUuOL67xiE=
+github.com/embeddedgo/display v1.4.0/go.mod h1:7KEcyB5ZpnvuLF5hwzhXuNIPutIN/0uoQ8W8BiWuQCQ=
 github.com/embeddedgo/espat v0.2.3 h1:mHYd9b5WDOPwIPSj1ES/yPIDZ9gtv4Lc7ULrIfDCO18=
 github.com/embeddedgo/espat v0.2.3/go.mod h1:ymbAnBgrRht/G2FEAEBo20i8miBxHR9qdTpuQEJZxiw=
 github.com/embeddedgo/fs v0.1.3 h1:uKp26pruDzT/qi9K8HcV41JBdAgDTGIIagCZQ15GRzs=
