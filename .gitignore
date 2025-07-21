@@ -1,5 +1,5 @@
 *.elf
 *.bin
 devboard/*/examples/*/*.hex
-zisrnames.go
 core
+oocd.log
