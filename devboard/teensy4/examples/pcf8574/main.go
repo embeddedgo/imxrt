@@ -10,8 +10,9 @@
 // require a current limiting resistor of the order 150-200 Ω. High voltage LEDs
 // like the white ones may work without any resistor.
 //
-// Connect your LEDs between pin 1 (closest to the I2C connector, 3.3V) and pins
-// 4, 5, 6 (PCF8574 P0, P1, P2 outputs). Polarity matters. Pin 1 should be
+// Connect your LEDs between pin 2 (closest to the I2C connector, 3.3V) and pins
+// 4, 5, 6 (PCF8574 P0, P1, P2 outputs). If you have more diodes you can connect
+// four more to the pins 11, 12, 13, 14. Polarity matters. Pin 1 should be
 // connected to the anodes of all LEDS. The easiest way to do it is to use a
 // breadboard. Next connect the module pins GND, VCC, SDA, SCL to the Teensy
 // pins G, 3V, 18, 19. After programming your Teensy with this example the LEDs
