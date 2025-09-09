@@ -91,7 +91,7 @@ func lowLevelWay(d *lpi2c.Master) {
 	for {
 		d.WriteCmd(lpi2c.StartHS | addr<<1 | rd)
 		d.WriteCmd(lpi2c.Recv | int16(len(buf)-1))
-		d.Read(buf[:])
+		d.ReadBytes(buf[:])
 		if logErr(d.Err(true)) {
 			return
 		}
@@ -108,7 +108,7 @@ func lowLevelWay(d *lpi2c.Master) {
 		lpi2c.Recv | int16(len(buf)-1),
 		lpi2c.Stop,
 	})
-	d.Read(buf[:])
+	d.ReadBytes(buf[:])
 	if logErr(d.Err(true)) {
 		return
 	}

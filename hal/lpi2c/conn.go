@@ -112,7 +112,7 @@ func startWrite(c *conn) {
 func (c *conn) Write(p []byte) (n int, err error) {
 	startWrite(c)
 	if len(p) != 0 {
-		c.d.Write(p)
+		c.d.WriteBytes(p)
 		c.d.Flush() // ensure p isn't used after return
 	}
 	err = connErr(c)
@@ -161,7 +161,7 @@ func (c *conn) Read(p []byte) (n int, err error) {
 		n = 256
 	}
 	startRead(c, n)
-	c.d.Read(p)
+	c.d.ReadBytes(p)
 	err = connErr(c)
 	if err != nil {
 		n = 0

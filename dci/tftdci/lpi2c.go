@@ -55,7 +55,7 @@ func (dci *LPI2C) Cmd(p []byte, dataMode int) {
 	start(m, dci.addr)
 
 	m.WriteCmd(lpi2c.Send | multiCmd)
-	m.Write(p)
+	m.WriteBytes(p)
 
 	stop(m)
 }
@@ -68,7 +68,7 @@ func (dci *LPI2C) WriteBytes(p []uint8) {
 	start(m, dci.addr)
 
 	m.WriteCmd(lpi2c.Send | multiData)
-	m.Write(p)
+	m.WriteBytes(p)
 
 	stop(m)
 }
@@ -78,7 +78,7 @@ func (dci *LPI2C) WriteString(s string) {
 	start(m, dci.addr)
 
 	m.WriteCmd(lpi2c.Send | multiData)
-	m.WriteString(s)
+	m.WriteStr(s)
 
 	stop(m)
 }

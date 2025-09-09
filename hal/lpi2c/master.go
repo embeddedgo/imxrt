@@ -30,7 +30,7 @@ import (
 //		lpi2c.Recv|int16(len(buf) - 1),
 //		lpi2c.Stop,
 //	})
-//	d.Read(buf)
+//	d.ReadBytes(buf)
 //	if err := d.Err(true); err != nil {
 //
 // Write methods in the low-level interface are asynchronous, that is, they may
@@ -253,8 +253,9 @@ func (d *Master) WriteCmds(cmds []int16) {
 	masterWrite(d, unsafe.Pointer(&cmds[0]), len(cmds), true)
 }
 
-// Write is like WriteCmds but writes only Send commands with the provided data.
-func (d *Master) Write(p []byte) {
+// WriteBytes is like WriteCmds but writes only Send commands with the provided
+// data.
+func (d *Master) WriteBytes(p []byte) {
 	if len(p) == 0 {
 		return
 	}
@@ -277,9 +278,9 @@ func (d *Master) Write(p []byte) {
 	masterWrite(d, unsafe.Pointer(&p[0]), len(p), false)
 }
 
-// WriteString is like Write but writes bytes from string instead of slice.
-func (d *Master) WriteString(s string) {
-	d.Write(unsafe.Slice(unsafe.StringData(s), len(s)))
+// WriteStr is like WriteBytes but writes bytes from string instead of slice.
+func (d *Master) WriteStr(s string) {
+	d.WriteBytes(unsafe.Slice(unsafe.StringData(s), len(s)))
 }
 
 // WriteCmd works like WriteCmds but writes only one command word into the Tx
@@ -395,9 +396,9 @@ func masterWriteDMA(d *Master, ptr unsafe.Pointer, n int) {
 	}
 }
 
-// Read reads len(p) data bytes from Rx FIFO. The read data is valid if Err
+// ReadBytes reads len(p) data bytes from Rx FIFO. The read data is valid if Err
 // returns nil.
-func (d *Master) Read(p []byte) {
+func (d *Master) ReadBytes(p []byte) {
 	if len(p) == 0 {
 		return
 	}
@@ -420,7 +421,7 @@ func (d *Master) Read(p []byte) {
 	masterRead(d, &p[0], len(p))
 }
 
-// ReadByte works like Read but reads only one byte from the Rx FIFO.
+// ReadByte works like ReadBytes but reads only one byte from the Rx FIFO.
 func (d *Master) ReadByte() byte {
 	p := d.p
 	v := p.MRDR.Load()
