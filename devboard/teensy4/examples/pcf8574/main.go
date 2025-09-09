@@ -11,17 +11,19 @@
 // like the white ones may work without any resistor.
 //
 // Connect your LEDs between pin 2 (closest to the I2C connector, 3.3V) and pins
-// 4, 5, 6 (PCF8574 P0, P1, P2 outputs). If you have more diodes you can connect
-// four more to the pins 11, 12, 13, 14. Polarity matters. Pin 1 should be
-// connected to the anodes of all LEDS. The easiest way to do it is to use a
+// 4, 5, 6 (PCF8574 P0, P1, P2 outputs). If you have more LEDs you can connect
+// four more to the pins 11, 12, 13, 14. Polarity matters. Pin 2 should be
+// connected to the anodes of all LEDs. The easiest way to do it is to use a
 // breadboard. Next connect the module pins GND, VCC, SDA, SCL to the Teensy
 // pins G, 3V, 18, 19. After programming your Teensy with this example the LEDs
 // should start blinking with different frequencies.
 //
-// As the LEDs are connected between 3,3V and P0, P1, P2 writing the
-// corresponding bit zero turns the LED on, writting one turns it off. Because
-// of its quasi-bidirectional I/O the PCF8574 can't source enough current to
-// stable light a LED connected between Px pin and GND.
+// As the LEDs are connected between 3.3V and P0, P1, P2 writing the
+// corresponding bit zero turns the LED on, writting it one turns it off.
+// Because of its quasi-bidirectional I/O the PCF8574 can't source enough
+// current to stable light a LED connected between Px pin and GND (ones are
+// weak so if you set pin high it can work as an input). On the other hand
+// PCF8574 can sink enough current to light the LEDs (zeros are strong).
 package main
 
 import (
