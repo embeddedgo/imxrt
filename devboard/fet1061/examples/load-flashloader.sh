@@ -1,8 +1,8 @@
 #!/bin/sh
 
-name=$(basename $(pwd))
+egtool hex -inc ../mbr.img:0x60000000
 
-# objcopy --change-addresses 0x60000000 -I binary -O ihex $name.bin $name.hex
+name=$(basename $(pwd))
 
 # USB
 #interface='-u'

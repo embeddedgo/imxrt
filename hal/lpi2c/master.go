@@ -1,4 +1,4 @@
-// Copyright 2024 The Embedded Go Authors. All rights reserved.
+// Copyright 2025 The Embedded Go Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
@@ -6,7 +6,7 @@ package lpi2c
 
 import (
 	"embedded/rtos"
-	"strings"
+	"runtime"
 	"sync"
 	"sync/atomic"
 	"unsafe"
@@ -23,6 +23,7 @@ import (
 //
 // Example:
 //
+//	const wr, rd = 0, 1
 //	d.WriteCmds([]int16{
 //		lpi2c.Start|eepromAddr<<1|wr,
 //		lpi2c.Send|int16(memAddr),
@@ -66,13 +67,12 @@ type Master struct {
 
 	name string
 	p    *Periph
+
+	wbuf int16
 	id   uint8
 
-	rbuf byte
-	wbuf int16
-
-	wcmds *int16
-	wdata *byte
+	cmd   bool
+	wdata unsafe.Pointer
 	wi    int32 // ISR cannot alter the above pointers so it alters wi instead
 	wn    int32
 	wdone rtos.Note
@@ -89,8 +89,9 @@ type Master struct {
 // given, the DMA will be used for bigger data transfers.
 func NewMaster(p *Periph, dma dma.Channel) *Master {
 	return &Master{
-		name: string([]byte{'L', 'P', 'I', '2', 'C', '1' + byte(num(p))}),
-		p:    p, dma: dma,
+		name: "LPI2C" + string(rune('0'+num(p))),
+		p:    p,
+		//dma:  dma,
 	}
 }
 
@@ -153,6 +154,8 @@ const dmaSlots = "" +
 	string(rune(dma.LPI2C3)) +
 	string(rune(dma.LPI2C4))
 
+// Setup resets and configures the underlying LPI2C pripheral to operate in the
+// master mode with the given speed.
 func (d *Master) Setup(sp Speed) {
 	p := d.p
 	p.EnableClock(true)
@@ -180,56 +183,72 @@ func (d *Master) Setup(sp Speed) {
 	p.MCR.Store(MEN)
 }
 
-// MasterError contains value of the Master Status Register with one or more
-// error flags set.
-type MasterError struct {
-	Status MSR // value of the Master Status Register as read by Master.Err
+const (
+	rxFIFOCap = 4
+	txFIFOCap = 4
+)
+
+// Flush waits until all commands/data passed to the driver have been consumed
+// (in other words, it makes the previous write operation synchronous). You must
+// call Flush or write new to enusre the Master stops referencing previously
+// written data (to reuse memory or make it available for garbage collection).
+// Return from Flush doesn't mean that all data were sent on the bus (there may
+// be even full Tx FIFO not handled yet, see Wait).
+func (d *Master) Flush() {
+	if d.wdata != nil && d.p.MSR.LoadBits(MasterErrFlags) == 0 {
+		d.wdone.Sleep(-1)
+		d.wdone.Clear()
+		d.wdata = nil
+	}
 }
 
-func (e *MasterError) Error() string {
-	var a [4]string
-	es := a[:0:4]
-	if e.Status&MNDF != 0 {
-		es = append(es, "NACK")
-	}
-	if e.Status&MALF != 0 {
-		es = append(es, "Arbitr")
-	}
-	if e.Status&MFEF != 0 {
-		es = append(es, "FIFO")
-	}
-	if e.Status&MPLTF != 0 {
-		es = append(es, "PinLow")
-	}
-	return "lpi2c master: " + strings.Join(es, ",")
-}
-
-// Err returns the content of the MSR register wrapped into the MasterError type
-// if any error flag (see MasterErrFlags) is set. Othewrise it returns nil.
-// If clear is true Err clears the Tx FIFO and the error flags in the MSR
-// register and if the LPI2C peripheral is in the busy state (MSR[MBF] is set)
-// it also releases the bus by writing the Stop command into Tx FIFO.
-func (d *Master) Err(clear bool) error {
+func masterWrite(d *Master, ptr unsafe.Pointer, n int, cmd bool) {
 	p := d.p
-	status := p.MSR.Load()
-	if e := status & MasterErrFlags; e != 0 {
-		if clear {
-			p.MCR.SetBits(MRTF) // clear Tx FIFOs
-			p.MSR.Store(e)      // clear the error flags
-			if p.MSR.LoadBits(MBF) != 0 {
-				p.MTDR.Store(Stop) // release the bus
+	if p.MSR.LoadBits(MasterErrFlags) != 0 {
+		return
+	}
+	// To speed things up we try to fill the FIFO in thread mode. As thread code
+	// may be interrupted at any time we check TXCOUNT every iteration instead
+	// of write as fast as possible the txFIFOCap-TXCOUNT commands/bytes.
+	i := 0
+	if !cmd {
+		data := unsafe.Slice((*byte)(ptr), n)
+		for p.MFSR.LoadBits(TXCOUNT)>>TXCOUNTn < txFIFOCap {
+			p.MTDR.Store(int16(data[i]))
+			if i++; i == len(data) {
+				return
 			}
 		}
-		return &MasterError{status} // all flags for the better context
+	} else {
+		cmds := unsafe.Slice((*int16)(ptr), n)
+		for p.MFSR.LoadBits(TXCOUNT)>>TXCOUNTn < txFIFOCap {
+			p.MTDR.Store(cmds[i])
+			if i++; i == len(cmds) {
+				return
+			}
+		}
 	}
-	return nil
+	// The remaining data/commands will be writtend to the FIFO by the ISR.
+	d.cmd = cmd
+	d.wdata = ptr
+	d.wi = int32(i)
+	atomic.StoreInt32(&d.wn, int32(n))
+	p.MIER.Store(MTDF | MasterErrFlags) // race with ISR (clear)
+}
+
+// WriteCmd works like WriteCmds but writes only one command word into the Tx
+// FIFO.
+func (d *Master) WriteCmd(cmd int16) {
+	d.Flush()
+	d.wbuf = cmd
+	masterWrite(d, unsafe.Pointer(&d.wbuf), 1, true)
 }
 
 // WriteCmds starts writing commands into the Tx FIFO in the background using
 // interrupts and/or DMA. WriteCmd is no-op if len(cmds) == 0.
 //
-// The LPI2C concept of a combined command and data FIFO greatly simplifies use
-// of the I2C protocol. Thanks to this concept an I2C transaction or even
+// The LPI2C concept of the combined command and data FIFO greatly simplifies
+// use of the I2C master. Thanks to this concept an I2C transaction or even
 // multiple transactions can be prepared in advance as an array of commands and
 // data, including receive transactions if the amount of data is known.
 //
@@ -241,16 +260,16 @@ func (d *Master) Err(clear bool) error {
 // command if the Rx FIFO isn't full and there is no next Recv or Discard
 // command in the Tx FIFO. Two or more consecutive Recv commands in the list
 // passed to WriteCmds may also cause the FIFO error because there is no
-// guarantee that they will all get into the Tx FIFO on time.
+// guarantee that they will all get into the Tx FIFO on time (the first Recv
+// command may be executed and finished by the implicit Stop condition and in
+// such the second late Recv command causes MFEF because the Start command is
+// required first).
 func (d *Master) WriteCmds(cmds []int16) {
 	if len(cmds) == 0 {
 		return
 	}
-	// Can't use DMA for commands because the DMA request/channel is shared
-	// between Tx and Rx so we must wait for the end of Tx DMA before starting
-	// Rx DMA. At the same time the Tx transfer may contain Recv command which
-	// may not end before the subsequent read operation will complete.
-	masterWrite(d, unsafe.Pointer(&cmds[0]), len(cmds), true)
+	d.Flush()
+	masterWrite(d, unsafe.Pointer(unsafe.SliceData(cmds)), len(cmds), true)
 }
 
 // WriteBytes is like WriteCmds but writes only Send commands with the provided
@@ -259,196 +278,25 @@ func (d *Master) WriteBytes(p []byte) {
 	if len(p) == 0 {
 		return
 	}
-	if d.dma.IsValid() && len(p) >= 2*dma.MemAlign {
-		ptr := unsafe.Pointer(&p[0])
-		ds, de := dma.AlignOffsets(ptr, uintptr(len(p)))
-		dmaStart := int(ds)
-		dmaEnd := int(de)
-		dmaPtr := unsafe.Add(ptr, ds)
-		dmaN := dmaEnd - dmaStart
-		if dmaStart != 0 {
-			masterWrite(d, ptr, dmaStart, false)
-		}
-		masterWriteDMA(d, dmaPtr, dmaN)
-		if dmaEnd == len(p) {
-			return
-		}
-		p = p[dmaEnd:]
-	}
-	masterWrite(d, unsafe.Pointer(&p[0]), len(p), false)
+	d.Flush()
+	masterWrite(d, unsafe.Pointer(unsafe.SliceData(p)), len(p), false)
 }
 
 // WriteStr is like WriteBytes but writes bytes from string instead of slice.
 func (d *Master) WriteStr(s string) {
-	d.WriteBytes(unsafe.Slice(unsafe.StringData(s), len(s)))
-}
-
-// WriteCmd works like WriteCmds but writes only one command word into the Tx
-// FIFO.
-func (d *Master) WriteCmd(cmd int16) {
-	if d.wn != 0 {
-		masterWaitWrite(d)
-	}
-	p := d.p
-	if p.MFSR.LoadBits(TXCOUNT)>>TXCOUNTn != txFIFOLen {
-		p.MTDR.Store(cmd)
+	if len(s) == 0 {
 		return
 	}
-	d.wbuf = cmd
-	d.wcmds = &d.wbuf
-	d.wi = 0
-	atomic.StoreInt32(&d.wn, 1)
-	// The ISR may already finish here so the next line may reenable IRQs.
-	p.MIER.Store(MTDF | MasterErrFlags)
-}
-
-const (
-	txFIFOLen = 4
-	rxFIFOLen = 4
-)
-
-const MasterErrFlags = MNDF | MALF | MFEF | MPLTF
-
-// Wait until the ISR will end the previously scheduled transfer.
-func masterWaitWrite(d *Master) {
-	// Wait for the ISR to end the previously scheduled transfer.
-	d.wdone.Sleep(-1)
-	d.wdone.Clear()
-	d.wcmds = nil
-	d.wdata = nil
-	d.wn = 0
-}
-
-func masterWrite(d *Master, ptr unsafe.Pointer, n int, cmd bool) {
-	if d.wn != 0 {
-		masterWaitWrite(d)
-	}
-	p := d.p
-	// To speed things up, first try to write directly into the FIFO.
-	i := 0
-	if !cmd {
-		data := unsafe.Slice((*byte)(ptr), n)
-		for p.MFSR.LoadBits(TXCOUNT)>>TXCOUNTn < txFIFOLen {
-			p.MTDR.Store(int16(data[i]))
-			if i++; i == len(data) {
-				return
-			}
-		}
-		d.wdata = &data[i]
-	} else {
-		cmds := unsafe.Slice((*int16)(ptr), n)
-		for p.MFSR.LoadBits(TXCOUNT)>>TXCOUNTn < txFIFOLen {
-			p.MTDR.Store(cmds[i])
-			if i++; i == len(cmds) {
-				return
-			}
-		}
-		d.wcmds = &cmds[i]
-	}
-	// The remaining data/commands will be writtend to the FIFO by the ISR.
-	d.wi = 0
-	atomic.StoreInt32(&d.wn, int32(n-i))
-	// The ISR may already finish here so the next line may reenable IRQs.
-	p.MIER.Store(MTDF | MasterErrFlags)
-}
-
-const dmaMaxMajorIter = 1<<dma.ELINKn - 1 // = 32767
-
-func masterWriteDMA(d *Master, ptr unsafe.Pointer, n int) {
-	if d.wn != 0 {
-		masterWaitWrite(d)
-	}
-	rtos.CacheMaint(rtos.DCacheFlush, ptr, n)
-	const dmaChunk = 4 // eqals 1 x S32b and 4 x D8b, <=txFIFOLen
-	tcd := dma.TCD{
-		SADDR:       ptr,
-		SOFF:        dmaChunk,
-		ATTR:        dma.S32b | dma.D8b,
-		ML_NBYTES:   dmaChunk,
-		DADDR:       unsafe.Pointer(d.p.MTDR.Addr()),
-		ELINK_CITER: dmaMaxMajorIter,
-		ELINK_BITER: dmaMaxMajorIter,
-		CSR:         dma.DREQ | dma.INTMAJOR,
-	}
-	p := d.p
-	p.MDER.Store(TDDE)
-	dma := d.dma
-	dma.WriteTCD(&tcd)
-	tcdio := dma.TCD()
-	n /= dmaChunk
-	atomic.StoreInt32(&d.wn, -2) // DMA write in progress
-	for {
-		m := n
-		if m > dmaMaxMajorIter {
-			m = dmaMaxMajorIter
-		}
-		n -= m
-		if m != dmaMaxMajorIter {
-			tcdio.ELINK_CITER.Store(int16(m))
-			tcdio.ELINK_BITER.Store(int16(m))
-		}
-		dma.EnableReq() // accept DMA requests from Tx FIFO
-		if n == 0 {
-			break // we don't have to wait for the end of write
-		}
-		d.wdone.Sleep(-1) // wait until the major loop complete
-		d.wdone.Clear()
-	}
-}
-
-// ReadBytes reads len(p) data bytes from Rx FIFO. The read data is valid if Err
-// returns nil.
-func (d *Master) ReadBytes(p []byte) {
-	if len(p) == 0 {
-		return
-	}
-	if d.dma.IsValid() && len(p) >= 2*dma.MemAlign {
-		ptr := &p[0]
-		ds, de := dma.AlignOffsets(unsafe.Pointer(ptr), uintptr(len(p)))
-		dmaStart := int(ds)
-		dmaEnd := int(de)
-		dmaPtr := &p[dmaStart]
-		dmaN := dmaEnd - dmaStart
-		if dmaStart != 0 {
-			masterRead(d, ptr, dmaStart)
-		}
-		masterReadDMA(d, unsafe.Pointer(dmaPtr), dmaN)
-		if dmaEnd == len(p) {
-			return
-		}
-		p = p[dmaEnd:]
-	}
-	masterRead(d, &p[0], len(p))
-}
-
-// ReadByte works like ReadBytes but reads only one byte from the Rx FIFO.
-func (d *Master) ReadByte() byte {
-	p := d.p
-	v := p.MRDR.Load()
-	if v&RXEMPTY != 0 {
-		return byte(v)
-	}
-	d.rdata = &d.rbuf
-	d.ri = 0
-	p.MFCR.Store(0)
-	flags := MRDF | MasterErrFlags
-	atomic.StoreInt32(&d.rn, 1)
-	if d.wn > 0 /* can avoid atomic.Load because of the above atomic.Store */ {
-		flags |= MTDF
-	}
-	// The ISR may already finish here so the next line may reenable IRQs.
-	p.MIER.Store(flags)
-	d.rdone.Sleep(-1)
-	d.rdone.Clear()
-	return d.rbuf
+	d.Flush()
+	masterWrite(d, unsafe.Pointer(unsafe.StringData(s)), len(s), false)
 }
 
 func masterRead(d *Master, ptr *byte, n int) {
 	p := d.p
-	if p.MSR.Load()&MasterErrFlags != 0 {
+	if p.MSR.LoadBits(MasterErrFlags) != 0 {
 		return
 	}
-	// Avoid interrupts if there is data in the FIFO.
+	// To speed things up we try to empty the FIFO in thread mode.
 	i := 0
 	data := unsafe.Slice((*byte)(ptr), n)
 	for {
@@ -461,90 +309,39 @@ func masterRead(d *Master, ptr *byte, n int) {
 			return
 		}
 	}
-	n -= i
-	// The remaining data/commands will be read by the ISR.
+	// The remaining data will be read by the ISR.
 	d.rdata = &data[i]
-	d.ri = 0
-	p.MFCR.Store(MFCR(min(n, rxFIFOLen)-1) << RXWATERn)
+	d.ri = int32(i)
+	p.MFCR.Store(MFCR(min(n-i, rxFIFOCap)-1) << RXWATERn)
 	flags := MRDF | MasterErrFlags
 	atomic.StoreInt32(&d.rn, int32(n))
 	if d.wn > 0 /* can avoid atomic.Load because of the above atomic.Store */ {
 		flags |= MTDF
 	}
-	// The ISR may already finish here so the next line may reenable IRQs.
-	p.MIER.Store(flags)
+	p.MIER.Store(flags) // race with ISR (clear)
 	d.rdone.Sleep(-1)
 	d.rdone.Clear()
 	d.rdata = nil
 }
 
-func masterReadDMA(d *Master, ptr unsafe.Pointer, n int) {
-	if d.wn == -2 {
-		masterWaitWrite(d) // wait for the end of DMA write
+// ReadBytes reads len(p) data bytes from Rx FIFO. The read data is valid if Err
+// returns nil.
+func (d *Master) ReadBytes(p []byte) {
+	if len(p) == 0 {
+		return
 	}
-	rtos.CacheMaint(rtos.DCacheFlushInval, ptr, n)
-	const dmaChunk = 4 // equals 4 x S8b and 1 x D32b, <=rxFIFOLen
-	tcd := dma.TCD{
-		SADDR:       unsafe.Pointer(d.p.MRDR.Addr()),
-		ATTR:        dma.S8b | dma.D32b,
-		ML_NBYTES:   dmaChunk,
-		DADDR:       ptr,
-		DOFF:        dmaChunk,
-		ELINK_CITER: dmaMaxMajorIter,
-		ELINK_BITER: dmaMaxMajorIter,
-		CSR:         dma.DREQ | dma.INTMAJOR,
-	}
-	p := d.p
-	p.MFCR.Store((dmaChunk - 1) << RXWATERn)
-	p.MDER.Store(RDDE)
-	dma := d.dma
-	dma.WriteTCD(&tcd)
-	tcdio := dma.TCD()
-	n /= dmaChunk
-	for {
-		m := n
-		if m > dmaMaxMajorIter {
-			m = dmaMaxMajorIter
-		}
-		n -= m
-		if m != dmaMaxMajorIter {
-			tcdio.ELINK_CITER.Store(int16(m))
-			tcdio.ELINK_BITER.Store(int16(m))
-		}
-		dma.EnableReq()   // accept DMA requests from Rx FIFO
-		d.rdone.Sleep(-1) // wait until the major loop complete
-		d.rdone.Clear()
-		if n == 0 {
-			break
-		}
-	}
+	masterRead(d, &p[0], len(p))
 }
 
-// Flush waits for the last command passed to the last WriteCmd call or last
-// data byte passed to the last Write/WriteString call to be written to the Tx
-// FIFO. Return from Flush doesn't mean the written commands/data were or even
-// will be executed/sent.
-func (d *Master) Flush() {
-	if d.wn != 0 {
-		masterWaitWrite(d)
-	}
+// ReadByte works like ReadBytes but reads only one byte from the Rx FIFO.
+func (d *Master) ReadByte() (b byte) {
+	masterRead(d, &b, 1)
+	return
 }
 
-// Status returns the current status of the LPSPI Master. It's intended do to
-// be used with together with the Clear and Wait methods to check which of the
-// events we were waiting for actually took place.
-//
-// You won't read this in the RM:
-//
-// In caes of repeated START the detection of NACK causes setting of both MSDF
-// and MEPF flags. Usually MNDF flag is set before MSDF, MEPF but sometimes
-// it happens in the reverse order. After NACK the SDA stays high, the SCL
-// stays low which probably causes that the MBF and MBBF flags are set. The
-// only way to clear MBF,MBBF is to write the Stop command into MTDR or reset
-// the peripheral (disabling and reenabling it doesn't work). After the Stop
-// command SCL is momentarily pulled low to allow releasing SDA and next SCL
-// what corresponds to the Stop Condition on the bus. SM says that MBBF reflets
-// the bus state. But it's not cleare how MBF and MBBF relate to each other.
+// Status returns the current status of the LPSPI Master. It's intended do to be
+// used together with the Clear and Wait methods to check which of the events
+// we were waiting for actually took place.
 func (d *Master) Status() MSR {
 	return d.p.MSR.Load()
 }
@@ -570,31 +367,56 @@ func (d *Master) Wait(flags MSR) {
 		return
 	}
 	atomic.StoreInt32(&d.rn, -int32(flags))
-	if flags&MTDF == 0 && d.wn > 0 /* no atomic.Load because of the above atomic.Store */ {
+	if flags&MTDF == 0 && d.wn > 0 {
 		flags |= MTDF
 	}
-	// The ISR may already finish here so the next line may reenable IRQs.
-	p.MIER.Store(flags)
+	p.MIER.Store(flags) // race with ISR (clear)
 	d.rdone.Sleep(-1)
 	d.rdone.Clear()
 }
 
-// ISR is the interrupt handler for the LPI2C peripheral used by Master.
+// Err returns the content of the MSR register wrapped into the MasterError type
+// if any error flag (see MasterErrFlags) is set. Othewrise it returns nil.
+// If clear is true Err clears the Tx FIFO and the error flags in the MSR
+// register and if the LPI2C peripheral is in the busy state (MSR[MBF] is set)
+// it also releases the bus by writing the Stop command into Tx FIFO.
+func (d *Master) Err(clear bool) error {
+	p := d.p
+	status := p.MSR.Load()
+	if e := status & MasterErrFlags; e != 0 {
+		if clear {
+			// Clear error flags (also clear Tx FIFO to ensure no new errors)
+			p.MCR.SetBits(MRTF)
+			p.MCR.ClearBits(MEN)
+			for p.MSR.LoadBits(MBF) != 0 {
+				runtime.Gosched()
+			}
+			p.MCR.SetBits(MEN)
+			p.MSR.Store(e)
+		}
+		return &MasterError{d.name, status} // all flags for the better context
+	}
+	return nil
+}
+
+// ISR is the interrupt handler for the I2C peripheral used by Master.
 //
 //go:nosplit
 //go:nowritebarrierrec
 func (d *Master) ISR() {
-	// The tricky part of this code is the concurrent access of the MIER
-	// register by this ISR and read/write/wait functions in thread mode. There
-	// isn't clear that the MMIO supports RDEX/STREX instruction so we don't use
-	// atomics.
 	p := d.p
+
+	// Disable interrupts and reenable them later if needed. It reaces with the
+	// thread code. If the clearing INTR_MASK here happens before the setting
+	// it in the thread code this ISR may run again. We clear d.wn, d.rn before
+	// wake-up the thread code so such ISR reentry isn't harmful.
 	p.MIER.Store(0) // disable all IRQs and fix it later
 	sr := p.MSR.Load()
 
 	if sr&MasterErrFlags != 0 {
+		// Tx/Rx FIFOs are kept empty until TX_ABRT IRQ is cleared
 		if atomic.LoadInt32(&d.wn) > 0 {
-			d.wn = -1
+			d.wn = 0
 			d.wdone.Wakeup()
 		}
 		if atomic.LoadInt32(&d.rn) != 0 {
@@ -604,36 +426,13 @@ func (d *Master) ISR() {
 		return
 	}
 
-	var ie MSR
-
-	// Write part. May work concurently with masterRead.
-	if n := atomic.LoadInt32(&d.wn); n > 0 {
-		// Because MFCR[TXWATER]=0 (see Setup) the FIFO is now empty.
-		i := d.wi
-		m := min(i+txFIFOLen, n)
-		if d.wdata != nil {
-			for _, b := range unsafe.Slice(d.wdata, n)[i:m] {
-				p.MTDR.Store(int16(b))
-			}
-		} else {
-			for _, cmd := range unsafe.Slice(d.wcmds, n)[i:m] {
-				p.MTDR.Store(cmd)
-			}
-		}
-		d.wi = m
-		if m == n {
-			// Done
-			d.wn = -1 // avoid rentry because of possible race on MIER
-			d.wdone.Wakeup()
-		} else {
-			ie = MTDF | MasterErrFlags
-		}
-	}
+	var enable MSR
 
 	// Read or wait part.
 	done := false
 	if n := atomic.LoadInt32(&d.rn); n > 0 {
 		// Read
+		flags := MRDF | MasterErrFlags
 		data := unsafe.Slice(d.rdata, n)
 		i := d.ri
 		for int(i) < len(data) {
@@ -644,76 +443,84 @@ func (d *Master) ISR() {
 			data[i] = byte(v)
 			i++
 		}
-		d.ri = i
-		if n := len(data) - int(i); n == 0 {
-			done = true
-		} else {
-			ie |= MRDF | MasterErrFlags
-			if n < rxFIFOLen {
-				// Reduce MFCR[RXWATER] to the size of the last chunk of data.
-				p.MFCR.Store(MFCR(n-1) << RXWATERn)
+		if i != d.ri {
+			d.ri = i
+			n -= i
+			if n == 0 {
+				flags = 0
+				done = true
+			} else {
+				if n < rxFIFOCap {
+					// Reduce MFCR[RXWATER] to the size of the last data chunk.
+					p.MFCR.Store(MFCR(n-1) << RXWATERn)
+				}
 			}
 		}
+		enable |= flags
 	} else if n < 0 {
 		// Wait
 		if flags := MSR(-n); flags&sr != 0 {
 			done = true
 		} else {
-			ie |= flags // already contain MasterErrFlags
+			enable |= flags // already contain MasterErrFlags
 		}
 	}
 	if done {
-		d.rn = 0 // avoid rentry because of possible race on MIER
+		d.rn = 0
 		d.rdone.Wakeup()
 	}
 
-	// The situation is clear if ie=0 because we cleared whole MIER at entry and
-	// next checked d.wn and d.rn. Thread code does this in reverse order so we
-	// are sure that there is no any new work for ISR with interrupts disabled.
-	if ie != 0 {
-		// MIER must be set. There is no problem if read part set ie because in
-		// this case we are sure that the thread read code waits for this ISR
-		// and there is no thread write code doing anything. The problem is if
-		// only the write part set ie. In this case the thread read code may
-		// have set MRDF in the meantime and we don't wont disable it here.
+	// Write part. May work concurently with the thread read code.
+	if n := atomic.LoadInt32(&d.wn); n > 0 {
+		flags := MTDF | MasterErrFlags
+		if fw := txFIFOCap - p.MFSR.LoadBits(TXCOUNT)>>TXCOUNTn; fw != 0 {
+			i := d.wi
+			m := min(n, int32(fw)+i)
+			if !d.cmd {
+				for _, b := range unsafe.Slice((*byte)(d.wdata), m)[i:] {
+					p.MTDR.Store(int16(b))
+				}
+			} else {
+				for _, cmd := range unsafe.Slice((*int16)(d.wdata), m)[i:] {
+					p.MTDR.Store(cmd)
+				}
+			}
+			d.wi = m
+			if m == n {
+				// Done.
+				flags = 0
+				d.wn = 0
+				d.wdone.Wakeup()
+			}
+		}
+		enable |= flags
+	}
 
-		// First store ie as is.
-		p.MIER.Store(ie)
+	// The situation is clear if enable=0 because we cleared the whole MIER at
+	// entry and next we checked d.wn and d.rn. Thread code does this in reverse
+	// order so we are sure that there is no any new work for ISR with
+	// interrupts disabled.
+	if enable != 0 {
+		// MIER must be set. There is no problem if the read part set the enable
+		// because in this case we are sure that the thread read code waits for
+		// this ISR and there is no thread write code doing anything. The
+		// problem is if only the write part set the enable. In this case the
+		// thread read code may have set MRDF in the meantime and we don't wont
+		// disable it here.
 
-		if ie&^(MTDF|MasterErrFlags) == 0 {
+		// First store enable as is.
+		p.MIER.Store(enable)
+
+		if enable&MRDF == 0 {
 			// Then fix MIER if the read work was scheduled in the meantime.
 			if n := atomic.LoadInt32(&d.rn); n != 0 {
 				if n > 0 {
-					ie |= MRDF
+					enable |= MRDF
 				} else {
-					ie |= MSR(-n)
+					enable |= MSR(-n)
 				}
-				p.MIER.Store(ie)
+				p.MIER.Store(enable)
 			}
 		}
 	}
-}
-
-// DMAISR is a DMA interrupt handler for the DMA channel used by Master.
-//
-//go:nosplit
-//go:nowritebarrierrec
-func (d *Master) DMAISR() {
-	d.dma.ClearInt()
-	if atomic.LoadInt32(&d.wn) == -2 {
-		d.wdone.Wakeup()
-	} else {
-		d.rdone.Wakeup()
-	}
-}
-
-func pr[T ~uint32](name string, v T) {
-	print(name, ": ")
-	for i := 32; i != 0; i-- {
-		if i&7 == 0 && i != 32 {
-			print("_")
-		}
-		print(v >> (i - 1) & 1)
-	}
-	print("\r\n")
 }

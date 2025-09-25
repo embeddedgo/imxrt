@@ -110,12 +110,14 @@ func startWrite(c *conn) {
 
 // Write implements the i2cbus.Conn interface and the io.Writer interface.
 func (c *conn) Write(p []byte) (n int, err error) {
-	startWrite(c)
-	if len(p) != 0 {
-		c.d.WriteBytes(p)
-		c.d.Flush() // ensure p isn't used after return
+	if len(p) == 0 {
+		return
 	}
-	err = connErr(c)
+	startWrite(c)
+	d := c.d
+	d.WriteBytes(p)
+	d.Flush() // ensure p isn't used after return
+	err = d.Err(false)
 	if err == nil {
 		n = len(p)
 	}
@@ -131,8 +133,9 @@ func (c *conn) WriteString(s string) (n int, err error) {
 // interface.
 func (c *conn) WriteByte(b byte) error {
 	startWrite(c)
-	c.d.WriteCmd(Send | int16(b))
-	return connErr(c)
+	d := c.d
+	d.WriteCmd(Send | int16(b))
+	return d.Err(false)
 }
 
 func startRead(c *conn, m int) {
@@ -147,22 +150,24 @@ func startRead(c *conn, m int) {
 		i = 1 // already in the High Speed mode
 	}
 	n := c.rn
-	if m != 0 {
-		c.rstart[n] = Recv | int16(m-1)
-		n++
-	}
+	c.rstart[n] = Recv | int16(m-1)
+	n++
 	c.d.WriteCmds(c.rstart[i:n])
 }
 
 // Read implements the i2cbus.Conn interface and the io.Reader interface.
 func (c *conn) Read(p []byte) (n int, err error) {
 	n = len(p)
+	if n == 0 {
+		return
+	}
 	if n > 256 {
 		n = 256
 	}
 	startRead(c, n)
-	c.d.ReadBytes(p)
-	err = connErr(c)
+	d := c.d
+	d.ReadBytes(p)
+	err = d.Err(false)
 	if err != nil {
 		n = 0
 	}
@@ -173,8 +178,9 @@ func (c *conn) Read(p []byte) (n int, err error) {
 // interface.
 func (c *conn) ReadByte() (b byte, err error) {
 	startRead(c, 1)
-	b = c.d.ReadByte()
-	err = connErr(c)
+	d := c.d
+	b = d.ReadByte()
+	err = d.Err(false)
 	return
 }
 
@@ -187,26 +193,9 @@ func (c *conn) Close() error {
 	d.Clear(MSDF)
 	d.WriteCmd(Stop)
 	d.Wait(MSDF)
-	err := connErr(c)
-	if err == nil {
-		d.Unlock()
-		c.open = false
-		c.wr = false
-	}
+	err := d.Err(true)
+	c.d.Unlock()
+	c.open = false
+	c.wr = false
 	return err
-}
-
-func connErr(c *conn) (err error) {
-	d := c.d
-	err = d.Err(true)
-	if err != nil {
-		if err.(*MasterError).Status&MasterErrFlags == MNDF {
-			err = i2cbus.ErrACK
-		}
-		err = &i2cbus.MasterError{Name: d.name, Err: err}
-		c.d.Unlock()
-		c.open = false
-		c.wr = false
-	}
-	return
 }

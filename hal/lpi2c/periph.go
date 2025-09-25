@@ -14,8 +14,8 @@ import (
 )
 
 type Periph struct {
-	VERID  mmio.R32[uint32] // Version ID Register
-	PARAM  mmio.R32[uint32] // Parameter Register
+	VERID  mmio.U32 // Version ID Register
+	PARAM  mmio.U32 // Parameter Register
 	_      [2]uint32
 	MCR    mmio.R32[MCR]    // Master Control Register
 	MSR    mmio.R32[MSR]    // Master Status Register
@@ -52,7 +52,7 @@ type Periph struct {
 	SASR   mmio.R32[SASR] // Slave Address Status Register
 	STAR   mmio.R32[STAR] // Slave Transmit ACK Register
 	_      [2]uint32
-	STDR   mmio.R32[uint32] // Slave Transmit Data Register
+	STDR   mmio.U32 // Slave Transmit Data Register
 	_      [3]uint32
 	SRDR   mmio.R32[RDR] // Slave Receive Data Register
 }
