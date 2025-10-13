@@ -91,7 +91,7 @@ func NewMaster(p *Periph, dma dma.Channel) *Master {
 	return &Master{
 		name: "LPI2C" + string(rune('0'+num(p))),
 		p:    p,
-		//dma:  dma,
+		dma:  dma,
 	}
 }
 
@@ -195,7 +195,7 @@ const (
 // Return from Flush doesn't mean that all data were sent on the bus (there may
 // be even full Tx FIFO not handled yet, see Wait).
 func (d *Master) Flush() {
-	if d.wdata != nil && d.p.MSR.LoadBits(MasterErrFlags) == 0 {
+	if d.wdata != nil {
 		d.wdone.Sleep(-1)
 		d.wdone.Clear()
 		d.wdata = nil
@@ -234,6 +234,54 @@ func masterWrite(d *Master, ptr unsafe.Pointer, n int, cmd bool) {
 	d.wi = int32(i)
 	atomic.StoreInt32(&d.wn, int32(n))
 	p.MIER.Store(MTDF | MasterErrFlags) // race with ISR (clear)
+}
+
+const dmaMaxMajorIter = 1<<dma.ELINKn - 1 // = 32767
+
+func masterWriteDMA(d *Master, ptr unsafe.Pointer, n int) {
+	p := d.p
+	if p.MSR.LoadBits(MasterErrFlags) != 0 {
+		return
+	}
+	rtos.CacheMaint(rtos.DCacheFlush, ptr, n)
+	const dmaChunk = 4 // eqals 1 x S32b and 4 x D8b, <=txFIFOLen
+	tcd := dma.TCD{
+		SADDR:       ptr,
+		SOFF:        dmaChunk,
+		ATTR:        dma.S32b | dma.D8b,
+		ML_NBYTES:   dmaChunk,
+		DADDR:       unsafe.Pointer(p.MTDR.Addr()),
+		ELINK_CITER: dmaMaxMajorIter,
+		ELINK_BITER: dmaMaxMajorIter,
+		CSR:         dma.DREQ | dma.INTMAJOR,
+	}
+	p.MDER.Store(TDDE) // clears RDDE
+	dma := d.dma
+	dma.WriteTCD(&tcd)
+	tcdio := dma.TCD()
+	n /= dmaChunk
+	for {
+		m := n
+		if m > dmaMaxMajorIter {
+			m = dmaMaxMajorIter
+		}
+		n -= m
+		if m != dmaMaxMajorIter {
+			tcdio.ELINK_CITER.Store(int16(m))
+			tcdio.ELINK_BITER.Store(int16(m))
+		}
+		d.wdata = ptr                // prevent premature GC and make Flush working
+		atomic.StoreInt32(&d.wn, -1) // DMA write in progress
+		dma.EnableReq()              // accept DMA requests from Tx FIFO
+		p.MIER.Store(MasterErrFlags) // handle I2C errors
+		if n == 0 {
+			break // we don't have to wait for the end of write
+		}
+		d.Flush() // wait until the major loop complete or error
+		if p.MSR.LoadBits(MasterErrFlags) != 0 {
+			break
+		}
+	}
 }
 
 // WriteCmd works like WriteCmds but writes only one command word into the Tx
@@ -278,17 +326,32 @@ func (d *Master) WriteBytes(p []byte) {
 	if len(p) == 0 {
 		return
 	}
+	if d.dma.IsValid() && len(p) >= 2*dma.MemAlign {
+		ptr := unsafe.Pointer(&p[0])
+		ds, de := dma.AlignOffsets(ptr, uintptr(len(p)))
+		dmaStart := int(ds)
+		dmaEnd := int(de)
+		dmaPtr := unsafe.Add(ptr, ds)
+		dmaN := dmaEnd - dmaStart
+		if dmaStart != 0 {
+			masterWrite(d, ptr, dmaStart, false)
+			d.Flush()
+		}
+		masterWriteDMA(d, dmaPtr, dmaN)
+		if dmaEnd == len(p) {
+			return
+		}
+		p = p[dmaEnd:]
+	}
 	d.Flush()
 	masterWrite(d, unsafe.Pointer(unsafe.SliceData(p)), len(p), false)
 }
 
 // WriteStr is like WriteBytes but writes bytes from string instead of slice.
 func (d *Master) WriteStr(s string) {
-	if len(s) == 0 {
-		return
+	if len(s) != 0 {
+		d.WriteBytes(unsafe.Slice(unsafe.StringData(s), len(s)))
 	}
-	d.Flush()
-	masterWrite(d, unsafe.Pointer(unsafe.StringData(s)), len(s), false)
 }
 
 func masterRead(d *Master, ptr *byte, n int) {
@@ -310,12 +373,12 @@ func masterRead(d *Master, ptr *byte, n int) {
 		}
 	}
 	// The remaining data will be read by the ISR.
-	d.rdata = &data[i]
+	d.rdata = ptr
 	d.ri = int32(i)
 	p.MFCR.Store(MFCR(min(n-i, rxFIFOCap)-1) << RXWATERn)
-	flags := MRDF | MasterErrFlags
 	atomic.StoreInt32(&d.rn, int32(n))
-	if d.wn > 0 /* can avoid atomic.Load because of the above atomic.Store */ {
+	flags := MRDF | MasterErrFlags
+	if d.wn > 0 /* the above atomic.Store allows use of non-atomic load */ {
 		flags |= MTDF
 	}
 	p.MIER.Store(flags) // race with ISR (clear)
@@ -324,11 +387,78 @@ func masterRead(d *Master, ptr *byte, n int) {
 	d.rdata = nil
 }
 
+func masterReadDMA(d *Master, ptr unsafe.Pointer, n int) {
+	p := d.p
+	if p.MSR.LoadBits(MasterErrFlags) != 0 {
+		return
+	}
+	rtos.CacheMaint(rtos.DCacheFlushInval, ptr, n)
+	const dmaChunk = 4 // equals 4 x S8b and 1 x D32b, <=rxFIFOLen
+	tcd := dma.TCD{
+		SADDR:       unsafe.Pointer(d.p.MRDR.Addr()),
+		ATTR:        dma.S8b | dma.D32b,
+		ML_NBYTES:   dmaChunk,
+		DADDR:       ptr,
+		DOFF:        dmaChunk,
+		ELINK_CITER: dmaMaxMajorIter,
+		ELINK_BITER: dmaMaxMajorIter,
+		CSR:         dma.DREQ | dma.INTMAJOR,
+	}
+	p.MFCR.Store((dmaChunk - 1) << RXWATERn)
+	if atomic.LoadInt32(&d.wn) == -1 {
+		d.Flush() // wait for the end of DMA write
+	}
+	p.MDER.Store(RDDE) // clears TDDE
+	dma := d.dma
+	dma.WriteTCD(&tcd)
+	tcdio := dma.TCD()
+	n /= dmaChunk
+	for {
+		m := n
+		if m > dmaMaxMajorIter {
+			m = dmaMaxMajorIter
+		}
+		n -= m
+		if m != dmaMaxMajorIter {
+			tcdio.ELINK_CITER.Store(int16(m))
+			tcdio.ELINK_BITER.Store(int16(m))
+		}
+		atomic.StoreInt32(&d.rn, -1) // DMA read in progress
+		dma.EnableReq()              // accept DMA requests from Rx FIFO
+		flags := MasterErrFlags
+		if d.wn > 0 /* the above atomic.Store allows use of non-atomic load */ {
+			flags |= MTDF
+		}
+		p.MIER.Store(flags) // handle I2C errors
+		d.rdone.Sleep(-1)   // wait until the major loop complete or error
+		d.rdone.Clear()
+		if n == 0 || p.MSR.LoadBits(MasterErrFlags) != 0 {
+			break
+		}
+	}
+}
+
 // ReadBytes reads len(p) data bytes from Rx FIFO. The read data is valid if Err
 // returns nil.
 func (d *Master) ReadBytes(p []byte) {
 	if len(p) == 0 {
 		return
+	}
+	if d.dma.IsValid() && len(p) >= 2*dma.MemAlign {
+		ptr := &p[0]
+		ds, de := dma.AlignOffsets(unsafe.Pointer(ptr), uintptr(len(p)))
+		dmaStart := int(ds)
+		dmaEnd := int(de)
+		dmaPtr := &p[dmaStart]
+		dmaN := dmaEnd - dmaStart
+		if dmaStart != 0 {
+			masterRead(d, ptr, dmaStart)
+		}
+		masterReadDMA(d, unsafe.Pointer(dmaPtr), dmaN)
+		if dmaEnd == len(p) {
+			return
+		}
+		p = p[dmaEnd:]
 	}
 	masterRead(d, &p[0], len(p))
 }
@@ -340,22 +470,24 @@ func (d *Master) ReadByte() (b byte) {
 }
 
 // Status returns the current status of the LPSPI Master. It's intended do to be
-// used together with the Clear and Wait methods to check which of the events
-// we were waiting for actually took place.
+// used together with the Clear and Wait methods to check which of the event or
+// state flags we were waiting for are actually set.
 func (d *Master) Status() MSR {
 	return d.p.MSR.Load()
 }
 
-// Clear allows to clear the MEPF, MSDF, MDMF in the MSR register. It is
-// intended to be used together with the Wait method to wait for events
-// signaled by these flags.
+const waitFlags = MEPF | MSDF | MDMF | MTDF
+
+// Clear allows to clear the MEPF, MSDF, MDMF event flags. It is intended to be
+// used together with the Wait method to wait for events signaled by these
+// flags.
 func (d *Master) Clear(flags MSR) {
-	d.p.MSR.Store(flags & (MEPF | MSDF | MDMF))
+	d.p.MSR.Store(flags & waitFlags)
 }
 
-// Wait waits for an event described by the MEPF, MSDF, MDMF, MTDF flags or an
-// error.  The MTDF flag allows to wait for an empty Tx FIFO. In most cases you
-// should clear the flag you want to wait for.
+// Wait waits for an the MEPF, MSDF, MDMF event flags and the MTDF state flag or
+// an error. The MTDF flag allows to wait for an empty Tx FIFO. In most cases
+// you should clear the event flags you want to wait for.
 func (d *Master) Wait(flags MSR) {
 	flags &= MEPF | MSDF | MDMF | MTDF
 	if flags == 0 {
@@ -366,7 +498,7 @@ func (d *Master) Wait(flags MSR) {
 	if p.MSR.LoadBits(flags) != 0 {
 		return
 	}
-	atomic.StoreInt32(&d.rn, -int32(flags))
+	atomic.StoreInt32(&d.rn, int32(flags|1<<31)) // wait: d.rn<0 && d.rn!=-1
 	if flags&MTDF == 0 && d.wn > 0 {
 		flags |= MTDF
 	}
@@ -415,11 +547,17 @@ func (d *Master) ISR() {
 
 	if sr&MasterErrFlags != 0 {
 		// Tx/Rx FIFOs are kept empty until TX_ABRT IRQ is cleared
-		if atomic.LoadInt32(&d.wn) > 0 {
+		if wn := atomic.LoadInt32(&d.wn); wn != 0 {
+			if wn == -1 {
+				d.dma.DisableReq()
+			}
 			d.wn = 0
 			d.wdone.Wakeup()
 		}
-		if atomic.LoadInt32(&d.rn) != 0 {
+		if rn := atomic.LoadInt32(&d.rn); rn != 0 {
+			if rn == -1 {
+				d.dma.DisableReq()
+			}
 			d.rn = 0
 			d.rdone.Wakeup()
 		}
@@ -457,9 +595,9 @@ func (d *Master) ISR() {
 			}
 		}
 		enable |= flags
-	} else if n < 0 {
+	} else if n < -1 {
 		// Wait
-		if flags := MSR(-n); flags&sr != 0 {
+		if flags := MSR(n) & waitFlags; flags&sr != 0 {
 			done = true
 		} else {
 			enable |= flags // already contain MasterErrFlags
@@ -522,5 +660,20 @@ func (d *Master) ISR() {
 				p.MIER.Store(enable)
 			}
 		}
+	}
+}
+
+// DMAISR is a DMA interrupt handler for the DMA channel used by Master.
+//
+//go:nosplit
+//go:nowritebarrierrec
+func (d *Master) DMAISR() {
+	d.dma.ClearInt()
+	if atomic.LoadInt32(&d.wn) == -1 {
+		d.wn = 0
+		d.wdone.Wakeup()
+	} else {
+		d.rn = 0
+		d.rdone.Wakeup()
 	}
 }
