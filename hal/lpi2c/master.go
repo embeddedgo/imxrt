@@ -546,18 +546,16 @@ func (d *Master) ISR() {
 	sr := p.MSR.Load()
 
 	if sr&MasterErrFlags != 0 {
-		// Tx/Rx FIFOs are kept empty until TX_ABRT IRQ is cleared
-		if wn := atomic.LoadInt32(&d.wn); wn != 0 {
-			if wn == -1 {
-				d.dma.DisableReq()
-			}
+		wn := atomic.LoadInt32(&d.wn)
+		rn := atomic.LoadInt32(&d.rn)
+		if wn|rn == -1 {
+			d.dma.DisableReq()
+		}
+		if wn != 0 {
 			d.wn = 0
 			d.wdone.Wakeup()
 		}
-		if rn := atomic.LoadInt32(&d.rn); rn != 0 {
-			if rn == -1 {
-				d.dma.DisableReq()
-			}
+		if rn != 0 {
 			d.rn = 0
 			d.rdone.Wakeup()
 		}
@@ -672,7 +670,7 @@ func (d *Master) DMAISR() {
 	if atomic.LoadInt32(&d.wn) == -1 {
 		d.wn = 0
 		d.wdone.Wakeup()
-	} else {
+	} else if atomic.LoadInt32(&d.rn) == -1 {
 		d.rn = 0
 		d.rdone.Wakeup()
 	}
