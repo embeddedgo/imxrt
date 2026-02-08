@@ -388,6 +388,9 @@ func masterRead(d *Master, ptr *byte, n int) {
 }
 
 func masterReadDMA(d *Master, ptr unsafe.Pointer, n int) {
+	if atomic.LoadInt32(&d.wn) == -1 {
+		d.Flush() // wait for the end of DMA write
+	}
 	p := d.p
 	if p.MSR.LoadBits(MasterErrFlags) != 0 {
 		return
@@ -405,9 +408,6 @@ func masterReadDMA(d *Master, ptr unsafe.Pointer, n int) {
 		CSR:         dma.DREQ | dma.INTMAJOR,
 	}
 	p.MFCR.Store((dmaChunk - 1) << RXWATERn)
-	if atomic.LoadInt32(&d.wn) == -1 {
-		d.Flush() // wait for the end of DMA write
-	}
 	p.MDER.Store(RDDE) // clears TDDE
 	dma := d.dma
 	dma.WriteTCD(&tcd)

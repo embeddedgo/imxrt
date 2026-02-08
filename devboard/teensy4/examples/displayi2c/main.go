@@ -28,7 +28,8 @@ func main() {
 	master.UsePin(sda, lpi2c.SDA)
 
 	dci := tftdci.NewLPI2C(master, 0b0111100)
-	disp := displays.Adafruit_0i96_128x64_OLED_SSD1306().New(dci)
+	//disp := displays.Adafruit_0i96_128x64_OLED_SSD1306.New(dci)
+	disp := displays.Adafruit_1i3_128x64_OLED_SH1106.New(dci)
 	for {
 		examples.RotateDisplay(disp)
 		examples.DrawText(disp)
